@@ -121,7 +121,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      * {@inheritdoc}
      */
     public static function findIdentity($id) {
-        return static::find()->cache(3600)->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
+       // return static::find()->cache(3600)->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
+        return static::find()->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
     }
 
     /**

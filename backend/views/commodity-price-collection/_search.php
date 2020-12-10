@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\CommodityPriceLevelsSearch */
+/* @var $model backend\models\CommodityPriceCollectionSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="commodity-price-levels-search">
+<div class="commodity-price-collection-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,13 +17,23 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'level') ?>
+    <?= $form->field($model, 'district') ?>
 
-    <?= $form->field($model, 'description') ?>
+    <?= $form->field($model, 'market_id') ?>
 
-    <?= $form->field($model, 'created_at') ?>
+    <?= $form->field($model, 'commodity_type_id') ?>
 
-    <?= $form->field($model, 'updated_at') ?>
+    <?= $form->field($model, 'price_level_id') ?>
+
+    <?php // echo $form->field($model, 'unit_of_measure') ?>
+
+    <?php // echo $form->field($model, 'price') ?>
+
+    <?php // echo $form->field($model, 'description') ?>
+
+    <?php // echo $form->field($model, 'created_at') ?>
+
+    <?php // echo $form->field($model, 'updated_at') ?>
 
     <?php // echo $form->field($model, 'created_by') ?>
 

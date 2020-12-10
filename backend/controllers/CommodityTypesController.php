@@ -8,18 +8,32 @@ use backend\models\CommodityTypesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\helpers\Json;
+use backend\models\AuditTrail;
+use backend\models\User;
 
 /**
  * CommodityTypesController implements the CRUD actions for CommodityTypes model.
  */
-class CommodityTypesController extends Controller
-{
+class CommodityTypesController extends Controller {
+
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'delete',],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -33,28 +47,56 @@ class CommodityTypesController extends Controller
      * Lists all CommodityTypes models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new CommodityTypesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    public function actionIndex() {
+        if (User::userIsAllowedTo('Manage commodity configs')) {
+            $model = new CommodityTypes();
+            $searchModel = new CommodityTypesSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            if (Yii::$app->request->post('hasEditable')) {
+                $Id = Yii::$app->request->post('editableKey');
+                $model = CommodityTypes::findOne($Id);
+                $out = Json::encode(['output' => '', 'message' => '']);
+                $posted = current($_POST['CommodityTypes']);
+                $post = ['CommodityTypes' => $posted];
+                $old = $model->name;
+                $old_cat = $model->category_id;
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single CommodityTypes model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+                if ($model->load($post)) {
+                    if ($old != $model->name || $old_cat != $model->category_id) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        if ($old_cat != $model->category_id) {
+                            $audit->action = "Updated commodity type category to::" . $model->category_id;
+                        }
+                        if ($old != $model->name) {
+                            $audit->action = "Updated commodity type name from $old to " . $model->name;
+                        }
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        $model->updated_by = Yii::$app->user->id;
+                    }
+                    $message = '';
+                    if (!$model->save()) {
+                        foreach ($model->getErrors() as $error) {
+                            $message .= $error[0];
+                        }
+                        $output = $message;
+                    }
+                    $output = '';
+                    $out = Json::encode(['output' => $output, 'message' => $message]);
+                }
+                return $out;
+            }
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'model' => $model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**
@@ -62,37 +104,33 @@ class CommodityTypesController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new CommodityTypes();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+    public function actionCreate() {
+        if (User::userIsAllowedTo('Manage commodity configs')) {
+            $model = new CommodityTypes();
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+            if ($model->load(Yii::$app->request->post())) {
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Added commodity type " . $model->name;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Commodity type ' . $model->name . ' was successfully added.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occured while adding commodity type ' . $model->name);
+                }
+                return $this->redirect(['index']);
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing CommodityTypes model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -102,11 +140,26 @@ class CommodityTypesController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+    public function actionDelete($id) {
+        if (User::userIsAllowedTo('Manage commodity configs')) {
+            $model = $this->findModel($id);
+            $name = $model->name;
+            if ($model->delete()) {
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = "Removed commodity type $name from the system.";
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                Yii::$app->session->setFlash('success', "Commodity type $name was successfully removed.");
+            } else {
+                Yii::$app->session->setFlash('error', "Commodity type $name could not be removed. Please try again!");
+            }
+            return $this->redirect(['index']);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**
@@ -116,12 +169,12 @@ class CommodityTypesController extends Controller
      * @return CommodityTypes the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = CommodityTypes::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

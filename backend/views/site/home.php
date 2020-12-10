@@ -1,83 +1,166 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 /* @var $this yii\web\View */
 
 use yii\helpers\Html;
+use backend\models\User;
 
 $this->title = 'Home';
 $this->params['breadcrumbs'][] = $this->title;
-$users = 0;
-$roles = 0;
-$users = backend\models\User::find()->count();
-$roles = \common\models\Role::find()->count();
 ?>
 <!-- Info boxes -->
-<div class="row">
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">System users</span>
-                <span class="info-box-number">
-                    <?= $users ?>
-                </span>
+<?php
+if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Collect commodity prices')) {
+    echo '<p>
+            Commodity price stats
+        </p>';
+    if (Yii::$app->getUser()->identity->district_id > 0) {
+        $Camps = backend\models\Camps::find()->where(['district_id' => Yii::$app->getUser()->identity->district_id])->count();
+        $markets = \backend\models\CommodityPriceCollection::find()
+                ->select(["market_id"])
+                ->where(["created_by" => Yii::$app->getUser()->identity->id])
+                ->distinct()
+                ->count();
+        $collected_commodity_prices = backend\models\CommodityPriceCollection::find()
+                ->where(["created_by" => Yii::$app->getUser()->identity->id])
+                ->andWhere(["year" => date("Y")])
+                ->count();
+        $collected_commodity_types = backend\models\CommodityPriceCollection::find()
+                ->select(["commodity_type_id"])
+                ->where(["created_by" => Yii::$app->getUser()->identity->id])
+                ->andWhere(["year" => date("Y")])
+                ->distinct()
+                ->count();
+        ?>
+        <div class="row">
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-suitcase"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Commodity prices-<?= date("Y") ?></span>
+                        <span class="info-box-number"><?= $collected_commodity_prices ?></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box mb-3">
-            <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-users"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">User roles</span>
-                <span class="info-box-number"><?= $roles ?></span>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-bacon"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Commodity types</span>
+                        <span class="info-box-number">
+                            <?= $collected_commodity_types ?>
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
 
-    <!-- fix for small devices only -->
-    <div class="clearfix hidden-md-up"></div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-cart-plus"></i></span>
 
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box mb-3">
-            <span class="info-box-icon bg-success elevation-1"><i class="fas fa-exclamation-circle"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Coming</span>
-                <span class="info-box-number"> Soon</span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Markets</span>
+                        <span class="info-box-number"><?= $markets ?></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box mb-3">
-            <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+            <!-- /.col -->
+            <!-- fix for small devices only -->
+            <div class="clearfix hidden-md-up"></div>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Coming</span>
-                <span class="info-box-number">Soon</span>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-map-marker"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Camps</span>
+                        <span class="info-box-number"> <?= $Camps ?></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
             </div>
-            <!-- /.info-box-content -->
+
         </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-</div>
+        <?php
+    } else {
+        $provinces = backend\models\Provinces::find()->count();
+        $Districts = backend\models\Districts::find()->count();
+        $Camps = backend\models\Camps::find()->count();
+        $markets = \backend\models\Markets::find()->count();
+        ?>
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-location-arrow"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Provinces</span>
+                        <span class="info-box-number">
+                            <?= $provinces ?>
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-map-pin"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Districts</span>
+                        <span class="info-box-number"><?= $Districts ?></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+
+            <!-- fix for small devices only -->
+            <div class="clearfix hidden-md-up"></div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-map-marker"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Camps</span>
+                        <span class="info-box-number"> <?= $Camps ?></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-cart-plus"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Markets</span>
+                        <span class="info-box-number"><?= $markets ?></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <?php
+    }
+}
+?>
 <!-- /.row -->
 <div class="site-about">
     <p>

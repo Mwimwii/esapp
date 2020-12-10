@@ -118,4 +118,9 @@ class Markets extends \yii\db\ActiveRecord {
         return $data->name;
     }
 
+    public static function getByDistrict($id) {
+        $list = self::find()->where(['district_id' => $id])->all();
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
 }

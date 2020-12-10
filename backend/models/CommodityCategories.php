@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "commodity_category".
@@ -17,34 +19,32 @@ use Yii;
  *
  * @property CommodityType[] $commodityTypes
  */
-class CommodityCategories extends \yii\db\ActiveRecord
-{
+class CommodityCategories extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'commodity_category';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['description'], 'string'],
-            [['created_at', 'updated_at'], 'required'],
+            [['name'], 'required'],
             [['created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 255],
+            ['name', 'unique', 'message' => 'Category name exist already!'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'name' => 'Name',
@@ -57,12 +57,42 @@ class CommodityCategories extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Gets query for [[CommodityTypes]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCommodityTypes()
-    {
+    public function getCommodityTypes() {
         return $this->hasMany(CommodityType::className(), ['category_id' => 'id']);
     }
+
+    public static function getNames() {
+        $names = self::find()->orderBy(['name' => SORT_ASC])->all();
+        return ArrayHelper::map($names, 'name', 'name');
+    }
+
+    public static function getList() {
+        $list = self::find()->orderBy(['name' => SORT_ASC])->all();
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    public static function getById($id) {
+        $data = self::find()->where(['id' => $id])->one();
+        return $data->name;
+    }
+
 }

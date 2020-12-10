@@ -88,11 +88,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'refreshGrid' => true,
                 ],
                 //'description:ntext',
-               // 'created_at',
+                // 'created_at',
                 //'updated_at',
                 //'created_by',
                 //'updated_by',
-                 ['class' => ActionColumn::className(),
+                ['class' => ActionColumn::className(),
                     'options' => ['style' => 'width:130px;'],
                     'template' => '{delete}',
                     'buttons' => [

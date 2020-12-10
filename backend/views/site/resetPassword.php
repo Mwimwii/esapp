@@ -10,8 +10,8 @@ use kartik\form\ActiveForm;
 $this->title = 'Password Reset';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="col-lg-9">
-    <div class="card card-success card-outline">
+<div class="col-lg-10">
+    <div class="card card-success">
         <div class="card card-header">
             <h5 class="card-title m-0" ><?= Html::encode($this->title) ?></h5>
         </div>

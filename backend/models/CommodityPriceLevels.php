@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "commodity_price_level".
@@ -17,34 +19,32 @@ use Yii;
  *
  * @property CommodityPriceCollection[] $commodityPriceCollections
  */
-class CommodityPriceLevels extends \yii\db\ActiveRecord
-{
+class CommodityPriceLevels extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'commodity_price_level';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['level', 'created_at', 'updated_at'], 'required'],
+            [['level'], 'required'],
             [['description'], 'string'],
             [['created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['level'], 'string', 'max' => 45],
+            ['level', 'unique', 'message' => 'Price level exist already!'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'level' => 'Level',
@@ -57,12 +57,42 @@ class CommodityPriceLevels extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Gets query for [[CommodityPriceCollections]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCommodityPriceCollections()
-    {
+    public function getCommodityPriceCollections() {
         return $this->hasMany(CommodityPriceCollection::className(), ['price_level_id' => 'id']);
     }
+
+    public static function getLevels() {
+        $levels = self::find()->orderBy(['level' => SORT_ASC])->all();
+        return ArrayHelper::map($levels, 'level', 'level');
+    }
+
+    public static function getList() {
+        $list = self::find()->orderBy(['level' => SORT_ASC])->all();
+        return ArrayHelper::map($list, 'id', 'level');
+    }
+
+    public static function getById($id) {
+        $data = self::find()->where(['id' => $id])->one();
+        return $data->level;
+    }
+
 }

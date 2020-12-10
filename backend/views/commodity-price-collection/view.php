@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\CommodityPriceLevels */
+/* @var $model backend\models\CommodityPriceCollection */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Commodity Price Levels', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Commodity Price Collections', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="commodity-price-levels-view">
+<div class="commodity-price-collection-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,7 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'level',
+            'district',
+            'market_id',
+            'commodity_type_id',
+            'price_level_id',
+            'unit_of_measure',
+            'price',
             'description:ntext',
             'created_at',
             'updated_at',

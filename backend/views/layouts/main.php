@@ -177,6 +177,62 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
+                            <!-------------------------------MARKET DATA STARTS--------------------------->
+                            <?php
+                            if (User::userIsAllowedTo("Collect commodity prices") ||
+                                    User::userIsAllowedTo("View commodity prices") //||
+                            ) {
+                                if (Yii::$app->controller->id == "commodity-price-collection" //||
+                                // Yii::$app->controller->id == "role"
+                                ) {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <p>
+                                    Market data
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                    if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "commodity-price-collection" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity prices</p>', ['/commodity-price-collection/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity prices</p>', ['/commodity-price-collection/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    /* if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
+                                      echo '   <li class="nav-item">';
+                                      if (Yii::$app->controller->id == "role" &&
+                                      (Yii::$app->controller->action->id == "index" ||
+                                      Yii::$app->controller->action->id == "view" ||
+                                      Yii::$app->controller->action->id == "create" ||
+                                      Yii::$app->controller->action->id == "update")) {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link active"]);
+                                      } else {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link"]);
+                                      }
+                                      echo '</li>';
+                                      } */
+                                    ?>
+
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------MARKET DATA ENDS------------------------->
 
                             <!-------------------------------CONFIGS STARTS--------------------------->
                             <?php
@@ -255,6 +311,26 @@ $session = Yii::$app->session;
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity categories</p>', ['commodity-categories/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity categories</p>', ['commodity-categories/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage commodity configs")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "commodity-types" &&
+                                                (Yii::$app->controller->action->id == "index")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity types</p>', ['commodity-types/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity types</p>', ['commodity-types/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage commodity configs")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "commodity-price-levels" &&
+                                                (Yii::$app->controller->action->id == "index")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity price levels</p>', ['commodity-price-levels/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity price levels</p>', ['commodity-price-levels/index'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
