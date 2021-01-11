@@ -99,15 +99,14 @@ $session = Yii::$app->session;
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <!-- Add icons to the links using the .nav-icon class
                                  with font-awesome or any other icon font library -->
-
                             <?php
                             echo ' <li class="nav-item">';
-                            if (Yii::$app->controller->id == "site") {
+                            if (Yii::$app->controller->id == "home") {
                                 echo Html::a(' <i class="fas fa-home nav-icon"></i> 
-                                    <p>Dashboard</p>', ['/site/home'], ["class" => "nav-link active"]);
+                                    <p>Dashboard</p>', ['/home/home'], ["class" => "nav-link active"]);
                             } else {
                                 echo Html::a(' <i class="nav-icon fas fa-home"></i> '
-                                        . '<p>Dashboard</p>', ['/site/home'], ["class" => "nav-link"]);
+                                        . '<p>Dashboard</p>', ['/home/home'], ["class" => "nav-link"]);
                             }
                             echo '</li>';
                             ?>
@@ -177,6 +176,89 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
+                            <!-------------------------------LKM DATA STARTS--------------------------->
+                            <?php
+                            if (User::userIsAllowedTo("Manage interview guide template questions") ||
+                                    User::userIsAllowedTo("View interview guide template") ||
+                                    User::userIsAllowedTo("Submit story of change")) {
+                                if (Yii::$app->controller->id == "interview-guide-template" ||
+                                        Yii::$app->controller->id == "storyofchange-category" ||
+                                        Yii::$app->controller->id == "storyofchange"
+                                ) {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                                <i class="nav-icon fas fa-book-open"></i>
+                                <p>
+                                    L&K Management
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                    if (User::userIsAllowedTo("Manage interview guide template questions") ||
+                                            User::userIsAllowedTo("View interview guide template")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "interview-guide-template" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Interview guide</p>', ['/interview-guide-template/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Interview guide</p>', ['/interview-guide-template/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage story of change categories")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "storyofchange-category" &&
+                                                (Yii::$app->controller->action->id == "index")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Story of change categories</p>', ['storyofchange-category/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Story of change categories</p>', ['storyofchange-category/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Submit story of change") //||
+                                            //User::userIsAllowedTo("View interview guide template")
+                                            ) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "storyofchange" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Stories of change</p>', ['/storyofchange/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Stories of change</p>', ['/storyofchange/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    /* if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
+                                      echo '   <li class="nav-item">';
+                                      if (Yii::$app->controller->id == "role" &&
+                                      (Yii::$app->controller->action->id == "index" ||
+                                      Yii::$app->controller->action->id == "view" ||
+                                      Yii::$app->controller->action->id == "create" ||
+                                      Yii::$app->controller->action->id == "update")) {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link active"]);
+                                      } else {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link"]);
+                                      }
+                                      echo '</li>';
+                                      } */
+                                    ?>
+
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------LKM ENDS------------------------->
                             <!-------------------------------MARKET DATA STARTS--------------------------->
                             <?php
                             if (User::userIsAllowedTo("Collect commodity prices") ||
@@ -192,7 +274,7 @@ $session = Yii::$app->session;
                                     . '<a href="#" class="nav-link">';
                                 }
                                 ?>
-                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <i class="nav-icon fas fa-shopping-basket"></i>
                                 <p>
                                     Market data
                                     <i class="fas fa-angle-left right"></i>
@@ -378,7 +460,7 @@ $session = Yii::$app->session;
                                     <?=
                                     Breadcrumbs::widget([
                                         'homeLink' => ['label' => 'Home',
-                                            'url' => Yii::$app->getHomeUrl() . 'site/home'],
+                                            'url' => Yii::$app->getHomeUrl() . 'home/home'],
                                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                                     ])
                                     ?>

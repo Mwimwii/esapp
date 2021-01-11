@@ -95,7 +95,7 @@ class CommodityTypesController extends Controller {
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -129,7 +129,7 @@ class CommodityTypesController extends Controller {
             }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -158,7 +158,7 @@ class CommodityTypesController extends Controller {
             return $this->redirect(['index']);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 

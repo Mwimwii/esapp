@@ -25,7 +25,7 @@ class SiteController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'home', 'change-password'],
+                'only' => ['logout', 'change-password'],
                 'rules' => [
                     [
                         'actions' => ['login', 'index'],
@@ -33,7 +33,7 @@ class SiteController extends Controller {
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'home', 'change-password'],
+                        'actions' => ['logout', 'change-password'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -96,7 +96,7 @@ class SiteController extends Controller {
             $session->set('user', $user->getFullName());
             $session->set('rights', $rights);
             $session->set('created_at', $user->created_at);
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
         $model->password = '';
         return $this->render('login', [
@@ -104,11 +104,6 @@ class SiteController extends Controller {
         ]);
     }
 
-    public function actionHome() {
-        $this->layout = 'main';
-        return $this->render('home', [
-        ]);
-    }
 
     public function actionChangePassword() {
         $model = new \backend\models\ResetPasswordForm_1();

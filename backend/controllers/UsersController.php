@@ -84,7 +84,7 @@ class UsersController extends Controller {
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -164,7 +164,7 @@ class UsersController extends Controller {
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -230,7 +230,7 @@ class UsersController extends Controller {
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -290,7 +290,7 @@ class UsersController extends Controller {
             return $this->redirect(['index']);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -313,7 +313,7 @@ class UsersController extends Controller {
             return $this->redirect(['view', 'id' => $id]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 

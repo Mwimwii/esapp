@@ -3,20 +3,20 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Camps;
-use backend\models\CampsSearch;
+use backend\models\LkmStoryofchangeCategory;
+use backend\models\LkmStoryofchangeCategorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use yii\helpers\Json;
 use backend\models\AuditTrail;
 use backend\models\User;
+use yii\filters\AccessControl;
 
 /**
- * CampsController implements the CRUD actions for Camps model.
+ * StoryofchangeCategoryController implements the CRUD actions for LkmStoryofchangeCategory model.
  */
-class CampsController extends Controller {
+class StoryofchangeCategoryController extends Controller {
 
     /**
      * {@inheritdoc}
@@ -43,28 +43,34 @@ class CampsController extends Controller {
         ];
     }
 
-     /**
-     * Lists all Camps models.
+    /**
+     * Lists all LkmStoryofchangeCategory models.
      * @return mixed
      */
     public function actionIndex() {
-        if (User::userIsAllowedTo('Manage camps')) {
-            $model = new Camps();
-            $searchModel = new CampsSearch();
+        if (User::userIsAllowedTo('Manage story of change categories')) {
+            $model = new LkmStoryofchangeCategory();
+            $searchModel = new LkmStoryofchangeCategorySearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             if (Yii::$app->request->post('hasEditable')) {
                 $Id = Yii::$app->request->post('editableKey');
-                $model = Camps::findOne($Id);
+                $model = LkmStoryofchangeCategory::findOne($Id);
                 $out = Json::encode(['output' => '', 'message' => '']);
-                $posted = current($_POST['Camps']);
-                $post = ['Camps' => $posted];
+                $posted = current($_POST['LkmStoryofchangeCategory']);
+                $post = ['LkmStoryofchangeCategory' => $posted];
                 $old = $model->name;
+                $old_desc = $model->description;
 
                 if ($model->load($post)) {
-                    if ($old != $model->name) {
+                    if ($old != $model->name || $old_desc != $model->description) {
                         $audit = new AuditTrail();
                         $audit->user = Yii::$app->user->id;
-                        $audit->action = "Updated camp name from $old to " . $model->name;
+                        if ($old_desc != $model->description) {
+                            $audit->action = "Updated story of change category description to::" . $model->description;
+                        }
+                        if ($old != $model->name) {
+                            $audit->action = "Updated story of change category name from $old to " . $model->name;
+                        }
                         $audit->ip_address = Yii::$app->request->getUserIP();
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
@@ -93,32 +99,43 @@ class CampsController extends Controller {
         }
     }
 
-  /**
-     * Creates a new Province model.
+    /**
+     * Displays a single LkmStoryofchangeCategory model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    /*  public function actionView($id) {
+      return $this->render('view', [
+      'model' => $this->findModel($id),
+      ]);
+      } */
+
+    /**
+     * Creates a new LkmStoryofchangeCategory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate() {
-        if (User::userIsAllowedTo('Manage camps')) {
-            $model = new Camps();
+        if (User::userIsAllowedTo('Manage story of change categories')) {
+            $model = new LkmStoryofchangeCategory();
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
             }
-
             if ($model->load(Yii::$app->request->post())) {
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
                 if ($model->save()) {
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
-                    $audit->action = "Added camp " . $model->name;
+                    $audit->action = "Added story of change category: " . $model->name;
                     $audit->ip_address = Yii::$app->request->getUserIP();
                     $audit->user_agent = Yii::$app->request->getUserAgent();
                     $audit->save();
-                    Yii::$app->session->setFlash('success', 'Camp ' . $model->name . ' was successfully added.');
+                    Yii::$app->session->setFlash('success', 'Story of change category: ' . $model->name . ' was successfully added.');
                 } else {
-                    Yii::$app->session->setFlash('error', 'Error occured while adding camp ' . $model->name);
+                    Yii::$app->session->setFlash('error', 'Error occured while adding story of change category: ' . $model->name);
                 }
                 return $this->redirect(['index']);
             }
@@ -129,28 +146,46 @@ class CampsController extends Controller {
     }
 
     /**
-     * Deletes an existing Camps model.
+     * Updates an existing LkmStoryofchangeCategory model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    /* public function actionUpdate($id) {
+      $model = $this->findModel($id);
+
+      if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      return $this->redirect(['view', 'id' => $model->id]);
+      }
+
+      return $this->render('update', [
+      'model' => $model,
+      ]);
+      } */
+
+    /**
+     * Deletes an existing LkmStoryofchangeCategory model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id) {
-        if (User::userIsAllowedTo('Remove camps')) {
+        if (User::userIsAllowedTo('Manage story of change categories')) {
             $model = $this->findModel($id);
             $name = $model->name;
             if ($model->delete()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Removed camp $name from the system.";
+                $audit->action = "Removed story of change category: $name from the system.";
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
-                Yii::$app->session->setFlash('success', "Camp $name was successfully removed.");
+                Yii::$app->session->setFlash('success', "Story of change category: $name was successfully removed.");
             } else {
-                Yii::$app->session->setFlash('error', "Camp $name could not be removed. Please try again!");
+                Yii::$app->session->setFlash('error', "Story of change category: $name could not be removed. Please try again!");
             }
-
             return $this->redirect(['index']);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
@@ -159,60 +194,18 @@ class CampsController extends Controller {
     }
 
     /**
-     * Finds the Camps model based on its primary key value.
+     * Finds the LkmStoryofchangeCategory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Camps the loaded model
+     * @return LkmStoryofchangeCategory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id) {
-        if (($model = Camps::findOne($id)) !== null) {
+        if (($model = LkmStoryofchangeCategory::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionDistrict() {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $out = [];
-        if (isset($_POST['depdrop_parents'])) {
-            $parents = $_POST['depdrop_parents'];
-            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
-            //   $parents = $_POST['depdrop_all_params']['parent_id'];
-            $selected_id = $_POST['depdrop_params'];
-            if ($parents != null) {
-                $prov_id = $parents[0];
-                $out = \backend\models\Districts::find()
-                        ->select(['id', 'name'])
-                        ->where(['province_id' => $prov_id])
-                        ->asArray()
-                        ->all();
-
-                return ['output' => $out, 'selected' => $selected_id[0]];
-            }
-        }
-        return ['output' => '', 'selected' => ''];
-    }
-
-    public function actionCamp() {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $out = [];
-        if (isset($_POST['depdrop_parents'])) {
-            $parents = $_POST['depdrop_parents'];
-            $selected_id = $_POST['depdrop_all_params']['selected_id3'];
-            if ($parents != null) {
-                $dist_id = $parents[0];
-                $out = \backend\models\Camps::find()
-                        ->select(['id', 'name'])
-                        ->where(['district_id' => $dist_id])
-                        ->asArray()
-                        ->all();
-
-                return ['output' => $out, 'selected' => $selected_id];
-            }
-        }
-        return ['output' => '', 'selected' => ''];
     }
 
 }

@@ -31,15 +31,15 @@ $months = [
     <div class="card-body" style="overflow: auto;">
         <p>
             <?php
-            if (User::userIsAllowedTo('Remove commodity price')) {
+            if (User::userIsAllowedTo('Collect commodity prices')) {
                 if (empty(\backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id))) {
-                    echo "<div class='alert alert-warning'>The system have no markets for your district:<span class='badge badge-success'>"
+                    echo "<div class='alert alert-warning'>The system has no markets for your district:<span class='badge badge-success'>"
                     . "" . \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name . "</span>"
                     . ". Hence you cannot add commodity prices</div>";
                 } elseif (empty(backend\models\CommodityTypes::getList())) {
-                    echo "<div class='alert alert-warning'>The system have no commodity types. Hence you cannot add commodity prices</div>";
+                    echo "<div class='alert alert-warning'>The system has no commodity types. Hence you cannot add commodity prices</div>";
                 } elseif (empty(backend\models\CommodityPriceLevels::getList())) {
-                    echo "<div class='alert alert-warning'>The system have no commodity price levels. Hence you cannot add commodity prices</div>";
+                    echo "<div class='alert alert-warning'>The system has no commodity price levels. Hence you cannot add commodity prices</div>";
                 } else {
                     echo Html::a('Add commodity price', ['create'], ['class' => 'float-right btn btn-success btn-sm']);
                 }
@@ -52,16 +52,16 @@ $months = [
         <?php
         $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
-            /*[
-                'label' => 'Province',
-                'visible' =>false,
-                'filterType' => GridView::FILTER_SELECT2,
-                'value' => function ($model) {
-                    $province_id = backend\models\Districts::findOne($model->district);
-                    $name = backend\models\Provinces::findOne($province_id)->name;
-                    return $name;
-                },
-            ],*/
+            /* [
+              'label' => 'Province',
+              'visible' =>false,
+              'filterType' => GridView::FILTER_SELECT2,
+              'value' => function ($model) {
+              $province_id = backend\models\Districts::findOne($model->district);
+              $name = backend\models\Provinces::findOne($province_id)->name;
+              return $name;
+              },
+              ], */
             [
                 'class' => EditableColumn::className(),
                 'attribute' => 'market_id',
@@ -233,7 +233,7 @@ $months = [
                 'template' => '{delete}',
                 'buttons' => [
                     'delete' => function ($url, $model) {
-                        if (User::userIsAllowedTo('Remove markets')) {
+                        if (User::userIsAllowedTo('Remove commodity price')) {
                             return Html::a(
                                             '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                         'title' => 'Remove commodity price',
@@ -254,28 +254,84 @@ $months = [
         ];
 
 
-        if ($dataProvider->getCount() > 0) {
-            echo ExportMenu::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumns,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Export All',
-                    'class' => 'btn btn-default'
-                ],
-                'filename' => 'commodity_prices' . date("YmdHis")
-            ]);
-        }
-        ?>
-        <?=
-        GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
-            'condensed' => true,
-            'responsive' => true,
-            'hover' => true,
-            'columns' => $gridColumns
+        /* if ($dataProvider->getCount() > 0) {
+          echo ExportMenu::widget([
+          'dataProvider' => $dataProvider,
+          'columns' => $gridColumns,
+          'columnSelectorOptions' => [
+          'label' => 'Cols...',
+          ],
+          'fontAwesome' => true,
+          'dropdownOptions' => [
+          'label' => 'Export All',
+          'class' => 'btn btn-default'
+          ],
+          'filename' => 'commodity_prices' . date("YmdHis")
+          ]);
+          } */
+        $fullExportMenu = ExportMenu::widget([
+                    'dataProvider' => $dataProvider,
+                    'columns' => $gridColumns,
+                    'target' => ExportMenu::TARGET_BLANK,
+                    'pjaxContainerId' => 'kv-pjax-container',
+                    'exportContainer' => [
+                        'class' => 'btn-group mr-2'
+                    ],
+                    'dropdownOptions' => [
+                        'label' => 'Full',
+                        'class' => 'btn btn-outline-secondary',
+                        'itemsBefore' => [
+                            '<div class="dropdown-header">Export All Data</div>',
+                        ],
+                    ],
+                    'filename' => 'commodity_prices' . date("YmdHis")
         ]);
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
+            'panel' => [
+                'type' => GridView::TYPE_PRIMARY,
+                'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
+            ],
+            // set a label for default menu
+            'export' => [
+                'label' => 'Page',
+            ],
+            'exportContainer' => [
+                'class' => 'btn-group mr-2'
+            ],
+            // your toolbar can include the additional full export menu
+            'toolbar' => [
+                '{export}',
+                $fullExportMenu,
+                [
+                    'content' =>
+                    Html::button('<i class="fas fa-plus"></i>', [
+                        'class' => 'btn btn-success',
+                        'title' => Yii::t('kvgrid', 'Add Book'),
+                        'onclick' => 'alert("This will launch the book creation form.\n\nDisabled for this demo!");'
+                    ]) . ' ' .
+                    Html::a('<i class="fas fa-redo"></i>', ['grid-demo'], [
+                        'class' => 'btn btn-outline-secondary',
+                        'title' => Yii::t('kvgrid', 'Reset Grid'),
+                        'data-pjax' => 0,
+                    ]),
+                    'options' => ['class' => 'btn-group']
+                ],
+            ]
+        ]);
+        ?>
+        <?php
+        /* GridView::widget([
+          'dataProvider' => $dataProvider,
+          'filterModel' => $searchModel,
+          'condensed' => true,
+          'responsive' => true,
+          'hover' => true,
+          'columns' => $gridColumns
+          ]); */
         ?>
     </div>
 </div>

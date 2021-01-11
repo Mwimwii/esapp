@@ -102,31 +102,64 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
             ],
         ];
-        if ($dataProvider->getCount() > 0) {
-            echo
-            ExportMenu::widget([
+        ?>
+        <?php
+        if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
+
+            $fullExportMenu = ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns,
+                        'columnSelectorOptions' => [
+                            'label' => 'Cols...',
+                        ],
+                        'batchSize' => 200,
+                        'exportConfig' => [
+                            ExportMenu::FORMAT_TEXT => false,
+                            ExportMenu::FORMAT_HTML => false,
+                            ExportMenu::FORMAT_EXCEL => false,
+                            ExportMenu::FORMAT_PDF => false,
+                            ExportMenu::FORMAT_CSV => false,
+                        ],
+                        'target' => ExportMenu::TARGET_BLANK,
+                        'pjaxContainerId' => 'kv-pjax-container',
+                        'exportContainer' => [
+                            'class' => 'btn-group mr-2'
+                        ],
+                        'filename' => 'districts' . date("YmdHis"),
+                        'dropdownOptions' => [
+                            'label' => 'Export to excel',
+                            'class' => 'btn btn-outline-secondary',
+                            'itemsBefore' => [
+                                '<div class="dropdown-header">Export All Data</div>',
+                            ],
+                        ],
+            ]);
+            echo GridView::widget([
                 'dataProvider' => $dataProvider,
                 'columns' => $gridColumns,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Export All',
-                    'class' => 'btn btn-default'
+                'condensed' => true,
+                'responsive' => true,
+                'hover' => true,
+                // 'pjax' => true,
+                'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
                 ],
-                'filename' => 'districts' . date("YmdHis")
+                // set a label for default menu
+                'export' => false,
+                'exportContainer' => [
+                    'class' => 'btn-group mr-2'
+                ],
+                // your toolbar can include the additional full export menu
+                'toolbar' => [
+                    '{export}',
+                    $fullExportMenu,
+                ]
             ]);
+        } else {
+            echo '<p>There are currently no districts in the system!</p>';
         }
-        ?>
-        <?=
-        GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
-            //'bordered' => true,
-            //'striped' => true,
-            'condensed' => true,
-            'responsive' => true,
-            'hover' => true,
-            'columns' => $gridColumns
-        ]);
         ?>
 
 

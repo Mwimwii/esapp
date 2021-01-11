@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => \backend\models\Provinces::getProvinceList(),
                     'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
                     'value' => function ($model) {
-                        $province_id = backend\models\Districts::findOne($model->district_id);
+                        $province_id = backend\models\Districts::findOne($model->district_id)->province_id;
                         $name = backend\models\Provinces::findOne($province_id)->name;
                         return $name;
                     },
@@ -117,28 +117,62 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ],
             ];
-            if ($dataProvider->getCount() > 0) {
-                echo ExportMenu::widget([
-                    'dataProvider' => $dataProvider,
-                    'columns' => $gridColumns,
-                    'fontAwesome' => true,
-                    'dropdownOptions' => [
-                        'label' => 'Export All',
-                        'class' => 'btn btn-default'
-                    ],
-                    'filename' => 'camps' . date("YmdHis")
-                ]);
-            }
-            ?>
-            <?=
-            GridView::widget([
+             if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
+
+            $fullExportMenu = ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns,
+                        'columnSelectorOptions' => [
+                            'label' => 'Cols...',
+                        ],
+                        'batchSize' => 200,
+                        'exportConfig' => [
+                            ExportMenu::FORMAT_TEXT => false,
+                            ExportMenu::FORMAT_HTML => false,
+                            ExportMenu::FORMAT_EXCEL => false,
+                            ExportMenu::FORMAT_PDF => false,
+                            ExportMenu::FORMAT_CSV => false,
+                        ],
+                        'target' => ExportMenu::TARGET_BLANK,
+                        'pjaxContainerId' => 'kv-pjax-container',
+                        'exportContainer' => [
+                            'class' => 'btn-group mr-2'
+                        ],
+                        'filename' => 'markets' . date("YmdHis"),
+                        'dropdownOptions' => [
+                            'label' => 'Export to excel',
+                            'class' => 'btn btn-outline-secondary',
+                            'itemsBefore' => [
+                                '<div class="dropdown-header">Export All Data</div>',
+                            ],
+                        ],
+            ]);
+            echo GridView::widget([
                 'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
+                'columns' => $gridColumns,
                 'condensed' => true,
                 'responsive' => true,
                 'hover' => true,
-                'columns' => $gridColumns
+                // 'pjax' => true,
+                'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
+                ],
+                // set a label for default menu
+                'export' => false,
+                'exportContainer' => [
+                    'class' => 'btn-group mr-2'
+                ],
+                // your toolbar can include the additional full export menu
+                'toolbar' => [
+                    '{export}',
+                    $fullExportMenu,
+                ]
             ]);
+        } else {
+            echo '<p>There are currently no markets in the system!</p>';
+        }
             ?>
     </div>
 </div>

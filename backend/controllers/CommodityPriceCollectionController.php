@@ -52,11 +52,12 @@ class CommodityPriceCollectionController extends Controller {
         if (User::userIsAllowedTo('Collect commodity prices') || User::userIsAllowedTo("View commodity prices")) {
             $model = new CommodityPriceCollection();
             $searchModel = new CommodityPriceCollectionSearch();
-            $prices_dependency = new DbDependency();
+           // $prices_dependency = new DbDependency();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $dataProvider->pagination = ['pageSize' => 10];
             if (!empty(Yii::$app->request->queryParams['CommodityPriceCollectionSearch']['province_id'])) {
                 $district_ids = [];
-                $districts = \backend\models\Districts::find()->cache(600,$prices_dependency)->where(['province_id' => Yii::$app->request->queryParams['CommodityPriceCollectionSearch']['province_id']])->all();
+                $districts = \backend\models\Districts::find()->where(['province_id' => Yii::$app->request->queryParams['CommodityPriceCollectionSearch']['province_id']])->all();
                 if (!empty($districts)) {
                     foreach ($districts as $id) {
                         array_push($district_ids, $id['id']);
@@ -112,7 +113,7 @@ class CommodityPriceCollectionController extends Controller {
             }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -189,7 +190,7 @@ class CommodityPriceCollectionController extends Controller {
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
@@ -236,7 +237,7 @@ class CommodityPriceCollectionController extends Controller {
             return $this->redirect(['index']);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
     }
 
