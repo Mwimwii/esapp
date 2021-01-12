@@ -36,6 +36,11 @@ use yii\helpers\ArrayHelper;
  */
 class Storyofchange extends \yii\db\ActiveRecord {
 
+    const _status_pending_review_submission = 0;
+    const _accepted = 1;
+    const _submitted_for_review = 2;
+    const _resent_back = 3;
+
     /**
      * {@inheritdoc}
      */
@@ -48,8 +53,9 @@ class Storyofchange extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['category_id', 'title','interviewee_names', 'interviewer_names','date_interviewed'], 'required'],
-            [['category_id', 'status', 'paio_review_status', 'ikmo_review_status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['category_id', 'title', 'interviewee_names', 'interviewer_names', 'date_interviewed', 'status'], 'required'],
+            [['category_id', 'status', 'paio_review_status', 'ikmo_review_status', 'created_at',
+            'updated_at', 'created_by', 'updated_by', 'camp_id', 'district_id', 'province_id'], 'integer'],
             [['title', 'interviewee_names', 'interviewer_names', 'introduction', 'challenge', 'actions', 'results', 'conclusions', 'sequel', 'paio_comments', 'ikmo_comments'], 'string'],
             [['date_interviewed'], 'safe'],
             ['title', 'unique', 'message' => 'Story of change title exist already!'],
@@ -83,6 +89,9 @@ class Storyofchange extends \yii\db\ActiveRecord {
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
+            'camp_id' => "Camp",
+            'district_id' => "District",
+            'province_id' => "Province"
         ];
     }
 
@@ -117,6 +126,17 @@ class Storyofchange extends \yii\db\ActiveRecord {
      */
     public function getLkmStoryofchangeMedia() {
         return $this->hasMany(LkmStoryofchangeMedia::className(), ['story_id' => 'id']);
+    }
+
+    public static function sendEmail($msg, $subject, $recepientEmail) {
+        return Yii::$app->mailer
+                        ->compose(
+                                ['html' => 'SendMail-html'], ['msg' => $msg]
+                        )
+                        ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->params['supportEmail']])
+                        ->setTo($recepientEmail)
+                        ->setSubject($subject)
+                        ->send();
     }
 
 }

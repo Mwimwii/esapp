@@ -5,87 +5,69 @@ use yii\widgets\DetailView;
 use kartik\grid\GridView;
 use backend\models\User;
 use backend\models\Storyofchange;
+use kartik\form\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Storyofchange */
 
 $this->title = "View story ";
-$this->params['breadcrumbs'][] = ['label' => 'My Stories of change', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Stories of change', 'url' => ['stories']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
         <div class="card-header">
-            <div class="card-title">
-                <?php
-                if ($model->status == 0 || $model->status == 3) {
-                    echo Html::a('<i class="fas fa-trash fa-2x"></i>', ['delete', 'id' => $model->id], [
-                        'title' => 'Remove Story',
-                        'data-placement' => 'top',
-                        'style' => "padding:10px;",
-                        'data-toggle' => 'tooltip',
-                        'data' => [
-                            'confirm' => 'Are you sure you want to remove story: ' . $model->title . '?',
-                            'method' => 'post',
-                        ],
-                    ]);
-                }
-                if ($model->status == 0 || $model->status == 3) {
-                    echo Html::a(
-                            '<span class="fa fa-edit fa-2x"></span>', ['check-list', 'id' => $model->id], [
-                        'title' => 'Edit Story',
-                        'data-toggle' => 'tooltip',
-                        'data-placement' => 'top',
-                        'data-pjax' => '0',
-                        'style' => "padding:30px;",
-                        'class' => 'bt btn-lg'
-                            ]
-                    );
+            <?php
+            if ($model->status == Storyofchange::_submitted_for_review) {
+                ?>
+                <h5>Instructions</h5>
+                <ol>
+                    <li>
+                        Review this story and take action to either accept the story or send it back for more information using the form on the right below
+                    </li>
+                    <li>Fields marked with <i style="color:red;">*</i> are required
+                    </li>
+                </ol>
+            <?php } ?>
+        </div>
+        &nbsp;
+        <div class="row">
+            <?php
+            if ($model->status == Storyofchange::_submitted_for_review) {
+                ?>
+                <div class="col-lg-8">
+                    <?php
+                } else {
+                    echo '<div class="col-lg-12">';
                 }
                 ?>
-            </div>
-            <div class="card-tools">
-                <?php
-                if ($model->status == 0 || $model->status == 3) {
-                    if (!empty($model->sequel) && !empty($model->conclusions) &&
-                            !empty($model->results) && !empty($model->actions) && !empty($model->challenge) &&
-                            !empty($model->introduction)) {
-                        ?>
-                        <?=
-                        Html::a('<i class="fas fa-save"></i> Submit for review',
-                                ['storyofchange/submit-story', 'id' => $model->id],
-                                [
-                                    'class' => 'btn btn-success btn-xs',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    'data' => [
-                                        'confirm' => 'Are you sure you want to submit story:"' . $model->title . '" for review?'
-                                        . '<br>You will not be able to make changes to the story once submitted',
-                                        'method' => 'post',
-                                    ],
-                        ]);
-                        ?>
-                        <?php
-                    }
-                }
-                //This is a hack, just to use pjax for the delete confirm button
-                $query = backend\models\User::find()->where(['id' => '-2']);
-                $dataProvider = new \yii\data\ActiveDataProvider([
-                    'query' => $query,
-                ]);
-                GridView::widget([
-                    'dataProvider' => $dataProvider,
-                ]);
-                ?> 
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
                 <?=
                 DetailView::widget([
                     'model' => $model,
                     'attributes' => [
+                        [
+                            'attribute' => 'province_id',
+                            'value' => function ($model) {
+                                //$province_id = backend\models\Districts::findOne($model->district_id)->province_id;
+                                $name = !empty($model->province_id) ? backend\models\Provinces::findOne($model->province_id)->name : "";
+                                return $name;
+                            },
+                        ],
+                        [
+                            'attribute' => 'district_id',
+                            'value' => function ($model) {
+                                $name = !empty($model->district_id) ? backend\models\Districts::findOne($model->district_id)->name : "";
+                                return $name;
+                            },
+                        ],
+                        [
+                            'attribute' => 'camp_id',
+                            'value' => function ($model) {
+                                $name = !empty($model->camp_id) ? backend\models\Camps::findOne($model->camp_id)->name : "";
+                                return $name;
+                            },
+                        ],
                         [
                             'attribute' => 'title',
                         ],
@@ -105,29 +87,42 @@ $this->params['breadcrumbs'][] = $this->title;
                                 if ($model->status == Storyofchange::_accepted) {
                                     $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-success'> "
                                             . "<i class='fa fa-check'></i> Accepted</p><br>";
-                                } elseif ($model->status == Storyofchange::_submitted_for_review) {
-                                    $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
-                                            . "<i class='fa fa-times'></i> Submitted for review</p><br>";
-                                } elseif ($model->status == Storyofchange::_resent_back) {
-                                    $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-warning'> "
-                                            . "<i class='fa fa-times'></i> Resent back. Requires changes</p><br>";
                                 } else {
-                                    $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-danger'> "
-                                            . "<i class='fa fa-times'></i> Pending submision for review</p><br>";
+                                    $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
+                                            . "<i class='fa fa-hourglass-half'></i> Pending IKMO review</p><br>";
                                 }
                                 return $str;
                             },
-                        ],
-                        [
-                            'label' => 'IKM officer comments',
-                            'attribute' => 'ikmo_comments',
-                            'visible' => $model->status === Storyofchange::_resent_back || $model->status === Storyofchange::_accepted ? true : false
                         ],
                     ],
                 ])
                 ?>
             </div>
-
+            <?php
+            if ($model->status == Storyofchange::_submitted_for_review) {
+                ?>
+                <div class="col-lg-4">
+                    <p>Take action by filling in the form below</p>
+                    <?php
+                    $model1 = new Storyofchange();
+                    $form = ActiveForm::begin(['action' => 'review-story-action?id=' . $model->id,])
+                    ?>
+                    <?=
+                            $form->field($model1, 'status')
+                            ->dropDownList(
+                                    [Storyofchange::_accepted => "Accept Story", Storyofchange::_resent_back => "Send back for more information"], ['custom' => true, 'prompt' => 'Select Action', 'required' => true]
+                    );
+                    ?>
+                    <?=
+                    $form->field($model1, 'ikmo_comments')->textarea(['rows' => 4, 'placeholder' =>
+                        'Enter any comments'])->label("Comments ");
+                    ?>
+                    <div class="form-group">
+                        <?= Html::submitButton('Submit action', ['class' => 'btn btn-success btn-sm']) ?>
+                        <?php ActiveForm::end() ?>
+                    </div>
+                </div>
+            <?php } ?>
             <div class="col-lg-12">
                 <div class="card card-success card-outline card-tabs">
                     <div class="card-header p-0 pt-1 border-bottom-0">

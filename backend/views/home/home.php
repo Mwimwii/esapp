@@ -3,6 +3,8 @@
 
 use yii\helpers\Html;
 use backend\models\User;
+use kartik\grid\GridView;
+use yii\data\ActiveDataProvider;
 
 $this->title = 'Home';
 $this->params['breadcrumbs'][] = $this->title;
@@ -162,10 +164,89 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
 }
 ?>
 <!-- /.row -->
-<div class="site-about">
-    <p>
-        This is the home page. You may modify the following file to customize its content:
-    </p>
-    <code><?= __FILE__ ?></code>
+<div class="card card-success card-outline">
+    <div class="card-header">
+        <h3 class="card-title">
+            Your Tasks
+        </h3>
+    </div>
+    <div class="card-body">
+        <?php
+        $count = 0;
+        $_case_study_model = backend\models\Storyofchange::find()
+                ->where(['status' => 2]);
+        if (!empty($_case_study_model)) {
+            $dataProvider = new ActiveDataProvider([
+                'query' => $_case_study_model,
+            ]);
+            if ($dataProvider->count > 0) {
+                $count++;
+            }
+        }
+
+        if ($count > 0) {
+            if ($dataProvider->count > 0) {
+                if (User::userIsAllowedTo('Review Story of change')) {
+                    ?>
+                    <h6>Review Case study/Success stories</h6>
+                    <?=
+                    GridView::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            //'id',
+                            [
+                                'attribute' => 'province_id',
+                                'filter' => false,
+                                'value' => function ($model) {
+                                    //$province_id = backend\models\Districts::findOne($model->district_id)->province_id;
+                                    $name = !empty($model->province_id) ? backend\models\Provinces::findOne($model->province_id)->name : "";
+                                    return $name;
+                                },
+                            ],
+                            [
+                                'attribute' => 'district_id',
+                                'filter' => false,
+                                'value' => function ($model) {
+                                    $name = !empty($model->district_id) ? backend\models\Districts::findOne($model->district_id)->name : "";
+                                    return $name;
+                                },
+                            ],
+                            [
+                                'attribute' => 'category_id',
+                                'filter' => false,
+                                'format' => 'raw',
+                                'value' => function($model) {
+                                    return !empty($model->category_id) ? backend\models\LkmStoryofchangeCategory::findOne($model->category_id)->name : "";
+                                }
+                            ],
+                            [
+                                'attribute' => 'title',
+                                'filter' => false,
+                                'format' => 'raw',
+                            ],
+                            [
+                                'label' => 'Action',
+                                'filter' => false,
+                                'format' => 'raw',
+                                'value' => function($row) {
+                                    return Html::a("View story", ["storyofchange/story-view", 'id' => $row->id]);
+                                }
+                            ],
+                        ],
+                    ]);
+                    ?>
+                    <hr class="dotted short">
+                    <?php
+                }
+            }
+        }
+
+        if ($count === 0) {
+            echo "<p>You have no tasks!</p>";
+        }
+        ?>
+    </div>
 </div>
+
 

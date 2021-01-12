@@ -8,6 +8,7 @@ use kartik\form\ActiveForm;
 use yii\grid\ActionColumn;
 use backend\models\User;
 use kartik\popover\PopoverX;
+use backend\models\Storyofchange;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\StoryofchangeSearch */
@@ -23,7 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <li>Click <span class="badge badge-success">Add Story of change</span> button below to 
                 add a new story of change
             </li>
-            <li>To edit/view full details of a Story, click the 
+            <li>You can only edit stories which you have not Submitted for review or those which have been Resent back for changes
+            </li>
+            <li>To edit full details of a Story, click the 
+                <span class="badge badge-primary"><span class="fa fa-edit fa-2x"></span></span> 
+                icon in the table below
+            </li>
+            <li>To view full details of a Story, click the 
                 <span class="badge badge-primary"><span class="fa fa-eye fa-2x"></span></span> 
                 icon in the table below
             </li>
@@ -36,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= Html::a('<i class="fa fa-plus"></i> Add Story of change', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
         </p>
 
-        <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+        <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
 
         <?=
         GridView::widget([
@@ -79,18 +86,23 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filterWidgetOptions' => [
                         'pluginOptions' => ['allowClear' => true],
                     ],
-                    'filter' => [0 => 'Pending submision for review', 1 => 'Accepted', 2 => 'Submitted for review', 3 => 'Resent back. Requires changes'],
+                    'filter' => [
+                        Storyofchange::_status_pending_review_submission => 'Pending submision for review',
+                        Storyofchange::_accepted => 'Accepted',
+                        Storyofchange::_submitted_for_review => 'Submitted for review',
+                        Storyofchange::_resent_back => 'Resent back. Requires changes'
+                    ],
                     'filterInputOptions' => ['prompt' => 'Filter by Status', 'class' => 'form-control', 'id' => null],
                     'format' => 'raw',
                     'value' => function($model) {
                         $str = "";
-                        if ($model->status == 1) {
+                        if ($model->status == Storyofchange::_accepted) {
                             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-success'> "
                                     . "<i class='fa fa-check'></i> Accepted</p><br>";
-                        } elseif ($model->status == 2) {
+                        } elseif ($model->status == Storyofchange::_submitted_for_review) {
                             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
                                     . "<i class='fa fa-times'></i> Submitted for review</p><br>";
-                        } elseif ($model->status == 3) {
+                        } elseif ($model->status == Storyofchange::_resent_back) {
                             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-warning'> "
                                     . "<i class='fa fa-times'></i> Resent back. Requires changes</p><br>";
                         } else {
@@ -109,20 +121,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'created_by',
                 //'updated_by',
                 ['class' => ActionColumn::className(),
-                    'options' => ['style' => 'width:130px;'],
-                    'template' => '{view}{delete}',
+                    'options' => ['style' => 'width:150px;'],
+                    'template' => '{view}{update}{delete}',
                     'buttons' => [
                         'view' => function ($url, $model) {
                             return Html::a(
                                             '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
-                                        'title' => 'Edit/View story',
+                                        'title' => 'View story details',
                                         'data-toggle' => 'tooltip',
                                         'data-placement' => 'top',
                                         'data-pjax' => '0',
-                                        'style' => "padding:5px;",
+                                        'style' => "padding:10px;",
                                         'class' => 'bt btn-lg'
                                             ]
                             );
+                        },
+                        'update' => function ($url, $model) {
+                            if ($model->status == 0 || $model->status == 3) {
+                                return Html::a(
+                                                '<span class="fa fa-edit"></span>', ['check-list', 'id' => $model->id], [
+                                            'title' => 'Edit Story',
+                                            'data-toggle' => 'tooltip',
+                                            'data-placement' => 'top',
+                                            'data-pjax' => '0',
+                                            'style' => "padding:10px;",
+                                            'class' => 'bt btn-lg'
+                                                ]
+                                );
+                            }
                         },
                         'delete' => function ($url, $model) {
                             if ($model->status == 0) {
@@ -132,10 +158,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data' => [
-                                                'confirm' => 'Are you sure you want to remove story:'.$model->title.'?',
+                                                'confirm' => 'Are you sure you want to remove story:' . $model->title . '?',
                                                 'method' => 'post',
                                             ],
-                                            'style' => "padding:5px;",
+                                            'style' => "padding:10px;",
                                             'class' => 'bt btn-lg'
                                                 ]
                                 );

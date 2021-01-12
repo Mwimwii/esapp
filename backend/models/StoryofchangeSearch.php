@@ -9,15 +9,14 @@ use backend\models\Storyofchange;
 /**
  * StoryofchangeSearch represents the model behind the search form of `backend\models\Storyofchange`.
  */
-class StoryofchangeSearch extends Storyofchange
-{
+class StoryofchangeSearch extends Storyofchange {
+
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['id', 'category_id', 'status', 'paio_review_status', 'ikmo_review_status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'category_id', 'status', 'paio_review_status', 'ikmo_review_status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'camp_id', 'district_id', 'province_id'], 'integer'],
             [['title', 'interviewee_names', 'interviewer_names', 'date_interviewed', 'introduction', 'challenge', 'actions', 'results', 'conclusions', 'sequel', 'paio_comments', 'ikmo_comments'], 'safe'],
         ];
     }
@@ -25,8 +24,7 @@ class StoryofchangeSearch extends Storyofchange
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -38,8 +36,7 @@ class StoryofchangeSearch extends Storyofchange
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Storyofchange::find();
 
         // add conditions that should always apply here
@@ -68,20 +65,24 @@ class StoryofchangeSearch extends Storyofchange
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
+            'province_id' => $this->province_id,
+            'district_id' => $this->district_id,
+            'camp_id' => $this->camp_id
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'interviewee_names', $this->interviewee_names])
-            ->andFilterWhere(['like', 'interviewer_names', $this->interviewer_names])
-            ->andFilterWhere(['like', 'introduction', $this->introduction])
-            ->andFilterWhere(['like', 'challenge', $this->challenge])
-            ->andFilterWhere(['like', 'actions', $this->actions])
-            ->andFilterWhere(['like', 'results', $this->results])
-            ->andFilterWhere(['like', 'conclusions', $this->conclusions])
-            ->andFilterWhere(['like', 'sequel', $this->sequel])
-            ->andFilterWhere(['like', 'paio_comments', $this->paio_comments])
-            ->andFilterWhere(['like', 'ikmo_comments', $this->ikmo_comments]);
+                ->andFilterWhere(['like', 'interviewee_names', $this->interviewee_names])
+                ->andFilterWhere(['like', 'interviewer_names', $this->interviewer_names])
+                ->andFilterWhere(['like', 'introduction', $this->introduction])
+                ->andFilterWhere(['like', 'challenge', $this->challenge])
+                ->andFilterWhere(['like', 'actions', $this->actions])
+                ->andFilterWhere(['like', 'results', $this->results])
+                ->andFilterWhere(['like', 'conclusions', $this->conclusions])
+                ->andFilterWhere(['like', 'sequel', $this->sequel])
+                ->andFilterWhere(['like', 'paio_comments', $this->paio_comments])
+                ->andFilterWhere(['like', 'ikmo_comments', $this->ikmo_comments]);
 
         return $dataProvider;
     }
+
 }

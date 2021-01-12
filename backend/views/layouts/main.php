@@ -180,7 +180,9 @@ $session = Yii::$app->session;
                             <?php
                             if (User::userIsAllowedTo("Manage interview guide template questions") ||
                                     User::userIsAllowedTo("View interview guide template") ||
-                                    User::userIsAllowedTo("Submit story of change")) {
+                                    User::userIsAllowedTo("Submit story of change") ||
+                                    User::userIsAllowedTo("Review Story of change") ||
+                                    User::userIsAllowedTo("View Story of change")) {
                                 if (Yii::$app->controller->id == "interview-guide-template" ||
                                         Yii::$app->controller->id == "storyofchange-category" ||
                                         Yii::$app->controller->id == "storyofchange"
@@ -224,18 +226,36 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                    if (User::userIsAllowedTo("Submit story of change") //||
-                                            //User::userIsAllowedTo("View interview guide template")
-                                            ) {
-                                        echo '   <li class="nav-item">';
+                                    if (User::userIsAllowedTo("Submit story of change")) {
+                                        echo '<li class="nav-item">';
                                         if (Yii::$app->controller->id == "storyofchange" &&
                                                 (Yii::$app->controller->action->id == "index" ||
                                                 Yii::$app->controller->action->id == "view" ||
                                                 Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "sequel" ||
+                                                Yii::$app->controller->action->id == "conclusions" ||
+                                                Yii::$app->controller->action->id == "results" ||
+                                                Yii::$app->controller->action->id == "actions" ||
+                                                Yii::$app->controller->action->id == "challenges" ||
+                                                Yii::$app->controller->action->id == "introduction" ||
+                                                Yii::$app->controller->action->id == "check-list" ||
                                                 Yii::$app->controller->action->id == "update")) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Stories of change</p>', ['/storyofchange/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Stories of change</p>', ['/storyofchange/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Review Story of change") ||
+                                            User::userIsAllowedTo("View Story of change")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "storyofchange" &&
+                                                (Yii::$app->controller->action->id == "stories")||
+                                                (Yii::$app->controller->action->id == "story-view")
+                                                ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Stories of change</p>', ['/storyofchange/stories'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Stories of change</p>', ['/storyofchange/stories'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
