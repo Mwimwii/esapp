@@ -20,6 +20,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <li>Completed sections can be edited by navigating to the forms in the same manner.</li>
             <li>Completed sections will be marked with <span class="badge badge-success">COMPLETED</span> under the status column.</li>
             <li>Once all the sections have been completed a green "<span class="badge badge-success">Submit for review</span>" button will appear at the bottom of the table. Click it to submit this story for review.</li>
+            <li>To attach media<code>(audio, pictures, videos)</code> to this Story, click the 
+                <span class="badge badge-primary"><span class="fa fa-camera fa-2x"></span></span> 
+                icon below
+            </li>
         </ol>
         <div class="card-header">
             <div class="card-title">
@@ -51,14 +55,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card-tools">
                 <?php
                 if (!empty($model)) {
-                    echo Html::a('<i class="fas fa-trash fa-2x"></i>', ['delete', 'id' => $model->id], [
-                        'title' => 'Remove Story',
+                    echo Html::a('<i class="fas fa-camera fa-2x"></i> Attach media', ['media', 'id' => $model->id], [
+                        'title' => 'Attach Case Study media',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
-                        'data' => [
-                            'confirm' => 'Are you sure you want to remove story: ' . $model->title . '?',
-                            'method' => 'post',
-                        ],
+                        'style' => "padding:5px;",
                     ]);
                 }
                 //This is a hack, just to use pjax for the delete confirm button
@@ -221,7 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             !empty($model->introduction)) {
                         ?>
                         <?=
-                        Html::a('<i class="fas fa-save"></i> Submit for review',
+                        Html::a('Submit for review',
                                 ['storyofchange/submit-story', 'id' => $model->id],
                                 [
                                     'class' => 'btn btn-success btn-xs',

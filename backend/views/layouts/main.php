@@ -182,6 +182,7 @@ $session = Yii::$app->session;
                                     User::userIsAllowedTo("View interview guide template") ||
                                     User::userIsAllowedTo("Submit story of change") ||
                                     User::userIsAllowedTo("Review Story of change") ||
+                                    User::userIsAllowedTo("Attach case study articles") ||
                                     User::userIsAllowedTo("View Story of change")) {
                                 if (Yii::$app->controller->id == "interview-guide-template" ||
                                         Yii::$app->controller->id == "storyofchange-category" ||
@@ -250,9 +251,11 @@ $session = Yii::$app->session;
                                             User::userIsAllowedTo("View Story of change")) {
                                         echo '<li class="nav-item">';
                                         if (Yii::$app->controller->id == "storyofchange" &&
-                                                (Yii::$app->controller->action->id == "stories")||
+                                                (Yii::$app->controller->action->id == "stories") ||
+                                                (Yii::$app->controller->action->id == "attach-article") ||
+                                                (Yii::$app->controller->action->id == "update-article") ||
                                                 (Yii::$app->controller->action->id == "story-view")
-                                                ) {
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Stories of change</p>', ['/storyofchange/stories'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Stories of change</p>', ['/storyofchange/stories'], ["class" => "nav-link"]);

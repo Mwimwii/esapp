@@ -50,7 +50,8 @@
         "kartik-v/yii2-icons": "@dev",
         "kartik-v/yii2-markdown": "dev-master",
         "kartik-v/yii2-editors": "dev-master",
-         "yiidoc/yii2-redactor": "*"
+        "yiidoc/yii2-redactor": "*",
+        "kartik-v/yii2-tabs-x": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

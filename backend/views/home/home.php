@@ -12,9 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- Info boxes -->
 <?php
 if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Collect commodity prices')) {
-    echo '<p>
-            Commodity price stats
-        </p>';
+    echo '<h6 class="mt-2 mb-1"> Commodity price statistics</h6>';
     if (Yii::$app->getUser()->identity->district_id > 0) {
         $Camps = backend\models\Camps::find()->where(['district_id' => Yii::$app->getUser()->identity->district_id])->count();
         $markets = \backend\models\CommodityPriceCollection::find()
@@ -163,7 +161,33 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
     }
 }
 ?>
-<!-- /.row -->
+
+<h6 class="mt-2 mb-1">Downloads</h6>
+
+<div class="row">
+    <div class="col-lg-3">
+        <?php
+        echo Html::a(
+                '<div class="info-box mb-3 bg-danger">
+                            <span class="info-box-icon"><i class="fas fa-file-alt"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Interview guide template</span>
+                                <span class="info-box-number">Download</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>', ['/interview-guide-template/download-template',], [
+            'title' => 'Download interview guide template',
+            'target' => '_blank',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            'data-pjax' => '0',
+            'style' => "padding:5px;",
+                ]
+        );
+        ?>
+    </div>
+</div>
+
 <div class="card card-success card-outline">
     <div class="card-header">
         <h3 class="card-title">
@@ -188,7 +212,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             if ($dataProvider->count > 0) {
                 if (User::userIsAllowedTo('Review Story of change')) {
                     ?>
-                    <h6>Review Case study/Success stories</h6>
+                    <h6>Unreviewed Case study/Success stories</h6>
                     <?=
                     GridView::widget([
                         'dataProvider' => $dataProvider,
@@ -230,7 +254,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                                 'filter' => false,
                                 'format' => 'raw',
                                 'value' => function($row) {
-                                    return Html::a("View story", ["storyofchange/story-view", 'id' => $row->id]);
+                                    return Html::a("Review story", ["storyofchange/story-view", 'id' => $row->id]);
                                 }
                             ],
                         ],

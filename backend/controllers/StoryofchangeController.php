@@ -13,6 +13,8 @@ use backend\models\AuditTrail;
 use backend\models\User;
 use yii\filters\AccessControl;
 use \yii\helpers\Html;
+use yii\web\UploadedFile;
+use kartik\mpdf\Pdf;
 
 /**
  * StoryofchangeController implements the CRUD actions for Storyofchange model.
@@ -26,12 +28,24 @@ class StoryofchangeController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'sequel', 'submit-story',
-                    'conclusions', 'results', 'actions', 'challenges', 'introduction', 'check-list'],
+                'only' =>
+                [
+                    'index', 'create', 'update', 'delete', 'delete-media', 'update-media', 'view', 'sequel', 'submit-story',
+                    'conclusions', 'results', 'actions', 'challenges', 'introduction', 'check-list',
+                    'stories', "media", 'export-story', 'attach-article',
+                    'update-article', 'download-article', 'delete-media', 'delete-article', 'export-story','story-view',
+                    'download','review-story-action'
+                ],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'sequel', 'submit-story',
-                            'conclusions', 'results', 'actions', 'challenges', 'introduction', 'check-list'],
+                        'actions' =>
+                        [
+                            'index', 'create', 'update', 'delete', 'delete-media', 'update-media', 'view', 'sequel', 'submit-story',
+                            'conclusions', 'results', 'actions', 'challenges', 'introduction', 'check-list', 'stories',
+                            'media', 'export-story', 'attach-article',
+                            'update-article', 'download-article', 'delete-media', 'delete-article', 'export-story','story-view',
+                            'download','review-story-action'
+                        ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -384,7 +398,7 @@ class StoryofchangeController extends Controller {
                 //We first get roles with the permission to review stories
                 $role_model = \common\models\RightAllocation::find()->where(['right' => 'Review Story of change'])->all();
                 if (!empty($role_model)) {
-                    $subject = "Case Study/Success Story review:" .$model->title;
+                    $subject = "Case Study/Success Story review:" . $model->title;
                     foreach ($role_model as $_role) {
                         //We now get all users with the fetched role
                         $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
@@ -413,6 +427,340 @@ class StoryofchangeController extends Controller {
             } else {
                 Yii::$app->session->setFlash('error', 'Error occured while submitting story of change : "' . $model->title . '" for review');
             }
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionMedia($id) {
+        if (User::userIsAllowedTo('Submit story of change')) {
+            $model = new \backend\models\LkmStoryofchangeMedia();
+            $model2 = $this->findModel($id);
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                $media_file = UploadedFile::getInstance($model, 'file');
+
+
+                if (!empty($media_file)) {
+                    if ($model->media_type == "Completed Interview guide" && $media_file->extension != "pdf") {
+                        $model = \backend\models\LkmStoryofchangeMedia();
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload PDF files for media type Completed Interview guide!');
+                        return $this->render('media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+
+                    if ($model->media_type == "Audio" && $media_file->extension != "mp3") {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp3 files for media type Audio!');
+                        return $this->render('media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+                    if ($model->media_type == "Picture" && !in_array($media_file->extension, ["jpg", "jpeg", "PNG", 'JPG', 'JPEG', 'png'])) {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload jpg/jpeg/png files for media type Picture!');
+                        return $this->render('media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+                    if ($model->media_type == "Video" && $media_file->extension != "mp4") {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp4 files for media type Video!');
+                        return $this->render('media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+
+                    //We just update the interview guide template if it exist already.
+                    $_model = \backend\models\LkmStoryofchangeMedia::findOne(['media_type' => "Completed Interview guide"]);
+                    $_file = "";
+                    if (!empty($_model)) {
+                        $model = $_model;
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/documents/' . $_model->file;
+                    }
+
+
+                    $Filename = Yii::$app->security->generateRandomString() . '.' . $media_file->extension;
+                    $model->file = $Filename;
+                    $model->story_id = $id;
+
+                    !empty($media_file->name) ? $model->file_name = $media_file->name : "";
+
+                    if ($model->media_type == "Completed Interview guide") {
+                        if (!empty($_file)) {
+                            if (file_exists($_file)) {
+                                unlink($_file);
+                            }
+                        }
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/documents/' . $Filename);
+                    }
+                    if ($model->media_type == "Picture") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/image/' . $Filename);
+                    }
+                    if ($model->media_type == "Audio") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/audio/' . $Filename);
+                    }
+                    if ($model->media_type == "Video") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/video/' . $Filename);
+                    }
+
+                    if ($model->save()) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Added story of change media: " . $model->media_type;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        $model = new \backend\models\LkmStoryofchangeMedia();
+                        Yii::$app->session->setFlash('success', 'Story of change media was successfully added.You can add another file');
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error occured while adding story of change media ');
+                    }
+                }
+            }
+
+            return $this->render('media', [
+                        'model' => $model,
+                        'model2' => $model2,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionUpdateMedia($id, $id1) {
+        if (User::userIsAllowedTo('Submit story of change')) {
+            $model = \backend\models\LkmStoryofchangeMedia::findOne($id);
+            $file = $model->file;
+            $model2 = $this->findModel($id1);
+
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->updated_by = Yii::$app->user->identity->id;
+                $media_file = UploadedFile::getInstance($model, 'file');
+
+                if (!empty($media_file)) {
+                    if ($model->media_type == "Completed Interview guide" && $media_file->extension != "pdf") {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload PDF files for media type Completed Interview guide!');
+                        return $this->render('update-media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+                    if ($model->media_type == "Audio" && $media_file->extension != "mp3") {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp3 files for media type Audio!');
+                        return $this->render('update-media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+                    if ($model->media_type == "Picture" && !in_array($media_file->extension, ["jpg", "jpeg", "PNG", 'JPG', 'JPEG', 'png'])) {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload jpg/jpeg/png files for media type Picture!');
+                        return $this->render('update-media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+                    if ($model->media_type == "Video" && $media_file->extension != "mp4") {
+                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp4 files for media type Video!');
+                        return $this->render('update-media', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+
+                    $Filename = Yii::$app->security->generateRandomString() . '.' . $media_file->extension;
+                    $model->file = $Filename;
+                    //$model->story_id = $id1;
+                    !empty($media_file->name) ? $model->file_name = $media_file->name : "";
+
+                    if ($model->media_type == "Completed Interview guide") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/documents/' . $Filename);
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/documents/' . $file;
+                        if (file_exists($_file)) {
+                            unlink($_file);
+                        }
+                    }
+                    if ($model->media_type == "Picture") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/image/' . $Filename);
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/image/' . $file;
+                        if (file_exists($_file)) {
+                            unlink($_file);
+                        }
+                    }
+                    if ($model->media_type == "Audio") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/audio/' . $Filename);
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/audio/' . $file;
+                        if (file_exists($_file)) {
+                            unlink($_file);
+                        }
+                    }
+                    if ($model->media_type == "Video") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/video/' . $Filename);
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/video/' . $file;
+                        if (file_exists($_file)) {
+                            unlink($_file);
+                        }
+                    }
+
+                    if ($model->save(false)) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Updated story of change media: " . $model->media_type;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success', 'Story of change media was successfully updated.You can add another file');
+                        return $this->redirect(['view', 'id' => $id1]);
+                    } else {
+                        $message = '';
+                        foreach ($model->getErrors() as $error) {
+                            $message .= $error[0];
+                        }
+                        Yii::$app->session->setFlash('error', 'Error occured while updating story of change media.Error::' . $message);
+                    }
+                }
+            }
+
+            return $this->render('update-media', [
+                        'model' => $model,
+                        'model2' => $model2,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionAttachArticle($id) {
+        if (User::userIsAllowedTo('Attach case study articles')) {
+            $model = new \backend\models\LkmStoryofchangeArticle();
+            $model2 = $this->findModel($id);
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                $media_file = UploadedFile::getInstance($model, 'file');
+
+
+                if (!empty($media_file)) {
+                    if ($media_file->extension != "pdf") {
+                        $model = \backend\models\LkmStoryofchangeMedia();
+                        Yii::$app->session->setFlash('error', 'You can only upload PDF files for case study articles!');
+                        return $this->render('attach-article', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+
+
+                    $Filename = Yii::$app->security->generateRandomString() . '.' . $media_file->extension;
+                    $model->file = $Filename;
+                    !empty($media_file->name) ? $model->file_name = $media_file->name : "";
+                    $model->story_id = $id;
+                    $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/articles/' . $Filename);
+
+                    if ($model->save()) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Added story of change article";
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+
+                        Yii::$app->session->setFlash('success', 'Story of change article was successfully added.');
+                        return $this->redirect(['story-view', 'id' => $id]);
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error occured while adding story of change article ');
+                    }
+                }
+            }
+
+            return $this->render('attach-article', [
+                        'model' => $model,
+                        'model2' => $model2,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionUpdateArticle($id, $id1) {
+        if (User::userIsAllowedTo('Attach case study articles')) {
+            $model = \backend\models\LkmStoryofchangeArticle::findOne($id);
+            $model2 = $this->findModel($id1);
+            $file = $model->file;
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                $media_file = UploadedFile::getInstance($model, 'file');
+
+
+                if (!empty($media_file)) {
+                    if ($media_file->extension != "pdf") {
+                        $model = \backend\models\LkmStoryofchangeMedia();
+                        Yii::$app->session->setFlash('error', 'You can only upload PDF files for case study articles!');
+                        return $this->render('update-article', [
+                                    'model' => $model,
+                                    'model2' => $model2,
+                        ]);
+                    }
+
+
+                    $Filename = Yii::$app->security->generateRandomString() . '.' . $media_file->extension;
+                    $model->file = $Filename;
+                    $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/articles/' . $Filename);
+                    !empty($media_file->name) ? $model->file_name = $media_file->name : "";
+
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/articles/' . $file;
+                    if (file_exists($_file)) {
+                        unlink($_file);
+                    }
+
+                    if ($model->save()) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Updated story of change article";
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+
+                        Yii::$app->session->setFlash('success', 'Story of change article was successfully updated.');
+                        return $this->redirect(['story-view', 'id' => $id1]);
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error occured while adding story of change article ');
+                    }
+                }
+            }
+
+            return $this->render('update-article', [
+                        'model' => $model,
+                        'model2' => $model2,
+            ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
@@ -521,7 +869,7 @@ class StoryofchangeController extends Controller {
             if ($model->delete()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Removed story of change: $name from the system.";
+                $audit->action = "Removed story of change: $name and associated media from the system.";
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
@@ -534,6 +882,188 @@ class StoryofchangeController extends Controller {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
+    }
+
+    public function actionDeleteMedia($id, $id1) {
+        if (User::userIsAllowedTo('Submit story of change')) {
+            $model_media = \backend\models\LkmStoryofchangeMedia::findOne($id);
+            if (!empty($model_media)) {
+                $file_name = $model_media->file_name;
+                $type = $model_media->media_type;
+
+                if ($model_media->media_type == "Completed Interview guide") {
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/documents/' . $model_media->file;
+                    if (file_exists($_file) && $model_media->delete()) {
+                        unlink($_file);
+                        $audit_msg = "Removed Case study media type: $type - $file_name";
+                        Yii::$app->session->setFlash('success', "Case study media was successfully removed.");
+                    } else {
+                        Yii::$app->session->setFlash('error', "Case study media could not be removed. Please try again!");
+                    }
+                }
+                if ($model_media->media_type == "Picture") {
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/image/' . $model_media->file;
+                    if (file_exists($_file) && $model_media->delete()) {
+                        unlink($_file);
+                        $audit_msg = "Removed Case study media type: $type - $file_name";
+                        Yii::$app->session->setFlash('success', "Case study media type: $type was successfully removed.");
+                    } else {
+                        Yii::$app->session->setFlash('error', "Case study media could not be removed. Please try again!");
+                    }
+                }
+                if ($model_media->media_type == "Audio") {
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/audio/' . $model_media->file;
+                    if (file_exists($_file) && $model_media->delete()) {
+                        unlink($_file);
+                        $audit_msg = "Removed Case study media type: $type - $file_name";
+                        Yii::$app->session->setFlash('success', "Case study media was successfully removed.");
+                    } else {
+                        Yii::$app->session->setFlash('error', "Case study media could not be removed. Please try again!");
+                    }
+                }
+                if ($model_media->media_type == "Video") {
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/video/' . $model_media->file;
+                    if (file_exists($_file) && $model_media->delete()) {
+                        unlink($_file);
+                        $audit_msg = "Removed Case study media type: $type - $file_name";
+                        Yii::$app->session->setFlash('success', "Case study media was successfully removed.");
+                    } else {
+                        Yii::$app->session->setFlash('error', "Case study media could not be removed. Please try again!");
+                    }
+                }
+
+
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = $audit_msg;
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+
+                return $this->redirect(['view', 'id' => $id1]);
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionDeleteArticle($id, $id1) {
+        if (User::userIsAllowedTo('Attach case study articles')) {
+            $model_media = \backend\models\LkmStoryofchangeArticle::findOne($id);
+            if (!empty($model_media)) {
+
+                $_file = Yii::getAlias('@backend') . '/web/uploads/articles/' . $model_media->file;
+                if (file_exists($_file) && $model_media->delete()) {
+                    unlink($_file);
+                    $audit_msg = "Removed Case study article";
+                    Yii::$app->session->setFlash('success', "Case study article was successfully removed.");
+                } else {
+                    Yii::$app->session->setFlash('error', "Case study article could not be removed. Please try again!");
+                }
+
+
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = $audit_msg;
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+
+                return $this->redirect(['story-view', 'id' => $id1]);
+            } else {
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['home/home']);
+            }
+        }
+    }
+
+    public function actionDownload($id, $id1) {
+        // if (User::userIsAllowedTo('View employee documents')) {
+        $model = \backend\models\LkmStoryofchangeMedia::findOne($id);
+        $audit_msg = "";
+        $filePath = '/web/uploads/documents';
+        $completePath = Yii::getAlias('@backend' . $filePath . '/' . $model->file);
+        $file_name = "";
+        $story_model = Storyofchange::findOne($id1);
+        $file_name = !empty($story_model) ? "Interview guide-" . $story_model->title : "Completed interview guide";
+        $audit_msg = "Completed interview guide template was downloaded";
+
+        $ath = new AuditTrail();
+        $ath->user = Yii::$app->user->id;
+        $ath->action = $audit_msg;
+        $ath->ip_address = Yii::$app->request->getUserIP();
+        $ath->user_agent = Yii::$app->request->getUserAgent();
+        $ath->save();
+
+        header("Content-type:application/pdf");
+        return Yii::$app->response->sendFile($completePath, $file_name, ['inline' => true]);
+        /* } else {
+          Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+          return $this->redirect(['home/index']);
+          } */
+    }
+
+    public function actionDownloadArticle($id, $id1) {
+        // if (User::userIsAllowedTo('View employee documents')) {
+        $model = \backend\models\LkmStoryofchangeArticle::findOne($id);
+        $audit_msg = "";
+        $filePath = '/web/uploads/articles';
+        $completePath = Yii::getAlias('@backend' . $filePath . '/' . $model->file);
+        $file_name = "";
+        $story_model = Storyofchange::findOne($id1);
+        $file_name = !empty($story_model) ? "Article_" . $story_model->title : "Case_study_article";
+        $audit_msg = "Downloaded Case study article";
+
+        $ath = new AuditTrail();
+        $ath->user = Yii::$app->user->id;
+        $ath->action = $audit_msg;
+        $ath->ip_address = Yii::$app->request->getUserIP();
+        $ath->user_agent = Yii::$app->request->getUserAgent();
+        $ath->save();
+
+        header("Content-type:application/pdf");
+        return Yii::$app->response->sendFile($completePath, $file_name, ['inline' => true]);
+        /* } else {
+          Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+          return $this->redirect(['home/index']);
+          } */
+    }
+
+    public function actionExportStory($id) {
+        $model = Storyofchange::findOne($id);
+        $filename = "Case study_" . $model->title . "_" . date("Ymdhis") . ".pdf";
+        $ath = new AuditTrail();
+        $ath->user = Yii::$app->user->id;
+        $ath->action = "Exported Story of change:" . $model->title . " to pdf";
+        $ath->ip_address = Yii::$app->request->getUserIP();
+        $ath->user_agent = Yii::$app->request->getUserAgent();
+        $ath->save();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $this->renderPartial('export-story', ['model' => $model]),
+            'options' => [
+                'text_input_as_HTML' => true,
+                'justifyB4br' => true
+            // any mpdf options you wish to set
+            ],
+            'methods' => [
+                'SetTitle' => 'Case study/Success story',
+                //'SetSubject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
+                'SetHeader' => ['MOA/ESAPP Case study/Success Story||' . date("r") . "/ESAPP online system"],
+                'SetFooter' => ['|Page {PAGENO}|'],
+                'SetAuthor' => 'ESAPP online system',
+            ]
+        ]);
+        $pdf->filename = $filename;
+        return $pdf->render();
     }
 
     /**

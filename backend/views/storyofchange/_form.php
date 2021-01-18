@@ -42,34 +42,7 @@ use kartik\date\DatePicker;
         ])->label("Date of interview");
         ?>
 
-        <?php /* $form->field($model, 'introduction')->textarea(['rows' => 6]) 
-
-          $form->field($model, 'challenge')->textarea(['rows' => 6])
-          $form->field($model, 'actions')->textarea(['rows' => 6])
-
-          $form->field($model, 'results')->textarea(['rows' => 6])
-
-          $form->field($model, 'conclusions')->textarea(['rows' => 6])
-
-          $form->field($model, 'sequel')->textarea(['rows' => 6])
-
-          $form->field($model, 'status')->textInput()
-
-          $form->field($model, 'paio_review_status')->textInput()
-
-          $form->field($model, 'paio_comments')->textarea(['rows' => 6])
-
-          $form->field($model, 'ikmo_review_status')->textInput() ?>
-
-          $form->field($model, 'ikmo_comments')->textarea(['rows' => 6])
-
-          $form->field($model, 'created_at')->textInput()
-
-          $form->field($model, 'updated_at')->textInput()
-
-          $form->field($model, 'created_by')->textInput()
-
-          $form->field($model, 'updated_by')->textInput() */ ?>
+     
     </div>
     <div class="form-group col-lg-12">
         <?= Html::submitButton('Save story', ['class' => 'btn btn-success btn-sm']) ?>
