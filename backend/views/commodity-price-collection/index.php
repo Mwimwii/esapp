@@ -29,24 +29,29 @@ $months = [
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-        <p>
-            <?php
-            if (User::userIsAllowedTo('Collect commodity prices')) {
-                if (empty(\backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id))) {
-                    echo "<div class='alert alert-warning'>The system has no markets for your district:<span class='badge badge-success'>"
-                    . "" . \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name . "</span>"
-                    . ". Hence you cannot add commodity prices</div>";
-                } elseif (empty(backend\models\CommodityTypes::getList())) {
-                    echo "<div class='alert alert-warning'>The system has no commodity types. Hence you cannot add commodity prices</div>";
-                } elseif (empty(backend\models\CommodityPriceLevels::getList())) {
-                    echo "<div class='alert alert-warning'>The system has no commodity price levels. Hence you cannot add commodity prices</div>";
-                } else {
-                    echo Html::a('Add commodity price', ['create'], ['class' => 'float-right btn btn-success btn-sm']);
+        <div class="card-header">
+        <div class="card-tools">
+            
+            <p>
+                <?php
+                if (User::userIsAllowedTo('Collect commodity prices')) {
+                    if (empty(\backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id))) {
+                        echo "<div class='alert alert-warning'>The system has no markets for your district:<span class='badge badge-success'>"
+                        . "" . \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name . "</span>"
+                        . ". Hence you cannot add commodity prices</div>";
+                    } elseif (empty(backend\models\CommodityTypes::getList())) {
+                        echo "<div class='alert alert-warning'>The system has no commodity types. Hence you cannot add commodity prices</div>";
+                    } elseif (empty(backend\models\CommodityPriceLevels::getList())) {
+                        echo "<div class='alert alert-warning'>The system has no commodity price levels. Hence you cannot add commodity prices</div>";
+                    } else {
+                        echo Html::a('Add commodity price', ['create'], ['class' => 'float-right btn btn-success btn-sm']);
+                    }
                 }
-            }
-            ?>
-        </p>
+                ?>
+            </p>
 
+        </div>
+        </div>
 
 
         <?php
@@ -128,7 +133,7 @@ $months = [
                     'inputType' => Editable::INPUT_SELECT2,
                 ],
                 'value' => function ($model) {
-                    $name = backend\models\CommodityPriceLevels::findOne($model->market_id)->level;
+                    $name = backend\models\CommodityPriceLevels::findOne($model->price_level_id)->level;
                     return $name;
                 },
             ],
@@ -269,36 +274,52 @@ $months = [
           'filename' => 'commodity_prices' . date("YmdHis")
           ]);
           } */
+
+
+
         $fullExportMenu = ExportMenu::widget([
                     'dataProvider' => $dataProvider,
                     'columns' => $gridColumns,
+                    'columnSelectorOptions' => [
+                        'label' => 'Cols...',
+                    ],
+                    'batchSize' => 200,
+                    'exportConfig' => [
+                        ExportMenu::FORMAT_TEXT => false,
+                        ExportMenu::FORMAT_HTML => false,
+                        ExportMenu::FORMAT_EXCEL => false,
+                        ExportMenu::FORMAT_PDF => false,
+                        ExportMenu::FORMAT_CSV => false,
+                    ],
                     'target' => ExportMenu::TARGET_BLANK,
                     'pjaxContainerId' => 'kv-pjax-container',
                     'exportContainer' => [
                         'class' => 'btn-group mr-2'
                     ],
+                    'filename' => 'commodity_prices' . date("YmdHis"),
                     'dropdownOptions' => [
-                        'label' => 'Full',
+                        'label' => 'Export to excel',
                         'class' => 'btn btn-outline-secondary',
                         'itemsBefore' => [
                             '<div class="dropdown-header">Export All Data</div>',
                         ],
                     ],
-                    'filename' => 'commodity_prices' . date("YmdHis")
         ]);
+
         echo GridView::widget([
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'pjax' => true,
+            'condensed' => true,
+            'responsive' => true,
+            'hover' => true,
+            // 'pjax' => true,
             'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
             'panel' => [
-                'type' => GridView::TYPE_PRIMARY,
-                'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
+            //'type' => GridView::TYPE_DEFAULT,
+            // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
             ],
             // set a label for default menu
-            'export' => [
-                'label' => 'Page',
-            ],
+            'export' => false,
             'exportContainer' => [
                 'class' => 'btn-group mr-2'
             ],
@@ -306,20 +327,6 @@ $months = [
             'toolbar' => [
                 '{export}',
                 $fullExportMenu,
-                [
-                    'content' =>
-                    Html::button('<i class="fas fa-plus"></i>', [
-                        'class' => 'btn btn-success',
-                        'title' => Yii::t('kvgrid', 'Add Book'),
-                        'onclick' => 'alert("This will launch the book creation form.\n\nDisabled for this demo!");'
-                    ]) . ' ' .
-                    Html::a('<i class="fas fa-redo"></i>', ['grid-demo'], [
-                        'class' => 'btn btn-outline-secondary',
-                        'title' => Yii::t('kvgrid', 'Reset Grid'),
-                        'data-pjax' => 0,
-                    ]),
-                    'options' => ['class' => 'btn-group']
-                ],
             ]
         ]);
         ?>

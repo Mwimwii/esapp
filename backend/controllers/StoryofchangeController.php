@@ -33,8 +33,8 @@ class StoryofchangeController extends Controller {
                     'index', 'create', 'update', 'delete', 'delete-media', 'update-media', 'view', 'sequel', 'submit-story',
                     'conclusions', 'results', 'actions', 'challenges', 'introduction', 'check-list',
                     'stories', "media", 'export-story', 'attach-article',
-                    'update-article', 'download-article', 'delete-media', 'delete-article', 'export-story','story-view',
-                    'download','review-story-action'
+                    'update-article', 'download-article', 'delete-media', 'delete-article', 'export-story', 'story-view',
+                    'download', 'review-story-action'
                 ],
                 'rules' => [
                     [
@@ -43,8 +43,8 @@ class StoryofchangeController extends Controller {
                             'index', 'create', 'update', 'delete', 'delete-media', 'update-media', 'view', 'sequel', 'submit-story',
                             'conclusions', 'results', 'actions', 'challenges', 'introduction', 'check-list', 'stories',
                             'media', 'export-story', 'attach-article',
-                            'update-article', 'download-article', 'delete-media', 'delete-article', 'export-story','story-view',
-                            'download','review-story-action'
+                            'update-article', 'download-article', 'delete-media', 'delete-article', 'export-story', 'story-view',
+                            'download', 'review-story-action'
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -91,11 +91,11 @@ class StoryofchangeController extends Controller {
             } else {
                 //We pull stories for all provinces/Districts/Camps which have been submitted for review or have been accepted
                 $dataProvider->query->andFilterWhere(['IN', 'status', [2, 1]]);
-                return $this->render('stories', [
-                            'searchModel' => $searchModel,
-                            'dataProvider' => $dataProvider,
-                ]);
             }
+            return $this->render('stories', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);

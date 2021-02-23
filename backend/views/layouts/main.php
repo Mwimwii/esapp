@@ -305,7 +305,7 @@ $session = Yii::$app->session;
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <?php
-                                    if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
+                                    if (User::userIsAllowedTo("Collect commodity prices") || User::userIsAllowedTo("View commodity prices")) {
                                         echo '   <li class="nav-item">';
                                         if (Yii::$app->controller->id == "commodity-price-collection" &&
                                                 (Yii::$app->controller->action->id == "index" ||

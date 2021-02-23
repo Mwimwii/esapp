@@ -138,7 +138,11 @@ $months = [
                     'inputType' => Editable::INPUT_SELECT2,
                 ],
                 'value' => function ($model) {
-                    $name = backend\models\CommodityPriceLevels::findOne($model->market_id)->level;
+                    $name = "";
+                    $_model = backend\models\CommodityPriceLevels::findOne($model->market_id);
+                    if (!empty($_model)) {
+                        $name = $_model->level;
+                    }
                     return $name;
                 },
             ],
@@ -250,7 +254,7 @@ $months = [
                 'condensed' => true,
                 'responsive' => true,
                 'hover' => true,
-               // 'pjax' => true,
+                // 'pjax' => true,
                 'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,

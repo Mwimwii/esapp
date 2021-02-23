@@ -101,12 +101,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function($model) {
                         $str = "";
                         if ($model->status == \backend\models\User::STATUS_ACTIVE) {
-                            $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='alert alert-success'> "
-                                    . "<i class='fa fa-check'></i> Active</p><br>";
+                            $str = "<span class='badge badge-success'> "
+                                    . " Active</span><br>";
                         }
                         if ($model->status == \backend\models\User::STATUS_INACTIVE) {
-                            $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='alert alert-danger'> "
-                                    . "<i class='fa fa-times'></i> Blocked</p><br>";
+                            $str = "<span class='badge badge-danger'> "
+                                    . "Blocked</span><br>";
                         }
                         return $str;
                     },

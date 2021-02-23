@@ -436,8 +436,8 @@ Icon::map($this, Icon::EL);
                                             $divs .= '<div class="carousel-item">
                                                                 <p><img title ="' . $_model->file_name . '" style="height: 550px;width: 30px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . $count . '" slide"></p>';
                                         }
-                                        $divs .= '<p style="padding:10px;">' . Html::a(
-                                                        '<span class="fa fa-edit fa-3x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id], [
+                                        $divs .= '<div class="carousel-caption d-none d-md-block"><p style="padding:10px;">' . Html::a(
+                                                        '<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id], [
                                                     'title' => 'Edit image',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -446,7 +446,7 @@ Icon::map($this, Icon::EL);
                                                     'class' => 'bt btn-md'
                                                         ]
                                                 ) .
-                                                Html::a('<i class="fas fa-trash fa-3x"></i>', ['delete-media', 'id' => $_model->id, 'id1' => $model->id], [
+                                                Html::a('<i class="fas fa-trash fa-2x"></i>', ['delete-media', 'id' => $_model->id, 'id1' => $model->id], [
                                                     'title' => 'Remove image',
                                                     'data-placement' => 'top',
                                                     'style' => "padding:10px;",
@@ -456,17 +456,17 @@ Icon::map($this, Icon::EL);
                                                         'confirm' => 'Are you sure you want to remove image:' . $_model->file_name . ' from the story?',
                                                         'method' => 'post',
                                                     ],
-                                                ]) . '</p></div>';
+                                                ]) . '</p></div></div>';
                                         $_count++;
                                     }
                                     $content_img = '<ul>
                                                     <li> 
                                                         Click
                                                         <span class="badge badge-primary bt btn-md"><span class="fa fa-edit fa-1x"></span></span> 
-                                                        icon below image to update image
+                                                        icon on the image to update image
                                                          and 
                                                         <span class="badge badge-primary bt btn-md"><span class="fas fa-trash-alt fa-1x"></span></span> 
-                                                        icon below image to remove image
+                                                        icon on the image to remove image
                                                     </li>
                                                 </ul>
                                                  <div class="row">

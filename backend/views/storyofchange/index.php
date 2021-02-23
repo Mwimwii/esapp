@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </li>
         </ol>
         <p>
-            <?= Html::a('<i class="fa fa-plus"></i> Add Story of change', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+            <?= Html::a('<i class="fa fa-plus"></i> Add Story of change', ['create'], ['class' => 'btn btn-success btn-xs']) ?>
         </p>
 
         <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>

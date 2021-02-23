@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data' => [
-                                                'confirm' => 'Are you sure you want to remove market' . $model->name . '?<br>'
+                                                'confirm' => 'Are you sure you want to remove market: ' . $model->name . '?<br>'
                                                 . 'Market will only be removed if its not being used by the system!',
                                                 'method' => 'post',
                                             ],
