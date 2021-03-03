@@ -3,23 +3,33 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\NotSupportedException;
-use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "awpb_activity_line".
  *
  * @property int $id
  * @property int $activity_id
- * @property int|null $unit_of_measure_id
- * @property string $description
+ * @property string $name
  * @property float $unit_cost
+ * @property float|null $mo_1
+ * @property float|null $mo_2
+ * @property float|null $mo_3
+ * @property float|null $mo_4
+ * @property float|null $mo_5
+ * @property float|null $mo_6
+ * @property float|null $mo_7
+ * @property float|null $mo_8
+ * @property float|null $mo_9
+ * @property float|null $mo_10
+ * @property float|null $mo_11
+ * @property float|null $mo_12
  * @property float|null $quarter_one_quantity
  * @property float|null $quarter_two_quantity
  * @property float|null $quarter_three_quantity
  * @property float|null $quarter_four_quantity
  * @property float $total_quantity
+ * @property float $total_amount
+ * @property int $status
  * @property int|null $district_id
  * @property int|null $province_id
  * @property int $created_at
@@ -27,7 +37,6 @@ use yii\helpers\ArrayHelper;
  * @property int|null $created_by
  * @property int|null $updated_by
  *
- * @property CommodityType $commodityType
  * @property AwpbActivity $activity
  */
 class AwpbActivityLine extends \yii\db\ActiveRecord
@@ -51,12 +60,10 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id', 'name', 'unit_cost', 'total_quantity','total_amount'], 'required'],
-            [['activity_id', 'name', 'unit_cost', 'total_quantity','total_amount'], 'safe'],
-            [['activity_id', 'unit_of_measure_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['unit_cost', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity','total_amount'], 'number'],
+            [['activity_id', 'name', 'unit_cost', 'total_quantity', 'total_amount', 'status', 'created_at', 'updated_at'], 'required'],
+            [['activity_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'total_amount'], 'number'],
             [['name'], 'string', 'max' => 255],
-            [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => [ 'unit_of_measure_id' => 'id']],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
         ];
     }
@@ -68,44 +75,35 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'activity_id' => 'Activity',
-             'unit_of_measure_id' => 'Unit of Measure',
+            'activity_id' => 'Activity ID',
             'name' => 'Name',
             'unit_cost' => 'Unit Cost',
-            'quarter_one_quantity' => 'Q1 Qty',
-            'quarter_two_quantity' => 'Q2 Qty',
-            'quarter_three_quantity' => 'Q3 Qty',
-            'quarter_four_quantity' => 'Q4 Qty',
-            'total_quantity' => 'Total Qty',
+            'mo_1' => 'Mo 1',
+            'mo_2' => 'Mo 2',
+            'mo_3' => 'Mo 3',
+            'mo_4' => 'Mo 4',
+            'mo_5' => 'Mo 5',
+            'mo_6' => 'Mo 6',
+            'mo_7' => 'Mo 7',
+            'mo_8' => 'Mo 8',
+            'mo_9' => 'Mo 9',
+            'mo_10' => 'Mo 10',
+            'mo_11' => 'Mo 11',
+            'mo_12' => 'Mo 12',
+            'quarter_one_quantity' => 'Quarter One Quantity',
+            'quarter_two_quantity' => 'Quarter Two Quantity',
+            'quarter_three_quantity' => 'Quarter Three Quantity',
+            'quarter_four_quantity' => 'Quarter Four Quantity',
+            'total_quantity' => 'Total Quantity',
             'total_amount' => 'Total Amount',
-            'district_id' => 'District',
-            'province_id' => 'Province',
+            'status' => 'Status',
+            'district_id' => 'District ID',
+            'province_id' => 'Province ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
-    }
-    public function behaviors() {
-        return [
-            'timestamp' => [
-                'class' => 'yii\behaviors\TimestampBehavior',
-                'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Gets query for [[CommodityType]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUnitOfMeasure()
-    {
-        return $this->hasOne(AwpbUnitOfMeasure::className(), ['id' => 'unit_of_measure_id']);
     }
 
     /**
