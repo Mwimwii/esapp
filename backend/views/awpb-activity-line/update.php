@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbActivityLine */
 
-$this->title = 'Update Awpb Activity Line: ' . $model->id;
+$this->title = 'Update Awpb Activity Line: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Awpb Activity Lines', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="awpb-activity-line-update">

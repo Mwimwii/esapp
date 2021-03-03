@@ -16,6 +16,7 @@ use yii\base\Model;
 use yii\caching\DbDependency;
 use backend\models\AwpbUnitOfMeasure;
 
+
 /**
  * AwpbActivityLineController implements the CRUD actions for AwpbActivityLine model.
  */
@@ -24,6 +25,7 @@ class AwpbActivityLineController extends Controller
     /**
      * {@inheritdoc}
      */
+
     public function behaviors() {
         return [
             'access' => [
@@ -46,20 +48,21 @@ class AwpbActivityLineController extends Controller
         ];
     }
 
+
     /**
      * Lists all AwpbActivityLine models.
      * @return mixed
      */
-    // public function actionIndex()
-    // {
-    //     $searchModel = new AwpbActivityLineSearch();
-    //     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    public function actionIndex()
+    {
+        $searchModel = new AwpbActivityLineSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-    //     return $this->render('index', [
-    //         'searchModel' => $searchModel,
-    //         'dataProvider' => $dataProvider,
-    //     ]);
-    // }
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
 
     /**
      * Displays a single AwpbActivityLine model.
@@ -92,144 +95,116 @@ class AwpbActivityLineController extends Controller
     //     ]);
     // }
 
-    public function actionApprove()
-    {
-        if (User::userIsAllowedTo('Submit District AWPB')) {
-            
-            $model = new AwpbActivityLine();
-            $searchModel = new AwpbActivityLineSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $user = User::findOne(['id' => Yii::$app->user->id]);
-            $dataProvider->query->andFilterWhere(['district_id' => $user->district_id,'status' => AWPBActivityLine::STATUS_DISTRICT,]);
-            $activitylines = AwpbActivityLine::find()->where(['district_id'=>$user->district_id])->andWhere(['status' => AWPBActivityLine::STATUS_DISTRICT])->all();
-            // if (Yii::$app->request->isAjax) {
-            //     $model->load(Yii::$app->request->post());
-            //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
-            // }
-            // if (!empty(Yii::$app->request->post())) {
-            if(isset($activitylines) )
-            {
-                if($activitylines!=null)
-                {
-                foreach($activitylines as $activityline)
-                {
-                    $activityline->status = AWPBActivityLine::STATUS_PROVINCIAL;
-                    if ($activityline->validate())
-                    {
-                        $activityline->save();
-                    }
-                    else{
-                        Yii::$app->session->setFlash('error', 'An error occurred while submitting the District AWPB.');
-                        return $this->render('index', [
-                            'searchModel' => $searchModel,
-                            'model' => $model,
-                            'dataProvider' => $dataProvider,
-                ]);
-                    }
-                   
 
-                }
-                Yii::$app->session->setFlash('success', 'The District AWPB has been submitted successfully.');
-                return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
-
-            }
-              else{
-                 Yii::$app->session->setFlash('error', 'No District AWPB to submit.');
-                 return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
-            }
-        }
-   // }
-    // return $this->render('index', [
-    //     'searchModel' => $searchModel,
-    //     'model' => $model,
-    //     'dataProvider' => $dataProvider,   
-    //     ]);      
-        }
-     else {
-        Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-        return $this->redirect(['site/home']);
-    }
-
-    }
     public function actionCreate() {
-        if (User::userIsAllowedTo('Manage AWPB activity lines')) {
-            $model = new AwpbActivityLine();
-            $modelForm = [new AwpbActivityLine()];
-            if (Yii::$app->request->isAjax) {
-                $model->load(Yii::$app->request->post());
-                return Json::encode(\yii\widgets\ActiveForm::validate($model));
-            }
-            if (!empty(Yii::$app->request->post())) {
-                $modelForm = \backend\models\Model::createMultiple(AwpbActivityLine::classname());
-                $count = 0;
-                $errors = '';
-                if (Model::loadMultiple($modelForm, Yii::$app->request->post())) {
-                    //  $province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        foreach ($modelForm as $Model) {
-                            $total_q=0;
-                            $total_amt=0.0;
-                            $total_q = $Model->quarter_one_quantity + $Model->quarter_two_quantity + $Model->quarter_three_quantity + $Model->quarter_four_quantity;
-                          //  $total_amt = $Model->unit_cost * $total_q;
-                            $total_amt=  $Model->unit_cost!= 0 && $total_q != 0 ? $total_q * $Model->unit_cost : 0;
-                            $Model->total_quantity =$total_q;
-                            $Model->total_amount = $total_amt;
-                            $Model->status = 0;
-                            $Model->updated_by = Yii::$app->user->identity->id;
-                            $Model->created_by = Yii::$app->user->identity->id;
-                            $Model->district_id = Yii::$app->getUser()->identity->district_id;
-                            $Model->province_id =  Yii::$app->getUser()->identity->province_id;
-                           
-                           // $Model->province_id = Yii::$app->getUser()->identity->province_id;
-                           // Yii::$app->session->setFlash('error', 'Error occured while saving AWPB activity line records. Please try again1');
-                            $count++;
-                            if (!($flag = $Model->save())) {
-                                $transaction->rollBack();
-                                foreach ($Model->getErrors() as $error) {
-                                    $errors .= "\n" . $error[0];
-                                }
-                                break;
-                            }
-                        }
-
-                        if ($flag) {
-                            $transaction->commit();
-                            $audit = new AuditTrail();
-                            
-                            $audit->user = Yii::$app->user->id;
-                            $audit->action = "Added $count activity line";
-                            $audit->ip_address = Yii::$app->request->getUserIP();
-                            $audit->user_agent = Yii::$app->request->getUserAgent();
-                            $audit->save();
-                            Yii::$app->session->setFlash('success', 'You have successfully added ' . $count . ' AWPB activity line.');
-                            return $this->redirect(['index']);
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollBack();
-                        Yii::$app->session->setFlash('error', 'Error occured while saving AWPB activity line records.' . $ex->getMessage() . ' Please try again1');
-                    }
-                } else {
-                    Yii::$app->session->setFlash('error', 'Error occured while saving AWPB activity line records. Please try again2');
+        if (User::userIsAllowedTo('View AWPB activity lines')) {
+          
+                $model = new AwpbActivityLine();
+                 if (Yii::$app->request->isAjax) {
+                    $model->load(Yii::$app->request->post());
+                    return Json::encode(\yii\widgets\ActiveForm::validate($model));
                 }
-            }
+    
+                if ($model->load(Yii::$app->request->post()) ) {
+    
+                    $total_q=0;
+                    $total_amt=0.0;
+                    $total_q_mo1 = !empty($model->mo_1) ? $model->mo_1: 0;
+                    $total_q_mo2 = !empty($model->mo_2)  ? $model->mo_2: 0;
+                    $total_q_mo3 = !empty($model->mo_3) ? $model->mo_3: 0;
+                    $total_q_mo4  = !empty($model->mo_4) ? $model->mo_4: 0;
+                    $total_q_mo5 = !empty($model->mo_5) ? $model->mo_5: 0;
+                    $total_q_mo6 = !empty($model->mo_6) ? $model->mo_6: 0;
+                    $total_q_mo7 =!empty($model->mo_7) ? $model->mo_7: 0;
+                    $total_q_mo8 = !empty($model->mo_8) ? $model->mo_8: 0;
+                    $total_q_mo9 = !empty($model->mo_9) ? $model->mo_9: 0;
+                    $total_q_mo10 = !empty($model->mo_10)? $model->mo_10: 0;
+                    $total_q_mo11 =!empty($model->mo_11) ? $model->mo_11: 0;  
+                    $total_q_mo12 = !empty($model->mo_12) ? $model->mo_12: 0; 
 
-            return $this->render('create', [
-                        'model' => $model,
-                        'modelForm' => $modelForm,
-            ]);
-        } else {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
-        }
+                    $total_q1 = $total_q_mo1 +
+                    $total_q_mo2 + 
+                    $total_q_mo3;
+                    $total_q2 = $total_q_mo4 +
+                    $total_q_mo5;
+                    $total_q_mo6 ;
+                    $total_q3 = $total_q_mo7+
+                    $total_q_mo8 +
+                    $total_q_mo9;
+                    $total_q4 = $total_q_mo10 +
+                    $total_q_mo11 +  
+                    $total_q_mo12;          
+
+
+                    $total_q =  $total_q1 + $total_q1 + $total_q3 + $total_q4 ;
+
+                    $total_amt=  $model->unit_cost!= 0 && $total_q != 0 ? $total_q * $model->unit_cost : 0;
+
+if($total_q >0)
+{
+                    $model->mo_1  = $total_q_mo1 ;
+                    $model->mo_2  = $total_q_mo2  ; 
+                    $model->mo_3  =  $total_q_mo3;
+                    $model->mo_4  = $total_q_mo4  ;
+                    $model->mo_5  = $total_q_mo5 ;
+                    $model->mo_6  =$total_q_mo6  ;
+                    $model->mo_7  =$total_q_mo7 ;
+                    $model->mo_8  =$total_q_mo8  ;
+                    $model->mo_9  =$total_q_mo9;
+                    $model->mo_10  =$total_q_mo10  ;
+                    $model->mo_11  =$total_q_mo11  ; 
+                    $model->mo_12  =$total_q_mo12;
+                    $model->quarter_one_quantity= $total_q1;
+                    $model->quarter_two_quantity= $total_q2;
+                    $model->quarter_three_quantity= $total_q3;
+                    $model->quarter_four_quantity= $total_q4;
+                    $model->total_quantity =$total_q;
+                    $model->total_amount = $total_amt;
+                    $model->status = AwpbActivityLine::STATUS_DRAFT;
+                    $model->updated_by = Yii::$app->user->identity->id;
+                    $model->created_by = Yii::$app->user->identity->id;
+                    $model->district_id = Yii::$app->getUser()->identity->district_id;
+                    $model->province_id =  Yii::$app->getUser()->identity->province_id;
+                
+                    $model->province_id =  Yii::$app->getUser()->identity->province_id;
+                
+                
+                 if ( $model->validate()) {
+                    
+                    if ($model->save()) {
+                                            
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Added AWPB Activitly Line : "  . $model->name;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success', 'AWPB activity line was successfully added.');
+                 
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error occured while adding AWPB activity line.');
+                    }
+                 
+                    return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                
+                    
+                
+            } else {
+                Yii::$app->session->setFlash('error', 'Enter quantity for at least one month.');
+                
+            }
+                }
+                
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            } 
+            else 
+            {
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['site/home']);
+            }
     }
 
 
@@ -240,548 +215,18 @@ class AwpbActivityLineController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    // public function actionUpdate($id)
-    // {
-    //     $model = $this->findModel($id);
-
-    //     if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    //         return $this->redirect(['view', 'id' => $model->id]);
-    //     }
-
-    //     return $this->render('update', [
-    //         'model' => $model,
-    //     ]);
-    // }
-
-    public function actionIndex()
+    public function actionUpdate($id)
     {
-       if (User::userIsAllowedTo('Manage AWPB activity lines') || User::userIsAllowedTo("View AWPB activity lines")) {
-           $user = User::findOne(['id' => Yii::$app->user->id]);
-           $model = new AwpbActivityLine();
-           $searchModel = new AwpbActivityLineSearch();
-           $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model = $this->findModel($id);
 
-           if($user->province_id !='' || $user->province_id > 0)
-                {
-                    if($user->district_id !=''||$user->district_id  >0)
-                    { 
-                        
-                        $dataProvider->sort = ['defaultOrder' =>  ['district_id'=>SORT_ASC,'province_id'=>SORT_ASC]];
-                      //  $dataProvider->query-> where('district_id = :field1', [':field1' =>$user->district_id]);
-                        $dataProvider->query->andFilterWhere(['district_id' => $user->district_id,'status' => 0,]);
-                       
-            if (Yii::$app->request->post('hasEditable')) {
-                   $Id = Yii::$app->request->post('editableKey');
-                   $model = AwpbActivityLine::findOne($Id);
-                   $out = Json::encode(['output' => '', 'message' => '']);
-                   $posted = current($_POST['AwpbActivityLine']);
-                   $post = ['AwpbActivityLine' => $posted];
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
 
-                   if ($model->load($post)) {
-                       $audit = new AuditTrail();
-                       $audit->user = Yii::$app->user->id;
-                       $audit->action = "Activity line details updated.";
-                       $audit->ip_address = Yii::$app->request->getUserIP();
-                       $audit->user_agent = Yii::$app->request->getUserAgent();
-                       $audit->save();
-                       $total_q=0;
-                       $total_amt=0.0;
-                       $total_q = $model->quarter_one_quantity + $model->quarter_two_quantity + $model->quarter_three_quantity + $model->quarter_four_quantity;
-                     //  $total_amt = $Model->unit_cost * $total_q;
-                       $total_amt=  $model->unit_cost!= 0 && $total_q != 0 ? $total_q * $model->unit_cost : 0;
-                       $model->total_quantity =$total_q;
-                       $model->total_amount = str_replace("-", "",$total_amt);
-                       $model->unit_cost = str_replace("-", "", $model->unit_cost);
-                       $model->updated_by = Yii::$app->user->id;
-                      
-                       $message = '';
-                       if (!$model->save()) {
-                           foreach ($model->getErrors() as $error) {
-                               $message .= $error[0];
-                           }
-                           $output = $message;
-                       }
-                       $output = '';
-                       $out = Json::encode(['output' => $output, 'message' => $message]);
-                   }
-                   return $out;
-               }
-              // $dataProvider->query->andFilterWhere(['created_by' => Yii::$app->user->id]);
-               return $this->render('index', [
-                           'searchModel' => $searchModel,
-                           'model' => $model,
-                           'dataProvider' => $dataProvider,
-               ]);
-   
-
-           }
-           else
-                           {
-                               $dataProvider->sort = ['defaultOrder' => ['province_id'=>SORT_ASC]];
-                                $dataProvider->query->where(['province_id' => $user->province_id]);
-                                //where('province_id = :field1', [':field1' =>$user->provincet_id]);
-                                return $this->render('index', [
-                                                        'searchModel' => $searchModel,
-                                                        'model' => $model,
-                                                        'dataProvider' => $dataProvider,
-                       
-                                                    ]);
-           
-                            }
-        
-                            
-                        }
-                                    else
-                                     {
-                        
-                                      
-                                        $dataProvider->sort = ['defaultOrder' => ['activity_id'=>SORT_ASC]];
-                                        return $this->render('index', [
-                                                                'searchModel' => $searchModel,
-                                                                 'model' => $model,
-                                                                 'dataProvider' => $dataProvider,
-                                
-                                                             ]);
-                                         }
-
-       } else {
-           Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-           return $this->redirect(['site/home']);
-       }
-  
-}
-   public function actionMpc()
-   {
-      if (User::userIsAllowedTo('Manage province consolidated AWPB') )
-       {
-          $user = User::findOne(['id' => Yii::$app->user->id]);
-          $model = new AwpbActivityLine();
-          $searchModel = new AwpbActivityLineSearch();
-          $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        //   if($user->province_id !='' || $user->province_id > 0)
-        //     {
-               
-                $dataProvider->sort = ['defaultOrder' => ['district_id'=>SORT_ASC]];
-                // $dataProvider->query->select( `province_id`,`district_id`,`activity_id`,`commodity_type_id`,sum(`total_quantity`),sum(`total_amount`))
-                // ->from(`awpb_activity_line`)
-                // ->andFilterWhere(['province_id' => $user->province_id])
-                // ->group(`province_id`,`district_id`,`activity_id`,`commodity_type_id`);
-                
-                $dataProvider->query->where('province_id = :field1', [':field1' =>$user->province_id,]);
-                return $this->render('mpc', [
-                                        'searchModel' => $searchModel,
-                                       // 'model' => $model,
-                                        'dataProvider' => $dataProvider,
-       
-                                    ]);
-
-    //                                 $searchModel = new AwpbActivityLineSearch();
-    // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-    // return $this->render('index', [
-    //     'searchModel' => $searchModel,
-    //     'dataProvider' => $dataProvider,
-    // ]);
-            // }
-            // else
-            // {
-
-            //    Yii::$app->session->setFlash('error', 'You are not assigned to any province.');
-            //     return $this->redirect(['site/home']);
-            // }
-      } else {
-          Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-          return $this->redirect(['site/home']);
-        
-}
-  }
-
-  public function actionMpw()
-   {
-      if (User::userIsAllowedTo('Manage programme-wide AWPB') )
-       {
-          $user = User::findOne(['id' => Yii::$app->user->id]);
-          $model = new AwpbActivityLine();
-          $searchModel = new AwpbActivityLineSearch();
-          $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-          if($user->province_id =='' || $user->province_id < 0)
-            {
-               
-                $dataProvider->sort = ['defaultOrder' => ['district_id'=>SORT_ASC]];
-                // $dataProvider->query->select( `province_id`,`district_id`,`activity_id`,`commodity_type_id`,sum(`total_quantity`),sum(`total_amount`))
-                // ->from(`awpb_activity_line`)
-                // ->andFilterWhere(['province_id' => $user->province_id])
-                // ->group(`province_id`,`district_id`,`activity_id`,`commodity_type_id`);
-                  
-                //$dataProvider->query->where('province_id = :field1', 'status=:field2',[':field1' =>null,':field2' =>0,]);
-           
-                return $this->render('mpw', [
-                                        'searchModel' => $searchModel,
-                                        'model' => $model,
-                                        'dataProvider' => $dataProvider,
-       
-                                    ]);
-            }
-            else
-            {
-
-               Yii::$app->session->setFlash('error', 'You are not assigned to any budget.');
-                return $this->redirect(['site/home']);
-            }
-      } else {
-          Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-          return $this->redirect(['site/home']);
-      }
-  }
-  
-//     public function actionIndex() {
-
-// // 	 if (User::userIsAllowedTo('Manage AWPB activity lines') || User::userIsAllowedTo("View AWPB activity lines")) {
-// //             $user = User::findOne(['id' => Yii::$app->user->id]);
-// // 			// your default model and dataProvider generated by gii
-// //             $model = new AwpbActivityLine();
-// //             $searchModel = new AwpbActivityLineSearch();
-// //             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-// //             if($user->province_id !='' || $user->province_id > 0)
-// //             {
-// //                 if($user->district_id !=''||$user->district_id  >0)
-// //                 {
-                   
-                  
-// //                     $dataProvider->sort = ['defaultOrder' => ['province_id'=>SORT_ASC, 'district_id'=>SORT_ASC]];
-// //                     $dataProvider->query->where('district_id = :field1', [':field1' =>$user->district_id]);
-					
-    
-  
-// //     // validate if there is a editable input saved via AJAX
-// //     if (Yii::$app->request->post('hasEditable')) {
-// //         // instantiate your book model for saving
-// //         $acivity_line_id = Yii::$app->request->post('editableKey');
-// //         $model = AwpbActivityLine::findOne($acivity_line_id);
-
-// //         // store a default json response as desired by editable
-// //         $out = Json::encode(['output'=>'', 'message'=> '']);
-
-// //         // fetch the first entry in posted data (there should only be one entry 
-// //         // anyway in this array for an editable submission)
-// //         // - $posted is the posted data for Book without any indexes
-// //         // - $post is the converted array for single model validation
-
-// //         $post = [];
-// //         $posted = current($_POST['AwpbActivityLine']);
-// //         $post['AwpbActivityLine'] = $posted;
-
-// //         if ($model->load($post)) {
-// //             $audit = new AuditTrail();
-// //             $audit->user = Yii::$app->user->id;
-// //             $audit->action = "Activity line details updated";
-// //             $audit->ip_address = Yii::$app->request->getUserIP();
-// //             $audit->user_agent = Yii::$app->request->getUserAgent();
-// //             $audit->save();
-// //             $model->updated_by = Yii::$app->user->id;
-// //             $model->unit_cost = str_replace("-", "", $model->unit_cost);
-// //             $message = '';
-// //             if (!$model->save()) {
-// //                 foreach ($model->getErrors() as $error) {
-// //                     $message .= $error[0];
-// //                 }
-// //                 $output = $message;
-// //             }
-// //             $output = '';
-// //             $out = Json::encode(['output' => $output, 'message' => $message]);
-// //         }
-// //         return $out;
-
-
-    
-// // //         // load model like any single model validation
-// // //         if ($model->load($post)) {
-// // //             // can save model or do something before saving model
-// // //            // $model->total_quantity = $post['AwpbActivityLine']['total_quantity'];
-// // //           //  $model->total_amount = $post['AwpbActivityLine']['total_amount'];
-// // //             $model->save();
-
-
-
-// // //         // custom output to return to be displayed as the editable grid cell
-// // //         // data. Normally this is empty - whereby whatever value is edited by
-// // //         // in the input by user is updated automatically.
-// // //         $output = '';
-
-// // //         // specific use case where you need to validate a specific
-// // //         // editable column posted when you have more than one
-// // //         // EditableColumn in the grid view. We evaluate here a
-// // //         // check to see if buy_amount was posted for the Book model
-// // //          if (isset($posted['unit_cost'])) {
-// // //          $output = Yii::$app->formatter->asDecimal($model->unit_cost, 2);
-// // //          }
-// // //  		  if (isset($posted['total_quantity'])) {
-// // //          $output = Yii::$app->formatter->asDecimal($model->total_quantity, 2);
-// // //          }
-// // //   if (isset($posted['total_amount'])) {
-// // //          $output = Yii::$app->formatter->asDecimal($model->total_amount, 2);
-// // //         }
-// // //         // similarly you can check if the name attribute was posted as well
-// // //         // if (isset($posted['name'])) {
-// // //         // $output = ''; // process as you need
-// // //         // }
-// // //         $out = Json::encode(['output'=>$output, 'message'=>'']);
-// // //         }
-// // //         // return ajax json encoded response and exit
-// // //         echo $out;
-// // //         return;
-// //     }
-
-// //     // non-ajax - render the grid by default
-// //     return $this->render('index', [
-// //         'dataProvider' => $dataProvider,
-// //         'model' => $model,
-// //         'searchModel' => $searchModel
-// //     ]);
-
-
-// // }
-// //                 else
-// //                 {
-// //                     $dataProvider->sort = ['defaultOrder' => ['province_id'=>SORT_ASC]];
-// //                     $dataProvider->query->where('province_id = :field1', [':field1' =>$user->provincet_id]);
-// //                     return $this->render('index', [
-// //                                             'searchModel' => $searchModel,
-// //                                             'model' => $model,
-// //                                             'dataProvider' => $dataProvider,
-            
-// //                                         ]);
-
-// //                 }
-// // 				}
-// //             else
-// //             {
-
-              
-// //                 $dataProvider->sort = ['defaultOrder' => ['activity_id'=>SORT_ASC]];
-// //                 return $this->render('index', [
-// //                                         'searchModel' => $searchModel,
-// //                                         'model' => $model,
-// //                                         'dataProvider' => $dataProvider,
-        
-// //                                     ]);
-// //                 }
-                
-
-// //     } else {
-// //             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-// //              return $this->redirect(['site/home']);
-// //          }
-
-
-
-//         if (User::userIsAllowedTo('Manage AWPB activity lines') || User::userIsAllowedTo("View AWPB activity lines")) {
-//             $user = User::findOne(['id' => Yii::$app->user->id]);
-//             $model = new AwpbActivityLine();
-//             $searchModel = new AwpbActivityLineSearch();
-//             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//             if($user->province_id !='' || $user->province_id > 0)
-//             {
-//                 if($user->district_id !=''||$user->district_id  >0)
-//                 {
-                   
-                  
-//                     $dataProvider->sort = ['defaultOrder' => ['province_id'=>SORT_ASC, 'district_id'=>SORT_ASC]];
-//                     $dataProvider->query->where('district_id = :field1', [':field1' =>$user->district_id]);
-
-//                     if (Yii::$app->request->post('hasEditable')) {
-//                                     $Id = Yii::$app->request->post('editableKey');
-//                                     $model = AWPBActivityLine::findOne($Id);
-//                                     $out = Json::encode(['output' => '', 'message' => '']);
-//                                     $posted = current($_POST['AwpbActivityLine']);
-//                                     $post = ['AWPBActivityLine' => $posted];
-                
-
-//                                     if (Yii::$app->request->post('hasEditable')) {
-//                                         $Id = Yii::$app->request->post('editableKey');
-//                                         $model = AWPBActivityLine::findOne($Id);
-//                                         $out = Json::encode(['output' => '', 'message' => '']);
-//                                         $posted = current($_POST['AWPBActivityLines']);
-//                                         $post = ['AWPBActivityLine' => $posted];
-//                                         $old = $model->level;
-//                                         $old_desc = $model->description;
-
-
-//                                         if ($model->load($post)) {
-//                                             if ($old != $model->level || $old_desc != $model->description) {
-//                                                 $audit = new AuditTrail();
-//                                                 $audit->user = Yii::$app->user->id;
-//                                                 if ($old_desc != $model->description) {
-//                                                     $audit->action = "Updated commodity price level description to::" . $model->description;
-//                                                 }
-//                                                 if ($old != $model->level) {
-//                                                     $audit->action = "Updated commodity price level from $old to " . $model->level;
-//                                                 }
-//                                                 $audit->ip_address = Yii::$app->request->getUserIP();
-//                                                 $audit->user_agent = Yii::$app->request->getUserAgent();
-//                                                 $audit->save();
-//                                                 $model->updated_by = Yii::$app->user->id;
-//                                             }
-//                                             $message = '';
-//                                             if (!$model->save()) {
-//                                                 foreach ($model->getErrors() as $error) {
-//                                                     $message .= $error[0];
-//                                                 }
-//                                                 $output = $message;
-//                                             }
-//                                             $output = '';
-//                                             $out = Json::encode(['output' => $output, 'message' => $message]);
-//                                         }
-//                                         return $out;
-
-
-
-//                                     if ($model_post->load($post)) {
-//                                         $audit = new AuditTrail();
-//                                         $audit->user = Yii::$app->user->id;
-//                                         $audit->action = "Updated AWPB activity line details";
-//                                         $audit->ip_address = Yii::$app->request->getUserIP();
-//                                         $audit->user_agent = Yii::$app->request->getUserAgent();
-//                                         $audit->save();
-//                                         $model->updated_by = Yii::$app->user->id;
-//                                         $model->unit_cost = str_replace("-", "", $model->unit_cost);
-//                                         $message = '';
-//                                         if (!$model_post->save()) {
-//                                             foreach ($model_post->getErrors() as $error) {
-//                                                 $message .= $error[0];
-//                                             }
-//                                             $output = $message;
-//                                         }
-//                                         $output = '';
-//                                         $out = Json::encode(['output' => $output, 'message' => $message]);
-//                                     }
-//                                     return $out;
-//                                 }
-//                     return $this->render('index', [
-//                                             'searchModel' => $searchModel,
-//                                             'model' => $model,
-//                                             'dataProvider' => $dataProvider,
-            
-//                                         ]);
-//                 }
-//                 else
-//                 {
-//                     $dataProvider->sort = ['defaultOrder' => ['district_id'=>SORT_ASC]];
-//                     $dataProvider->query->where('province_id = :field1', [':field1' =>$user->provincet_id]);
-//                     return $this->render('index', [
-//                                             'searchModel' => $searchModel,
-//                                             'model' => $model,
-//                                             'dataProvider' => $dataProvider,
-            
-//                                         ]);
-
-//                 }
-
-//             }
-//                 else
-//                 {
-//                     $dataProvider->sort = ['defaultOrder' => ['province_id'=>SORT_ASC]];
-//                     $dataProvider->query->where('province_id = :field1', [':field1' =>$user->provincet_id]);
-//                     return $this->render('index', [
-//                                             'searchModel' => $searchModel,
-//                                             'model' => $model,
-//                                             'dataProvider' => $dataProvider,
-            
-//                                         ]);
-
-//                 }
-
-//             }
-//             else
-//             {
-
-              
-//                 $dataProvider->sort = ['defaultOrder' => ['activity_id'=>SORT_ASC]];
-//                 return $this->render('index', [
-//                                         'searchModel' => $searchModel,
-//                                         'model' => $model,
-//                                         'dataProvider' => $dataProvider,
-        
-//                                     ]);
-//                 }
-                
-
-//     } else {
-//             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-//              return $this->redirect(['site/home']);
-//          }
-
-//         // if (User::userIsAllowedTo('Manage AWPB activity lines') || User::userIsAllowedTo("View AWPB activity lines")) {
-//         //     $model = new AwpbActivityLine();
-//         //     $searchModel = new AwpbActivityLineSearch();
-//         //     $prices_dependency = new DbDependency();
-//         //     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//         //     if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id'])) {
-//         //         $district_ids = [];
-//         //         $districts = \backend\models\Districts::find()->cache(600,$prices_dependency)->where(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']])->all();
-//         //         if (!empty($districts)) {
-//         //             foreach ($districts as $id) {
-//         //                 array_push($district_ids, $id['id']);
-//         //             }
-//         //         } else {
-//         //             $district_ids = [''];
-//         //         }
-
-//         //         $dataProvider->query->andFilterWhere(['IN', 'id', $district_ids]);
-//         //     }
-//         //     if (Yii::$app->getUser()->identity->district_id > 0) {
-//         //         $dataProvider->query->andFilterWhere(['id' => Yii::$app->getUser()->identity->district_id]);
-//         //         if (Yii::$app->request->post('hasEditable')) {
-//         //             $Id = Yii::$app->request->post('editableKey');
-//         //             $model = AWPBActivityLine::findOne($Id);
-//         //             $out = Json::encode(['output' => '', 'message' => '']);
-//         //             $posted = current($_POST['AwpbActivityLine']);
-//         //             $post = ['AWPBActivityLine' => $posted];
-
-//         //             if ($model->load($post)) {
-//         //                 $audit = new AuditTrail();
-//         //                 $audit->user = Yii::$app->user->id;
-//         //                 $audit->action = "Updated AWPB activity line details";
-//         //                 $audit->ip_address = Yii::$app->request->getUserIP();
-//         //                 $audit->user_agent = Yii::$app->request->getUserAgent();
-//         //                 $audit->save();
-//         //                 $model->updated_by = Yii::$app->user->id;
-//         //                 $model->unit_cost = str_replace("-", "", $model->unit_cost);
-//         //                 $message = '';
-//         //                 if (!$model->save()) {
-//         //                     foreach ($model->getErrors() as $error) {
-//         //                         $message .= $error[0];
-//         //                     }
-//         //                     $output = $message;
-//         //                 }
-//         //                 $output = '';
-//         //                 $out = Json::encode(['output' => $output, 'message' => $message]);
-//         //             }
-//         //             return $out;
-//         //         }
-//         //         $dataProvider->query->andFilterWhere(['created_by' => Yii::$app->user->id]);
-//         //         return $this->render('index', [
-//         //                     'searchModel' => $searchModel,
-//         //                     'model' => $model,
-//         //                     'dataProvider' => $dataProvider,
-//         //         ]);
-//         //     } else {
-
-//         //         return $this->render('view', [
-//         //                     'searchModel' => $searchModel,
-//         //                     'dataProvider' => $dataProvider,
-//         //         ]);
-//         //     }
-//         // } else {
-//         //     Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-//         //     return $this->redirect(['site/home']);
-//         // }
-//     }
-
-
-
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
 
     /**
      * Deletes an existing AwpbActivityLine model.

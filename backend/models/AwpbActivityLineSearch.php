@@ -17,9 +17,9 @@ class AwpbActivityLineSearch extends AwpbActivityLine
     public function rules()
     {
         return [
-            [['id', 'activity_id',  'unit_of_measure_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'activity_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'safe'],
-            [['unit_cost', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity'], 'number'],
+            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'total_amount'], 'number'],
         ];
     }
 
@@ -61,13 +61,26 @@ class AwpbActivityLineSearch extends AwpbActivityLine
         $query->andFilterWhere([
             'id' => $this->id,
             'activity_id' => $this->activity_id,
-            'unit_of_measure_id' => $this->unit_of_measure_id,
             'unit_cost' => $this->unit_cost,
+            'mo_1' => $this->mo_1,
+            'mo_2' => $this->mo_2,
+            'mo_3' => $this->mo_3,
+            'mo_4' => $this->mo_4,
+            'mo_5' => $this->mo_5,
+            'mo_6' => $this->mo_6,
+            'mo_7' => $this->mo_7,
+            'mo_8' => $this->mo_8,
+            'mo_9' => $this->mo_9,
+            'mo_10' => $this->mo_10,
+            'mo_11' => $this->mo_11,
+            'mo_12' => $this->mo_12,
             'quarter_one_quantity' => $this->quarter_one_quantity,
             'quarter_two_quantity' => $this->quarter_two_quantity,
             'quarter_three_quantity' => $this->quarter_three_quantity,
             'quarter_four_quantity' => $this->quarter_four_quantity,
             'total_quantity' => $this->total_quantity,
+            'total_amount' => $this->total_amount,
+            'status' => $this->status,
             'district_id' => $this->district_id,
             'province_id' => $this->province_id,
             'created_at' => $this->created_at,
@@ -76,7 +89,7 @@ class AwpbActivityLineSearch extends AwpbActivityLine
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name ]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

@@ -19,12 +19,33 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'activity_id') ?>
 
-    
-
     <?= $form->field($model, 'name') ?>
-    <?= $form->field($model, 'unit_of_measure_id') ?>
 
     <?= $form->field($model, 'unit_cost') ?>
+
+    <?= $form->field($model, 'mo_1') ?>
+
+    <?php // echo $form->field($model, 'mo_2') ?>
+
+    <?php // echo $form->field($model, 'mo_3') ?>
+
+    <?php // echo $form->field($model, 'mo_4') ?>
+
+    <?php // echo $form->field($model, 'mo_5') ?>
+
+    <?php // echo $form->field($model, 'mo_6') ?>
+
+    <?php // echo $form->field($model, 'mo_7') ?>
+
+    <?php // echo $form->field($model, 'mo_8') ?>
+
+    <?php // echo $form->field($model, 'mo_9') ?>
+
+    <?php // echo $form->field($model, 'mo_10') ?>
+
+    <?php // echo $form->field($model, 'mo_11') ?>
+
+    <?php // echo $form->field($model, 'mo_12') ?>
 
     <?php // echo $form->field($model, 'quarter_one_quantity') ?>
 
@@ -35,6 +56,10 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'quarter_four_quantity') ?>
 
     <?php // echo $form->field($model, 'total_quantity') ?>
+
+    <?php // echo $form->field($model, 'total_amount') ?>
+
+    <?php // echo $form->field($model, 'status') ?>
 
     <?php // echo $form->field($model, 'district_id') ?>
 
