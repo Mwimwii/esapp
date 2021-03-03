@@ -291,7 +291,9 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
     public function getFullName() {
         return ucfirst(strtolower($this->title)) . " " . ucfirst(strtolower($this->first_name)) . " " . ucfirst(strtolower($this->other_name)) . " " . ucfirst(strtolower($this->last_name));
     }
-
+	public static function getName() {
+        return  ucfirst(strtolower($this->first_name)) . " " . ucfirst(strtolower($this->last_name));
+    }
     /**
      * @return array
      */

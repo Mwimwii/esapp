@@ -110,5 +110,13 @@ class CommodityTypes extends \yii\db\ActiveRecord {
         $data = self::find()->where(['id' => $id])->one();
         return $data->name;
     }
+    public static function getCommodityTypes() {
+        $commodities = self::find()->orderBy(['name' => SORT_ASC])
+        ->where(['parent_activity_id'=>null])
+        ->all();
+        $list = ArrayHelper::map($commodities, 'id', 'name');
+        return $list;
+    }
 
+   
 }

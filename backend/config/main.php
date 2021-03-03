@@ -47,7 +47,7 @@ return [
                     'weight' => 100,
                 ],
             ],
-            'useMemcached' => true,
+            'useMemcached' => false,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

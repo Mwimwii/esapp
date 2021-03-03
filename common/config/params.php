@@ -8,6 +8,7 @@ return [
     'senderEmail' => 'esappmis@noreply.gov.zm',
     'bsVersion' => '4',
     'user.passwordResetTokenExpire' => 3600,
+    'user.passwordMinLength'=>7,
     'maskMoneyOptions' => [
         'prefix' => 'ZMW ',
         'suffix' => '',

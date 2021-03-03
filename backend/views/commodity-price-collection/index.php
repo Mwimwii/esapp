@@ -31,7 +31,7 @@ $months = [
     <div class="card-body" style="overflow: auto;">
         <p>
             <?php
-            if (User::userIsAllowedTo('Remove commodity price')) {
+            if (User::userIsAllowedTo('Collect commodity prices')) {
                 if (empty(\backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id))) {
                     echo "<div class='alert alert-warning'>The system have no markets for your district:<span class='badge badge-success'>"
                     . "" . \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name . "</span>"

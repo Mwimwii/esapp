@@ -35,21 +35,21 @@ $months = [
         $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
             // 'id',
-            [
-                'label' => 'Province',
-                'attribute' => 'province_id',
-                'filterType' => GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'pluginOptions' => ['allowClear' => true],
-                ],
-                'filter' => \backend\models\Provinces::getProvinceList(),
-                'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
-                'value' => function ($model) {
-                    $province_id = backend\models\Districts::findOne($model->district);
-                    $name = backend\models\Provinces::findOne($province_id)->name;
-                    return $name;
-                },
-            ],
+            // [
+            //     'label' => 'Province',
+            //     'attribute' => 'province_id',
+            //     'filterType' => GridView::FILTER_SELECT2,
+            //     'filterWidgetOptions' => [
+            //         'pluginOptions' => ['allowClear' => true],
+            //     ],
+            //     'filter' => \backend\models\Provinces::getProvinceList(),
+            //     'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
+            //     'value' => function ($model) {
+            //         $province_id = backend\models\Districts::findOne($model->district);
+            //         $name = backend\models\Provinces::findOne($province_id)->name;
+            //         return $name;
+            //     },
+            // ],
             [
                 'class' => EditableColumn::className(),
                 'attribute' => 'district',

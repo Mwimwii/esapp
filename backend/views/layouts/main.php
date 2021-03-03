@@ -111,6 +111,165 @@ $session = Yii::$app->session;
                             }
                             echo '</li>';
                             ?>
+							
+							<!-------------------------------AWPB MANAGEMENT STARTS----------------------->
+                            <?php
+                            if (User::userIsAllowedTo("Manage components") || User::userIsAllowedTo("View components") ||
+                                    User::userIsAllowedTo("Manage AWPB templates") ||
+                                    User::userIsAllowedTo("View AWPB templates") || User::userIsAllowedTo("Manage programmes")||
+                                    User::userIsAllowedTo("View programmes") || User::userIsAllowedTo("Manage AWPB activities")||
+                                    User::userIsAllowedTo("View AWPB activities")) {
+                                
+									if (Yii::$app->controller->id == "awpb-component" ||
+                                        Yii::$app->controller->id == "awpb-template" ||
+                                        Yii::$app->controller->id == "awpb-programme" ||
+                                        Yii::$app->controller->id == "awpb-activity" ){
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                              
+                                <i class="nav-icon fas fa-money-check"></i>
+                                <p>
+                                    AWPB management
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                     if (User::userIsAllowedTo("Manage AWPB activity lines") || User::userIsAllowedTo("View AWPB activity lines") ) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-activity-line" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity-Specific AWPB</p>', ['awpb-activity-line/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity-Specific AWPB</p>', ['awpb-activity-line/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    if (User::userIsAllowedTo("Manage province consolidated AWPB") ) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-activity-line" &&
+                                              
+                                                Yii::$app->controller->action->id == "mpc") {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Consolidated AWPB</p>', ['awpb-activity-line/mpc'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Consolidated AWPB</p>', ['awpb-activity-line/mpc'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage programme-wide AWPB") ) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-activity-line" &&
+                                              
+                                                Yii::$app->controller->action->id == "mpw") {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+if (User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")) {
+    echo '   <li class="nav-item">';
+    if (Yii::$app->controller->id == "awpb-funder" &&
+            (Yii::$app->controller->action->id == "index" ||
+            Yii::$app->controller->action->id == "view" ||
+            Yii::$app->controller->action->id == "create" ||
+            Yii::$app->controller->action->id == "update")) {
+        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funder</p>', ['/awpb-funder/index'], ["class" => "nav-link active"]);
+    } else {
+        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funder</p>', ['/awpb-funder/index'], ["class" => "nav-link"]);
+    }
+    echo '</li>';
+}
+
+if (User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")) {
+    echo '   <li class="nav-item">';
+    if (Yii::$app->controller->id == "awpb-expense-category" &&
+            (Yii::$app->controller->action->id == "index" ||
+            Yii::$app->controller->action->id == "view" ||
+            Yii::$app->controller->action->id == "create" ||
+            Yii::$app->controller->action->id == "update")) {
+        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Expense Category</p>', ['/awpb-expense-category/index'], ["class" => "nav-link active"]);
+    } else {
+        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Expense Category</p>', ['/awpb-expense-category/index'], ["class" => "nav-link"]);
+    }
+    echo '</li>';
+}
+if (User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")) {
+    echo '   <li class="nav-item">';
+    if (Yii::$app->controller->id == "awpb-unit-of-measure" &&
+            (Yii::$app->controller->action->id == "index" ||
+            Yii::$app->controller->action->id == "view" ||
+            Yii::$app->controller->action->id == "create" ||
+            Yii::$app->controller->action->id == "update")) {
+        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Unit of Measure</p>', ['/awpb-unit-of-measure/index'], ["class" => "nav-link active"]);
+    } else {
+        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Unit of Measure</p>', ['/awpb-unit-of-measure/index'], ["class" => "nav-link"]);
+    }
+    echo '</li>';
+}
+      
+                                  
+                                    if (User::userIsAllowedTo("Manage components") || User::userIsAllowedTo("View components")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-component" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Component</p>', ['/awpb-component/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Component</p>', ['/awpb-component/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage AWPB templates") || User::userIsAllowedTo("View AWPB templates")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-template" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Template</p>', ['awpb-template/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Template</p>', ['awpb-template/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                   
+									if (User::userIsAllowedTo("Manage AWPB activities") || User::userIsAllowedTo("View AWPB activities")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-activity" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Activity</p>', ['awpb-activity/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Activity</p>', ['awpb-activity/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                 
+                                    ?>
+
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------AWPB MANAGEMENT ENDS------------------------->
+                            
+							
+							
+							
 
                             <!-------------------------------USER MANAGEMENT STARTS----------------------->
                             <?php
@@ -177,7 +336,10 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
-                            <!-------------------------------MARKET DATA STARTS--------------------------->
+                            
+							
+							
+							<!-------------------------------MARKET DATA STARTS--------------------------->
                             <?php
                             if (User::userIsAllowedTo("Collect commodity prices") ||
                                     User::userIsAllowedTo("View commodity prices") //||
@@ -200,7 +362,9 @@ $session = Yii::$app->session;
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <?php
-                                    if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
+                                   
+                                    if (User::userIsAllowedTo("Collect commodity prices") ||
+                                    User::userIsAllowedTo("View commodity prices")){
                                         echo '   <li class="nav-item">';
                                         if (Yii::$app->controller->id == "commodity-price-collection" &&
                                                 (Yii::$app->controller->action->id == "index" ||
@@ -334,6 +498,17 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
+									if (User::userIsAllowedTo("Manage commodity configs")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "awpb-component" &&
+                                                (Yii::$app->controller->action->id == "index")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Components</p>', ['awpb-component/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Components</p>', ['awpb-component/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+									
                                     ?>
 
                                 </ul>
