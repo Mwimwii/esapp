@@ -17,7 +17,7 @@ class AwpbComponentSearch extends AwpbComponent
     public function rules()
     {
         return [
-            [['id', 'parent_component_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'parent_component_id', 'funder_id', 'type','expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['code', 'description', 'name', 'outcome', 'output', 'subcomponent'], 'safe'],
         ];
     }
@@ -60,6 +60,7 @@ class AwpbComponentSearch extends AwpbComponent
         $query->andFilterWhere([
             'id' => $this->id,
             'parent_component_id' => $this->parent_component_id,
+            'type' => $this->type,
             'funder_id' => $this->funder_id,
             'expense_category_id' => $this->expense_category_id,
             'created_at' => $this->created_at,

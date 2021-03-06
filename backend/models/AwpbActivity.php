@@ -180,40 +180,32 @@ class AwpbActivity extends \yii\db\ActiveRecord
         return $this->hasMany(AwpbActivityLineItem::className(), ['activity_id' => 'id']);
     }
 	  public static function getAwpbActivitiesList($access_level) {
-        // $activties = self::find()->orderBy(['name' => SORT_DESC])->all();
-        // $list = ArrayHelper::map( $activties, 'id', 'name');
-        // return $list;
-
-        // $activties  = self::find()
-        // ->joinWith(['AwpbComponent'])
-        // //->select(['*', 'COUNT(AwpbActivity.*) as cnt'])
-        // ->orderBy(['name' => SORT_DESC])
-        // ->where(['type'=>TYPE_MAIN ])
-        // ->andWhere(['parent_component_id'=>null])
-        // ->all();
-        // $list = ArrayHelper::map($components, 'id', 'name');
-        // return $list;
+     
 
         $activties  = self::find()
+        ->select(['awpb_activity.id',"CONCAT(awpb_activity.activity_code,' ',awpb_activity.name) as name"])
         ->joinWith('component')
         ->where(['awpb_component.access_level' =>self::STATUS_ACTIVE])
         ->andWhere(['awpb_activity.type'=>self::TYPE_SUB])  
          ->all();
-         $list = ArrayHelper::map( $activties, 'id', 'activity_code');
+         $list = ArrayHelper::map( $activties, 'id', 'name');
          return $list;
 
-        // $activties  = self::find()
-        // ->select('awpb_activity.*')
-        // ->leftJoin('awpb_component', '`awpb_component`.`id` = `awpb_activity`.`component_id`')
-        // ->where(['awpb_component.access_level' =>$access_level])
-        // ->with('activities')
-        // ->all();
-        // $list = ArrayHelper::map( $activties, 'id', 'name');
-        // return $list;
-
-
-
     }
+
+    public static function getName($id) {
+        $component = self::find()->where(['id' => $id])->one();
+        return ucfirst(strtolower($this->name));
+    }
+    public static function getAwpbActivityCodeName($id) {
+      
+        $activties  = self::find()
+        ->select(['awpb_activity.id',"CONCAT(awpb_activity.activity_code,' ',awpb_activity.name) as name"])      
+        ->where(['id' =>$id])     
+        ->one();
+        return $activties->name;
+    }
+
 
     public static function getAwpbComponentActivities($id)
     {

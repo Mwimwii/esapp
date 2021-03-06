@@ -142,11 +142,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
         $list = self::find()->where(['activity_id' => $id])->all();
         return ArrayHelper::map($list, 'id', 'name');
     }
-    // }
-    // public static function getList($id) {
-    //     $list = self::find()->where(['activity_id' => $id])->all();
-    //     return ArrayHelper::map($list, 'id', 'name');
-    // }
+  
     
     public static function getList() {
         $list = self::find()->orderBy(['name' => SORT_ASC])->all();

@@ -10,6 +10,7 @@ use kartik\money\MaskMoney;
 use yii\widgets\MaskedInput;
 
 $form = ActiveForm::begin(['type'=>ActiveForm::TYPE_HORIZONTAL]);
+//$form = ActiveForm::begin();
 ?>
 <div class="card">
     
@@ -24,7 +25,7 @@ $form = ActiveForm::begin(['type'=>ActiveForm::TYPE_HORIZONTAL]);
 <?=
 $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Item description'])->label("Item description");
       ?>
-    <?= $form->field($model, 'unit_cost',['enableAjaxValidation' => true])->widget(MaskMoney::classname(), [
+    <?= $form->field($model, 'unit_cost',['enableAjaxValidation' => false])->widget(MaskMoney::classname(), [
             'pluginOptions' => [
                 'allowZero' => false,
                 'allowNegative' => false,
@@ -36,7 +37,7 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             
             ?>
             <div class="col-sm-3">
-                <?= $form->field($model, 'mo_1',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                <?= $form->field($model, 'mo_1',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                //$form->field($model, 'from_date',['showLabels'=>false])->textInput(['placeholder'=>'From Date'])->hint('Enter begin date'); ?>
                 
 
@@ -45,14 +46,14 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_2',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_2',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("Feb");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'To Date'])->hint('Enter end date'); ?>
             </div>
            
 
             <div class="col-sm-3">
-                <?=  $form->field($model, 'mo_3',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                <?=  $form->field($model, 'mo_3',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
         ->label("Mar");
                 
                 //$form->field($model, 'begin_date',['showLabels'=>false])->textInput(['placeholder'=>'Begin Date']); ?>
@@ -66,7 +67,7 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             
             ?>
             <div class="col-sm-3">
-                <?= $form->field($model, 'mo_4',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                <?= $form->field($model, 'mo_4',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
         ->label("Apr");
                 
                 
@@ -74,13 +75,13 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_5',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_5',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("May");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'To Date'])->hint('Enter end date'); ?>
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_6',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_6',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("Jun");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'To Date'])->hint('Enter end date'); ?>
             </div>
@@ -93,7 +94,7 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             
             ?>
             <div class="col-sm-3">
-                <?= $form->field($model, 'mo_7',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                <?= $form->field($model, 'mo_7',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
         ->label("Jul");
                 
                 
@@ -101,13 +102,13 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_8',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_8',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("Aug");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'To Date'])->hint('Enter end date'); ?>
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_9',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_9',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("Sep");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'To Date'])->hint('Enter end date'); ?>
             </div>
@@ -119,7 +120,7 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             
             ?>
             <div class="col-sm-3">
-                <?= $form->field($model, 'mo_10',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                <?= $form->field($model, 'mo_10',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
         ->label("Oct");
                 
                 
@@ -127,13 +128,13 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_11',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_11',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("Nov");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'To Date'])->hint('Enter end date'); ?>
             </div>
             <div class="col-sm-3">
                 <?=
-                  $form->field($model, 'mo_12',['enableAjaxValidation' => true])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
+                  $form->field($model, 'mo_12',['enableAjaxValidation' => false])->textInput(['maxlength' => true,'placeholder'=>'Enter quantity'])
                  ->label("Dec");
                // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'Enter quantity'])->hint('Enter quantity'); ?>
             </div>

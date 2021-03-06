@@ -5,6 +5,7 @@ use kartik\grid\GridView;
 use yii\helpers\Html;
 use kartik\editable\Editable;
 use backend\models\User;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\UserSearch */
@@ -32,41 +33,74 @@ $this->params['breadcrumbs'][] = $this->title;
             'filterModel' => $searchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                //'id',
+
+             
                 [
-                    'attribute' => 'code',
-                    'format' => 'raw',
-                    'label' => 'Code',
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filterWidgetOptions' => [
-                        'pluginOptions' => ['allowClear' => true],
-                    ],
-                    'filter' => backend\models\AwpbComponent::getAwpbComponentCodes(),
-                    'filterInputOptions' => ['prompt' => 'Filter by component code', 'class' => 'form-control', 'id' => null],
-                    'value' => function ($model) {
-                        $respone = "";
-                        return backend\models\AwpbComponent::getComponentById($model->code);
+                    'attribute' => 'code', 
+                    'vAlign' => 'middle',
+                    'width' => '180px',
+                    'value' => function ($model, $key, $index, $widget) { 
+                    return      Html::a($model->code, ['awpb-component/view', 'id' => $model->id], ['class' => 'awbp-component']);
+                   
                     },
-                ],
-                [
-                    'attribute' => 'name',
-                    'label' => 'Name',
-                    'format' => 'raw',
                     'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('name')->asArray()->all(), 'id', 'code'), 
                     'filterWidgetOptions' => [
                         'pluginOptions' => ['allowClear' => true],
+                        'options' => ['multiple' => true]
                     ],
-                    'filter' => \backend\models\AwpbComponent::getAwpbComponentsList(),
-                    'filterInputOptions' => ['prompt' => 'Filter by name', 'class' => 'form-control', 'id' => null],
-                    "value" => function ($model) {
-                        $name = "";
-                        $comp_model = \backend\models\AwpbComponent::findOne(["id" => $model->id]);
-                        if (!empty($comp_model)) {
-                            $name = $comp_model->name;
-                        }
-                        return $name;
-                    }
+                    'filterInputOptions' => ['placeholder' => 'Filter by code'],
+                    'format' => 'raw'
                 ],
+
+                [
+                    'attribute' => 'name', 
+                    'vAlign' => 'middle',
+                    'width' => '180px',
+                    'value' => function ($model, $key, $index, $widget) { 
+                    return      Html::a($model->name, ['awpb-component/view', 'id' => $model->id], ['class' => 'awbp-component']);
+                   
+                    },
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                        'options' => ['multiple' => true]
+                    ],
+                    'filterInputOptions' => ['placeholder' => 'Filter by name'],
+                    'format' => 'raw'
+                ],
+
+                [
+                    'attribute' => 'type', 
+                    'vAlign' => 'middle',
+                    'width' => '120px',
+                    'value' => function($model) {
+                            if ($model->type==1)
+                            {
+                                return "Sub";
+                                  
+                            }
+                            else
+                            {
+                               
+                                return "Main";
+                            }
+            
+                    },
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('type')->asArray()->all(), 'id', 'type'), 
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                        'options' => ['multiple' => true]
+                    ],
+                    'filterInputOptions' => ['placeholder' => 'Filter by type'],
+                    'format' => 'raw'
+                ],
+
+  
+                
+
                 // [
                 //     'attribute' => 'description',
                 //     'label' => ' Description',
