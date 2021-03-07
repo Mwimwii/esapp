@@ -433,10 +433,11 @@ class StoryofchangeController extends Controller {
         }
     }
 
-    public function actionMedia($id) {
+    public function actionMedia($id, $media_type = "") {
         if (User::userIsAllowedTo('Submit story of change')) {
             $model = new \backend\models\LkmStoryofchangeMedia();
             $model2 = $this->findModel($id);
+            $model->media_type=$media_type;
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
@@ -449,36 +450,36 @@ class StoryofchangeController extends Controller {
 
 
                 if (!empty($media_file)) {
-                    if ($model->media_type == "Completed Interview guide" && $media_file->extension != "pdf") {
-                        $model = \backend\models\LkmStoryofchangeMedia();
-                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload PDF files for media type Completed Interview guide!');
-                        return $this->render('media', [
-                                    'model' => $model,
-                                    'model2' => $model2,
-                        ]);
-                    }
+                    /* if ($model->media_type == "Completed Interview guide" && $media_file->extension != "pdf") {
+                      //  $model = \backend\models\LK();
+                      Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload PDF files for media type Completed Interview guide!');
+                      return $this->render('media', [
+                      'model' => $model,
+                      'model2' => $model2,
+                      ]);
+                      }
 
-                    if ($model->media_type == "Audio" && $media_file->extension != "mp3") {
-                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp3 files for media type Audio!');
-                        return $this->render('media', [
-                                    'model' => $model,
-                                    'model2' => $model2,
-                        ]);
-                    }
-                    if ($model->media_type == "Picture" && !in_array($media_file->extension, ["jpg", "jpeg", "PNG", 'JPG', 'JPEG', 'png'])) {
-                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload jpg/jpeg/png files for media type Picture!');
-                        return $this->render('media', [
-                                    'model' => $model,
-                                    'model2' => $model2,
-                        ]);
-                    }
-                    if ($model->media_type == "Video" && $media_file->extension != "mp4") {
-                        Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp4 files for media type Video!');
-                        return $this->render('media', [
-                                    'model' => $model,
-                                    'model2' => $model2,
-                        ]);
-                    }
+                      if ($model->media_type == "Audio" && $media_file->extension != "mp3") {
+                      Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp3 files for media type Audio!');
+                      return $this->render('media', [
+                      'model' => $model,
+                      'model2' => $model2,
+                      ]);
+                      }
+                      if ($model->media_type == "Picture" && !in_array($media_file->extension, ["jpg", "jpeg", "PNG", 'JPG', 'JPEG', 'png'])) {
+                      Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload jpg/jpeg/png files for media type Picture!');
+                      return $this->render('media', [
+                      'model' => $model,
+                      'model2' => $model2,
+                      ]);
+                      }
+                      if ($model->media_type == "Video" && $media_file->extension != "mp4") {
+                      Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload mp4 files for media type Video!');
+                      return $this->render('media', [
+                      'model' => $model,
+                      'model2' => $model2,
+                      ]);
+                      } */
 
                     //We just update the interview guide template if it exist already.
                     $_model = \backend\models\LkmStoryofchangeMedia::findOne(['media_type' => "Completed Interview guide"]);
@@ -489,7 +490,7 @@ class StoryofchangeController extends Controller {
                     }
 
 
-                    $Filename = Yii::$app->security->generateRandomString() . '.' . $media_file->extension;
+                    $Filename = Yii::$app->security->generateRandomString(45) . '.' . $media_file->extension;
                     $model->file = $Filename;
                     $model->story_id = $id;
 
@@ -521,7 +522,7 @@ class StoryofchangeController extends Controller {
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
                         $model = new \backend\models\LkmStoryofchangeMedia();
-                        Yii::$app->session->setFlash('success', 'Story of change media was successfully added.You can add another file');
+                        Yii::$app->session->setFlash('success', 'Story of change media was successfully added.You can add another ' . $media_type);
                     } else {
                         Yii::$app->session->setFlash('error', 'Error occured while adding story of change media ');
                     }
@@ -531,6 +532,7 @@ class StoryofchangeController extends Controller {
             return $this->render('media', [
                         'model' => $model,
                         'model2' => $model2,
+                        "media_type" => $media_type
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
@@ -538,11 +540,12 @@ class StoryofchangeController extends Controller {
         }
     }
 
-    public function actionUpdateMedia($id, $id1) {
+    public function actionUpdateMedia($id, $id1, $media_type = "") {
         if (User::userIsAllowedTo('Submit story of change')) {
             $model = \backend\models\LkmStoryofchangeMedia::findOne($id);
             $file = $model->file;
             $model2 = $this->findModel($id1);
+            $model->media_type=$media_type;
 
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
@@ -554,7 +557,7 @@ class StoryofchangeController extends Controller {
                 $media_file = UploadedFile::getInstance($model, 'file');
 
                 if (!empty($media_file)) {
-                    if ($model->media_type == "Completed Interview guide" && $media_file->extension != "pdf") {
+                   /* if ($model->media_type == "Completed Interview guide" && $media_file->extension != "pdf") {
                         Yii::$app->session->setFlash('error', 'The uploaded file and the media type selected do not match. You can only upload PDF files for media type Completed Interview guide!');
                         return $this->render('update-media', [
                                     'model' => $model,
@@ -581,10 +584,11 @@ class StoryofchangeController extends Controller {
                                     'model' => $model,
                                     'model2' => $model2,
                         ]);
-                    }
+                    }*/
 
-                    $Filename = Yii::$app->security->generateRandomString() . '.' . $media_file->extension;
+                    $Filename = Yii::$app->security->generateRandomString(45) . '.' . $media_file->extension;
                     $model->file = $Filename;
+                    $model->media_type=$media_type;
                     //$model->story_id = $id1;
                     !empty($media_file->name) ? $model->file_name = $media_file->name : "";
 
@@ -624,7 +628,7 @@ class StoryofchangeController extends Controller {
                         $audit->ip_address = Yii::$app->request->getUserIP();
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
-                        Yii::$app->session->setFlash('success', 'Story of change media was successfully updated.You can add another file');
+                        Yii::$app->session->setFlash('success', 'Story of change media was successfully updated.');
                         return $this->redirect(['view', 'id' => $id1]);
                     } else {
                         $message = '';
@@ -639,6 +643,7 @@ class StoryofchangeController extends Controller {
             return $this->render('update-media', [
                         'model' => $model,
                         'model2' => $model2,
+                        "media_type" => $media_type
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');

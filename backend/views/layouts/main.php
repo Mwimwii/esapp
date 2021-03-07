@@ -58,9 +58,9 @@ $session = Yii::$app->session;
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div>
-                                    <?= Html::a('<i class="fas fa-user-circle"></i> My Profile', ['users/profile', 'id' => Yii::$app->user->identity->id], ['class' => "float-left btn btn-default btn-flat"]); ?>
+                                    <?= Html::a('<i class="fas fa-user-circle"></i> My Profile', ['users/profile', 'id' => Yii::$app->user->identity->id], ['class' => "float-left btn btn-outline-success btn-recreate btn-sm"]); ?>
 
-                                    <a class="float-right btn btn-default btn-flat" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <a class="float-right btn btn-outline-success btn-recreate btn-sm" href="#" data-toggle="modal" data-target="#logoutModal">
                                         <i class="fas fa-sign-out-alt"></i> Logout
                                     </a>
                                 </div>
@@ -176,7 +176,7 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
-                            <!-------------------------------LKM DATA STARTS--------------------------->
+                            <!-------------------------------LKM DATA STARTS------------------------------>
                             <?php
                             if (User::userIsAllowedTo("Manage interview guide template questions") ||
                                     User::userIsAllowedTo("View interview guide template") ||
@@ -281,7 +281,97 @@ $session = Yii::$app->session;
                                 </ul>
                                 </li>
                             <?php } ?>
-                            <!-------------------------------LKM ENDS------------------------->
+                            <!-------------------------------LKM ENDS------------------------------------->
+                            <!-------------------------------M&E DATA STARTS------------------------------>
+                            <?php
+                            if (User::userIsAllowedTo("Manage faabs groups") ||
+                                    User::userIsAllowedTo("View faabs groups") ||
+                                    User::userIsAllowedTo("Manage category A farmers") ||
+                                    User::userIsAllowedTo("View category A farmers") ||
+                                    User::userIsAllowedTo("Submit FaaBS training records") ||
+                                    User::userIsAllowedTo("View FaaBS training records")) {
+                                if (Yii::$app->controller->id == "faabs-category-a-farmers" ||
+                                        Yii::$app->controller->id == "faabs-training-attendance" ||
+                                        Yii::$app->controller->id == "faabs-groups"
+                                ) {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Monitoring and Evaluation
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                    if (User::userIsAllowedTo("Manage faabs groups") ||
+                                            User::userIsAllowedTo("View faabs groups")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "faabs-groups" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>FaaBS Groups</p>', ['/faabs-groups/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>FaaBS Groups</p>', ['/faabs-groups/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    if (User::userIsAllowedTo("Manage category A farmers") || User::userIsAllowedTo("View category A farmers")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "faabs-category-a-farmers" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Category A farmers</p>', ['/faabs-category-a-farmers/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Category A farmers</p>', ['/faabs-category-a-farmers/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Submit FaaBS training records") ||
+                                            User::userIsAllowedTo("View FaaBS training records")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "faabs-training-attendance" &&
+                                                (Yii::$app->controller->action->id == "index") ||
+                                                (Yii::$app->controller->action->id == "create") ||
+                                                (Yii::$app->controller->action->id == "update") ||
+                                                (Yii::$app->controller->action->id == "view")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>FaaBS Training Attendance</p>', ['/faabs-training-attendance/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>FaaBS Training Attendance</p>', ['/faabs-training-attendance/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    /* if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
+                                      echo '   <li class="nav-item">';
+                                      if (Yii::$app->controller->id == "role" &&
+                                      (Yii::$app->controller->action->id == "index" ||
+                                      Yii::$app->controller->action->id == "view" ||
+                                      Yii::$app->controller->action->id == "create" ||
+                                      Yii::$app->controller->action->id == "update")) {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link active"]);
+                                      } else {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link"]);
+                                      }
+                                      echo '</li>';
+                                      } */
+                                    ?>
+
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------M&E ENDS------------------------------------->
                             <!-------------------------------MARKET DATA STARTS--------------------------->
                             <?php
                             if (User::userIsAllowedTo("Collect commodity prices") ||
@@ -518,10 +608,10 @@ $session = Yii::$app->session;
                             <p>Select "Logout" below if you are ready to end your current session.</p>
                         </div>
                         <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger btn-xs" data-dismiss="modal"><span class="text-xs">Cancel</span></button>
                             <?=
-                            Html::a('<span>Logout</span>', ['site/logout'], ['data' => ['method' => 'POST'], 'id' => 'logout',
-                                'class' => 'btn btn-success'])
+                            Html::a('<span class="text-xs">Logout</span>', ['site/logout'], ['data' => ['method' => 'POST'], 'id' => 'logout',
+                                'class' => 'btn btn-success btn-xs'])
                             ?>
                         </div>
                     </div>

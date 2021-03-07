@@ -51,7 +51,10 @@
         "kartik-v/yii2-markdown": "dev-master",
         "kartik-v/yii2-editors": "dev-master",
         "yiidoc/yii2-redactor": "*",
-        "kartik-v/yii2-tabs-x": "dev-master"
+        "kartik-v/yii2-tabs-x": "dev-master",
+        "kartik-v/yii2-widget-typeahead": "dev-master",
+        "kartik-v/yii2-widget-touchspin": "dev-master",
+        "kartik-v/yii2-widget-timepicker": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

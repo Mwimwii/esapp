@@ -8,7 +8,7 @@ use backend\models\Storyofchange;
 use yii\helpers\Url;
 use kartik\tabs\TabsX;
 use kartik\icons\Icon;
-
+use lo\widgets\modal\ModalAjax;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Storyofchange */
 
@@ -16,7 +16,6 @@ $this->title = "View story ";
 $this->params['breadcrumbs'][] = ['label' => 'My Stories of change', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
-Icon::map($this, Icon::EL);
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
@@ -35,8 +34,8 @@ Icon::map($this, Icon::EL);
             }
             ?>
             <li>To attach media <code>(Completed Interview guide pdf,audio, pictures, videos)</code> to this story, click the
-                <span class="badge badge-primary"><span class="fa fa-camera fa-2x"></span></span> 
-                icon below
+                <span class="badge badge-primary">Media tab</span> 
+                below the story details then attach/update media from there
             </li>
             <?php
             if ($model->status == 0 || $model->status == 3) {
@@ -77,7 +76,7 @@ Icon::map($this, Icon::EL);
                 }
 
 
-                if (!empty($model)) {
+                /*if (!empty($model)) {
                     echo Html::a('<i class="fas fa-camera fa-2x"></i>', ['media', 'id' => $model->id], [
                         'title' => 'Attach Case Study media',
                         'data-placement' => 'top',
@@ -85,7 +84,7 @@ Icon::map($this, Icon::EL);
                         'style' => "padding:20px;",
                         'class' => 'bt btn-lg'
                     ]);
-                }
+                }*/
                 ?>
             </div>
             <div class="card-tools">
@@ -237,7 +236,7 @@ Icon::map($this, Icon::EL);
                                                             'style' => "padding:15px;",
                                                             'title' => 'Download/View full',
                                                 ]) .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id], [
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Completed Interview guide"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update document',
                                                     'data-toggle' => 'tooltip',
@@ -275,7 +274,7 @@ Icon::map($this, Icon::EL);
                                                 </ol><div class="row">' . $div . '</div>';
                                 } else {
                                     $content_doc = "<p>No case study interview guide document found</p>" .
-                                            Html::a('<i class="fas fa-camera"></i> Attach completed interview guide document', ['media', 'id' => $model->id], [
+                                            Html::a('<i class="fas fa-camera"></i> Attach completed interview guide document', ['media', 'id' => $model->id,"media_type"=>"Completed Interview guide"], [
                                                 'title' => 'Attach Case Study document',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',
@@ -297,7 +296,7 @@ Icon::map($this, Icon::EL);
                                     <div style="margin: 0px;" class="embed-responsive embed-responsive-21by9">
                                         <iframe class="embed-responsive-item" src="' . Url::to("@web/uploads/video/$_file") . '"></iframe>
                                     </div></div> <div class="card-footer">' .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id], [
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Audio"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update video',
                                                     'data-toggle' => 'tooltip',
@@ -329,7 +328,7 @@ Icon::map($this, Icon::EL);
                                                 </ul><div class="row">' . $div . '</div>';
                                 } else {
                                     $content_video = "<p>No case study videos found</p>" .
-                                            Html::a('<i class="fas fa-camera"></i> Attach video', ['media', 'id' => $model->id], [
+                                            Html::a('<i class="fas fa-camera"></i> Attach video', ['media', 'id' => $model->id,"media_type"=>"Video"], [
                                                 'title' => 'Attach Case Study video',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',
@@ -360,7 +359,7 @@ Icon::map($this, Icon::EL);
                                                 </p>
                                             </div>
                                             <div class="card-footer">' .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id], [
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Audio"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update audio',
                                                     'data-toggle' => 'tooltip',
@@ -395,7 +394,7 @@ Icon::map($this, Icon::EL);
                                                 </ul><div class="row">' . $div . '</div>';
                                 } else {
                                     $content_audio = "<p>No case study audio files found</p>" .
-                                            Html::a('<i class="fas fa-camera"></i> Attach audio', ['media', 'id' => $model->id], [
+                                            Html::a('<i class="fas fa-camera"></i> Attach audio', ['media', 'id' => $model->id,"media_type"=>"Audio"], [
                                                 'title' => 'Attach Case Study audio',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',
@@ -437,7 +436,7 @@ Icon::map($this, Icon::EL);
                                                                 <p><img title ="' . $_model->file_name . '" style="height: 550px;width: 30px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . $count . '" slide"></p>';
                                         }
                                         $divs .= '<div class="carousel-caption d-none d-md-block"><p style="padding:10px;">' . Html::a(
-                                                        '<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id], [
+                                                        '<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Picture"], [
                                                     'title' => 'Edit image',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -491,7 +490,7 @@ Icon::map($this, Icon::EL);
                             </div>';
                                 } else {
                                     $content_img = "<p>No Case study images found</p>" .
-                                            Html::a('<i class = "fas fa-camera"></i> Attach images', ['media', 'id' => $model->id], [
+                                            Html::a('<i class = "fas fa-camera"></i> Attach images', ['media', 'id' => $model->id,"media_type"=>"Picture"], [
                                                 'title' => 'Attach Case Study images',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',

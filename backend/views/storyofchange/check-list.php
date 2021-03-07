@@ -20,9 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <li>Completed sections can be edited by navigating to the forms in the same manner.</li>
             <li>Completed sections will be marked with <span class="badge badge-success">COMPLETED</span> under the status column.</li>
             <li>Once all the sections have been completed a green "<span class="badge badge-success">Submit for review</span>" button will appear at the bottom of the table. Click it to submit this story for review.</li>
-            <li>To attach media<code>(audio, pictures, videos)</code> to this Story, click the 
-                <span class="badge badge-primary"><span class="fa fa-camera fa-2x"></span></span> 
-                icon below
+            <li>To attach media<code>(Completed interview guide,audio, pictures, videos)</code> to this Story, click the 
+                <span class="badge badge-primary"><span class="fa fa-eye fa-2x"></span></span> 
+                icon below, then below the story details on the view page, click media and attach each type of media from there
             </li>
         </ol>
         <div class="card-header">
@@ -54,14 +54,14 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="card-tools">
                 <?php
-                if (!empty($model)) {
+               /* if (!empty($model)) {
                     echo Html::a('<i class="fas fa-camera fa-2x"></i> Attach media', ['media', 'id' => $model->id], [
                         'title' => 'Attach Case Study media',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
                         'style' => "padding:5px;",
                     ]);
-                }
+                }*/
                 //This is a hack, just to use pjax for the delete confirm button
                 $query = backend\models\User::find()->where(['id' => '-2']);
                 $dataProvider = new \yii\data\ActiveDataProvider([

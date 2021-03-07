@@ -225,6 +225,7 @@ $months = [
                         'columns' => $gridColumns,
                         'columnSelectorOptions' => [
                             'label' => 'Cols...',
+                             'class' => 'btn btn-outline-success btn-sm',
                         ],
                         'batchSize' => 200,
                         'exportConfig' => [
@@ -242,7 +243,7 @@ $months = [
                         'filename' => 'commodity_prices' . date("YmdHis"),
                         'dropdownOptions' => [
                             'label' => 'Export to excel',
-                            'class' => 'btn btn-outline-secondary',
+                             'class' => 'btn btn-outline-success btn-sm',
                             'itemsBefore' => [
                                 '<div class="dropdown-header">Export All Data</div>',
                             ],
@@ -251,6 +252,7 @@ $months = [
             echo GridView::widget([
                 'dataProvider' => $dataProvider,
                 'columns' => $gridColumns,
+                'filterModel' => $searchModel,
                 'condensed' => true,
                 'responsive' => true,
                 'hover' => true,

@@ -5,6 +5,8 @@ use yii\helpers\Html;
 use backend\models\User;
 use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
+use kartik\form\ActiveForm;
+use kartik\depdrop\DepDrop;
 
 $this->title = 'Home';
 $this->params['breadcrumbs'][] = $this->title;
@@ -162,29 +164,134 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
 }
 ?>
 
-<h6 class="mt-2 mb-1">Downloads</h6>
-
 <div class="row">
-    <div class="col-lg-3">
-        <?php
-        echo Html::a(
-                '<div class="info-box mb-3 bg-danger">
-                            <span class="info-box-icon"><i class="fas fa-file-alt"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Interview guide template</span>
-                                <span class="info-box-number">Download</span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>', ['/interview-guide-template/download-template',], [
-            'title' => 'Download interview guide template',
-            'target' => '_blank',
-            'data-toggle' => 'tooltip',
-            'data-placement' => 'top',
-            'data-pjax' => '0',
-            'style' => "padding:5px;",
-                ]
-        );
-        ?>
+    <div class="col-lg-5">
+        <!-- TO DO List -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ion ion-clipboard mr-1"></i>
+                    Downloads
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <ul class="todo-list" data-widget="todo-list">
+                    <li>
+                        <?php
+                        echo Html::a(
+                                '<div  class="icheck-primary d-inline ml-2">
+                            <i class="fa fa-file-pdf fa-2x"></i>
+                        </div>
+                        <!-- todo text -->
+                        <span class="text">Interview Guide template</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+                                ['/interview-guide-template/download-template',], [
+                            'title' => 'Download interview guide template',
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                                ]
+                        );
+                        ?>
+
+                    </li>
+                    <li>
+                        <?php
+                        echo Html::a(
+                                '<div  class="icheck-primary d-inline ml-2">
+                            <i class="fa fa-file-pdf fa-2x"></i>
+                        </div>
+                        <!-- todo text -->
+                        <span class="text">Category A Farmer registration form</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+                                ['/downloads/farmer-registration-form',], [
+                            'title' => 'Download Cat A farmer registration form',
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                                ]
+                        );
+                        ?>
+                    </li>
+                    <!--<li>-->
+                    <?php
+                    /* echo Html::a(
+                      '<div  class="icheck-primary d-inline ml-2">
+                      <i class="fa fa-file-pdf fa-2x"></i>
+                      </div>
+                      <!-- todo text -->
+                      <span class="text">Farming as Business(FaaBS) Register form</span>
+                      <div class="tools">
+                      <i class="fas fa-download fa-2x"></i>
+                      </div>',
+                      ['/interview-guide-template/download-template',], [
+                      'title' => 'Download interview guide template',
+                      'target' => '_blank',
+                      'data-toggle' => 'tooltip',
+                      'data-placement' => 'top',
+                      'data-pjax' => '0',
+                      'style' => "padding:5px;",
+                      ]
+                      ); */
+                    ?>
+                    <!-- </li>-->
+                    <li>
+                        <?php
+                        if (!empty(Yii::$app->user->identity->district_id)) {
+                            echo Html::a(
+                                    '<div  class="icheck-primary d-inline ml-2">
+                            <i class="fa fa-file-pdf fa-2x"></i>
+                        </div>
+                        <!-- todo text -->
+                        <span class="text">Farming as Business(FaaBS) Attendance Sheet</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+                                    ['',], [
+                                'title' => 'Download FaaBS training attendance sheet',
+                                'target' => '_blank',
+                                "data-toggle" => "modal",
+                                "data-target" => "#faabsModal",
+                                // 'data-toggle' => 'tooltip',
+                                // 'data-placement' => 'top',
+                                // 'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                    ]
+                            );
+                        } else {
+                            echo Html::a(
+                                    '<div  class="icheck-primary d-inline ml-2">
+                          <i class="fa fa-file-pdf fa-2x"></i>
+                          </div>
+                          <!-- todo text -->
+                          <span class="text">Farming as Business(FaaBS) Attendance Sheet</span>
+                          <div class="tools">
+                          <i class="fas fa-download fa-2x"></i>
+                          </div>',
+                                    ['/downloads/faabs-attendance-sheet',], [
+                                'title' => 'Download FaaBS training attendance sheet',
+                                'target' => '_blank',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                    ]
+                            );
+                        }
+                        ?>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -273,4 +380,55 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
     </div>
 </div>
 
+
+<div class="modal fade" id="faabsModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card-success card-outline">
+            <div class="modal-header">
+                <h5 class="modal-title">Select FaaBS group that will be trained</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php
+                $faabs_model = new \backend\models\Downloads();
+                ?>
+                <?php
+                $form = ActiveForm::begin([
+                            'action' => 'faabs-attendance-sheet',
+                            'options' => ['target' => '_blank']
+                        ])
+                ?>
+                <?php
+                echo $form->field($faabs_model, 'camp')
+                        ->dropDownList(
+                                \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id), ['id' => 'camp_id', 'custom' => true, 'prompt' => 'Please select a camp', 'required' => true]
+                );
+
+
+                echo $form->field($faabs_model, 'faabs_group')->widget(DepDrop::classname(), [
+                    'options' => ['id' => 'faabs_id', 'custom' => true, 'required' => TRUE],
+                    'pluginOptions' => [
+                        'depends' => ['camp_id'],
+                        // 'initialize' => $model->isNewRecord ? false : true,
+                        'placeholder' => 'Please select FaaBS group',
+                        'url' => yii\helpers\Url::to(['/faabs-groups/faabs-by-camp']),
+                        'params' => ['selected_id'],
+                    ]
+                ]);
+                ?>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-times-circle"></span> Close</button>
+                <?= Html::submitButton('<span class="fa fa-download"></span> Download', ['class' => 'btn btn-success btn-sm']) ?>
+                <?php ActiveForm::end() ?>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal-dialog -->
+</div>
 

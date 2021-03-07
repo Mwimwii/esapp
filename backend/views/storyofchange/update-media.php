@@ -43,9 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <li>Once you are done adding media, click
                         <?php
                         if ($model2->status == \backend\models\Storyofchange::_status_pending_review_submission) {
-                            echo '"<span style="color: #007bff;">Story Check list</span>" to continue with the Check list';
+                            echo '"' . Html::a('Story Check list', ['check-list', 'id' => $model2->id], ['class' => '']) . '" to continue with the Check list';
                         } else {
-                            echo '"<span style="color: #007bff;">View Story of Change</span>" to view Case study story details';
+                            echo '"' . Html::a('View Story of Change', ['view', 'id' => $model2->id], ['class' => '']) . '" to view Case study story details';
                         }
                         ?>
                     </li>
@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php
                 $form = ActiveForm::begin([
-                            'action' => 'update-media?id=' . $model->id . '&id1=' . $model2->id,
+                            'action' => 'update-media?id=' . $model->id . '&id1=' . $model2->id . '&media_type=' . $media_type,
                             'fieldConfig' => [
                                 'options' => [
                                     'enctype' => 'multipart/form-data'
@@ -64,32 +64,85 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
                 <div class="row">
                     <div class="col-lg-6">
-                        <?=
-                                $form->field($model, 'media_type')
+                        <?php
+                        if (!empty($media_type)) {
+                            $model->media_type = $media_type;
+                        }
+                        echo $form->field($model, 'media_type')
                                 ->dropDownList(
                                         [
                                             "Completed Interview guide" => 'Completed Interview guide',
-                                            "Picture" => 'Picture',
+                                            "Picture" => 'Image',
                                             "Audio" => "Audio",
                                             'Video' => 'Video'
-                                        ], ['prompt' => 'Select media type', 'required' => true, 'class' => "form-group"]
+                                        ], ['prompt' => 'Select media type', 'required' => true, 'class' => "form-group", "disabled" => "disabled"]
                                 )->label("Media type");
                         ?>
                         <?php
-                        echo $form->field($model, 'file')->widget(FileInput::classname(), [
-                            'options' => [
-                                //'multiple' => true,
-                                'accept' => 'image/*, pdf/*, audio/*,video/*',
-                            ],
-                            'pluginOptions' => [
-                                'previewFileType' => 'any',
-                                'showCancel' => false,
-                                'showRemove' => false,
-                                'showUpload' => false,
-                                'maxFileSize' => 1028000,
-                                'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'pdf', 'mp3', 'mp4'],
-                            ]
-                        ]);
+                        if ($media_type == "Completed Interview guide") {
+                            echo $form->field($model, 'file')->widget(FileInput::classname(), [
+                                'options' => [
+                                    //'multiple' => true,
+                                    'accept' => 'pdf/*',
+                                ],
+                                'pluginOptions' => [
+                                    'previewFileType' => 'any',
+                                    'showCancel' => false,
+                                    'showRemove' => false,
+                                    'showUpload' => false,
+                                    'maxFileSize' => 1028000,
+                                    'allowedFileExtensions' => ['pdf'],
+                                ]
+                            ]);
+                        }
+                        if ($media_type == "Audio") {
+                            echo $form->field($model, 'file')->widget(FileInput::classname(), [
+                                'options' => [
+                                    //'multiple' => true,
+                                    'accept' => 'audio/*',
+                                ],
+                                'pluginOptions' => [
+                                    'previewFileType' => 'any',
+                                    'showCancel' => false,
+                                    'showRemove' => false,
+                                    'showUpload' => false,
+                                    'maxFileSize' => 1028000,
+                                    'allowedFileExtensions' => ['mp3'],
+                                ]
+                            ]);
+                        }
+                        if ($media_type == "Picture") {
+                            echo $form->field($model, 'file')->widget(FileInput::classname(), [
+                                'options' => [
+                                    //'multiple' => true,
+                                    'accept' => 'image/*',
+                                ],
+                                'pluginOptions' => [
+                                    'previewFileType' => 'any',
+                                    'showCancel' => false,
+                                    'showRemove' => false,
+                                    'showUpload' => false,
+                                    'maxFileSize' => 1028000,
+                                    'allowedFileExtensions' => ['jpg', 'jpeg', 'png'],
+                                ]
+                            ]);
+                        }
+                        if ($media_type == "Video") {
+                            echo $form->field($model, 'file')->widget(FileInput::classname(), [
+                                'options' => [
+                                    //'multiple' => true,
+                                    'accept' => 'video/*',
+                                ],
+                                'pluginOptions' => [
+                                    'previewFileType' => 'any',
+                                    'showCancel' => false,
+                                    'showRemove' => false,
+                                    'showUpload' => false,
+                                    'maxFileSize' => 1028000,
+                                    'allowedFileExtensions' => ['mp4'],
+                                ]
+                            ]);
+                        }
                         ?>
                     </div>
                     <div class="col-lg-12 form-group">&nbsp;</div>

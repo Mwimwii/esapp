@@ -104,6 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ];
         ?>
         <?php
+        $fullExportMenu="";
         if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
 
             $fullExportMenu = ExportMenu::widget([
@@ -111,6 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'columns' => $gridColumns,
                         'columnSelectorOptions' => [
                             'label' => 'Cols...',
+                             'class' => 'btn btn-outline-success btn-sm',
                         ],
                         'batchSize' => 200,
                         'exportConfig' => [
@@ -128,14 +130,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filename' => 'districts' . date("YmdHis"),
                         'dropdownOptions' => [
                             'label' => 'Export to excel',
-                            'class' => 'btn btn-outline-secondary',
+                             'class' => 'btn btn-outline-success btn-sm',
                             'itemsBefore' => [
                                 '<div class="dropdown-header">Export All Data</div>',
                             ],
                         ],
             ]);
+        }
             echo GridView::widget([
                 'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
                 'columns' => $gridColumns,
                 'condensed' => true,
                 'responsive' => true,
@@ -157,9 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     $fullExportMenu,
                 ]
             ]);
-        } else {
-            echo '<p>There are currently no districts in the system!</p>';
-        }
+      
         ?>
 
 

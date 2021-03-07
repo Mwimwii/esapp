@@ -117,38 +117,43 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ],
             ];
-             if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
 
-            $fullExportMenu = ExportMenu::widget([
-                        'dataProvider' => $dataProvider,
-                        'columns' => $gridColumns,
-                        'columnSelectorOptions' => [
-                            'label' => 'Cols...',
-                        ],
-                        'batchSize' => 200,
-                        'exportConfig' => [
-                            ExportMenu::FORMAT_TEXT => false,
-                            ExportMenu::FORMAT_HTML => false,
-                            ExportMenu::FORMAT_EXCEL => false,
-                            ExportMenu::FORMAT_PDF => false,
-                            ExportMenu::FORMAT_CSV => false,
-                        ],
-                        'target' => ExportMenu::TARGET_BLANK,
-                        'pjaxContainerId' => 'kv-pjax-container',
-                        'exportContainer' => [
-                            'class' => 'btn-group mr-2'
-                        ],
-                        'filename' => 'markets' . date("YmdHis"),
-                        'dropdownOptions' => [
-                            'label' => 'Export to excel',
-                            'class' => 'btn btn-outline-secondary',
-                            'itemsBefore' => [
-                                '<div class="dropdown-header">Export All Data</div>',
+            $fullExportMenu = "";
+            if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
+
+                $fullExportMenu = ExportMenu::widget([
+                            'dataProvider' => $dataProvider,
+                            'columns' => $gridColumns,
+                            'columnSelectorOptions' => [
+                                'label' => 'Cols...',
+                                'class' => 'btn btn-outline-success btn-sm',
                             ],
-                        ],
-            ]);
+                            'batchSize' => 200,
+                            'exportConfig' => [
+                                ExportMenu::FORMAT_TEXT => false,
+                                ExportMenu::FORMAT_HTML => false,
+                                ExportMenu::FORMAT_EXCEL => false,
+                                ExportMenu::FORMAT_PDF => false,
+                                ExportMenu::FORMAT_CSV => false,
+                            ],
+                            'target' => ExportMenu::TARGET_BLANK,
+                            'pjaxContainerId' => 'kv-pjax-container',
+                            'exportContainer' => [
+                                'class' => 'btn-group mr-2'
+                            ],
+                            'filename' => 'markets' . date("YmdHis"),
+                            'dropdownOptions' => [
+                                'label' => 'Export to excel',
+                                'class' => 'btn btn-outline-success btn-sm',
+                                'itemsBefore' => [
+                                    '<div class="dropdown-header">Export All Data</div>',
+                                ],
+                            ],
+                ]);
+            }
             echo GridView::widget([
                 'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
                 'columns' => $gridColumns,
                 'condensed' => true,
                 'responsive' => true,
@@ -170,9 +175,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     $fullExportMenu,
                 ]
             ]);
-        } else {
-            echo '<p>There are currently no markets in the system!</p>';
-        }
             ?>
     </div>
 </div>

@@ -134,6 +134,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'columns' => $gridColumns2,
                         'columnSelectorOptions' => [
                             'label' => 'Cols...',
+                             'class' => 'btn btn-outline-success btn-sm',
                         ],
                         'batchSize' => 200,
                         'exportConfig' => [
@@ -151,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filename' => 'audittraillogs' . date("YmdHis"),
                         'dropdownOptions' => [
                             'label' => 'Export to excel',
-                            'class' => 'btn btn-outline-secondary',
+                            'class' => 'btn btn-outline-success btn-sm',
                             'itemsBefore' => [
                                 '<div class="dropdown-header">Export All Data</div>',
                             ],

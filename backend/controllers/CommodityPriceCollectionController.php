@@ -201,7 +201,7 @@ class CommodityPriceCollectionController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) {
+    /*public function actionUpdate($id) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -211,7 +211,7 @@ class CommodityPriceCollectionController extends Controller {
         return $this->render('update', [
                     'model' => $model,
         ]);
-    }
+    }*/
 
     /**
      * Deletes an existing CommodityPriceCollection model.

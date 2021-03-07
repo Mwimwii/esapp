@@ -123,4 +123,9 @@ class Camps extends \yii\db\ActiveRecord {
         return $data->name;
     }
 
+    public static function getListByDistrictId($id) {
+        $list = self::find()->where(['district_id' => $id])->orderBy(['name' => SORT_ASC])->all();
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
 }
