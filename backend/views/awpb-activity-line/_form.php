@@ -14,7 +14,13 @@ $form = ActiveForm::begin(['type'=>ActiveForm::TYPE_HORIZONTAL]);
 ?>
 <div class="card">
     
-    <div class="card-body">
+    <div class="card-body"> 
+    <?=
+                $form->field($model, 'awpb_template_id')
+                ->dropDownList(
+                        \backend\models\AwpbTemplate::getAwpbTemplates(), ['id' => 'template_id', 'custom' => true, 'required' => true]
+        );
+        ?>
     <?=         
         $form->field($model, 'activity_id')
         ->dropDownList(
@@ -22,6 +28,7 @@ $form = ActiveForm::begin(['type'=>ActiveForm::TYPE_HORIZONTAL]);
                 \backend\models\AWPBActivity::getAwpbActivitiesList(1),['custom' => true, 'prompt' => 'Please select an activity', 'required' => true]
 )->label("Activity");
 ?>
+	
 <?=
 $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Item description'])->label("Item description");
       ?>
@@ -141,8 +148,8 @@ $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-c
             
         </div>
 
-    <div class="card-footer text-right">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
+    <div class="card-footer text-left">
+        <?= Html::submitButton('Save', ['class' => ' btn btn-success']) ?>
     </div>
 </div>
 <?php ActiveForm::end(); ?>

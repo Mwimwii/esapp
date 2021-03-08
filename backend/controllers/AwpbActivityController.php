@@ -281,9 +281,9 @@ class AwpbActivityController extends Controller
                     }
                     $model->activity_code =	$activity_code;
                     $model->component_id= $parent_model->component_id;
-                    $model->awpb_template_id=$parent_model->awpb_template_id;
-                    $model->unit_of_measure_id=$model->unit_of_measure_id;
-                    $model->expense_category_id=$parent_model->expense_category_id;
+                   // $model->awpb_template_id=$parent_model->awpb_template_id;
+                    //$model->unit_of_measure_id=$model->unit_of_measure_id;
+                    //$model->expense_category_id=$parent_model->expense_category_id;
                     $model->type = AwpbActivity::TYPE_SUB;             
                 }
                             

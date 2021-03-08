@@ -20,6 +20,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'code') ?>
 
     <?= $form->field($model, 'parent_component_id') ?>
+ <? = $form->field($model, 'gl_account_code')->textInput(['maxlength' => true])?>
 
     <?= $form->field($model, 'outcome') ?>
 

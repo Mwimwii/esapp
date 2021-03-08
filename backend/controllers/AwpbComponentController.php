@@ -133,10 +133,10 @@ class AwpbComponentController extends Controller
                                 $co = $number_of_subcomponents+1;				
                                 $comp_code  =$comp_model->code .'.'.$co;
                             }
-                            
+                        $model->access_level = $comp_model->access_level;    
                         $model->code = $comp_code;
-                        $model->funder_id = $comp_model->funder_id;
-                        $model->expense_category_id = $comp_model->expense_category_id;
+                        //$model->funder_id = $comp_model->funder_id;
+                        //$model->expense_category_id = $comp_model->expense_category_id;
                         $model->type = AwpbComponent::TYPE_SUB;
                         
                     }
@@ -202,7 +202,8 @@ class AwpbComponentController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (User::userIsAllowedTo('Manage components')) {
+           if (User::userIsAllowedTo('Manage AWPB activity lines')) {
+          
             $model = $this->findModel($id);
             $model->updated_by = Yii::$app->user->identity->id;
 
@@ -273,7 +274,7 @@ class AwpbComponentController extends Controller
             if ($model->save()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Delete component : "  . $model->component_description;
+                $audit->action = "Delete component : "  . $model->code . " ".$model->name;
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();

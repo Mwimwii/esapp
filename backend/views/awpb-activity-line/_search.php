@@ -18,6 +18,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'activity_id') ?>
+    <?= $form->field($model, 'awpb_template_id') ?>
 
     <?= $form->field($model, 'name') ?>
 

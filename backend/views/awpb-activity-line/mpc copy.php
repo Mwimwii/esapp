@@ -84,98 +84,130 @@ else
             'contentOptions'=>['class'=>'kartik-sheet-style'],
             'width'=>'36px',
             'pageSummary'=>'Total',
-            'pageSummaryOptions' => ['colspan' => 6],
+            'pageSummaryOptions' => ['colspan' => 2],
             'header'=>'',
             'headerOptions'=>['class'=>'kartik-sheet-style']
         ],
   
-        [
-            'attribute' => 'activity_id',
-            'label' => 'Activity Code', 
-            'vAlign' => 'middle',
-            'width' => '180px',
+     
+        // [
+        //     'attribute' => 'awpb_template_id',
+        //     'label' => 'Fiscal Year', 
+        //     'vAlign' => 'middle',
+        //     'width' => '180px',
 
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
-                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-            },
+        //     'value' => function ($model) {
+        //         $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
+        //         return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
+        //     },
            
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
+        //     'filterType' => GridView::FILTER_SELECT2,
+        //     'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+        //     'filterWidgetOptions' => [
+        //         'pluginOptions' => ['allowClear' => true],
+        //         'options' => ['multiple' => true]
+        //     ],
+        //     'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+        //     'format' => 'raw'
+        // ],
+        // [
+        //     'attribute' => 'district_id',
+        //     'format' => 'raw',
+        //     'label' => 'District',
+        //     'value' => function ($model) {
+        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
+        //     },
+        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+        // ],
         [
-            'attribute' => 'awpb_template_id',
-            'label' => 'Fiscal Year', 
-            'vAlign' => 'middle',
-            'width' => '180px',
+            'attribute' => 'province_id',
+            'format' => 'raw',
+            'label' => 'Province',
+            'value' => function ($model) {
+                return !empty($model->province_id) && $model->province_id > 0 ?  Html::a(backend\models\Provinces::findOne($model->province_id)->name,['awpb-activity-line/index'], ['class' => 'awbp-activity-line']):"";
+                ;
+            },
+        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+         ],
+        [
+            'attribute' => 'district_id',
+            'format' => 'raw',
+            'label' => 'District',
+            'value' => function ($model) {
+                return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['awpb-activity-line/ex'], ['class' => 'awbp-activity-line']):"";
+                ;
+            },
+        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+         ],
 
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
-                return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
-            },
+        // [
+        //     'attribute' => 'district_id',
+        //     'label' => 'District', 
+        //     'vAlign' => 'middle',
+        //     'width' => '180px',
+
+        //     'value' => function ($model) {
+        //         $name =  \backend\models\Districts::findOne(['id' =>  $model->district_id])->name;
+        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
+        //           },
            
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
-        [
-            'label' => 'Activity Name',
-                  'value' =>  function ($model) {
-                    $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->name;
-                    return $name;
+        //     // 'filterType' => GridView::FILTER_SELECT2,
+        //     // 'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+        //     // 'filterWidgetOptions' => [
+        //     //     'pluginOptions' => ['allowClear' => true],
+        //     //     'options' => ['multiple' => true]
+        //     // ],
+        //     // 'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+        //     // 'format' => 'raw'
+        // ],
+
+        // [
+        //     'label' => 'Activity Name',
+        //           'value' =>  function ($model) {
+        //             $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->name;
+        //             return $name;
                       
-                  }
-              ],
+        //           }
+        //       ],
 
           
    
 
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'label' => 'Item Description',
-                'attribute' => 'name',
-                'readonly' =>true,
-                'editableOptions' => [
-                    'header' => 'Name', 
-                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
+            // [
+            //     'class' => 'kartik\grid\EditableColumn',
+            //     'label' => 'Item Description',
+            //     'attribute' => 'name',
+            //     'readonly' =>true,
+            //     'editableOptions' => [
+            //         'header' => 'Name', 
+            //         'inputType' => \kartik\editable\Editable::INPUT_TEXT,
                     
-                ],
-                'hAlign' => 'left', 
-                'vAlign' => 'left',
-               // 'width' => '7%',
+            //     ],
+            //     'hAlign' => 'left', 
+            //     'vAlign' => 'left',
+            //    // 'width' => '7%',
               
-            ],
+            // ],
 
 
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'unit_cost',
-                'readonly' =>true,
-                'refreshGrid' => true,
-                'editableOptions' => [
-                    'header' => 'Unit Cost', 
-                    'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-                    'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
-                    ]
-                ],
-                'hAlign' => 'right', 
-                'vAlign' => 'middle',
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'pageSummary' => false
-            ],
+            // [
+            //     'class' => 'kartik\grid\EditableColumn',
+            //     'attribute' => 'unit_cost',
+            //     'readonly' =>true,
+            //     'refreshGrid' => true,
+            //     'editableOptions' => [
+            //         'header' => 'Unit Cost', 
+            //         'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+            //         'options' => [
+            //             'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+            //         ]
+            //     ],
+            //     'hAlign' => 'right', 
+            //     'vAlign' => 'middle',
+            //     'width' => '7%',
+            //     'format' => ['decimal', 2],
+            //     'pageSummary' => false
+            // ],
 
             [
                 'class' => 'kartik\grid\EditableColumn',
@@ -271,10 +303,7 @@ else
                 'header' => 'Total <br> Quantity', 
                // 'refreshGrid' => true,
                 'vAlign' => 'middle',
-                'value' => function ($model, $key, $index, $widget) { 
-                    $p = compact('model', 'key', 'index');
-                    return $widget->col(6, $p)+$widget->col(7, $p)+$widget->col(8, $p) + $widget->col(9, $p);
-                },
+             
                 'headerOptions' => ['class' => 'kartik-sheet-style'],
                 'hAlign' => 'right', 
                 'width' => '7%',
@@ -290,10 +319,7 @@ else
                 'vAlign' => 'middle',
                 'hAlign' => 'right', 
                 'width' => '7%',
-                'value' => function ($model, $key, $index, $widget) { 
-                    $p = compact('model', 'key', 'index');
-                    return $widget->col(10, $p) != 0 ? $widget->col(5, $p) * $widget->col(10, $p) : 0;
-                },
+             
                 'format' => ['decimal', 2],
                 'headerOptions' => ['class' => 'kartik-sheet-style'],
                 'mergeHeader' => true,
@@ -327,7 +353,7 @@ else
 
 
 
-        if ($dataProvider->getCount() > 0) {
+        //if ($dataProvider->getCount() > 0) {
    
           // echo ' </p>';
             echo ExportMenu::widget([
@@ -351,7 +377,7 @@ else
                 //      // btn btn-outline-primary btn-space
                 //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
                 //    }
-        }
+    //    }
         ?>
       
 

@@ -32,7 +32,7 @@ if (!empty($activity)) {
     }
 
 $tem="";
-$template= \backend\models\AWPBTemplate::findOne(['id' => $fis]);
+$template= \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
 	
 if (!empty($template)) {
     $tem=  $template->fiscal_year;

@@ -86,12 +86,13 @@ echo $form->field($model, 'activity_type')->hiddenInput(['value'=> $sub])->label
 		<?php
 	 if ($sub === "Main Activity") {
 
-	  
-		echo
-                $form->field($model, 'awpb_template_id')
-                ->dropDownList(
-                        \backend\models\AwpbTemplate::getAwpbTemplates(), ['id' => 'template_id', 'custom' => true, 'required' => true]
-        );
+		echo '
+		</div>
+				
+		   </div>
+		   <div class="row">
+			   <div class="col-md-6">';	  
+	
 	
 	
 		
@@ -100,20 +101,14 @@ echo $form->field($model, 'activity_type')->hiddenInput(['value'=> $sub])->label
 	  [
 		'prompt'=>'Select component','id'=>'comp_id']);
 	
-echo '
- </div>
- 		
-    </div>
-	<div class="row">
-		<div class="col-md-6">';
+
+		echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 		echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
-	 
-		                 
-			echo $form->field($model, 'expense_category_id')
-                ->dropDownList(
-                        \backend\models\AwpbExpenseCategory::getAwpbExpenseCategoryList(), ['id' => 'expense_category_id', 'custom' => true, 'prompt' => 'Please select an expense category', 'required' => false]);
-				
-			;	
+		echo '
+		</div>
+
+			   <div class="col-md-6">';
+	
 			echo '
 			</div>
 			  </div>
@@ -127,7 +122,13 @@ echo '
 				}
 				
 
-if ($sub === "Subactivity") {	   	
+if ($sub === "Subactivity") {	
+	echo '
+	</div>
+			
+	   </div>
+	   <div class="row">
+		   <div class="col-md-6">';   	
 echo
 	$form->field($model, 'component_id')
 	->dropDownList(
@@ -155,22 +156,40 @@ echo $form->field($model,'parent_activity_id')->widget(DepDrop::classname(),[
 		   
 		   
 				  
-		   echo '
-			</div>
-					
-			   </div>
-			   <div class="row">
-				   <div class="col-md-6">';
+		  
+				   echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 				   echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
-				   				
-				   echo $form->field($model, 'expense_category_id')->hiddenInput(['value' => '0'])->label(false);
-//echo  $form->field($model, 'unit_of_measure_id')->hiddenInput(['value' => '0'])->label(false);
+				 echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
+
+	  
+				   echo '
+				   </div>
+
+						  <div class="col-md-6">';
+						  echo $form->field($model, 'indicator')->textarea(['rows' => 3],['maxlength' => true]);
+				  
 				   echo                
 				   $form->field($model, 'unit_of_measure_id')
 					   ->dropDownList(
 							   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
 					   
 				   ;
+				  
+		
+				   echo  $form->field($model, 'funder_id')
+            		->dropDownList(
+                    \backend\models\AwpbFunder::getAwpbFunderList(), ['id' => 'funder_id', 'custom' => true, 'prompt' => 'Please select a funder', 'required' => false]);
+            ;
+			echo $form->field($model, 'expense_category_id')
+			->dropDownList(
+					\backend\models\AwpbExpenseCategory::getAwpbExpenseCategoryList(), ['id' => 'expense_category_id', 'custom' => true, 'prompt' => 'Please select an expense category', 'required' => false]);
+			
+		;
+			echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);                
+		
+				//   echo $form->field($model, 'expense_category_id')->hiddenInput(['value' => '0'])->label(true);
+//echo  $form->field($model, 'unit_of_measure_id')->hiddenInput(['value' => '0'])->label(false);
+				  
 				
 					   echo '
 					   </div>

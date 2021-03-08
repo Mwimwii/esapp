@@ -84,102 +84,26 @@ else
             'contentOptions'=>['class'=>'kartik-sheet-style'],
             'width'=>'36px',
             'pageSummary'=>'Total',
-            'pageSummaryOptions' => ['colspan' => 6],
+            'pageSummaryOptions' => ['colspan' => 2],
             'header'=>'',
             'headerOptions'=>['class'=>'kartik-sheet-style']
         ],
   
+     
+     
+        
         [
-            'attribute' => 'activity_id',
-            'label' => 'Activity Code', 
-            'vAlign' => 'middle',
-            'width' => '180px',
-
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
-                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-            },
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
-        [
-            'attribute' => 'awpb_template_id',
-            'label' => 'Fiscal Year', 
-            'vAlign' => 'middle',
-            'width' => '180px',
-
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
-                return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
-            },
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
-        [
-            'label' => 'Activity Name',
-                  'value' =>  function ($model) {
-                    $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->name;
-                    return $name;
-                      
-                  }
-              ],
-
-          
-   
+            'attribute' => 'name',
+            'format' => 'raw',
+            'label' => 'Name',
+            
+         
+         ],
+      
 
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'label' => 'Item Description',
-                'attribute' => 'name',
-                'readonly' =>true,
-                'editableOptions' => [
-                    'header' => 'Name', 
-                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                    
-                ],
-                'hAlign' => 'left', 
-                'vAlign' => 'left',
-               // 'width' => '7%',
-              
-            ],
-
-
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'unit_cost',
-                'readonly' =>true,
-                'refreshGrid' => true,
-                'editableOptions' => [
-                    'header' => 'Unit Cost', 
-                    'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-                    'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
-                    ]
-                ],
-                'hAlign' => 'right', 
-                'vAlign' => 'middle',
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'pageSummary' => false
-            ],
-
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_one_quantity', 
+                'attribute' => 'quarter_one_amount', 
                 'readonly' =>true,
                 //='readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
@@ -200,7 +124,7 @@ else
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_two_quantity', 
+                'attribute' => 'quarter_two_amount', 
                 'readonly' =>true,
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
@@ -221,7 +145,7 @@ else
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_three_quantity', 
+                'attribute' => 'quarter_three_amount', 
                 'readonly' =>true,
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
@@ -242,7 +166,7 @@ else
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_four_quantity', 
+                'attribute' => 'quarter_four_amount', 
                 'readonly' =>true,
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
@@ -265,24 +189,21 @@ else
             
 
 
-            [
-                'class' => 'kartik\grid\FormulaColumn', 
-                'attribute' => 'total_quantity', 
-                'header' => 'Total <br> Quantity', 
-               // 'refreshGrid' => true,
-                'vAlign' => 'middle',
-                'value' => function ($model, $key, $index, $widget) { 
-                    $p = compact('model', 'key', 'index');
-                    return $widget->col(6, $p)+$widget->col(7, $p)+$widget->col(8, $p) + $widget->col(9, $p);
-                },
-                'headerOptions' => ['class' => 'kartik-sheet-style'],
-                'hAlign' => 'right', 
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'mergeHeader' => true,
-                'pageSummary' => true,
-                'footer' => true
-            ],
+            // [
+            //     'class' => 'kartik\grid\FormulaColumn', 
+            //     'attribute' => 'total_quantity', 
+            //     'header' => 'Total <br> Quantity', 
+            //    // 'refreshGrid' => true,
+            //     'vAlign' => 'middle',
+             
+            //     'headerOptions' => ['class' => 'kartik-sheet-style'],
+            //     'hAlign' => 'right', 
+            //     'width' => '7%',
+            //     'format' => ['decimal', 2],
+            //     'mergeHeader' => true,
+            //     'pageSummary' => true,
+            //     'footer' => true
+            // ],
             [
                 'class' => 'kartik\grid\FormulaColumn', 
                 'attribute' => 'total_amount', 
@@ -290,10 +211,7 @@ else
                 'vAlign' => 'middle',
                 'hAlign' => 'right', 
                 'width' => '7%',
-                'value' => function ($model, $key, $index, $widget) { 
-                    $p = compact('model', 'key', 'index');
-                    return $widget->col(10, $p) != 0 ? $widget->col(5, $p) * $widget->col(10, $p) : 0;
-                },
+             
                 'format' => ['decimal', 2],
                 'headerOptions' => ['class' => 'kartik-sheet-style'],
                 'mergeHeader' => true,
@@ -327,7 +245,7 @@ else
 
 
 
-        if ($dataProvider->getCount() > 0) {
+        //if ($dataProvider->getCount() > 0) {
    
           // echo ' </p>';
             echo ExportMenu::widget([
@@ -351,13 +269,13 @@ else
                 //      // btn btn-outline-primary btn-space
                 //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
                 //    }
-        }
+    //    }
         ?>
       
 
     <?=  GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+      //  'filterModel' => $searchModel,
         'columns' => $gridColumns,
       
         'pjax' => true,

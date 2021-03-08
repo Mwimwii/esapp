@@ -69,6 +69,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'visible' => !empty($model->province_id) && $model->province_id > 0 ? TRUE : FALSE,
                 ],
+     [
+                    'attribute' => 'district_id',
+                    'format' => 'raw',
+                    'label' => 'District',
+                    'value' => function ($model) {
+                        return !empty($model->district_id) && $model->district_id > 0 ? backend\models\Districts::findOne($model->district_id)->name: "";
+                    },
+                    'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+                ],
+
                 [
                     'attribute' => 'district_id',
                     'format' => 'raw',

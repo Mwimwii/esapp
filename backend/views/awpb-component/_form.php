@@ -73,6 +73,16 @@ echo $form->field($model, 'subcomponent')->hiddenInput(['value'=> $sub_component
 		echo '<div class="col-md-6">';
 			echo $form->field($model, 'code')->textInput(['maxlength' => true]);		
 			echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+            echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
+            echo $form->field($model, 'access_level')->dropDownList(
+                [
+            '1' => 'District',
+            '2' => 'Provincial',
+            '3' => 'Programme',
+    
+                ], ['prompt' => 'Select the access level', 'custom' => true, 'required' => false]
+        );
+ 
             // echo  $form->field($model, 'expense_category_id')
             // ->dropDownList(
             //         \backend\models\AwpbExpenseCategory ::getAwpbExpenseCategoryList(), ['id' => 'expense_category_id', 'custom' => true, 'prompt' => 'Please select an expense category', 'required' => false]);
@@ -106,10 +116,16 @@ echo $form->field($model, 'subcomponent')->hiddenInput(['value'=> $sub_component
 
 	
 			echo $form->field($model, 'name')->textInput(['maxlength' => true]) ;
+            echo $form->field($model, 'description')->textarea(['rows' => 6],['maxlength' => true]); 
+            echo '</div>
+            <div class="col-md-6">';       
 			echo $form->field($model, 'outcome')->textarea(['rows' => 3]) ;
 			echo $form->field($model, 'output')->textarea(['rows' => 3]) ;
-		
-			echo '<div class="form-group">';
+            echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);
+            echo '</div></div>
+            <div class="row">
+            <div class="col-md-6">
+            <div class="form-group">';
 					echo Html::submitButton('Save', ['class' => 'btn btn-success']);
 			echo '</div>';
 		echo '</div>';

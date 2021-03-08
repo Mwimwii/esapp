@@ -62,18 +62,37 @@ class AwpbActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_code', 'component_id', 'awpb_template_id', 'description',  'expense_category_id'], 'required'],
-            [['id', 'parent_activity_id', 'component_id','type', 'awpb_template_id', 'unit_of_measure_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
+            [['activity_code', 'component_id',  'name','description'], 'required'],
+            [['id', 'parent_activity_id', 'component_id','type',  'unit_of_measure_id','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['programme_target','quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
             [['activity_code'], 'string', 'max' => 10],
-            [['description','name','activity_type'], 'string', 'max' => 255],          
+            [['gl_account_code'], 'string', 'min' => 4,'max' => 4],
+            [['name'], 'string', 'max' => 40],
+            [['description','name','indicator','activity_type'], 'string', 'max' => 255],          
             [['description','name',], 'unique'],
             ['parent_activity_id', 'required', 'when' => function($model) {
                 return $model->sub == 'Subactivity';
-                       }, 'message' => 'Parent Component cannot be blank!'],
+                       }, 'message' => 'Parent activity can not be blank!'],
+            ['funder_id', 'required', 'when' => function($model) {
+                return $model->sub == 'Subactivity';
+                        }, 'message' => 'Funder can not be blank!'],
+            ['gl_account_code', 'required', 'when' => function($model) {
+                    return $model->sub == 'Subactivity';
+                        }, 'message' => 'General ledger account code can not be blank!'],
+            ['expense_category_id', 'required', 'when' => function($model) {
+                    return $model->sub == 'Subactivity';
+                        }, 'message' => 'Expense Category can not be blank!'],
+            ['programme_target', 'required', 'when' => function($model) {
+                return $model->sub == 'Subactivity';
+                    }, 'message' => 'Programme target can not be blank!'],
+                    ['indicator', 'required', 'when' => function($model) {
+                        return $model->sub == 'Subactivity';
+                            }, 'message' => 'Indicator can not be blank!'],
+                                            
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
             [['expense_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbExpenseCategory::className(), 'targetAttribute' => ['expense_category_id' => 'id']],
-            [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
+           [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
+           // [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
             [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
         ];
     }
@@ -103,9 +122,13 @@ class AwpbActivity extends \yii\db\ActiveRecord
             'type'=> 'Type',
             'activity_type'=> 'Activity Type',
             'component_id' => 'Component',
-            'awpb_template_id' => 'AWPB Template',
+           // 'awpb_template_id' => 'AWPB Template',
             'description' => 'Description',
             'name'=>'Name',
+            'indcator'=>'Indicator',
+            'programme_target'=>'Programme Target',
+            'funder_id'=>'Funder',
+            'gl_account_code' => 'General Ledger Account Code',
             'unit_of_measure_id' => 'Unit Of Measure',
             'quarter_one_budget' => 'Quarter One Budget',
             'quarter_two_budget' => 'Quarter Two Budget',

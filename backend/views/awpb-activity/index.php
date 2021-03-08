@@ -1,12 +1,18 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+//use yii\grid\GridView;
 //use kartik\grid\EditableColumn;
 //use kartik\grid\GridView;;
 //use kartik\editable\Editable;
 use backend\models\User;
 use backend\models\AwpbUnitOfMeasure;
+
+
+use kartik\grid\EditableColumn;
+use kartik\grid\GridView;
+use kartik\editable\Editable;
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\AwbpActivitySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -39,31 +45,138 @@ $this->params['breadcrumbs'][] = $this->title;
         </p>
         <hr class="dotted short">
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-      //  'filterModel' => $searchModel,
-        'columns' => [
-          //  ['class' => 'yii\grid\SerialColumn'],
-		//	'awpb_template_id',
-			'activity_code',
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
+
+
+
+            [
+                'attribute' => 'activity_code', 
+                'vAlign' => 'middle',
+                'width' => '180px',
+                'value' => function ($model, $key, $index, $widget) { 
+                return      Html::a($model->activity_code, ['awpb-activity/view', 'id' => $model->id], ['class' => 'awbp-activty']);
+               
+                },
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map(backend\models\AwpbActivity::find()->orderBy('activity_code')->asArray()->all(), 'id', 'activity_code'), 
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                    'options' => ['multiple' => true]
+                ],
+                'filterInputOptions' => ['placeholder' => 'Filter by activity code'],
+                'format' => 'raw'
+            ],
+
 			//'parent_activity_id',
 			//'component_id',
-			'name',		
-			  [
-              'label' => 'Unit of measure',
-                    'value' => function($model) {
-                        $unit_of_measure = \backend\models\AwpbUnitOfMeasure::findOne(['id' => $model->unit_of_measure_id]);						
-                        return !empty( $unit_of_measure) ?  $unit_of_measure->name : "";  
-                    }
+            [
+                'attribute' => 'name', 
+                'vAlign' => 'middle',
+                'width' => '180px',
+                'value' => function ($model, $key, $index, $widget) { 
+                return      Html::a($model->name, ['awpb-activity/view', 'id' => $model->id], ['class' => 'awbp-activity']);
+               
+                },
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map(backend\models\AwpbActivity::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                    'options' => ['multiple' => true]
                 ],
-				  [
-              'label' => 'Expense Category',
-                    'value' => function($model) {
-                        $expense_category = \backend\models\AwpbExpenseCategory::findOne(['id' => $model->expense_category_id]);
-                        return !empty($expense_category) ? $expense_category->name : "";
+                'filterInputOptions' => ['placeholder' => 'Filter by name'],
+                'format' => 'raw'
+            ],
+
+            'indicator',
+            'programme_target',	
+            // [
+            //     'label' => 'Funder',
+            //           'value' => function($model) {
+            //               $funder= \backend\models\AwpbFunder::findOne(['id' => $model->funder_id]);						
+            //               return !empty( $funder) ?  $funder->name : "";  
+            //           }
+            //       ],
+
+                  [
+                    'attribute' => 'funder_id', 
+                    'vAlign' => 'middle',
+                    'width' => '180px',
+                    'value' => function ($model, $key, $index, $widget) {
+                        $funder= \backend\models\AwpbFunder::findOne(['id' => $model->funder_id]);						
+                    
+                    return     !empty($funder) ? Html::a($funder->name, ['awpb-funder/view', 'id' => $model->funder_id], ['class' => 'awbp-funder']):"";
+                   
+                    },
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => ArrayHelper::map(backend\models\AwpbActivity::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                        'options' => ['multiple' => true]
+                    ],
+                    'filterInputOptions' => ['placeholder' => 'Filter by name'],
+                    'format' => 'raw'
+                ],
+    
+                  [
+                    'attribute' => 'unit_of_measure_id', 
+                    'vAlign' => 'middle',
+                    'width' => '180px',
+                    'value' => function ($model, $key, $index, $widget) { 
+                        $unit_of_measure = \backend\models\AwpbUnitOfMeasure::findOne(['id' => $model->unit_of_measure_id]);						
+                      //  return !empty( $unit_of_measure) ?  $unit_of_measure->name : "";
+                    return     !empty( $unit_of_measure) ?  $unit_of_measure->name:"";
+                   
+                    },
+                    // 'filterType' => GridView::FILTER_SELECT2,
+                    // 'filter' => ArrayHelper::map(backend\models\AwpbUnitOfMeasure::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
+                    // 'filterWidgetOptions' => [
+                    //     'pluginOptions' => ['allowClear' => true],
+                    //     'options' => ['multiple' => true]
+                    // ],
+                    // 'filterInputOptions' => ['placeholder' => 'Filter by name'],
+                    // 'format' => 'raw'
+                ],
+    
+			//   [
+            //   'label' => 'Unit of measure',
+            //         'value' => function($model) {
+            //             $unit_of_measure = \backend\models\AwpbUnitOfMeasure::findOne(['id' => $model->unit_of_measure_id]);						
+            //             return !empty( $unit_of_measure) ?  $unit_of_measure->name : "";  
+            //         }
+            //     ],
+
+            [
+                'attribute' => 'expense_category_id', 
+                'vAlign' => 'middle',
+                'width' => '180px',
+                'value' => function ($model, $key, $index, $widget) { 
+                    $expense_category = \backend\models\AwpbExpenseCategory::findOne(['id' => $model->expense_category_id]);
+                       
+                return    !empty($expense_category) ? $expense_category->name:"";
+               
+                },
+                // 'filterType' => GridView::FILTER_SELECT2,
+                // 'filter' => ArrayHelper::map(backend\models\AwpbUnitOfMeasure::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
+                // 'filterWidgetOptions' => [
+                //     'pluginOptions' => ['allowClear' => true],
+                //     'options' => ['multiple' => true]
+                // ],
+                // 'filterInputOptions' => ['placeholder' => 'Filter by name'],
+                // 'format' => 'raw'
+            ],
+
+			// 	  [
+            //   'label' => 'Expense Category',
+            //         'value' => function($model) {
+            //             $expense_category = \backend\models\AwpbExpenseCategory::findOne(['id' => $model->expense_category_id]);
+            //             return !empty($expense_category) ? $expense_category->name : "";
 						
                         
-                    }
-                ],
+            //         }
+            //     ],
             //'quarter_one_budget',
             //'quarter_two_budget',
             //'quarter_three_budget',

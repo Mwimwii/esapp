@@ -23,7 +23,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
     
-            <?php
+
+
+    <?php
+             echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->id], [
+                'title' => 'back',
+                'data-toggle' => 'tooltip',
+                'data-placement' => 'top',
+            ]);
+         
+            echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             if (\backend\models\User::userIsAllowedTo('Manage AWPB templates')) {
                 echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
                     'title' => 'Update component',

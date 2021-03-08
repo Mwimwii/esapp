@@ -52,13 +52,21 @@ class AwpbComponent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['code',  'name','type'], 'required'],
-            [['parent_component_id', 'type','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['code',  'name','description','type'], 'required'],
+            [['access_level','parent_component_id','type','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['outcome', 'output'], 'string'],
             [['code'], 'string', 'max' => 10],
-            [[ 'name', 'subcomponent'], 'string', 'max' => 255],
+            
+            [['gl_account_code'], 'string', 'min' => 4,'max' => 4],
+            [[ 'name', 'description','subcomponent'], 'string', 'max' => 255],
+            [['description','name',], 'unique'],
             [['code'], 'unique'],
-           
+            ['gl_account_code', 'required', 'when' => function($model) {
+                return $model->subcomponent== 'Subcomponent';
+                       }, 'message' => 'Parent Component can not be blank for a subcomponent!'],
+                       ['access_level', 'required', 'when' => function($model) {
+                        return $model->subcomponent== 'Component';
+                               }, 'message' => 'Access level can not be blank for a main component!'],          
             [['expense_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbExpenseCategory::className(), 'targetAttribute' => ['expense_category_id' => 'id']],
             [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
         ];
@@ -73,15 +81,15 @@ class AwpbComponent extends \yii\db\ActiveRecord
             'id' => 'ID',
             'code' => 'Code',
             'parent_component_id' => 'Parent Component',
-           
             'name' => 'Name',
             'outcome' => 'Outcome',
             'output' => 'Output',
             'subcomponent' => 'Component Type',
-            
+            'access_level'=>'Access Level',
             'sub_component'=>'Component Type',
             'type' => 'Type',
             'funder_id' => 'Funder',
+            'gl_account_code' => 'General Ledger Account Code',
             'expense_category_id' => 'Expense Category',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

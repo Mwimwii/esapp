@@ -11,16 +11,37 @@ use yii\widgets\ActiveForm;
 <div class="card card-success card-outline">
     <div class="card-body">
     <?php $form = ActiveForm::begin(); ?>
+    <?php
+    if ($model->type ==0) {
 
-    
+        echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+        echo  $form->field($model, 'description')->textInput(['maxlength' => true]);
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        echo  $form->field($model, 'outcome')->textarea(['rows' => 3]) ;
 
-    <?= $form->field($model, 'outcome')->textarea(['rows' => 3]) ?>
+        echo  $form->field($model, 'output')->textarea(['rows' => 3]) ;
 
-    <?= $form->field($model, 'output')->textarea(['rows' => 3]) ?>
+        echo  $form->field($model, 'access_level')->dropDownList(
+                [
+            '1' => 'District',
+            '2' => 'Provincial',
+            '3' => 'Programme',
 
-    
+                ], ['prompt' => 'Select the access level', 'custom' => true, 'required' => false]
+            );
+        }
+        else{
+            
+    echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+    echo  $form->field($model, 'description')->textInput(['maxlength' => true]);
+
+echo  $form->field($model, 'outcome')->textarea(['rows' => 3]) ;
+
+echo  $form->field($model, 'output')->textarea(['rows' => 3]) ;
+echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);
+
+        }
+        ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

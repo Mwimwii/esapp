@@ -20,6 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
     
             <?php
             if (\backend\models\User::userIsAllowedTo('Manage components')) {
+                echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->id], [
+                    'title' => 'back',
+                    'data-toggle' => 'tooltip',
+                    'data-placement' => 'top',
+                ]);
+                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+              
                 echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
                     'title' => 'Update component',
                     'data-toggle' => 'tooltip',
@@ -63,34 +70,53 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'visible' => !empty($model->parent_component_id) && $model->parent_component_id > 0 ? TRUE : FALSE,
             ],
+            [
+                'label' => 'Component Type',
+                'value' => function($model) {
+                    if ($model->type==0)
+                    {
+                        return "Main";    
+                    }
+                    else
+                    {
+                        return "Sub";
+                    } }
+            ],
             'name',
+            'description',
+     
            
-            [
-                'attribute' => 'expense_category_id',
-                'format' => 'raw',
-                'label' => 'Expense Category',
-                'value' => function ($model) {
-                    return !empty($model->expense_category_id) && $model->expense_category_id > 0 ? backend\models\AwpbExpenseCategory::findOne($model->expense_category_id)->name: "";
-                },
-                'visible' => !empty($model->expense_category_id) && $model->expense_category_id > 0 ? TRUE : FALSE,
-            ],
-           
-            [
-                'attribute' => 'funder_id',
-                'format' => 'raw',
-                'label' => 'Funder',
-                'value' => function ($model) {
-                    return !empty($model->funder_id) && $model->funder_id > 0 ? backend\models\AwpbFunder::findOne($model->funder_id)->name: "";
-                },
-                'visible' => !empty($model->funder_id) && $model->funder_id > 0 ? TRUE : FALSE,
-            ],
+        
             'outcome:ntext',
             'output:ntext',
+            'gl_account_code',
+            
+            [
+             'label' => 'Access Level',
+             'value' => function($model) {
+                 if ($model->access_level==1)
+                 {
+                     return "District";
+                       
+                 }
+                 if ($model->access_level==2)
+                 {
+                     return "Provincial";
+                       
+                 }
+                 if ($model->access_level==3)
+                 {
+                     return "Programme";
+                       
+                 }}
+                 
+         ],
             // 'subcomponent',
             // 'created_at',
             // 'updated_at',
             // 'created_by',
             // 'updated_by',
+
         ],
     ]) ?>
 

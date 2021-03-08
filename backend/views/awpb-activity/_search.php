@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'component_id') ?>
 
-    <?= $form->field($model, 'awpb_template_id') ?>
+ 
 
     <?php // echo $form->field($model, 'description') ?>
 

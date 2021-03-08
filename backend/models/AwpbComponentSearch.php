@@ -17,7 +17,7 @@ class AwpbComponentSearch extends AwpbComponent
     public function rules()
     {
         return [
-            [['id', 'parent_component_id', 'funder_id', 'type','expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'access_level','parent_component_id','gl_account_code', 'funder_id', 'type','expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['code', 'description', 'name', 'outcome', 'output', 'subcomponent'], 'safe'],
         ];
     }
@@ -62,6 +62,7 @@ class AwpbComponentSearch extends AwpbComponent
             'parent_component_id' => $this->parent_component_id,
             'type' => $this->type,
             'funder_id' => $this->funder_id,
+            'access_level'=>$this->access_level,
             'expense_category_id' => $this->expense_category_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -74,6 +75,7 @@ class AwpbComponentSearch extends AwpbComponent
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'outcome', $this->outcome])
             ->andFilterWhere(['like', 'output', $this->output])
+            ->andFilterWhere(['like', 'gl_account_code', $this->gl_account_code])
             ->andFilterWhere(['like', 'subcomponent', $this->subcomponent]);
 
         return $dataProvider;

@@ -17,9 +17,9 @@ class AwbpActivitySearch extends AwpbActivity
     public function rules()
     {
         return [
-            [['id', 'parent_activity_id', 'component_id', 'awpb_template_id', 'unit_of_measure_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['activity_code', 'description'], 'safe'],
-            [['quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
+            [['id', 'parent_activity_id', 'component_id', 'awpb_template_id', 'funder_id','unit_of_measure_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['activity_code', 'description','gl_account_code'], 'safe'],
+            [['programme_target','quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
         ];
     }
 
@@ -69,6 +69,8 @@ class AwbpActivitySearch extends AwpbActivity
             'quarter_three_budget' => $this->quarter_three_budget,
             'quarter_four_budget' => $this->quarter_four_budget,
             'total_budget' => $this->total_budget,
+            'funder_id' => $this->funder_id,
+            'programme_target'=>$this->programme_target,
             'expense_category_id' => $this->expense_category_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -77,6 +79,7 @@ class AwbpActivitySearch extends AwpbActivity
         ]);
 
         $query->andFilterWhere(['like', 'activity_code', $this->activity_code])
+        ->andFilterWhere(['like', 'gl_account_code', $this->gl_account_code])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;

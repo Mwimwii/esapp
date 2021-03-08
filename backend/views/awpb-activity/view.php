@@ -26,6 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <?php
     if (\backend\models\User::userIsAllowedTo('Manage AWPB activities')) {
+        echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->id], [
+            'title' => 'back',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+        ]);
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      
         echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
             'title' => 'Update component',
             'data-toggle' => 'tooltip',
@@ -80,7 +87,7 @@ if (!empty($expense_cat)) {
     $parent_activity = \backend\models\AwpbActivity::findOne(['id' => $model->parent_activity_id]);
         
     if (!empty($parent_activity)) {
-        $parent_act=  $parent_activity->code;
+        $parent_act=  $parent_activity->activity_code;
         }
 
 
@@ -89,12 +96,12 @@ if (!empty($expense_cat)) {
         'model' => $model,
         'attributes' => [
            
-            [
-                'attribute' => 'awpb_template_id',
-                'label' => 'AWPB Template',
-                'format' => 'raw',
-                "value" => $fiscal_year
-            ],
+            // [
+            //     'attribute' => 'awpb_template_id',
+            //     'label' => 'AWPB Template',
+            //     'format' => 'raw',
+            //     "value" => $fiscal_year
+            // ],
             
             [
                 'attribute'=>'component_id',
