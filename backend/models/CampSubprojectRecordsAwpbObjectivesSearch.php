@@ -4,12 +4,12 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Camps;
+use backend\models\MeCampSubprojectRecordsAwpbObjectives;
 
 /**
- * CampsSearch represents the model behind the search form of `backend\models\Camps`.
+ * CampSubprojectRecordsAwpbObjectivesSearch represents the model behind the search form of `backend\models\MeCampSubprojectRecordsAwpbObjectives`.
  */
-class CampsSearch extends Camps
+class CampSubprojectRecordsAwpbObjectivesSearch extends MeCampSubprojectRecordsAwpbObjectives
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class CampsSearch extends Camps
     public function rules()
     {
         return [
-            [['id', 'district_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'description', 'latitude', 'longitude','province_id'], 'safe'],
+            [['id', 'camp_id', 'quarter', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['key_indicators', 'period_unit', 'target', 'year'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class CampsSearch extends Camps
      */
     public function search($params)
     {
-        $query = Camps::find();
+        $query = MeCampSubprojectRecordsAwpbObjectives::find();
 
         // add conditions that should always apply here
 
@@ -59,18 +59,21 @@ class CampsSearch extends Camps
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'district_id' => $this->district_id,
+            'camp_id' => $this->camp_id,
+            'quarter' => $this->quarter,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'latitude', $this->latitude])
-            ->andFilterWhere(['like', 'longitude', $this->longitude]);
+        $query->andFilterWhere(['like', 'key_indicators', $this->key_indicators])
+            ->andFilterWhere(['like', 'period_unit', $this->period_unit])
+            ->andFilterWhere(['like', 'target', $this->target])
+            ->andFilterWhere(['like', 'year', $this->year]);
 
         return $dataProvider;
     }
+    
+   
 }

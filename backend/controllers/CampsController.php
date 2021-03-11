@@ -43,7 +43,7 @@ class CampsController extends Controller {
         ];
     }
 
-     /**
+    /**
      * Lists all Camps models.
      * @return mixed
      */
@@ -52,6 +52,17 @@ class CampsController extends Controller {
             $model = new Camps();
             $searchModel = new CampsSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            if (!empty(Yii::$app->request->queryParams['CampsSearch']['province_id'])) {
+                $district_ids = [];
+                $districts = \backend\models\Districts::find()->where(['province_id' => Yii::$app->request->queryParams['CampsSearch']['province_id']])->all();
+                if (!empty($districts)) {
+                    foreach ($districts as $id) {
+                        array_push($district_ids, $id['id']);
+                    }
+                }
+                $dataProvider->query->andFilterWhere(['IN', 'district_id', $district_ids]);
+            }
             if (Yii::$app->request->post('hasEditable')) {
                 $Id = Yii::$app->request->post('editableKey');
                 $model = Camps::findOne($Id);
@@ -93,7 +104,7 @@ class CampsController extends Controller {
         }
     }
 
-  /**
+    /**
      * Creates a new Province model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed

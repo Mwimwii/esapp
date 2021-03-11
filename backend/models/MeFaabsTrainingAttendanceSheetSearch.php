@@ -18,7 +18,7 @@ class MeFaabsTrainingAttendanceSheetSearch extends MeFaabsTrainingAttendanceShee
     {
         return [
             [['id', 'faabs_group_id', 'farmer_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['household_head_type', 'topic', 'facilitators', 'partner_organisations', 'training_date', 'duration'], 'safe'],
+            [['household_head_type', 'topic', 'facilitators', 'partner_organisations', 'training_date', 'duration','province_id', 'district_id', 'camp_id'], 'safe'],
         ];
     }
 

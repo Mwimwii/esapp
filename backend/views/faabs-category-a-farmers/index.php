@@ -58,10 +58,16 @@ $list = \backend\models\MeFaabsGroups::find()
 
         <?php
         $gridColumns = [
-            ['class' => 'yii\grid\SerialColumn'],
+           // ['class' => 'yii\grid\SerialColumn'],
             [
                 'label' => "Province",
                 'attribute' => 'province_id',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                ],
+                'filter' => \backend\models\Provinces::getProvinceList(),
+                'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
                 'value' => function ($model) {
                     $camp_id = \backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->camp_id;
                     $district_id = \backend\models\Camps::findOne($camp_id)->district_id;
@@ -74,6 +80,12 @@ $list = \backend\models\MeFaabsGroups::find()
             [
                 'label' => "District",
                 'attribute' => 'district_id',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                ],
+                'filter' => \backend\models\Districts::getList(),
+                'filterInputOptions' => ['prompt' => 'Filter by District', 'class' => 'form-control', 'id' => null],
                 'value' => function ($model) {
                     $camp_id = \backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->camp_id;
                     $district_id = \backend\models\Camps::findOne($camp_id)->district_id;
@@ -85,6 +97,13 @@ $list = \backend\models\MeFaabsGroups::find()
             [
                 'label' => "Camp",
                 'attribute' => 'camp_id',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                ],
+                //  'filter' => true,
+                'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
+                'filterInputOptions' => ['prompt' => 'Filter by camp', 'class' => 'form-control', 'id' => null],
                 'value' => function ($model) {
                     $camp_id = \backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->camp_id;
                     $name = backend\models\Camps::findOne($camp_id)->name;
@@ -126,7 +145,7 @@ $list = \backend\models\MeFaabsGroups::find()
                 'enableSorting' => true,
                 'attribute' => 'nrc',
                 'filter' => false,
-                  'visible' => !empty(Yii::$app->user->identity->district_id) ? true : false
+                'visible' => !empty(Yii::$app->user->identity->district_id) ? true : false
             ],
             [
                 'enableSorting' => true,
@@ -143,12 +162,13 @@ $list = \backend\models\MeFaabsGroups::find()
                 'enableSorting' => true,
                 'attribute' => 'dob',
                 'filter' => false,
-                 'visible' => !empty(Yii::$app->user->identity->district_id) ? true : false
+                'visible' => !empty(Yii::$app->user->identity->district_id) ? true : false
             ],
             [
                 'filter' => false,
                 'label' => 'Contact #',
                 'attribute' => 'contact_number',
+                'visible' => !empty(Yii::$app->user->identity->district_id) ? true : false
             ],
             [
                 'class' => EditableColumn::className(),

@@ -51,6 +51,87 @@ class FaabsCategoryAFarmersController extends Controller {
         if (User::userIsAllowedTo('Manage category A farmers') || User::userIsAllowedTo('View category A farmers')) {
             $searchModel = new MeFaabsCategoryAFarmersSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            if (!empty(Yii::$app->request->queryParams['MeFaabsCategoryAFarmersSearch']['province_id'])) {
+                $district_ids = [];
+                $districts = \backend\models\Districts::find()->where(['province_id' => Yii::$app->request->queryParams['MeFaabsCategoryAFarmersSearch']['province_id']])->all();
+                if (!empty($districts)) {
+                    foreach ($districts as $id) {
+                        array_push($district_ids, $id['id']);
+                    }
+                } else {
+                    $_ids = [''];
+                }
+
+                $_camp_ids = [];
+                $_faabs_ids = [-1];
+                $camp_ids = \backend\models\Camps::find()
+                        ->select(['id'])
+                        ->where(["IN", 'district_id', $district_ids])
+                        ->asArray()
+                        ->all();
+
+                //   var_dump($camp_ids);
+                if (!empty($camp_ids)) {
+                    foreach ($camp_ids as $id) {
+                        array_push($_camp_ids, $id['id']);
+                    }
+                    $list = \backend\models\MeFaabsGroups::find()
+                            ->where(['IN', 'camp_id', $_camp_ids])
+                            ->all();
+                    if (!empty($list)) {
+                        foreach ($list as $id) {
+                            array_push($_faabs_ids, $id['id']);
+                        }
+                    }
+                }
+                $dataProvider->query->andFilterWhere(['IN', 'faabs_group_id', $_faabs_ids]);
+            }
+
+
+            if (!empty(Yii::$app->request->queryParams['MeFaabsCategoryAFarmersSearch']['district_id'])) {
+
+                $_camp_ids = [];
+                $_faabs_ids = [-1];
+                $camp_ids = \backend\models\Camps::find()
+                        ->select(['id'])
+                        ->where(['district_id' => Yii::$app->request->queryParams['MeFaabsCategoryAFarmersSearch']['district_id']])
+                        ->asArray()
+                        ->all();
+
+                //   var_dump($camp_ids);
+                if (!empty($camp_ids)) {
+                    foreach ($camp_ids as $id) {
+                        array_push($_camp_ids, $id['id']);
+                    }
+                    $list = \backend\models\MeFaabsGroups::find()
+                            ->where(['IN', 'camp_id', $_camp_ids])
+                            ->all();
+                    if (!empty($list)) {
+                        foreach ($list as $id) {
+                            array_push($_faabs_ids, $id['id']);
+                        }
+                    }
+                }
+                $dataProvider->query->andFilterWhere(['IN', 'faabs_group_id', $_faabs_ids]);
+            }
+
+            if (!empty(Yii::$app->request->queryParams['MeFaabsCategoryAFarmersSearch']['camp_id'])) {
+
+                $_faabs_ids = [-1];
+
+                $list = \backend\models\MeFaabsGroups::find()
+                        ->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsCategoryAFarmersSearch']['camp_id']])
+                        ->all();
+
+                if (!empty($list)) {
+                    foreach ($list as $id) {
+                        array_push($_faabs_ids, $id['id']);
+                    }
+                }
+
+                $dataProvider->query->andFilterWhere(['IN', 'faabs_group_id', $_faabs_ids]);
+            }
+
             if (!empty(Yii::$app->user->identity->district_id) && Yii::$app->user->identity->district_id > 0) {
                 $_camp_ids = [];
                 $_faabs_ids = [];
@@ -65,7 +146,6 @@ class FaabsCategoryAFarmersController extends Controller {
                     }
                     $list = \backend\models\MeFaabsGroups::find()
                             ->where(['IN', 'camp_id', $_camp_ids])
-                            // ->andWhere(['status' => 1])
                             ->orderBy(['name' => SORT_ASC])
                             ->all();
                     if (!empty($list)) {
@@ -104,6 +184,19 @@ class FaabsCategoryAFarmersController extends Controller {
                 }
                 return $out;
             }
+
+            $dataProvider->pagination = ['pageSize' => 15];
+            $dataProvider->setSort([
+                'attributes' => [
+                    'created_at' => [
+                        'desc' => ['created_at' => SORT_DESC],
+                        'default' => SORT_DESC
+                    ],
+                ],
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC
+                ]
+            ]);
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,

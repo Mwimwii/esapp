@@ -194,4 +194,14 @@ class MeFaabsCategoryAFarmers extends \yii\db\ActiveRecord {
         return ArrayHelper::map($query, 'id', 'name');
     }
 
+    public static function getList() {
+        $query = static::find()
+                ->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_names),' ',last_name) as name", 'id'])
+                ->where(['status' => 1])
+                ->orderBy(['id' => SORT_ASC])
+                ->asArray()
+                ->all();
+        return ArrayHelper::map($query, 'id', 'name');
+    }
+
 }

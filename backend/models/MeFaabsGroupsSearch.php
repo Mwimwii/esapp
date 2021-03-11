@@ -18,7 +18,7 @@ class MeFaabsGroupsSearch extends MeFaabsGroups
     {
         return [
             [['id', 'camp_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'code'], 'safe'],
+            [['name', 'code','province_id', 'district_id'], 'safe'],
         ];
     }
 

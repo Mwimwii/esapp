@@ -304,6 +304,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
     <div class="card-body">
         <?php
         $count = 0;
+        //Lets get case study stories that needs to be reviewed
         $_case_study_model = backend\models\Storyofchange::find()
                 ->where(['status' => 2]);
         if (!empty($_case_study_model)) {
@@ -315,8 +316,21 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             }
         }
 
+        //Lets get BTOR reports that needs to be reviewed
+        $_btor_model = backend\models\MeBackToOfficeReport::find()
+                ->where(['status' => 2]);
+        if (!empty($_btor_model)) {
+            $btor_dataProvider = new ActiveDataProvider([
+                'query' => $_btor_model,
+            ]);
+            if ($btor_dataProvider->count > 0) {
+                $count++;
+            }
+        }
+
         if ($count > 0) {
             if ($dataProvider->count > 0) {
+                //Case study review tasks
                 if (User::userIsAllowedTo('Review Story of change')) {
                     ?>
                     <h6>Unreviewed Case study/Success stories</h6>
@@ -371,7 +385,65 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     <?php
                 }
             }
+            if ($btor_dataProvider->count > 0) {
+                //BtOR review tasks
+                if (User::userIsAllowedTo('Review back to office report')) {
+                    ?>
+                    <h6>Unreviewed Back to office reports</h6>
+                    <?=
+                    GridView::widget([
+                        'dataProvider' => $btor_dataProvider,
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            //'id',
+                            [
+                                'attribute' => 'name_of_officer',
+                                'filter' => false,
+                                'format' => 'raw',
+                            ],
+                            [
+                                'attribute' => 'team_members',
+                                'filter' => false,
+                                'format' => 'raw',
+                            ],
+                            [
+                                'label' => 'Travel dates',
+                                'attribute' => 'team_members',
+                                'filter' => false,
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return $model->start_date . " to " . $model->end_date;
+                                }
+                            ],
+                            //'key_partners:ntext',
+                            [
+                                'attribute' => 'purpose_of_assignment',
+                                'filter' => false,
+                                'format' => 'raw',
+                            ],
+                            [
+                                'label' => 'Date submitted',
+                                'value' => function($model) {
+                                    return date('d/m/y H:i:s', $model->created_at);
+                                }
+                            ],
+                            [
+                                'label' => 'Action',
+                                'filter' => false,
+                                'format' => 'raw',
+                                'value' => function($row) {
+                                    return Html::a("Review report", ["back-to-office-report/btor-report-view", 'id' => $row->id]);
+                                }
+                            ],
+                        ],
+                    ]);
+                }
+            }
+            ?>
+            <hr class="dotted short">
+            <?php
         }
+
 
         if ($count === 0) {
             echo "<p>You have no tasks!</p>";
@@ -420,8 +492,8 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                 ?>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-times-circle"></span> Close</button>
-                <?= Html::submitButton('<span class="fa fa-download"></span> Download', ['class' => 'btn btn-success btn-sm']) ?>
+                <button type="button" class="btn btn-danger btn-xs" data-dismiss="modal"><span class="fa fa-times-circle"></span> <span class="text-xs">Close</span></button>
+                <?= Html::submitButton('<span class="fa fa-download"></span> <span class="text-xs">Download</span>', ['class' => 'btn btn-success btn-xs']) ?>
                 <?php ActiveForm::end() ?>
             </div>
         </div>

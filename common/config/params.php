@@ -6,7 +6,7 @@ return [
     'senderName' => 'E-SAPP MIS',
     'supportEmail' => 'esappmis@noreply.gov.zm',
     'senderEmail' => 'esappmis@noreply.gov.zm',
-    'bsVersion' => '4',
+    'bsVersion' => '4.x',
     'user.passwordResetTokenExpire' => 3600,
     'maskMoneyOptions' => [
         'prefix' => 'ZMW ',

@@ -30,27 +30,27 @@ $months = [
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
         <div class="card-header">
-        <div class="card-tools">
-            
-            <p>
-                <?php
-                if (User::userIsAllowedTo('Collect commodity prices')) {
-                    if (empty(\backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id))) {
-                        echo "<div class='alert alert-warning'>The system has no markets for your district:<span class='badge badge-success'>"
-                        . "" . \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name . "</span>"
-                        . ". Hence you cannot add commodity prices</div>";
-                    } elseif (empty(backend\models\CommodityTypes::getList())) {
-                        echo "<div class='alert alert-warning'>The system has no commodity types. Hence you cannot add commodity prices</div>";
-                    } elseif (empty(backend\models\CommodityPriceLevels::getList())) {
-                        echo "<div class='alert alert-warning'>The system has no commodity price levels. Hence you cannot add commodity prices</div>";
-                    } else {
-                        echo Html::a('Add commodity price', ['create'], ['class' => 'float-right btn btn-success btn-sm']);
-                    }
-                }
-                ?>
-            </p>
+            <div class="card-tools">
 
-        </div>
+                <p>
+                    <?php
+                    if (User::userIsAllowedTo('Collect commodity prices')) {
+                        if (empty(\backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id))) {
+                            echo "<div class='alert alert-warning'>The system has no markets for your district:<span class='badge badge-success'>"
+                            . "" . \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name . "</span>"
+                            . ". Hence you cannot add commodity prices</div>";
+                        } elseif (empty(backend\models\CommodityTypes::getList())) {
+                            echo "<div class='alert alert-warning'>The system has no commodity types. Hence you cannot add commodity prices</div>";
+                        } elseif (empty(backend\models\CommodityPriceLevels::getList())) {
+                            echo "<div class='alert alert-warning'>The system has no commodity price levels. Hence you cannot add commodity prices</div>";
+                        } else {
+                            echo Html::a('Add commodity price', ['create'], ['class' => 'float-right btn btn-success btn-sm']);
+                        }
+                    }
+                    ?>
+                </p>
+
+            </div>
         </div>
 
 
@@ -276,37 +276,38 @@ $months = [
           } */
 
 
-
-        $fullExportMenu = ExportMenu::widget([
-                    'dataProvider' => $dataProvider,
-                    'columns' => $gridColumns,
-                    'columnSelectorOptions' => [
-                        'label' => 'Cols...',
-                         'class' => 'btn btn-outline-success btn-sm',
-                    ],
-                    'batchSize' => 200,
-                    'exportConfig' => [
-                        ExportMenu::FORMAT_TEXT => false,
-                        ExportMenu::FORMAT_HTML => false,
-                        ExportMenu::FORMAT_EXCEL => false,
-                        ExportMenu::FORMAT_PDF => false,
-                        ExportMenu::FORMAT_CSV => false,
-                    ],
-                    'target' => ExportMenu::TARGET_BLANK,
-                    'pjaxContainerId' => 'kv-pjax-container',
-                    'exportContainer' => [
-                        'class' => 'btn-group mr-2'
-                    ],
-                    'filename' => 'commodity_prices' . date("YmdHis"),
-                    'dropdownOptions' => [
-                        'label' => 'Export to excel',
-                         'class' => 'btn btn-outline-success btn-sm',
-                        'itemsBefore' => [
-                            '<div class="dropdown-header">Export All Data</div>',
+        $fullExportMenu = "";
+        if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
+            $fullExportMenu = ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns,
+                        'columnSelectorOptions' => [
+                            'label' => 'Cols...',
+                            'class' => 'btn btn-outline-success btn-sm',
                         ],
-                    ],
-        ]);
-
+                        'batchSize' => 200,
+                        'exportConfig' => [
+                            ExportMenu::FORMAT_TEXT => false,
+                            ExportMenu::FORMAT_HTML => false,
+                            ExportMenu::FORMAT_EXCEL => false,
+                            ExportMenu::FORMAT_PDF => false,
+                            ExportMenu::FORMAT_CSV => false,
+                        ],
+                        'target' => ExportMenu::TARGET_BLANK,
+                        'pjaxContainerId' => 'kv-pjax-container',
+                        'exportContainer' => [
+                            'class' => 'btn-group mr-2'
+                        ],
+                        'filename' => 'commodity_prices' . date("YmdHis"),
+                        'dropdownOptions' => [
+                            'label' => 'Export to excel',
+                            'class' => 'btn btn-outline-success btn-sm',
+                            'itemsBefore' => [
+                                '<div class="dropdown-header">Export All Data</div>',
+                            ],
+                        ],
+            ]);
+        }
         echo GridView::widget([
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,

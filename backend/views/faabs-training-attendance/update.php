@@ -5,17 +5,27 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\MeFaabsTrainingAttendanceSheet */
 
-$this->title = 'Update Me Faabs Training Attendance Sheet: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Me Faabs Training Attendance Sheets', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->title = 'Update FaaBS training attendance record: ';
+$this->params['breadcrumbs'][] = ['label' => 'FaaBS Training Attendance records', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => "Record #.".$model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="me-faabs-training-attendance-sheet-update">
+<div class="card card-success card-outline">
+    <div class="card-body">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+        <div class="col-lg-12">
+            <ol>
+                <li>The system automatically picks the farmers province,district and camp</li>
+                <li>Fields marked with <span class="text-red">*</span> are required</li>
+            </ol>
+        </div>
+        <hr class="dotted short">
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+        <?=
+        $this->render('_form', [
+            'model' => $model,
+        ])
+        ?>
 
+    </div>
 </div>

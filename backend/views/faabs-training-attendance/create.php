@@ -14,6 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-lg-12">
             <ol>
                 <li>The system automatically picks the farmers province,district and camp</li>
+                <li>The system will only allow you to enter records that you have not yet submitted</li>
                 <li>The system will redirect you to this page after you click <span class="badge badge-success">Save record</span> so that you can add another record</li>
                 <li>Fields marked with <span class="text-red">*</span> are required</li>
             </ol>

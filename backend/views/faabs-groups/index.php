@@ -40,7 +40,7 @@ $district = !empty($district_model) ? $district_model->name : "";
 
         <?php
         $gridColumns = [
-            ['class' => 'yii\grid\SerialColumn'],
+            //['class' => 'yii\grid\SerialColumn'],
             //'id',
             [
                 'label' => "Province",
@@ -49,7 +49,6 @@ $district = !empty($district_model) ? $district_model->name : "";
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],
                 ],
-                'filter' => false,
                 'filter' => \backend\models\Provinces::getProvinceList(),
                 'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
                 'value' => function ($model) {
@@ -67,9 +66,8 @@ $district = !empty($district_model) ? $district_model->name : "";
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],
                 ],
-                'filter' => false,
-                'filter' => \backend\models\Provinces::getProvinceList(),
-                'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
+                'filter' => \backend\models\Districts::getList(),
+                'filterInputOptions' => ['prompt' => 'Filter by District', 'class' => 'form-control', 'id' => null],
                 'value' => function ($model) {
                     $district_id = \backend\models\Camps::findOne($model->camp_id)->district_id;
                     $name = backend\models\Districts::findOne($district_id)->name;
@@ -85,7 +83,7 @@ $district = !empty($district_model) ? $district_model->name : "";
                     'pluginOptions' => ['allowClear' => true],
                 ],
                 //  'filter' => true,
-                'filter' => \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id),
+                'filter' => !empty(Yii::$app->user->identity->district_id)?\backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id):backend\models\Camps::getList(),
                 'filterInputOptions' => ['prompt' => 'Filter by camp', 'class' => 'form-control', 'id' => null],
                 'readonly' => $ready_only,
                 'refreshGrid' => true,

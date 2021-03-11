@@ -18,7 +18,9 @@ class MeFaabsCategoryAFarmersSearch extends MeFaabsCategoryAFarmers
     {
         return [
             [['id', 'faabs_group_id', 'status', 'household_size', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['title','first_name', 'other_names', 'last_name', 'sex', 'dob', 'nrc', 'marital_status', 'contact_number', 'relationship_to_household_head', 'registration_date', 'village', 'chiefdom', 'block', 'zone', 'commodity'], 'safe'],
+            [['title','first_name', 'other_names', 'last_name', 'sex', 'dob', 'nrc',
+                'marital_status', 'contact_number', 'relationship_to_household_head',
+                'registration_date', 'village', 'chiefdom', 'block', 'zone', 'commodity','province_id', 'district_id', 'camp_id'], 'safe'],
         ];
     }
 

@@ -218,6 +218,7 @@ $months = [
                 ],
             ],
         ];
+        $fullExportMenu = "";
         if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
 
             $fullExportMenu = ExportMenu::widget([
@@ -225,7 +226,7 @@ $months = [
                         'columns' => $gridColumns,
                         'columnSelectorOptions' => [
                             'label' => 'Cols...',
-                             'class' => 'btn btn-outline-success btn-sm',
+                            'class' => 'btn btn-outline-success btn-sm',
                         ],
                         'batchSize' => 200,
                         'exportConfig' => [
@@ -243,39 +244,37 @@ $months = [
                         'filename' => 'commodity_prices' . date("YmdHis"),
                         'dropdownOptions' => [
                             'label' => 'Export to excel',
-                             'class' => 'btn btn-outline-success btn-sm',
+                            'class' => 'btn btn-outline-success btn-sm',
                             'itemsBefore' => [
                                 '<div class="dropdown-header">Export All Data</div>',
                             ],
                         ],
             ]);
-            echo GridView::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumns,
-                'filterModel' => $searchModel,
-                'condensed' => true,
-                'responsive' => true,
-                'hover' => true,
-                // 'pjax' => true,
-                'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
-                'panel' => [
-                    'type' => GridView::TYPE_DEFAULT,
-                // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
-                ],
-                // set a label for default menu
-                'export' => false,
-                'exportContainer' => [
-                    'class' => 'btn-group mr-2'
-                ],
-                // your toolbar can include the additional full export menu
-                'toolbar' => [
-                    '{export}',
-                    $fullExportMenu,
-                ]
-            ]);
-        } else {
-            echo '<p>There are currently no market prices in the system!</p>';
         }
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'columns' => $gridColumns,
+            'filterModel' => $searchModel,
+            'condensed' => true,
+            'responsive' => true,
+            'hover' => true,
+            // 'pjax' => true,
+            'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+            // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
+            ],
+            // set a label for default menu
+            'export' => false,
+            'exportContainer' => [
+                'class' => 'btn-group mr-2'
+            ],
+            // your toolbar can include the additional full export menu
+            'toolbar' => [
+                '{export}',
+                $fullExportMenu,
+            ]
+        ]);
         ?>
 
 

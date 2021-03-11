@@ -9,6 +9,7 @@ use yii\helpers\Url;
 use kartik\tabs\TabsX;
 use kartik\icons\Icon;
 use lo\widgets\modal\ModalAjax;
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\Storyofchange */
 
@@ -76,15 +77,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
 
 
-                /*if (!empty($model)) {
-                    echo Html::a('<i class="fas fa-camera fa-2x"></i>', ['media', 'id' => $model->id], [
-                        'title' => 'Attach Case Study media',
-                        'data-placement' => 'top',
-                        'data-toggle' => 'tooltip',
-                        'style' => "padding:20px;",
-                        'class' => 'bt btn-lg'
-                    ]);
-                }*/
+                /* if (!empty($model)) {
+                  echo Html::a('<i class="fas fa-camera fa-2x"></i>', ['media', 'id' => $model->id], [
+                  'title' => 'Attach Case Study media',
+                  'data-placement' => 'top',
+                  'data-toggle' => 'tooltip',
+                  'style' => "padding:20px;",
+                  'class' => 'bt btn-lg'
+                  ]);
+                  } */
                 ?>
             </div>
             <div class="card-tools">
@@ -236,7 +237,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             'style' => "padding:15px;",
                                                             'title' => 'Download/View full',
                                                 ]) .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Completed Interview guide"], [
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id, "media_type" => "Completed Interview guide"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update document',
                                                     'data-toggle' => 'tooltip',
@@ -274,7 +275,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </ol><div class="row">' . $div . '</div>';
                                 } else {
                                     $content_doc = "<p>No case study interview guide document found</p>" .
-                                            Html::a('<i class="fas fa-camera"></i> Attach completed interview guide document', ['media', 'id' => $model->id,"media_type"=>"Completed Interview guide"], [
+                                            Html::a('<i class="fas fa-camera"></i> Attach completed interview guide document', ['media', 'id' => $model->id, "media_type" => "Completed Interview guide"], [
                                                 'title' => 'Attach Case Study document',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',
@@ -291,12 +292,24 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $div = "";
                                     foreach ($video_model as $_model) {
                                         $_file = $_model->file;
-                                        $div .= '<div class="col-lg-6"><div class="card">
+                                        $div .= '<div class="col-lg-12"> <p> 
+                                                   ' . Html::a(Icon::show('file-audio', ['class' => '', 'framework' => Icon::FAS]) . ' Attach new video', ['media', 'id' => $model->id, "media_type" => "Video"], [
+                                                    'title' => 'Attach Case Study video',
+                                                    'data-placement' => 'top',
+                                                    'data-toggle' => 'tooltip',
+                                                    'style' => "padding:5px;",
+                                                    "class" => "btn btn-primary btn-sm"
+                                                ]) . '
+                                                    </p></div>
+                                            <div class="col-lg-6">
+                                            <div class="card">
                                              <div class="card-body">
-                                    <div style="margin: 0px;" class="embed-responsive embed-responsive-21by9">
-                                        <iframe class="embed-responsive-item" src="' . Url::to("@web/uploads/video/$_file") . '"></iframe>
-                                    </div></div> <div class="card-footer">' .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Audio"], [
+                                                <div style="margin: 0px;" class="embed-responsive embed-responsive-21by9">
+                                                    <iframe class="embed-responsive-item" src="' . Url::to("@web/uploads/video/$_file") . '"></iframe>
+                                                </div>
+                                            </div> 
+                                            <div class="card-footer">' .
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id, "media_type" => "Audio"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update video',
                                                     'data-toggle' => 'tooltip',
@@ -314,7 +327,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         'method' => 'post',
                                                     ],
                                                 ])
-                                                . '</div></div></div>';
+                                                . '</div>'
+                                                . '</div>'
+                                                . '</div>';
                                     }
                                     $content_video = '<ul>
                                                     <li> 
@@ -325,10 +340,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <span class="badge badge-primary bt btn-md"><span class="fas fa-trash-alt fa-1x"></span></span> 
                                                         icon to remove video
                                                     </li>
-                                                </ul><div class="row">' . $div . '</div>';
+                                                    <li> 
+                                                        Click
+                                                        <span class="badge badge-primary bt btn-md">Attach new video</span> button below to add another video
+                                                    </li>
+                                                </ul>
+                                                <div class="row">' . $div . '</div>';
                                 } else {
                                     $content_video = "<p>No case study videos found</p>" .
-                                            Html::a('<i class="fas fa-camera"></i> Attach video', ['media', 'id' => $model->id,"media_type"=>"Video"], [
+                                            Html::a('<i class="fas fa-camera"></i> Attach video', ['media', 'id' => $model->id, "media_type" => "Video"], [
                                                 'title' => 'Attach Case Study video',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',
@@ -346,7 +366,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $div = "";
                                     foreach ($audio_model as $_model) {
                                         $_file = $_model->file;
-                                        $div .= '<div class="col-sm-4">
+                                        $div .= '<div class="col-lg-12">
+                                            <p>' . Html::a(Icon::show('file-audio', ['class' => '', 'framework' => Icon::FAS]).' Attach new audio', ['media', 'id' => $model->id, "media_type" => "Audio"], [
+                                                    'title' => 'Attach Case Study audio',
+                                                    'data-placement' => 'top',
+                                                    'data-toggle' => 'tooltip',
+                                                    'style' => "padding:5px;",
+                                                    "class" => "btn btn-primary btn-sm"
+                                                ]) . '</p>
+                                            </div>
+                                            <div class="col-sm-4">
                                         <div class="card">
                                             <div class="card-body">
                                                 <p class="text-center">
@@ -359,7 +388,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </p>
                                             </div>
                                             <div class="card-footer">' .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Audio"], [
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id, "media_type" => "Audio"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update audio',
                                                     'data-toggle' => 'tooltip',
@@ -391,10 +420,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <span class="badge badge-primary bt btn-md"><span class="fas fa-trash-alt fa-1x"></span></span> 
                                                         icon to remove audio
                                                     </li>
+                                                    <li> 
+                                                        Click
+                                                        <span class="badge badge-primary bt btn-md">Attach new audio</span> button below to add another audio file
+                                                    </li>
                                                 </ul><div class="row">' . $div . '</div>';
                                 } else {
                                     $content_audio = "<p>No case study audio files found</p>" .
-                                            Html::a('<i class="fas fa-camera"></i> Attach audio', ['media', 'id' => $model->id,"media_type"=>"Audio"], [
+                                            Html::a('<i class="fas fa-camera"></i> Attach audio', ['media', 'id' => $model->id, "media_type" => "Audio"], [
                                                 'title' => 'Attach Case Study audio',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',
@@ -429,14 +462,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $_file = $_model->file;
                                         if ($_count == 0) {
                                             $divs .= '<div class="carousel-item active">
-                                                                    <p><img title ="' . $_model->file_name . '" style="height: 550px;width: 30px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . ($count + 1) . ' slide"></p>
+                                                                    <p><img title ="' . $_model->file_name . '" style="height: 450px;width: 300px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . ($count + 1) . ' slide"></p>
                                                                   ';
                                         } else {
                                             $divs .= '<div class="carousel-item">
-                                                                <p><img title ="' . $_model->file_name . '" style="height: 550px;width: 30px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . $count . '" slide"></p>';
+                                                                <p><img title ="' . $_model->file_name . '" style="height: 450px;width: 300px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . $count . '" slide"></p>';
+                                            //$divs .= '<div class="carousel-item">
+                                                              //  <p><img title ="' . $_model->file_name . '" style="height: 450px;width: 20px;" class="d-block w-100" src="' . Url::to("@web/uploads/image/$_file") . '" alt="' . $count . '" slide"></p>';
                                         }
                                         $divs .= '<div class="carousel-caption d-none d-md-block"><p style="padding:10px;">' . Html::a(
-                                                        '<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id,"media_type"=>"Picture"], [
+                                                        '<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id, "media_type" => "Picture"], [
                                                     'title' => 'Edit image',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -467,8 +502,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <span class="badge badge-primary bt btn-md"><span class="fas fa-trash-alt fa-1x"></span></span> 
                                                         icon on the image to remove image
                                                     </li>
+                                                    <li> 
+                                                        Click
+                                                        <span class="badge badge-primary bt btn-md">Attach new image</span> button below to add another image file
+                                                    </li>
                                                 </ul>
                                                  <div class="row">
+                                                 <div class="col-lg-12">'.Html::a(Icon::show('image', ['class' => '', 'framework' => Icon::FAS]).' Attach new image', ['media', 'id' => $model->id, "media_type" => "Picture"], [
+                                                'title' => 'Attach Case Study images',
+                                                'data-placement' => 'top',
+                                                'data-toggle' => 'tooltip',
+                                                'style' => "padding:5px;",
+                                                "class" => "btn btn-primary btn-sm"
+                                    ]).'</div>
                                                  <div  class="col-lg-2 text-center">&nbsp;</div>
                                     <div class="col-lg-8 text-center">
                                         <div class="card-body">
@@ -490,7 +536,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>';
                                 } else {
                                     $content_img = "<p>No Case study images found</p>" .
-                                            Html::a('<i class = "fas fa-camera"></i> Attach images', ['media', 'id' => $model->id,"media_type"=>"Picture"], [
+                                            Html::a(Icon::show('image', ['class' => '', 'framework' => Icon::FAS]).' Attach images', ['media', 'id' => $model->id, "media_type" => "Picture"], [
                                                 'title' => 'Attach Case Study images',
                                                 'data-placement' => 'top',
                                                 'data-toggle' => 'tooltip',

@@ -14,6 +14,7 @@ use backend\models\AuditTrail;
 use backend\models\User;
 use yii\base\Model;
 use yii\caching\DbDependency;
+
 /**
  * CommodityPriceCollectionController implements the CRUD actions for CommodityPriceCollection model.
  */
@@ -52,9 +53,20 @@ class CommodityPriceCollectionController extends Controller {
         if (User::userIsAllowedTo('Collect commodity prices') || User::userIsAllowedTo("View commodity prices")) {
             $model = new CommodityPriceCollection();
             $searchModel = new CommodityPriceCollectionSearch();
-           // $prices_dependency = new DbDependency();
+            // $prices_dependency = new DbDependency();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $dataProvider->pagination = ['pageSize' => 10];
+            $dataProvider->pagination = ['pageSize' => 15];
+            $dataProvider->setSort([
+                'attributes' => [
+                    'created_at' => [
+                        'desc' => ['created_at' => SORT_DESC],
+                        'default' => SORT_DESC
+                    ],
+                ],
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC
+                ]
+            ]);
             if (!empty(Yii::$app->request->queryParams['CommodityPriceCollectionSearch']['province_id'])) {
                 $district_ids = [];
                 $districts = \backend\models\Districts::find()->where(['province_id' => Yii::$app->request->queryParams['CommodityPriceCollectionSearch']['province_id']])->all();
@@ -62,9 +74,7 @@ class CommodityPriceCollectionController extends Controller {
                     foreach ($districts as $id) {
                         array_push($district_ids, $id['id']);
                     }
-                } else {
-                    $_ids = [''];
-                }
+                } 
 
                 $dataProvider->query->andFilterWhere(['IN', 'district', $district_ids]);
             }
@@ -99,6 +109,7 @@ class CommodityPriceCollectionController extends Controller {
                     return $out;
                 }
                 $dataProvider->query->andFilterWhere(['created_by' => Yii::$app->user->id]);
+
                 return $this->render('index', [
                             'searchModel' => $searchModel,
                             'model' => $model,
@@ -201,17 +212,17 @@ class CommodityPriceCollectionController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    /*public function actionUpdate($id) {
-        $model = $this->findModel($id);
+    /* public function actionUpdate($id) {
+      $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+      if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      return $this->redirect(['view', 'id' => $model->id]);
+      }
 
-        return $this->render('update', [
-                    'model' => $model,
-        ]);
-    }*/
+      return $this->render('update', [
+      'model' => $model,
+      ]);
+      } */
 
     /**
      * Deletes an existing CommodityPriceCollection model.

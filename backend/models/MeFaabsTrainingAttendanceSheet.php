@@ -51,8 +51,17 @@ class MeFaabsTrainingAttendanceSheet extends \yii\db\ActiveRecord {
             [['duration'], 'string', 'max' => 10],
             [['province_id', 'district_id', 'camp_id', 'training_date'], 'safe'],
             ['farmer_id', 'unique', 'when' => function($model) {
-                    return $model->isAttributeChanged('farmer_id') && !empty(self::findOne(['farmer_id' => $model->farmer_id, "training_date" => $model->training_date])) ? TRUE : FALSE;
-                }, 'message' => 'FaaBS training attendance is already submtted for this farmer for the entered training date!'],
+                    return $model->isAttributeChanged('farmer_id') && !empty(self::findOne(['farmer_id' => $model->farmer_id, "training_date" => $model->training_date, "faabs_group_id" => $model->faabs_group_id])) ? TRUE : FALSE;
+                }, 'message' => 'FaaBS training attendance is already submtted for this farmer for the entered training date!'
+            ],
+            ['faabs_group_id', 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('faabs_group_id') && !empty(self::findOne(['farmer_id' => $model->farmer_id, "training_date" => $model->training_date, "faabs_group_id" => $model->faabs_group_id])) ? TRUE : FALSE;
+                }, 'message' => 'FaaBS training attendance is already submtted for this farmer for the entered training date!'
+            ],
+            ['training_date', 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('training_date') && !empty(self::findOne(['farmer_id' => $model->farmer_id, "training_date" => $model->training_date, "faabs_group_id" => $model->faabs_group_id])) ? TRUE : FALSE;
+                }, 'message' => 'FaaBS training attendance is already submtted for this farmer for the entered training date!'
+            ],
             [['farmer_id'], 'exist', 'skipOnError' => true, 'targetClass' => MeFaabsCategoryAFarmers::className(), 'targetAttribute' => ['farmer_id' => 'id']],
             [['faabs_group_id'], 'exist', 'skipOnError' => true, 'targetClass' => MeFaabsGroups::className(), 'targetAttribute' => ['faabs_group_id' => 'id']],
         ];
@@ -79,7 +88,7 @@ class MeFaabsTrainingAttendanceSheet extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => 'ID',
-            'faabs_group_id' => 'Faabs group',
+            'faabs_group_id' => 'FaaBS group',
             'farmer_id' => 'Farmer',
             'household_head_type' => 'HH head type',
             'topic' => 'Topic',
