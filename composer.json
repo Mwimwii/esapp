@@ -53,7 +53,6 @@
         "yiidoc/yii2-redactor": "*",
         "kartik-v/yii2-tabs-x": "dev-master",
         "kartik-v/yii2-widget-typeahead": "dev-master",
-        "kartik-v/yii2-widget-touchspin": "dev-master",
         "kartik-v/yii2-widget-timepicker": "dev-master",
         "kartik-v/yii2-builder": "dev-master"
     },

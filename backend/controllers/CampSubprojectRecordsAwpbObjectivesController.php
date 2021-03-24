@@ -8,7 +8,7 @@ use backend\models\CampSubprojectRecordsAwpbObjectivesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\filters\AccessControl;
 /**
  * CampSubprojectRecordsAwpbObjectivesController implements the CRUD actions for MeCampSubprojectRecordsAwpbObjectives model.
  */
@@ -17,8 +17,19 @@ class CampSubprojectRecordsAwpbObjectivesController extends Controller {
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+      public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'delete',],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

@@ -50,7 +50,7 @@ if (!empty($camp_id)) {
                 ],
             ]);
             echo '<div class="text-left"><hr class="dotted">' .
-            Html::submitButton('Save camp objectives', ['class' => 'btn btn-primary btn-sm']) .
+            Html::submitButton('Save camp objectives', ['class' => 'btn btn-success btn-sm']) .
             '<div>';
             ActiveForm::end();
         }

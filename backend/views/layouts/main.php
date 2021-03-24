@@ -280,13 +280,19 @@ $session = Yii::$app->session;
                                     User::userIsAllowedTo("View back to office report") ||
                                     User::userIsAllowedTo("Review back to office report") ||
                                     User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
-                                    User::userIsAllowedTo("View camp/project site objectives for awpb")
+                                    User::userIsAllowedTo("View camp/project site objectives for awpb") ||
+                                    User::userIsAllowedTo("Plan camp monthly activities") ||
+                                    User::userIsAllowedTo("Remove planned camp monthly activities") ||
+                                    User::userIsAllowedTo("View planned camp monthly activities")
                             ) {
                                 if (Yii::$app->controller->id == "faabs-category-a-farmers" ||
                                         Yii::$app->controller->id == "faabs-training-attendance" ||
                                         Yii::$app->controller->id == "faabs-groups" ||
                                         Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" ||
-                                        Yii::$app->controller->id == "back-to-office-report"
+                                        Yii::$app->controller->id == "back-to-office-report" ||
+                                        Yii::$app->controller->id == "camp-monthly-schedule" ||
+                                        Yii::$app->controller->id == "camp-monthly-planned-activities" ||
+                                        Yii::$app->controller->id == "camp-monthly-planned-activities-actual"
                                 ) {
                                     echo '<li class="nav-item has-treeview menu-open">'
                                     . ' <a href="#" class="nav-link active">';
@@ -382,6 +388,32 @@ $session = Yii::$app->session;
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Plan camp monthly activities") ||
+                                            User::userIsAllowedTo("View planned camp monthly activities")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "camp-monthly-schedule" &&
+                                                (
+                                                Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "work-effort" ||
+                                                Yii::$app->controller->action->id == "planned-activities" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly schedule</p>', ['/camp-monthly-schedule/index'], ["class" => "nav-link active"]);
+                                            /* if (Yii::$app->controller->id == "camp-monthly-planned-work-effort") {
+                                              echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly planning</p>', ['/camp-monthly-planned-work-effort/index'], ["class" => "nav-link active"]);
+                                              }
+                                              if (Yii::$app->controller->id == "camp-monthly-planned-activities") {
+                                              echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly planning</p>', ['/camp-monthly-planned-activities/index'], ["class" => "nav-link active"]);
+                                              }
+                                              if (Yii::$app->controller->id == "camp-monthly-planned-activities-actual") {
+                                              echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly planning</p>', ['/camp-monthly-planned-activities-actual/index'], ["class" => "nav-link active"]);
+                                              } */
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly schedule</p>', ['/camp-monthly-schedule/index'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
