@@ -5,6 +5,7 @@ namespace backend\models;
 use Yii;
 use \yii\helpers\ArrayHelper;
 use yii\db\ActiveRecord;
+
 /**
  * This is the model class for table "me_camp_subproject_records_monthly_planned_activities".
  *
@@ -44,12 +45,12 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
      */
     public function rules() {
         return [
-            [['work_effort_id', 'activity_id', 'faabs_id','beneficiary_target_women', 'beneficiary_target_youth', 'beneficiary_target_women_headed'], 'required'],
-            [['activity_id', 'faabs_id', 'beneficiary_target_total','created_by', 'updated_by', 'beneficiary_target_women', 'beneficiary_target_youth', 'beneficiary_target_women_headed'], 'integer'],
+            [['work_effort_id', 'activity_id', 'faabs_id', 'beneficiary_target_women', 'beneficiary_target_youth', 'beneficiary_target_women_headed'], 'required'],
+            [['activity_id', 'faabs_id', 'beneficiary_target_total', 'created_by', 'updated_by', 'beneficiary_target_women', 'beneficiary_target_youth', 'beneficiary_target_women_headed'], 'integer'],
             [['zone'], 'string', 'max' => 45],
             [['activity_target'], 'string', 'max' => 255],
-           // [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
-           // [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
+            // [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
+            // [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['faabs_id'], 'exist', 'skipOnError' => true, 'targetClass' => MeFaabsGroups::className(), 'targetAttribute' => ['faabs_id' => 'id']],
         ];
     }
@@ -129,6 +130,118 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
     public static function getActivityListByDistrictId($id) {
         $list = AwpbActivityLine::find()->where(['district_id' => $id])->orderBy(['id' => SORT_ASC])->all();
         return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    public static function getActivityListByDistrictId1($id, $year, $work_effort_id = "", $month = "", $activity_id = "") {
+
+        $columnName = self::getMonthColumnName($month);
+        $activity_ids = [];
+        $work_effort_model = self::find()
+                ->select(['activity_id'])
+                ->where(['work_effort_id' => $work_effort_id])
+                ->all();
+
+        if (!empty($work_effort_model)) {
+            foreach ($work_effort_model as $model) {
+                //When we are updating, we need all the activities
+                if (!empty($activity_id) && $activity_id == $model['activity_id']) {
+                    continue;
+                }
+                array_push($activity_ids, $model['activity_id']);
+            }
+        }
+
+        //var_dump($activity_ids);
+        $list = AwpbActivityLine::find()
+                ->where(['district_id' => $id])
+                ->andWhere(['year' => $year])
+                ->andWhere(['NOT IN', 'id', $activity_ids])
+                ->andWhere(['>=', $columnName, 1])
+                ->orderBy(['id' => SORT_ASC])
+                ->all();
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    public static function getMonthColumnName($month) {
+        $columnName = "";
+        if ($month == 1) {
+            $columnName = "mo_1";
+        }
+        if ($month == 2) {
+            $columnName = "mo_2";
+        }
+        if ($month == 3) {
+            $columnName = "mo_3";
+        }
+        if ($month == 4) {
+            $columnName = "mo_4";
+        }
+        if ($month == 5) {
+            $columnName = "mo_5";
+        }
+        if ($month == 6) {
+            $columnName = "mo_6";
+        }
+        if ($month == 7) {
+            $columnName = "mo_7";
+        }
+        if ($month == 8) {
+            $columnName = "mo_8";
+        }
+        if ($month == 9) {
+            $columnName = "mo_9";
+        }
+        if ($month == 10) {
+            $columnName = "mo_10";
+        }
+        if ($month == 11) {
+            $columnName = "mo_11";
+        }
+        if ($month == 12) {
+            $columnName = "mo_12";
+        }
+        return $columnName;
+    }
+    
+    public static function getMonthColumnNameActuals($month) {
+        $columnName = "";
+        if ($month == 1) {
+            $columnName = "mo_1_actual";
+        }
+        if ($month == 2) {
+            $columnName = "mo_2_actual";
+        }
+        if ($month == 3) {
+            $columnName = "mo_3_actual";
+        }
+        if ($month == 4) {
+            $columnName = "mo_4_actual";
+        }
+        if ($month == 5) {
+            $columnName = "mo_5_actual";
+        }
+        if ($month == 6) {
+            $columnName = "mo_6_actual";
+        }
+        if ($month == 7) {
+            $columnName = "mo_7_actual";
+        }
+        if ($month == 8) {
+            $columnName = "mo_8_actual";
+        }
+        if ($month == 9) {
+            $columnName = "mo_9_actual";
+        }
+        if ($month == 10) {
+            $columnName = "mo_10_actual";
+        }
+        if ($month == 11) {
+            $columnName = "mo_11_actual";
+        }
+        if ($month == 12) {
+            $columnName = "mo_12_actual";
+        }
+        return $columnName;
     }
 
 }

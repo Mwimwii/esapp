@@ -19,7 +19,17 @@ use yii\helpers\Html;
             Attendance Sheet: Farming as Business School(FaaBS)
         </p>
     </div>
-    <p style="font-size: 11px;">Training Course(Topic):______________________________________________________________________________________</p>
+    <?php
+    if (!empty($topic)) {
+        echo '<p style="font-size: 11px;">
+                 Training Course(Topic):<span style="font-size:1em;text-decoration:underline;">&nbsp;&nbsp;' . $topic . '&nbsp;&nbsp;</span>
+              </p>';
+    } else {
+        echo '<p style="font-size: 11px;">Training Course(Topic):______________________________________________________________________________________</p>';
+    }
+    ?>
+
+
     <p style="font-size: 11px;">Names of Facilitors,Organisation & Signature:_____________________________________________________________________</p>
     <p style="font-size: 11px;">Partner Organisation(s):______________________________________________________________________________________</p>
     <p style="">

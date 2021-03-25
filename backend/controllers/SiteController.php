@@ -81,7 +81,7 @@ class SiteController extends Controller {
     public function actionLogin() {
         //$session = Yii::$app->session;
         //$session->destroy();
-        $this->layout = 'main_1';
+        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -141,7 +141,7 @@ class SiteController extends Controller {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
             }
         }
-        $this->layout = 'main_1';
+        $this->layout = 'login';
         return $this->render('requestPasswordResetToken', [
                     'model' => $model,
         ]);
@@ -167,7 +167,7 @@ class SiteController extends Controller {
 
             return $this->goHome();
         }
-        $this->layout = 'main_1';
+        $this->layout = 'login';
         return $this->render('resetPassword', [
                     'model' => $model,
         ]);
@@ -186,7 +186,7 @@ class SiteController extends Controller {
             return $this->goHome();
         }
         try {
-            $this->layout = 'main_1';
+            $this->layout = 'login';
             $model = new \backend\models\SetPasswordForm($token);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -204,7 +204,7 @@ class SiteController extends Controller {
     }
 
     public function actionResetPassword($token) {
-        $this->layout = 'main_1';
+        $this->layout = 'login';
 
         if (empty($token) || !is_string($token)) {
             Yii::$app->session->setFlash('error', 'Your token has expired. Please request for a new one again!.');

@@ -29,10 +29,12 @@ class CampMonthlyScheduleController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'view'],
+                'only' => ['index', 'create', 'delete', 'view', 'work-effort', 'add-activity', 'update-activity', 'achieved-monthly-modal',
+                    'update-achieved-target', 'delete-activity', 'delete-achieved-activity-target'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'view'],
+                        'actions' => ['index', 'create', 'delete', 'view', 'work-effort', 'add-activity', 'update-activity', 'achieved-monthly-modal',
+                            'update-achieved-target', 'delete-activity', 'delete-achieved-activity-target'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -209,17 +211,21 @@ class CampMonthlyScheduleController extends Controller {
             }
 
             if ($model->load(Yii::$app->request->post())) {
+
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->work_effort_id = $work_effort_id;
                 $model->zone = "Zone";
                 $model->beneficiary_target_total = $model->beneficiary_target_women +
                         $model->beneficiary_target_youth + $model->beneficiary_target_women_headed;
-                //$model->activity_target = (string) \backend\models\AwpbActivityLine::findOne($model->activity_id)->total_quantity;
-                $model->activity_target = (string) $model->activity_target;
+                //We get the activity target for the month
+                $_model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($work_effort_id);
+                $activity_line_model = \backend\models\AwpbActivityLine::findOne($model->activity_id);
+                $model->activity_target = (string) $this->getMonthlyTarget($_model, $activity_line_model);
+                //$model->activity_target = (string) $model->activity_target;
 
                 if ($model->save()) {
-                    $_model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($work_effort_id);
+
                     $camp = \backend\models\Camps::findOne($_model->camp_id)->name;
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
@@ -251,10 +257,12 @@ class CampMonthlyScheduleController extends Controller {
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->beneficiary_target_total = $model->beneficiary_target_women +
                         $model->beneficiary_target_youth + $model->beneficiary_target_women_headed;
-                //$model->activity_target = (string) \backend\models\AwpbActivityLine::findOne($model->activity_id)->total_quantity;
-                $model->activity_target = (string) $model->activity_target;
+                //We get the activity target for the month
+                $_model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($source_id);
+                $activity_line_model = \backend\models\AwpbActivityLine::findOne($model->activity_id);
+                $model->activity_target = (string) $this->getMonthlyTarget($_model, $activity_line_model);
+
                 if ($model->save()) {
-                    $_model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($source_id);
                     $camp = \backend\models\Camps::findOne($_model->camp_id)->name;
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
@@ -283,6 +291,47 @@ class CampMonthlyScheduleController extends Controller {
         }
     }
 
+    private function getMonthlyTarget($_model, $activity_line_model) {
+        $target = "";
+        if ($_model->month == 1) {
+            $target = $activity_line_model->mo_1;
+        }
+        if ($_model->month == 2) {
+            $target = $activity_line_model->mo_2;
+        }
+        if ($_model->month == 3) {
+            $target = $activity_line_model->mo_3;
+        }
+        if ($_model->month == 4) {
+            $target = $activity_line_model->mo_4;
+        }
+        if ($_model->month == 5) {
+            $target = $activity_line_model->mo_5;
+        }
+        if ($_model->month == 6) {
+            $target = $activity_line_model->mo_6;
+        }
+        if ($_model->month == 7) {
+            $target = $activity_line_model->mo_7;
+        }
+        if ($_model->month == 8) {
+            $target = $activity_line_model->mo_8;
+        }
+        if ($_model->month == 9) {
+            $target = $activity_line_model->mo_9;
+        }
+        if ($_model->month == 10) {
+            $target = $activity_line_model->mo_10;
+        }
+        if ($_model->month == 11) {
+            $target = $activity_line_model->mo_11;
+        }
+        if ($_model->month == 12) {
+            $target = $activity_line_model->mo_12;
+        }
+        return $target;
+    }
+
     public function actionAchievedMonthlyModal($id, $source_id) {
         $model = new \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual();
         if ($model->load(Yii::$app->request->post())) {
@@ -296,6 +345,20 @@ class CampMonthlyScheduleController extends Controller {
                     $model->beneficiary_target_achieved_youth +
                     $model->beneficiary_target_achieved_women_headed;
             if ($model->save()) {
+                //We update the activity line actuals for a particular month
+                //1. Get the work effort to get the month
+                $work_effort_model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($source_id);
+                //2. Get planned activity to get the awpb activity line id
+                $planned_activity_model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($id);
+                //3. Get the activity line model
+                $activity_line_model = \backend\models\AwpbActivityLine::findOne($planned_activity_model->activity_id);
+                //4. Get the name of the actuals month column to update
+                $column = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getMonthColumnNameActuals($work_effort_model->month);
+
+                $activity_line_model->$column += $model->achieved_activity_target;
+                $activity_line_model->save(false);
+
+
                 if (Yii::$app->request->isAjax) {
                     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                     Yii::$app->session->setFlash('success', 'Actual/Achieved activity targets were successfully added.');
@@ -304,7 +367,7 @@ class CampMonthlyScheduleController extends Controller {
                 }
             }
 
-          //  Yii::warning('ERRORS::', var_export($model->getErrors(), true));
+            //  Yii::warning('ERRORS::', var_export($model->getErrors(), true));
         }
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('achieved-monthly-modal', [
@@ -317,6 +380,8 @@ class CampMonthlyScheduleController extends Controller {
 
     public function actionUpdateAchievedTarget($id, $source_id) {
         $model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual::findOne($id);
+        $old_achieved_target = $model->achieved_activity_target;
+
         if ($model->load(Yii::$app->request->post())) {
             //Yii::warning('-----', var_export(Yii::$app->request->post, true));
             $model->updated_by = Yii::$app->user->identity->id;
@@ -326,6 +391,22 @@ class CampMonthlyScheduleController extends Controller {
                     $model->beneficiary_target_achieved_youth +
                     $model->beneficiary_target_achieved_women_headed;
             if ($model->save()) {
+                //We update the activity line actuals for a particular month
+                //1. Get the work effort to get the month
+                $work_effort_model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($source_id);
+                //2. Get planned activity to get the awpb activity line id
+                $planned_activity_model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($model->planned_activity_id);
+                //3. Get the activity line model
+                $activity_line_model = \backend\models\AwpbActivityLine::findOne($planned_activity_model->activity_id);
+                //4. Get the name of the actuals month column to update
+                $column = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getMonthColumnNameActuals($work_effort_model->month);
+
+                //Since its an update and we had already added to the actuals month column
+                //First we remove what we added then we add the new achieved target
+                $activity_line_model->$column -= $old_achieved_target;
+                $activity_line_model->$column += $model->achieved_activity_target;
+
+                $activity_line_model->save(false);
                 if (Yii::$app->request->isAjax) {
                     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
                     Yii::$app->session->setFlash('success', 'Actual/Achieved activity targets were successfully updated.');
@@ -334,7 +415,7 @@ class CampMonthlyScheduleController extends Controller {
                 }
             }
 
-           // Yii::warning('ERRORS::', var_export($model->getErrors(), true));
+            // Yii::warning('ERRORS::', var_export($model->getErrors(), true));
         }
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('achieved-monthly-modal_1', [
@@ -363,8 +444,14 @@ class CampMonthlyScheduleController extends Controller {
                     ->all();
             if (!empty($activity_list)) {
                 foreach ($activity_list as $value) {
-                    \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($value['id'])->delete();
-                    \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual::findOne(['planned_activity_id' => $value['id']])->delete();
+                    $_actual_model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual::findOne(['planned_activity_id' => $value['id']]);
+                    if (!empty($_actual_model)) {
+                        $_actual_model->delete();
+                    }
+                    $_planned_model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($value['id']);
+                    if (!empty($_planned_model)) {
+                        $_planned_model->delete();
+                    }
                 }
             }
 
@@ -394,7 +481,10 @@ class CampMonthlyScheduleController extends Controller {
             $camp = \backend\models\Camps::findOne($_model->camp_id)->name;
             $activity = \backend\models\AwpbActivityLine::findOne($model->activity_id)->name;
 
-            \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual::findOne(['planned_activity_id' => $model->id])->delete();
+            $_actual_model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual::findOne(['planned_activity_id' => $model->id]);
+            if (!empty($_actual_model)) {
+                $_actual_model->delete();
+            }
             if ($model->delete()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
@@ -421,7 +511,14 @@ class CampMonthlyScheduleController extends Controller {
             $_model = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($model->planned_activity_id);
             $_Model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($_model->work_effort_id);
             $camp = \backend\models\Camps::findOne($_Model->camp_id)->name;
-            $activity = \backend\models\AwpbActivityLine::findOne($_model->activity_id)->name;
+            $activity_model = \backend\models\AwpbActivityLine::findOne($_model->activity_id);
+            $activity = $activity_model->name;
+            //1. Get the name of the actuals month column to update
+            $column = \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getMonthColumnNameActuals($_Model->month);
+
+            //2. We remove what we added aswell to the activity line actuals
+            $activity_model->$column -= $model->achieved_activity_target;
+            $activity_model->save(false);
 
             if ($model->delete()) {
                 $audit = new AuditTrail();

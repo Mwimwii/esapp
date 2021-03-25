@@ -14,14 +14,14 @@ $form = ActiveForm::begin([
     <div class="col-lg-6">
         <?php
         echo $form->field($model, 'hours_worked_field')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Hours worked field'],
+            'options' => [],
             'pluginOptions' => [
                 'min' => 0,
                 'max' => 24,
             ],
         ]);
         echo $form->field($model, 'hours_worked_office')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Hours worked office'],
+            'options' => [],
             'pluginOptions' => [
                 'min' => 0,
                 'max' => 24,
@@ -29,24 +29,25 @@ $form = ActiveForm::begin([
         ]);
 
         echo $form->field($model, 'achieved_activity_target')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Achieved activity target'],
+            'options' => [],
             'pluginOptions' => [
                 // 'initval' => 3.00,
                 'min' => 0,
-                // 'max' => $_model->activity_target,
-                'max' => 10000,
+                'max' => $_model->activity_target,
+            // 'max' => 10000,
             ],
         ]);
         echo $form->field($model, 'beneficiary_target_achieved_women')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Beneficiary target achieved women'],
+            'options' => [],
             'pluginOptions' => [
                 // 'initval' => 3.00,
                 'min' => 0,
+                //  'max' => $_model->beneficiary_target_women,
                 'max' => 10000,
             ],
         ]);
         echo $form->field($model, 'beneficiary_target_achieved_youth')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Beneficiary target achieved youth'],
+            'options' => [],
             'pluginOptions' => [
                 // 'initval' => 3.00,
                 'min' => 0,
@@ -55,15 +56,15 @@ $form = ActiveForm::begin([
         ]);
 
         echo $form->field($model, 'beneficiary_target_achieved_women_headed')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Beneficiary target achieved women headed'],
+            'options' => [],
             'pluginOptions' => [
                 // 'initval' => 3.00,
                 'min' => 0,
                 'max' => 10000,
             ],
         ]);
-       echo $form->field($model, 'remarks')->textarea(['rows' => 4, 'placeholder' =>
-                    'Any remarks'])->label("Remarks ");
+        echo $form->field($model, 'remarks')->textarea(['rows' => 4, 'placeholder' =>
+            'Any remarks'])->label("Remarks ");
         ?>
     </div>
     <div class="col-lg-6">

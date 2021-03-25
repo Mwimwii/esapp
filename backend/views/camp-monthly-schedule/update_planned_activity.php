@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\touchspin\TouchSpin;
 
+$model_work_effort = \backend\models\MeCampSubprojectRecordsPlannedWorkEffort::findOne($source_id);
 $form = ActiveForm::begin([
         ]);
 ?>
@@ -14,7 +15,7 @@ $form = ActiveForm::begin([
         echo
                 $form->field($model, 'activity_id')
                 ->dropDownList(
-                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId(Yii::$app->user->identity->district_id), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
+                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model_work_effort->year,$source_id, $model_work_effort->month,$model->activity_id), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
         );
         ?>
         <?php
@@ -23,14 +24,14 @@ $form = ActiveForm::begin([
                 ->dropDownList(
                         \backend\models\MeFaabsGroups::getListByCampIds(), ['custom' => true, 'prompt' => 'Please select FaaBS', 'required' => true]
         );
-        echo $form->field($model, 'activity_target')->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Activity target'],
-            'pluginOptions' => [
-                // 'initval' => 3.00,
-                'min' => 0,
-            // 'max' => 100,
-            ],
-        ]);
+        /* echo $form->field($model, 'activity_target')->widget(TouchSpin::classname(), [
+          'options' => ['placeholder' => 'Activity target'],
+          'pluginOptions' => [
+          // 'initval' => 3.00,
+          'min' => 0,
+          // 'max' => 100,
+          ],
+          ]); */
 
         echo $form->field($model, 'beneficiary_target_women')->widget(TouchSpin::classname(), [
             'options' => ['placeholder' => 'Beneficiary target women'],
@@ -84,7 +85,7 @@ $form = ActiveForm::begin([
 
     <div class="col-md-12">
         <hr class="dotted"/>
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success btn-xs']) ?>
+<?= Html::submitButton('Save', ['class' => 'btn btn-success btn-xs']) ?>
 
     </div>
 </div>

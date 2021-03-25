@@ -4,7 +4,8 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\date\DatePicker;
 use kartik\widgets\TimePicker;
-
+use kartik\depdrop\DepDrop;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model backend\models\MeFaabsTrainingAttendanceSheet */
 /* @var $form yii\widgets\ActiveForm */
@@ -14,41 +15,43 @@ use kartik\widgets\TimePicker;
 
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
-    <div class="col-lg-4">
-        <?=
-                $form->field($model, "faabs_group_id", ['enableAjaxValidation' => true])
+    <div class="col-lg-6">
+        <?php
+        echo $form->field($model, "faabs_group_id", ['enableAjaxValidation' => true])
                 ->dropDownList(
-                        \backend\models\MeFaabsGroups::getListByCampIds(), ['custom' => true, 'prompt' => 'Select FaaBS group', 'required' => true]
+                        \backend\models\MeFaabsGroups::getListByCampIds(), ['custom' => true, 'id' => 'faabs_id', 'prompt' => 'Select FaaBS group', 'required' => true]
         );
-        ?>
+        echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->farmer_id, ['id' => 'selected_id']);
 
-    </div>
-    <div class="col-lg-4">
-        <?=
-                $form->field($model, "farmer_id", ['enableAjaxValidation' => true])
-                ->dropDownList(\backend\models\MeFaabsCategoryAFarmers::getActiveFarmers(), ['custom' => true, 'prompt' => 'Select farmer name', 'required' => true]
-        );
+        echo $form->field($model, 'farmer_id', ['enableAjaxValidation' => true])->widget(DepDrop::classname(), [
+            'options' => ['id' => 'farm_id', 'custom' => true, 'required' => TRUE],
+            'pluginOptions' => [
+                'depends' => ['faabs_id'],
+                'initialize' => $model->isNewRecord ? false : true,
+                'placeholder' => 'Please select a farmer',
+                'url' => Url::to(['/faabs-groups/farmers']),
+                'params' => ['selected_id'],
+            ]
+        ]);
         ?>
-    </div>
-    <div class="col-lg-4">
         <?=
                 $form->field($model, "household_head_type", ['enableAjaxValidation' => true])
                 ->dropDownList(['Female headed' => "Female headed", "Male headed" => "Male headed"], ['custom' => true, 'prompt' => 'Select household head type', 'required' => true]
         );
         ?>
-
-    </div>
-
-    <div class="col-lg-6">
-        <?= $form->field($model, 'topic')->textInput(['placeholder' => 'Enter training course(Topic)']) ?>
-    </div>
-    <div class="col-lg-6">
         <?= $form->field($model, 'facilitators')->textInput(['placeholder' => 'Enter facilitators']) ?>
-    </div>
-    <div class="col-lg-4">
         <?= $form->field($model, 'partner_organisations')->textInput(['placeholder' => 'Enter partner organisations']) ?>
+
     </div>
-    <div class="col-lg-4">
+
+    <div class="col-lg-6">
+        <?=
+        $form->field($model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), [
+            'selector' => 'radio',
+            'height' => "200px"
+        ]);
+        ?>
+
         <?=
         $form->field($model, "training_date", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
             'options' => ['placeholder' => 'Enter training date i.e. YYYY-MM-DD', 'maxlength' => true,],
@@ -60,8 +63,6 @@ use kartik\widgets\TimePicker;
             ]
         ]);
         ?>
-    </div>
-    <div class="col-lg-4">
         <?=
         $form->field($model, 'duration')->widget(TimePicker::classname(),
                 [

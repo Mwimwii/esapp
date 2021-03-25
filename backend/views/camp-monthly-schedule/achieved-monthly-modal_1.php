@@ -33,8 +33,8 @@ $form = ActiveForm::begin([
             'pluginOptions' => [
                 // 'initval' => 3.00,
                 'min' => 0,
-                // 'max' => $_model->activity_target,
-                'max' => 10000,
+                'max' => $_model->activity_target,
+            //'max' => 10000,
             ],
         ]);
         echo $form->field($model, 'beneficiary_target_achieved_women')->widget(TouchSpin::classname(), [
@@ -62,8 +62,8 @@ $form = ActiveForm::begin([
                 'max' => 10000,
             ],
         ]);
-       echo $form->field($model, 'remarks')->textarea(['rows' => 4, 'placeholder' =>
-                    'Any remarks'])->label("Remarks ");
+        echo $form->field($model, 'remarks')->textarea(['rows' => 4, 'placeholder' =>
+            'Any remarks'])->label("Remarks ");
         ?>
     </div>
     <div class="col-lg-6">

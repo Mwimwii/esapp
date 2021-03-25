@@ -82,6 +82,39 @@ $list = \backend\models\MeFaabsGroups::find()
             'attributes' => [
                 // 'id',
                 [
+                    'label' => "Province",
+                    'attribute' => 'province_id',
+                    'value' => function ($model) {
+                        $camp_id = \backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->camp_id;
+                        $district_id = \backend\models\Camps::findOne($camp_id)->district_id;
+                        $province_id = backend\models\Districts::findOne($district_id)->province_id;
+                        $name = backend\models\Provinces::findOne($province_id)->name;
+                        return $name;
+                    },
+                    'visible' => !empty(Yii::$app->user->identity->district_id) ? false : true
+                ],
+                [
+                    'label' => "District",
+                    'attribute' => 'district_id',
+                    'value' => function ($model) {
+                        $camp_id = \backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->camp_id;
+                        $district_id = \backend\models\Camps::findOne($camp_id)->district_id;
+                        $name = backend\models\Districts::findOne($district_id)->name;
+                        return $name;
+                    },
+                    'visible' => !empty(Yii::$app->user->identity->district_id) ? false : true
+                ],
+                [
+                    'label' => "Camp",
+                    'attribute' => 'camp_id',
+                    'value' => function ($model) {
+                        $camp_id = \backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->camp_id;
+                        $name = backend\models\Camps::findOne($camp_id)->name;
+                        return $name;
+                    },
+                  //  'visible' => !empty(Yii::$app->user->identity->district_id) ? false : true
+                ],
+                [
                     'attribute' => 'faabs_group_id',
                     'format' => 'raw',
                     'value' => function ($model) {
@@ -101,6 +134,7 @@ $list = \backend\models\MeFaabsGroups::find()
                 'last_name',
                 'sex',
                 'dob',
+                'age',
                 'nrc',
                 'marital_status',
                 'contact_number',

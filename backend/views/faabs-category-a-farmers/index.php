@@ -58,7 +58,7 @@ $list = \backend\models\MeFaabsGroups::find()
 
         <?php
         $gridColumns = [
-           // ['class' => 'yii\grid\SerialColumn'],
+            // ['class' => 'yii\grid\SerialColumn'],
             [
                 'label' => "Province",
                 'attribute' => 'province_id',
@@ -97,6 +97,7 @@ $list = \backend\models\MeFaabsGroups::find()
             [
                 'label' => "Camp",
                 'attribute' => 'camp_id',
+                //  'group'=>true,
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],
@@ -109,7 +110,23 @@ $list = \backend\models\MeFaabsGroups::find()
                     $name = backend\models\Camps::findOne($camp_id)->name;
                     return $name;
                 },
-                'visible' => !empty(Yii::$app->user->identity->district_id) ? false : true
+            // 'visible' => !empty(Yii::$app->user->identity->district_id) ? false : true
+            ],
+            [
+                'enableSorting' => true,
+                'attribute' => 'faabs_group_id',
+                'group' => true,
+                'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                ],
+                'filter' => \backend\models\MeFaabsGroups::getList(),
+                'filterInputOptions' => ['prompt' => 'Filter by FaaBS group', 'class' => 'form-control',],
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $name = backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->name;
+                    return $name;
+                },
             ],
             [
                 'attribute' => 'first_name',
@@ -125,21 +142,6 @@ $list = \backend\models\MeFaabsGroups::find()
                     $name = $model->title . "" . $model->first_name . " " . $model->other_names . " " . $model->last_name;
                     return $name;
                 }
-            ],
-            [
-                'enableSorting' => true,
-                'attribute' => 'faabs_group_id',
-                'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'pluginOptions' => ['allowClear' => true],
-                ],
-                'filter' => \backend\models\MeFaabsGroups::getList(),
-                'filterInputOptions' => ['prompt' => 'Filter by FaaBS group', 'class' => 'form-control',],
-                'format' => 'raw',
-                'value' => function ($model) {
-                    $name = backend\models\MeFaabsGroups::findOne($model->faabs_group_id)->name;
-                    return $name;
-                },
             ],
             [
                 'enableSorting' => true,
@@ -334,6 +336,11 @@ $list = \backend\models\MeFaabsGroups::find()
             [
                 'enableSorting' => true,
                 'attribute' => 'dob',
+                'filter' => false,
+            ],
+            [
+                'enableSorting' => true,
+                'attribute' => 'age',
                 'filter' => false,
             ],
             [

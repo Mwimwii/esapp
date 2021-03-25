@@ -29,20 +29,29 @@ $months = [
     <div class="card-body">
         <h5>Instructions</h5>
         <ol>
-            <li>You can add the camp monthly schedule by clicking the button <span class="badge badge-success">Add Camp <?= date('F') ?> schedule</span>
-            </li>
-            <li>After adding a monthly camp work effort record, the system will allow you to add planned activities and submit actual achieved details for the month
-            </li>
-            <li>You will only be able to plan activities for the current month. The other months you can only view
-            </li>
+            <?php
+            if (!empty(\backend\models\Camps::getListByDistrictId2(Yii::$app->user->identity->district_id))) {
+                echo '<li>You can add the camp monthly schedule by clicking the button <span class="badge badge-success">Add Camp ' . date('F') . ' schedule</span>
+                      </li>
+                       <li>After adding a monthly camp work effort record, the system will allow you to add planned activities and submit actual achieved details for the month
+                        </li>
+                        <li>You will only be able to plan activities for the current month. The other months you can only view
+                        </li>';
+            } else {
+                 echo '<li>You have already added work effort schedules for the month of <code>' . date('F') . '</code> for all the Camps in your district. You can only update and/or add planned activities
+                       </li>';
+            }
+            ?>
+
+           
         </ol>
         <?php //echo $this->render('_search', ['model' => $model]); ?>
         <hr class="dotted">
         <p>
             <?php
-            if (User::userIsAllowedTo('Plan camp monthly activities')) {
+            if (User::userIsAllowedTo('Plan camp monthly activities') && !empty(\backend\models\Camps::getListByDistrictId2(Yii::$app->user->identity->district_id))) {
                 $readonly = false;
-                echo Html::a('<i class="fa fa-plus"></i> Add Camp ' . date('F') . ' schedule', ['work-effort'], ['class' => 'btn btn-success btn-sm']);
+                echo Html::a('<i class="fa fa-plus"></i> Add Camp ' . date('F') . ' schedule', ['work-effort'], ['class' => 'btn btn-success btn-xs']);
             }
             ?>
         </p>

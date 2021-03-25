@@ -74,7 +74,6 @@ class FaabsGroupsController extends Controller {
                     foreach ($camp_ids as $id) {
                         array_push($_camp_ids, $id['id']);
                     }
-                    
                 }
                 $dataProvider->query->andFilterWhere(['IN', 'camp_id', $_camp_ids]);
             }
@@ -299,6 +298,28 @@ class FaabsGroupsController extends Controller {
                         ->all();
 
                 return ['output' => $out, 'selected' => ""];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+    public function actionFarmers() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            $selected_id = $_POST['depdrop_all_params']['selected_id'];
+            if ($parents != null) {
+                $_id = $parents[0];
+                $out = \backend\models\MeFaabsCategoryAFarmers::find()
+                        ->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_names),' ',last_name) as name", 'id'])
+                        ->where(['status' => 1])
+                        ->andWhere(['IN', 'faabs_group_id', $_id])
+                        ->orderBy(['id' => SORT_ASC])
+                        ->asArray()
+                        ->all();
+
+                return ['output' => $out, 'selected' => $selected_id];
             }
         }
         return ['output' => '', 'selected' => ''];

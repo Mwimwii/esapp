@@ -489,6 +489,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                         'params' => ['selected_id'],
                     ]
                 ]);
+                echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector'=>'radio']);
                 ?>
             </div>
             <div class="modal-footer justify-content-between">

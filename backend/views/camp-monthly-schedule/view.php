@@ -139,8 +139,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 <p>
                 <h5>Instructions</h5>
                 <ol>
-                    <li>Click the button <span class="badge badge-success">Add Planned monthly activity</span> to add a planned activity for the month
-                    </li>
+                    <?php
+                    if (!empty(\backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month))) {
+                        echo '<li>Click the button <span class="badge badge-success">Add Planned ' . DateTime::createFromFormat('!m', $model->month)->format('F') . ' activity</span> to add a planned activity for the month
+                              </li>';
+                    } else {
+                        echo '<li>You have already added all activities that were approved in the AWPB for ' . DateTime::createFromFormat('!m', $model->month)->format('F') . '. If you want to make any changes, you can update the existing records below
+                              </li>';
+                    }
+                    ?>
+
+
                     <li>Click the icon <span class="fa fa-edit"></span> to update the planned activity record
                     </li>
                     <li>Click the icon <span class="fa fa-trash"></span> to delete the monthly work effort record and its associative activities
@@ -159,9 +168,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="card-tools">
                         <?php
-                        if (User::userIsAllowedTo('Plan camp monthly activities')) {
+                        if (User::userIsAllowedTo('Plan camp monthly activities') && !empty(\backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month))) {
                             echo '<button class="btn btn-success btn-sm" href="#" onclick="$(\'#addNewModal\').modal(); 
-                            return false;"><i class="fa fa-plus"></i> Add Planned monthly activity</button>';
+                            return false;"><i class="fa fa-plus"></i> Add Planned ' . DateTime::createFromFormat('!m', $model->month)->format('F') . ' activity</button>';
                         }
                         ?>
                     </div>
@@ -190,25 +199,23 @@ $this->params['breadcrumbs'][] = $this->title;
                     'dataProvider' => $_dataProvider,
                     'condensed' => true,
                     'responsive' => true,
+                    'beforeHeader' => [
+                        [
+                            'columns' => [
+                                ['content' => DateTime::createFromFormat('!m', $model->month)->format('F') . ' Planned Activity', 'options' => ['colspan' => 2, 'class' => 'text-center warning']],
+                                ['content' => 'FaaBS', 'options' => ['colspan' => 1, 'class' => 'text-center warning']],
+                                ['content' => DateTime::createFromFormat('!m', $model->month)->format('F') . ' Beneficiary Target', 'options' => ['colspan' => 4, 'class' => 'text-center warning']],
+                                ['content' => 'Action', 'options' => ['colspan' => 1, 'class' => 'text-center warning']],
+                            ],
+                        ]
+                    ],
                     'columns' => [
                         //['class' => 'yii\grid\SerialColumn'],
                         // 'id',
                         [
                             // 'class' => EditableColumn::className(),
                             'contentOptions' => ['class' => 'text-left'],
-                            'headerOptions' => ['class' => 'text-center'],
-                            /* 'readonly' => $read_only,
-                              'refreshGrid' => true,
-                              'editableOptions' => [
-                              'type' => 'success',
-                              'asPopover' => true,
-                              'placement' => kartik\popover\PopoverX::ALIGN_TOP_LEFT,
-                              'inputType' => Editable::INPUT_SELECT2,
-                              'options' => ['data' => \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId(Yii::$app->user->identity->district_id)],
-                              'formOptions' => [
-                              'action' => \yii\helpers\Url::to(['update-activity'])
-                              ]
-                              ], */
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'attribute' => 'activity_id',
                             //'readonly' => false,
                             'options' => ['style' => 'width:200px;'],
@@ -218,21 +225,16 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         ],
                         [
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
+                            'enableSorting' => false,
+                            'attribute' => 'activity_target',
+                            'filter' => false,
+                            'label' => " Activity Target",
+                        ],
+                        [
                             // 'class' => EditableColumn::className(),
                             'contentOptions' => ['class' => 'text-left'],
-                            'headerOptions' => ['class' => 'text-center'],
-                            /* 'readonly' => $read_only,
-                              'refreshGrid' => true,
-                              'editableOptions' => [
-                              'type' => 'success',
-                              'asPopover' => true,
-                              'placement' => kartik\popover\PopoverX::ALIGN_TOP_LEFT,
-                              'inputType' => Editable::INPUT_SELECT2,
-                              'options' => ['data' => \backend\models\MeFaabsGroups::getListByCampIds()],
-                              'formOptions' => [
-                              'action' => \yii\helpers\Url::to(['update-activity'])
-                              ]
-                              ], */
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'attribute' => 'faabs_id',
                             "value" => function ($model) {
                                 $faabs_model = backend\models\MeFaabsGroups::findOne($model->faabs_id);
@@ -243,63 +245,25 @@ $this->params['breadcrumbs'][] = $this->title;
                           'attribute' => 'zone',
                           ], */
                         [
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
-                            'attribute' => 'activity_target',
-                            'filter' => false,
-                        ],
-                        [
-                            // 'class' => EditableColumn::className(),
-                            'enableSorting' => false,
-                            /* 'readonly' => $read_only,
-                              'refreshGrid' => true,
-                              'editableOptions' => [
-                              'type' => 'success',
-                              'asPopover' => true,
-                              'size' => \kartik\popover\PopoverX::SIZE_MEDIUM,
-                              'inputType' => Editable::INPUT_WIDGET,
-                              'widgetClass' => '\kartik\touchspin\TouchSpin',
-                              'formOptions' => [
-                              'action' => \yii\helpers\Url::to(['update-activity'])
-                              ]
-                              ], */
                             'attribute' => 'beneficiary_target_women',
                             'filter' => false,
                         ],
                         [
-                            // 'class' => EditableColumn::className(),
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
-                            /* 'readonly' => $read_only,
-                              'refreshGrid' => true,
-                              'editableOptions' => [
-                              'type' => 'success',
-                              'asPopover' => true,
-                              'size' => \kartik\popover\PopoverX::SIZE_MEDIUM,
-                              'inputType' => Editable::INPUT_WIDGET,
-                              'widgetClass' => '\kartik\touchspin\TouchSpin',
-                              'formOptions' => [
-                              'action' => \yii\helpers\Url::to(['update-activity'])
-                              ]
-                              ], */
                             'attribute' => 'beneficiary_target_youth',
                             'filter' => false,
                         ],
                         [
-                            // 'class' => EditableColumn::className(),
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
-                            /* 'editableOptions' => [
-                              'type' => 'success',
-                              'asPopover' => true,
-                              'size' => \kartik\popover\PopoverX::SIZE_MEDIUM,
-                              'inputType' => Editable::INPUT_WIDGET,
-                              'widgetClass' => '\kartik\touchspin\TouchSpin',
-                              'formOptions' => [
-                              'action' => \yii\helpers\Url::to(['update-activity'])
-                              ]
-                              ], */
                             'attribute' => 'beneficiary_target_women_headed',
                             'filter' => false,
                         ],
                         [
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
                             'attribute' => 'beneficiary_target_total',
                             'filter' => false,
@@ -323,7 +287,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         'class' => "mb-xs mt-xs mr-xs btn btn-xs btn-default",
                                                         'title' => 'Update planned activity',
                                                     ],
-                                                    'id' => "update_" . $_model->id,
+                                                    'id' => "update_act_" . $_model->id,
                                                     'size' => 'modal-lg',
                                                     'options' => ['class' => 'header-default'],
                                                     'url' => \yii\helpers\Url::to(['/camp-monthly-schedule/update-activity', 'id' => $_model->id,
@@ -425,8 +389,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'columns' => [
                                 ['content' => 'Activity', 'options' => ['colspan' => 2, 'class' => 'text-center warning']],
+                                ['content' => 'FaaBS', 'options' => ['colspan' => 1, 'class' => 'text-center warning']],
                                 ['content' => 'Hours worked', 'options' => ['colspan' => 3, 'class' => 'text-center warning']],
-                                ['content' => 'Beneficiary Target-Achieved', 'options' => ['colspan' => 4, 'class' => 'text-center warning']],
+                                ['content' => DateTime::createFromFormat('!m', $model->month)->format('F') . ' Beneficiary Target-Achieved', 'options' => ['colspan' => 4, 'class' => 'text-center warning']],
                                 ['content' => 'Remarks', 'options' => ['colspan' => 1, 'class' => 'text-center warning']],
                                 ['content' => 'Action', 'options' => ['colspan' => 1, 'class' => 'text-center warning']],
                             ],
@@ -453,8 +418,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             'contentOptions' => ['class' => 'text-left'],
                             'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
-                            'label' => 'Achieved target',
+                            'label' => DateTime::createFromFormat('!m', $model->month)->format('F') . " Achieved target",
                             'attribute' => 'achieved_activity_target',
+                        ],
+                        [
+                            'contentOptions' => ['class' => 'text-left'],
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
+                            'attribute' => 'faabs_id',
+                            'label' => 'FaaBS',
+                            "value" => function ($model) {
+                                $planned_model = backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($model->planned_activity_id);
+                                $faabs_model = !empty($planned_model) ? backend\models\MeFaabsGroups::findOne($planned_model->faabs_id) : "";
+                                return !empty($faabs_model) ? $faabs_model->name : "";
+                            }
                         ],
                         [
                             'enableSorting' => false,
@@ -491,7 +467,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'contentOptions' => ['class' => 'text-left'],
                             'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
-                              'label' => 'Youth',
+                            'label' => 'Youth',
                             'attribute' => 'beneficiary_target_achieved_youth',
                             'filter' => false,
                         ],
@@ -500,13 +476,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'contentOptions' => ['class' => 'text-left'],
                             'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
-                             'label' => 'Women headed',
+                            'label' => 'Women headed',
                             'attribute' => 'beneficiary_target_achieved_women_headed',
                             'filter' => false,
                         ],
                         [
                             'contentOptions' => ['class' => 'text-left'],
-                           'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
                             'label' => 'Total',
                             'attribute' => 'beneficiary_target_achieved_total',
@@ -514,7 +490,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         [
                             'contentOptions' => ['class' => 'text-left'],
-                           'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
+                            'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                             'enableSorting' => false,
                             'label' => false,
                             'attribute' => 'remarks',
@@ -577,7 +553,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="modal-dialog modal-lg">
         <div class="modal-content card-success card-outline">
             <div class="modal-header">
-                <h5 class="modal-title">Add <?php echo date("F"); ?> Planned activity</h5>
+                <h5 class="modal-title">Add <?= DateTime::createFromFormat('!m', $model->month)->format('F') ?> Planned activity</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -595,7 +571,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         echo
                                 $form->field($_model, 'activity_id')
                                 ->dropDownList(
-                                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId(Yii::$app->user->identity->district_id), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
+                                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
                         );
                         ?>
                         <?php
@@ -604,14 +580,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->dropDownList(
                                         \backend\models\MeFaabsGroups::getListByCampIds(), ['custom' => true, 'prompt' => 'Please select FaaBS', 'required' => true]
                         );
-                        echo $form->field($_model, 'activity_target')->widget(TouchSpin::classname(), [
-                            'options' => ['placeholder' => 'Activity target'],
-                            'pluginOptions' => [
-                                // 'initval' => 3.00,
-                                'min' => 0,
-                            // 'max' => 100,
-                            ],
-                        ]);
+                        /* echo $form->field($_model, 'activity_target')->widget(TouchSpin::classname(), [
+                          'options' => ['placeholder' => 'Activity target'],
+                          'pluginOptions' => [
+                          // 'initval' => 3.00,
+                          'min' => 0,
+                          // 'max' => 100,
+                          ],
+                          ]); */
 
                         echo $form->field($_model, 'beneficiary_target_women')->widget(TouchSpin::classname(), [
                             'options' => ['placeholder' => 'Beneficiary target women'],
@@ -661,6 +637,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <li>Fields marked with <i style="color: red;">*</i> are required</span>
                             </li>
                             <li>You will only be able to add activities that were not planned for in the previous months
+                            </li>
+                            <li>You will only be able to add activities whose planned target for <code><?= DateTime::createFromFormat('!m', $model->month)->format('F') ?></code> was greater than or equal to <code>One</code>
                             </li>
                         </ol>
                     </div>

@@ -241,6 +241,10 @@ class FaabsCategoryAFarmersController extends Controller {
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->status = 1;
+                $date1 = new \DateTime($model->dob);
+                $date2 = new \DateTime(date("Y-m-d"));
+                $model->age = (int) \date_diff($date2, $date1)->y;
+
                 if ($model->save()) {
                     $name = $model->first_name . " " . $model->other_names . " " . $model->last_name;
                     $audit = new AuditTrail();
@@ -282,6 +286,10 @@ class FaabsCategoryAFarmersController extends Controller {
 
             if ($model->load(Yii::$app->request->post())) {
                 $model->updated_by = Yii::$app->user->identity->id;
+                $date1 = new \DateTime($model->dob);
+                $date2 = new \DateTime(date("Y-m-d"));
+                $model->age = (int) \date_diff($date2, $date1)->y;
+
                 if ($model->save()) {
                     $name = $model->first_name . " " . $model->other_names . " " . $model->last_name;
                     $audit = new AuditTrail();

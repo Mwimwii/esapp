@@ -279,8 +279,10 @@ $session = Yii::$app->session;
                                     User::userIsAllowedTo("Submit back to office report") ||
                                     User::userIsAllowedTo("View back to office report") ||
                                     User::userIsAllowedTo("Review back to office report") ||
-                                    User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
-                                    User::userIsAllowedTo("View camp/project site objectives for awpb") ||
+                                    //User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
+                                    //User::userIsAllowedTo("View camp/project site objectives for awpb") ||
+                                    User::userIsAllowedTo("Manage FaaBS training topics") ||
+                                    User::userIsAllowedTo("View FaaBS training topics") ||
                                     User::userIsAllowedTo("Plan camp monthly activities") ||
                                     User::userIsAllowedTo("Remove planned camp monthly activities") ||
                                     User::userIsAllowedTo("View planned camp monthly activities")
@@ -288,11 +290,10 @@ $session = Yii::$app->session;
                                 if (Yii::$app->controller->id == "faabs-category-a-farmers" ||
                                         Yii::$app->controller->id == "faabs-training-attendance" ||
                                         Yii::$app->controller->id == "faabs-groups" ||
-                                        Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" ||
+                                       // Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" ||
                                         Yii::$app->controller->id == "back-to-office-report" ||
                                         Yii::$app->controller->id == "camp-monthly-schedule" ||
-                                        Yii::$app->controller->id == "camp-monthly-planned-activities" ||
-                                        Yii::$app->controller->id == "camp-monthly-planned-activities-actual"
+                                        Yii::$app->controller->id == "faabs-training-topics"
                                 ) {
                                     echo '<li class="nav-item has-treeview menu-open">'
                                     . ' <a href="#" class="nav-link active">';
@@ -337,6 +338,19 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
+                                    if (User::userIsAllowedTo("Manage FaaBS training topics") || User::userIsAllowedTo("View FaaBS training topics")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "faabs-training-topics" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>FaaBS Training topics</p>', ['/faabs-training-topics/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>FaaBS Training topics</p>', ['/faabs-training-topics/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     if (User::userIsAllowedTo("Submit FaaBS training records") ||
                                             User::userIsAllowedTo("View FaaBS training records")) {
                                         echo '<li class="nav-item">';
@@ -376,7 +390,7 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                    if (User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
+                                   /* if (User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
                                             User::userIsAllowedTo("View camp/project site objectives for awpb")) {
                                         echo '<li class="nav-item">';
                                         if (Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" &&
@@ -390,7 +404,7 @@ $session = Yii::$app->session;
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
-                                    }
+                                    }*/
                                     if (User::userIsAllowedTo("Plan camp monthly activities") ||
                                             User::userIsAllowedTo("View planned camp monthly activities")) {
                                         echo '<li class="nav-item">';

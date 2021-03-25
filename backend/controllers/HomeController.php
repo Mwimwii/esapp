@@ -55,6 +55,7 @@ class HomeController extends Controller {
         $province = !empty($district_model) ? \backend\models\Provinces::findOne(['id' => $district_model->province_id])->name : "";
         $faabs_group = \backend\models\MeFaabsGroups::findOne($model->faabs_group)->name;
         $camp = \backend\models\Camps::findOne($model->camp)->name;
+        $topic = !empty($model->topic) ? \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->topic : "";
 
         $filename = "faabs_attendance_sheet" . date("Ymdhis") . ".pdf";
         $ath = new AuditTrail();
@@ -77,6 +78,7 @@ class HomeController extends Controller {
                         'province' => $province,
                         'district' => $district,
                         'camp' => $camp,
+                        'topic' => $topic,
                         'faabs_group' => $faabs_group,
             ]),
             'options' => [

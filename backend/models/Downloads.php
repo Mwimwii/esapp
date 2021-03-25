@@ -12,11 +12,12 @@ class Downloads extends \yii\db\ActiveRecord{
 
     public $faabs_group;
     public $camp;
+    public $topic;
 
     public function rules() {
         return [
-            [['camp', 'faabs_group'], 'required'],
-            [['camp', 'faabs_group'], 'safe'],
+            [['camp', 'faabs_group','topic'], 'required'],
+            [['camp', 'faabs_group','topic'], 'safe'],
         ];
     }
 

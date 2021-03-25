@@ -1,5 +1,3 @@
-
-
 <?php
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
@@ -13,36 +11,30 @@ use kartik\form\ActiveForm;
 $this->title = 'Password reset request';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="card card-outline card-success">
+    <div class="card-body">
+        <p class="text-sm text-center breadcrumb-item active">
+            Reset password link will be sent to your email
+        </p>
 
-<div class="col-md-5">
-    <div class="card card-success">
-        <div class="card-header">
-            <h5 class="card-title m-0" style="color: white;"><?= Html::encode($this->title) ?></h5>
-        </div>
-        <div class="card-body ">
-            <p>Please fill out your email. A link to reset password will be sent there.</p>
-
-            <?php
-            $form = ActiveForm::begin([
-            ]);
-            ?>
+        <?php
+        $form = ActiveForm::begin([
+        ]);
+        ?>
+        <div style="width:360px;">
             <?=
             $form->field($model, 'email', ['enableAjaxValidation' => true,
                 'addon' => ['prepend' => ['content' => ' <span class="fas fa-envelope"></span>']]
             ])->textInput(['autofocus' => false, 'placeholder' => 'Enter email',])->label(false);
             ?>
-
-
-            <div class="form-group">
-                <?= Html::submitButton('Request', ['class' => 'btn btn-block btn-success btn-sm']) ?>
-            </div>
-
-            <?php ActiveForm::end(); ?>
-            <div style="color:#999;margin:1em 0">
-                <?= Html::a('Back to Login', ['site/login']) ?>
-            </div>
+        </div>
+        <div class="social-auth-links text-center mt-2 mb-3">
+            <?= Html::submitButton('Request link', ['class' => 'btn btn-block btn-sm btn-success', 'name' => 'login-button']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+        <div class="text-sm" style="color:#999;margin:1em 0">
+            <?= Html::a('Back to Login', ['site/login'], ['class' => "breadcrumb-item active"]) ?>
         </div>
     </div>
+    <!-- /.card-body -->
 </div>
-
-

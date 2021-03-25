@@ -57,7 +57,7 @@ class MeFaabsCategoryAFarmers extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['title', 'faabs_group_id', 'first_name', 'last_name', 'sex', 'dob', 'marital_status', 'registration_date', 'nrc'], 'required'],
-            [['faabs_group_id', 'status', 'household_size', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['faabs_group_id', 'status', 'household_size', 'created_at', 'updated_at', 'created_by', 'updated_by','age'], 'integer'],
             [['dob', 'registration_date'], 'safe'],
             [['first_name', 'other_names', 'last_name', 'village', 'chiefdom', 'block', 'zone', 'commodity'], 'string', 'max' => 255],
             [['sex'], 'string', 'max' => 7],
@@ -101,6 +101,7 @@ class MeFaabsCategoryAFarmers extends \yii\db\ActiveRecord {
             'last_name' => 'Last name',
             'sex' => 'Sex',
             'dob' => 'Dob',
+            'age' => 'Age',
             'nrc' => 'NRC',
             'marital_status' => 'Marital status',
             'contact_number' => 'Contact No.',
