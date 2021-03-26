@@ -25,10 +25,10 @@ class FaabsGroupsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'faabs-by-camp'],
+                'only' => ['index', 'create', 'delete', 'faabs-by-camp','farmers'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'faabs-by-camp'],
+                        'actions' => ['index', 'create', 'delete', 'faabs-by-camp','farmers'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

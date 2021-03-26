@@ -27,10 +27,10 @@ class FaabsTrainingAttendanceController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'update'],
+                'only' => ['index', 'create', 'delete', 'update', 'view'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'update'],
+                        'actions' => ['index', 'create', 'delete', 'update', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -68,7 +68,7 @@ class FaabsTrainingAttendanceController extends Controller {
                     'created_at' => SORT_DESC
                 ]
             ]);
-             if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_date'])) {
+            if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_date'])) {
                 $date_arry = explode("to", Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_date']);
                 $start_date = trim($date_arry[0]);
                 $end_date = trim($date_arry[1]);
@@ -180,8 +180,8 @@ class FaabsTrainingAttendanceController extends Controller {
                 }
                 $dataProvider->query->andFilterWhere(['IN', 'faabs_group_id', $_faabs_ids]);
             }
-            
-            
+
+
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
@@ -199,9 +199,14 @@ class FaabsTrainingAttendanceController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        return $this->render('view', [
-                    'model' => $this->findModel($id),
-        ]);
+        if (User::userIsAllowedTo('View FaaBS training records')) {
+            return $this->render('view', [
+                        'model' => $this->findModel($id),
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
     }
 
     /**
@@ -222,6 +227,24 @@ class FaabsTrainingAttendanceController extends Controller {
                 $model->updated_by = Yii::$app->user->identity->id;
                 $farmer_model = \backend\models\MeFaabsCategoryAFarmers::findOne($model->farmer_id);
                 $name = $farmer_model->title . "" . $farmer_model->first_name . " " . $farmer_model->other_names . " " . $farmer_model->last_name;
+                //Check if farmer is a youth or non youth and sex. This is data duplication but we just trying to make it 
+                //easy to do reports
+                $model->sex = $farmer_model->sex;
+                //  if ($farmer_model->age >= Yii::$app->params['supportEmail'] &&
+                //      $farmer_model->age <= Yii::$app->params['supportEmail']) {
+                if ($farmer_model->age <= Yii::$app->params['youthMaxAge']) {
+                    $model->youth_non_youth = "Youth";
+                } else {
+                    $model->youth_non_youth = "Non Youth";
+                }
+                $month = date("n", strtotime($model->training_date));
+                $model->quarter = MeFaabsTrainingAttendanceSheet::getQuarter($month);
+                
+                //Also this is data duplication but its the best and efficient solution
+                //For the reports
+                $model->topic_indicator= \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->output_level_indicator;
+                $model->topic_subcomponent=\backend\models\MeFaabsTrainingTopics::findOne($model->topic)->subcomponent;
+
                 if ($model->save()) {
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
@@ -267,6 +290,24 @@ class FaabsTrainingAttendanceController extends Controller {
                 $model->updated_by = Yii::$app->user->identity->id;
                 $farmer_model = \backend\models\MeFaabsCategoryAFarmers::findOne($model->farmer_id);
                 $name = $farmer_model->title . "" . $farmer_model->first_name . " " . $farmer_model->other_names . " " . $farmer_model->last_name;
+                //Check if farmer is a youth or non youth and sex. This is data duplication but we just trying to make it 
+                //easy to do reports
+                $model->sex = $farmer_model->sex;
+                //  if ($farmer_model->age >= Yii::$app->params['supportEmail'] &&
+                //      $farmer_model->age <= Yii::$app->params['supportEmail']) {
+                if ($farmer_model->age <= Yii::$app->params['youthMaxAge']) {
+                    $model->youth_non_youth = "Youth";
+                } else {
+                    $model->youth_non_youth = "Non Youth";
+                }
+
+                $month = date("n", strtotime($model->training_date));
+                $model->quarter = MeFaabsTrainingAttendanceSheet::getQuarter($month);
+                 //Also this is data duplication but its the best and efficient solution
+                //For the reports
+                $model->topic_indicator= \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->output_level_indicator;
+                $model->topic_subcomponent=\backend\models\MeFaabsTrainingTopics::findOne($model->topic)->subcomponent;
+                
                 if ($model->save()) {
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;

@@ -18,7 +18,7 @@ class MeFaabsTrainingTopicsSearch extends MeFaabsTrainingTopics
     {
         return [
             [['id'], 'integer'],
-            [['topic', 'output_level_indicator', 'category'], 'safe'],
+            [['topic', 'output_level_indicator', 'category','subcomponent'], 'safe'],
         ];
     }
 
@@ -63,6 +63,7 @@ class MeFaabsTrainingTopicsSearch extends MeFaabsTrainingTopics
 
         $query->andFilterWhere(['like', 'topic', $this->topic])
             ->andFilterWhere(['like', 'output_level_indicator', $this->output_level_indicator])
+            ->andFilterWhere(['like', 'subcomponent', $this->subcomponent])
             ->andFilterWhere(['like', 'category', $this->category]);
 
         return $dataProvider;

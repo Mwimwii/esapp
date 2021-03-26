@@ -457,7 +457,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
     <div class="modal-dialog modal-lg">
         <div class="modal-content card-success card-outline">
             <div class="modal-header">
-                <h5 class="modal-title">Select FaaBS group that will be trained</h5>
+                <h5 class="modal-title">Select FaaBS group that will be trained and the topic they will be trained on</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

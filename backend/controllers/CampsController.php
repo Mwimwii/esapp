@@ -25,10 +25,10 @@ class CampsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete',],
+                'only' => ['index', 'create', 'delete','camp','district'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete'],
+                        'actions' => ['index', 'create', 'delete','camp','district'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

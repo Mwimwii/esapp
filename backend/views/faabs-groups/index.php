@@ -78,6 +78,7 @@ $district = !empty($district_model) ? $district_model->name : "";
             [
                 'class' => EditableColumn::className(),
                 'attribute' => 'camp_id',
+                'group' => true,
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],

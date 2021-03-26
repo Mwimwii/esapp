@@ -17,5 +17,7 @@ return [
         'precision' => 2,
         'allowZero' => false,
         'allowNegative' => false,
-    ]
+    ],
+    'youthMinAge' => 15,
+    'youthMaxAge' => 24
 ];

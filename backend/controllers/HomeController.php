@@ -22,10 +22,10 @@ class HomeController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['home'],
+                'only' => ['home','faabs-attendance-sheet'],
                 'rules' => [
                     [
-                        'actions' => ['home'],
+                        'actions' => ['home','faabs-attendance-sheet'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

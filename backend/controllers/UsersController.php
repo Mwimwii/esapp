@@ -24,10 +24,12 @@ class UsersController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'image', 'change-password', 'profile'],
+                'only' => ['index', 'create', 'update', 'delete', 'view', 
+                    'image', 'change-password', 'profile','block'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'image', 'change-password', 'profile'],
+                        'actions' => ['index', 'create', 'update', 'delete', 
+                            'view', 'image', 'change-password', 'profile','block'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

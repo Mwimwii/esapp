@@ -290,7 +290,7 @@ $session = Yii::$app->session;
                                 if (Yii::$app->controller->id == "faabs-category-a-farmers" ||
                                         Yii::$app->controller->id == "faabs-training-attendance" ||
                                         Yii::$app->controller->id == "faabs-groups" ||
-                                       // Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" ||
+                                        // Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" ||
                                         Yii::$app->controller->id == "back-to-office-report" ||
                                         Yii::$app->controller->id == "camp-monthly-schedule" ||
                                         Yii::$app->controller->id == "faabs-training-topics"
@@ -390,21 +390,21 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                   /* if (User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
-                                            User::userIsAllowedTo("View camp/project site objectives for awpb")) {
-                                        echo '<li class="nav-item">';
-                                        if (Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" &&
-                                                (
-                                                Yii::$app->controller->action->id == "index" ||
-                                                Yii::$app->controller->action->id == "view" ||
-                                                Yii::$app->controller->action->id == "create" ||
-                                                Yii::$app->controller->action->id == "update")) {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link active"]);
-                                        } else {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link"]);
-                                        }
-                                        echo '</li>';
-                                    }*/
+                                    /* if (User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
+                                      User::userIsAllowedTo("View camp/project site objectives for awpb")) {
+                                      echo '<li class="nav-item">';
+                                      if (Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" &&
+                                      (
+                                      Yii::$app->controller->action->id == "index" ||
+                                      Yii::$app->controller->action->id == "view" ||
+                                      Yii::$app->controller->action->id == "create" ||
+                                      Yii::$app->controller->action->id == "update")) {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link active"]);
+                                      } else {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link"]);
+                                      }
+                                      echo '</li>';
+                                      } */
                                     if (User::userIsAllowedTo("Plan camp monthly activities") ||
                                             User::userIsAllowedTo("View planned camp monthly activities")) {
                                         echo '<li class="nav-item">';
@@ -599,12 +599,49 @@ $session = Yii::$app->session;
                                 </ul>
                                 </li>
                             <?php } ?>
-                            <!-------------------------------CONFIGS ENDS------------------------->
+                            <!-------------------------------CONFIGS ENDS----------------------------->
+                            <!-------------------------------REPORTS STARTS--------------------------->
+                            <?php
+                            if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report") 
+                                  //  User::userIsAllowedTo("Manage districts") ||
+                                   // User::userIsAllowedTo("Manage markets") ||
+                                   // User::userIsAllowedTo("Manage commodity configs") 
+                                    ) {
+                                if (Yii::$app->controller->id == "reports") {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                                <i class="nav-icon fas fa-chart-pie"></i>
+                                <p>
+                                    Reports
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                    if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "reports" &&
+                                                (Yii::$app->controller->action->id == "facilitation-imporoved-technologies")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>
+
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------REPORTS ENDS----------------------------->
                             <!-------------------------------AUDIT TRAIL STARTS----------------------->
                             <li class="nav-item">
                                 <?php
-// if (User::userIsAllowedTo("Verify benefit claimer") || User::userIsAllowedTo("View Users") ||
-//User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
                                 if (User::userIsAllowedTo("View audit trail logs")) {
                                     if (Yii::$app->controller->id == "audit-trail") {
                                         echo Html::a('<i class="fas fa-history nav-icon"></i> '

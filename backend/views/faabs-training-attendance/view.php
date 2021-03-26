@@ -127,10 +127,21 @@ $list = \backend\models\MeFaabsGroups::find()
                     },
                 ],
                 'household_head_type',
-                'topic:ntext',
+                'youth_non_youth',
+                [
+                    'attribute' => "topic",
+                    'value' => function($model) {
+                        $_model = backend\models\MeFaabsTrainingTopics::findOne($model->topic);
+                        return !empty($_model) ? $_model->topic : "";
+                    },
+                ],
                 'facilitators:ntext',
                 'partner_organisations:ntext',
                 'training_date',
+                [
+                    'attribute' => "quarter",
+                    'label' => 'Quarter trained in'
+                ],
                 'duration',
                 [
                     'label' => 'Created by',

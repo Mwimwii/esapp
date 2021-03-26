@@ -7,20 +7,21 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
         '@Psr/SimpleCache' => '@vendor/psr/simple-cache/src',
-        '@PhpOffice' => '@vendor/phpoffice/phpword/src',
+       // '@PhpOffice' => '@vendor/phpoffice/phpword/src',
+        '@PhpOffice' => '@vendor/phpoffice/phpspreadsheet/src',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'timeZone' => 'Africa/Lusaka',
     'components' => [
         'assetManager' => [
             'bundles' => [
-                /*'dosamigos\google\maps\MapAsset' => [
-                    'options' => [
-                        'key' => 'AIzaSyDse73j9ooUEdUlbCf4xcNmeMKgfZiKRSs',
-                        'language' => 'id',
-                        'version' => '3.1.18'
-                    ]
-                ],*/
+                /* 'dosamigos\google\maps\MapAsset' => [
+                  'options' => [
+                  'key' => 'AIzaSyDse73j9ooUEdUlbCf4xcNmeMKgfZiKRSs',
+                  'language' => 'id',
+                  'version' => '3.1.18'
+                  ]
+                  ], */
                 'kartik\form\ActiveFormAsset' => [
                     'bsDependencyEnabled' => false // do not load bootstrap assets for a specific asset bundle
                 ],
@@ -42,7 +43,6 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
-       
     ],
     'modules' => [
         'dynagrid' => [

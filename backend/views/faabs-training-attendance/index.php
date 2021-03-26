@@ -96,6 +96,7 @@ $ready_only = true;
             [
                 'attribute' => 'camp_id',
                 'label' => 'Camp',
+                'group' => true,
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],
@@ -148,6 +149,10 @@ $ready_only = true;
             [
                 'attribute' => "topic",
                 'filter' => false,
+                'value' => function($model) {
+                    $_model = backend\models\MeFaabsTrainingTopics::findOne($model->topic);
+                    return !empty($_model) ? $_model->topic : "";
+                },
             ],
             [
                 'attribute' => "facilitators",

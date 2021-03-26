@@ -56,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 //  'id',
                 'topic:ntext',
                 'category:ntext',
+                'subcomponent:ntext',
                 'output_level_indicator:ntext'
             ],
         ])

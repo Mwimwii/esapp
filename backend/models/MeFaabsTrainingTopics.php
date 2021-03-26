@@ -26,7 +26,7 @@ class MeFaabsTrainingTopics extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['topic', 'output_level_indicator', 'category'], 'required'],
+            [['topic', 'output_level_indicator', 'category','subcomponent'], 'required'],
             ['topic', 'unique', 'when' => function($model) {
                     return $model->isAttributeChanged('topic') &&
                             !empty(self::findOne([
@@ -48,6 +48,7 @@ class MeFaabsTrainingTopics extends \yii\db\ActiveRecord {
             'topic' => 'Topic',
             'output_level_indicator' => 'Output Level Indicator',
             'category' => 'Category',
+            'subcomponent' => 'Sub-component',
         ];
     }
 

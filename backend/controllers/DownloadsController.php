@@ -24,10 +24,10 @@ class DownloadsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['farmer-registration-form'],
+                'only' => ['farmer-registration-form','faabs-attendance-sheet'],
                 'rules' => [
                     [
-                        'actions' => ['farmer-registration-form'],
+                        'actions' => ['farmer-registration-form','faabs-attendance-sheet'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

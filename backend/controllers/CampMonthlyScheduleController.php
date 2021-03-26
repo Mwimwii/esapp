@@ -29,11 +29,13 @@ class CampMonthlyScheduleController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'view', 'work-effort', 'add-activity', 'update-activity', 'achieved-monthly-modal',
+                'only' => ['index', 'create', 'delete', 'view', 'work-effort', 'add-activity',
+                    'update-activity', 'achieved-monthly-modal',
                     'update-achieved-target', 'delete-activity', 'delete-achieved-activity-target'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'view', 'work-effort', 'add-activity', 'update-activity', 'achieved-monthly-modal',
+                        'actions' => ['index', 'create', 'delete', 'view', 'work-effort', 'add-activity',
+                            'update-activity', 'achieved-monthly-modal',
                             'update-achieved-target', 'delete-activity', 'delete-achieved-activity-target'],
                         'allow' => true,
                         'roles' => ['@'],

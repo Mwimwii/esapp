@@ -35,6 +35,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 ['class' => 'yii\grid\SerialColumn'],
                 // 'id',
                 [
+                    'attribute' => 'subcomponent',
+                    'format' => 'raw',
+                    //'group' => true,
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                    ],
+                    'filter' => [
+                        'Sub-component 2.1' => 'Sub-component 2.1',
+                        'Sub-component 2.2' => 'Sub-component 2.2'
+                    ],
+                    'filterInputOptions' => ['prompt' => 'Filter by sub-component', 'class' => 'form-control', 'id' => null],
+                ],
+                [
                     'attribute' => 'category',
                     'format' => 'raw',
                     'group' => true,

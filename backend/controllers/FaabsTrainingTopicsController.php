@@ -53,7 +53,7 @@ class FaabsTrainingTopicsController extends Controller {
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             $dataProvider->pagination = ['pageSize' => 10];
-            $dataProvider->setSort([
+           /* $dataProvider->setSort([
                 'attributes' => [
                     'id' => [
                         'desc' => ['id' => SORT_DESC],
@@ -63,7 +63,7 @@ class FaabsTrainingTopicsController extends Controller {
                 'defaultOrder' => [
                     'id' => SORT_DESC
                 ]
-            ]);
+            ]);*/
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
