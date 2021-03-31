@@ -18,7 +18,7 @@ class CampsSearch extends Camps
     {
         return [
             [['id', 'district_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'description', 'latitude', 'longitude'], 'safe'],
+            [['name', 'description', 'latitude', 'longitude','province_id'], 'safe'],
         ];
     }
 

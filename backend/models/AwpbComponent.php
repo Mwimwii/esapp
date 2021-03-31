@@ -89,7 +89,7 @@ class AwpbComponent extends \yii\db\ActiveRecord
             'sub_component'=>'Component Type',
             'type' => 'Type',
             'funder_id' => 'Funder',
-            'gl_account_code' => 'General Ledger Account Code',
+            'gl_account_code' => 'GL',
             'expense_category_id' => 'Expense Category',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

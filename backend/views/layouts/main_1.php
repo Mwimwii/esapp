@@ -28,7 +28,7 @@ AppAsset::register($this);
             <!-- Navbar -->
             <nav class="main-header navbar navbar-expand-md navbar-light navbar-green ">
                 <div class="container">
-                    
+
                     <a class="navbar-brand" href="#" target="blank">
                         <?=
                         Html::img('@web/img/coa.png', ["class" => "brand-image",
@@ -71,15 +71,20 @@ AppAsset::register($this);
                     </div>
                 </div>
             </div>
-            
+
             <!-- /.navbar -->
             <!-- Main Footer -->
-            <footer class="main-footer">
-                <p class="text-center text-muted mt-md mb-md">
-                <!-- Default to the left -->
-                &copy; Copyright <?= date("Y"); ?> <a href="https://www.agriculture.gov.zm/" target="blank">
-                        - E-SAPP(Ministry of Agriculture)</a>.
-                        All rights reserved.</p>
+
+
+            <!-- Main Footer -->
+            <footer class="main-footer navbar-light navbar-green brand-text text-white text-md font-weight-light">
+                <div class="row">
+                    <div class="col-lg-12 text-center text-sm">
+                        Copyright &copy; <?= date("Y") ?> - E-SAPP
+                        <a class="text-white" href="https://www.agriculture.gov.zm/" target="blank">(Ministry of Agriculture)</a>. All rights reserved.
+                    </div>
+                </div>
+
             </footer>
         </div>
 

@@ -21,25 +21,11 @@ class SiteController extends Controller {
     /**
      * {@inheritdoc}
      */
-	 
-	 public function actionUploadImage() {
-   $model = new UploadImageForm();
-   if (Yii::$app->request->isPost) {
-      $model->image = UploadedFile::getInstance($model, 'image');
-      if ($model->upload()) {
-         // file is uploaded successfully
-         echo "File successfully uploaded";
-         return;
-      }
-   }
-   return $this->render('site/upload', ['model' => $model]);
-}
-	 
     public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'home', 'change-password'],
+                'only' => ['logout', 'change-password'],
                 'rules' => [
                     [
                         'actions' => ['login', 'index'],
@@ -47,7 +33,7 @@ class SiteController extends Controller {
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'home', 'change-password'],
+                        'actions' => ['logout', 'change-password'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -95,7 +81,7 @@ class SiteController extends Controller {
     public function actionLogin() {
         //$session = Yii::$app->session;
         //$session->destroy();
-        $this->layout = 'main_1';
+        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -110,7 +96,7 @@ class SiteController extends Controller {
             $session->set('user', $user->getFullName());
             $session->set('rights', $rights);
             $session->set('created_at', $user->created_at);
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
         }
         $model->password = '';
         return $this->render('login', [
@@ -118,11 +104,6 @@ class SiteController extends Controller {
         ]);
     }
 
-    public function actionHome() {
-        $this->layout = 'main';
-        return $this->render('home', [
-        ]);
-    }
 
     public function actionChangePassword() {
         $model = new \backend\models\ResetPasswordForm_1();
@@ -160,7 +141,7 @@ class SiteController extends Controller {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
             }
         }
-        $this->layout = 'main_1';
+        $this->layout = 'login';
         return $this->render('requestPasswordResetToken', [
                     'model' => $model,
         ]);
@@ -186,7 +167,7 @@ class SiteController extends Controller {
 
             return $this->goHome();
         }
-        $this->layout = 'main_1';
+        $this->layout = 'login';
         return $this->render('resetPassword', [
                     'model' => $model,
         ]);
@@ -205,7 +186,7 @@ class SiteController extends Controller {
             return $this->goHome();
         }
         try {
-            $this->layout = 'main_1';
+            $this->layout = 'login';
             $model = new \backend\models\SetPasswordForm($token);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -223,7 +204,7 @@ class SiteController extends Controller {
     }
 
     public function actionResetPassword($token) {
-        $this->layout = 'main_1';
+        $this->layout = 'login';
 
         if (empty($token) || !is_string($token)) {
             Yii::$app->session->setFlash('error', 'Your token has expired. Please request for a new one again!.');

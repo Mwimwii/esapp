@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
              
                 [
                     'attribute' => 'code', 
-                    'vAlign' => 'middle',
+                    'vAlign' => 'top',
                     'width' => '180px',
                     'value' => function ($model, $key, $index, $widget) { 
                     return      Html::a($model->code, ['awpb-component/view', 'id' => $model->id], ['class' => 'awbp-component']);
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 [
                     'attribute' => 'name', 
-                    'vAlign' => 'middle',
+                    'vAlign' => 'top',
                     'width' => '180px',
                     'value' => function ($model, $key, $index, $widget) { 
                     return      Html::a($model->name, ['awpb-component/view', 'id' => $model->id], ['class' => 'awbp-component']);
@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 [
                     'attribute' => 'type', 
-                    'vAlign' => 'middle',
+                    'vAlign' => 'top',
                     'width' => '120px',
                     'value' => function($model) {
                             if ($model->type==1)

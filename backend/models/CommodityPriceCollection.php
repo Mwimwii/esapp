@@ -5,7 +5,6 @@ namespace backend\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use backend\models\User;
 
 /**
  * This is the model class for table "commodity_price_collection".

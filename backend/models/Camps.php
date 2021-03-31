@@ -49,7 +49,11 @@ class Camps extends \yii\db\ActiveRecord {
                             empty($model->district_id) ? TRUE : FALSE;
                 }, 'message' => 'Camp name already exist!'],
             ['name', 'unique', 'when' => function($model) {
-                    return $model->isAttributeChanged('name') && !empty(self::findOne(['name' => $model->name, "district_id" => $model->district_id])) ? TRUE : FALSE;
+                    return $model->isAttributeChanged('name') &&
+                            !empty(self::findOne([
+                                        'name' => $model->name,
+                                        "district_id" => $model->district_id
+                            ])) ? TRUE : FALSE;
                 }, 'message' => 'Camp name already exist for this district!'],
             [['latitude', 'longitude'], 'string', 'max' => 30],
             [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => Districts::className(), 'targetAttribute' => ['district_id' => 'id']],
@@ -121,6 +125,32 @@ class Camps extends \yii\db\ActiveRecord {
     public static function getById($id) {
         $data = self::find()->where(['id' => $id])->one();
         return $data->name;
+    }
+
+    public static function getListByDistrictId($id) {
+        $list = self::find()->where(['district_id' => $id])->orderBy(['name' => SORT_ASC])->all();
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    public static function getListByDistrictId2($id) {
+        //We get camps by district and whose monthly plan has not yet been set
+        $_arr = [];
+        $work_effor_list = MeCampSubprojectRecordsPlannedWorkEffort::find()
+                ->select(['camp_id'])
+                ->where(['year' => date('Y'), 'month' => date('n')])
+                ->all();
+        if (!empty($work_effor_list)) {
+            foreach ($work_effor_list as $value) {
+                array_push($_arr, $value['camp_id']);
+            }
+        }
+
+        $list = self::find()
+                ->where(['district_id' => $id])
+                ->andWhere(['NOT IN', "id", $_arr])
+                ->orderBy(['name' => SORT_ASC])
+                ->all();
+        return ArrayHelper::map($list, 'id', 'name');
     }
 
 }

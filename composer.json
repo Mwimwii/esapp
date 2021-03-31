@@ -15,7 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.6.0",
-        "yiisoft/yii2": "~2.0.14",
+        "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap4": "*",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
@@ -27,9 +27,8 @@
         "kartik-v/yii2-number": "dev-master",
         "kartik-v/yii2-widget-touchspin": "dev-master",
         "kartik-v/yii2-mpdf": "v1.0.6",
-        "kartik-v/yii2-export": "dev-master",
+        "kartik-v/yii2-export": "*",
         "kartik-v/yii2-widgets": "v3.4.1",
-        "kartik-v/yii2-editors": "dev-master",
         "kartik-v/yii2-field-range": "v1.3.5",
         "kartik-v/yii2-dynagrid": "dev-master",
         "kartik-v/yii2-grid": "dev-master",
@@ -47,7 +46,17 @@
         "symfony/css-selector": "~2.8|~3.0",
         "symfony/dom-crawler": "~2.8|~3.0",
         "2amigos/yii2-chartjs-widget": "~2.0",
-        "2amigos/yii2-highcharts-widget": "~1.0"
+        "2amigos/yii2-highcharts-widget": "~1.0",
+        "kartik-v/yii2-icons": "@dev",
+        "kartik-v/yii2-markdown": "dev-master",
+        "kartik-v/yii2-editors": "dev-master",
+        "yiidoc/yii2-redactor": "*",
+        "kartik-v/yii2-tabs-x": "dev-master",
+        "kartik-v/yii2-widget-typeahead": "dev-master",
+        "kartik-v/yii2-widget-timepicker": "dev-master",
+        "kartik-v/yii2-builder": "dev-master",
+        "phpoffice/phpspreadsheet": "^1.9",
+        "phpoffice/phpword": "^0.17.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -2,7 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use kartik\tabs\TabsX;
+use kartik\icons\Icon;
+use lo\widgets\modal\ModalAjax;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbComponent */
 
@@ -118,7 +120,12 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_by',
 
         ],
-    ]) ?>
+    ]) 
+    
+    
+  ?>
+ 
+
 
 </div>
 </div>

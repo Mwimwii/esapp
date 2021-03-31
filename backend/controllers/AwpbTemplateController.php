@@ -151,6 +151,40 @@ public function actionView($id) {
 
 */
 
+// public function actionRead($id) {
+//     $model = $this->findModel($id);
+
+//     // This will need to be the path relative to the root of your app.
+    
+//     // Might need to change '@app' for another alias
+//     $file_path = 'uploads/awpb/'.$model->guideline_file;
+//  //   $completePath = Yii::getAlias('$filePath.'/'.$model->guideline_file);
+//   //  $completePath = Yii::getAlias('@app'.$filePath.'/'.$model->guideline_file);
+
+//     return Yii::$app->response->sendFile( $file_path, $model->guideline_file,['inline'=>true]);
+// }
+
+public function actionRead($id)
+{
+    $model = $this->findModel($id);
+
+    $storagePath = 'uploads/awpb/'.$model->guideline_file;
+   // $storagePath = Yii::getAlias('@app/uploads/awpb/'.$model->guideline_file);
+
+    // check filename for allowed chars (do not allow ../ to avoid security issue: downloading arbitrary files)
+    if (!preg_match('/^[a-z0-9]+\.[a-z0-9]+$/i', $model->guideline_file) || !is_file($storagePath)) {
+      // throw new \yii\web\NotFoundHttpException('The file does not exists.');
+       // return Yii::$app->response->sendFile($storagePath, $model->guideline_file,['inline'=>false]);
+        // Yii::$app->session->setFlash('error', 'The file does not exists.'. $storagePath);
+        //     return $this->redirect(['site/home']);
+            return Yii::$app->response->sendFile($storagePath, $model->guideline_file,['inline'=>true]);
+
+    }
+    Yii::$app->session->setFlash('error', 'The file does not exists.'. $storagePath);
+        return $this->redirect(['site/home']);
+}
+
+
     public function actionActivity($id)
     {	
 		$model=$this->findModel($id);
@@ -190,7 +224,7 @@ public function actionView($id) {
 				if(isset($model->guideline_file->extension))
 				{
 				$file_name = $model->fiscal_year. '-AWPB-Guidelines.' .$model->guideline_file->extension;
-				$file_path = 'uploads/'.$file_name;
+				$file_path = 'uploads/awpb/'.$file_name;
 				$model->guideline_file->saveAs($file_path);
 								
 				$model->guideline_file = $file_name;

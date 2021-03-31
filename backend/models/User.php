@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use common\models\Role;
+
 /**
  * This is the model class for table "users".
  *
@@ -53,7 +54,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
             [['role', 'status', 'camp_id', 'district_id', 'province_id'], 'integer'],
             [['username', 'email', 'other_name', 'first_name', 'last_name',
             'password', 'auth_key', 'password_reset_token', 'verification_token'], 'string', 'max' => 255],
-            [['title', 'sex', 'nrc','type_of_user'], 'string'],
+            [['title', 'sex', 'nrc', 'type_of_user'], 'string'],
             [['phone'], PhoneInputValidator::className()],
             ['email', 'email', 'message' => "The email isn't correct!"],
             ['email', 'unique', 'when' => function($model) {
@@ -121,7 +122,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      * {@inheritdoc}
      */
     public static function findIdentity($id) {
-       // return static::find()->cache(3600)->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
+        // return static::find()->cache(3600)->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
         return static::find()->where(['id' => $id, 'status' => self::STATUS_ACTIVE])->one();
     }
 
@@ -291,9 +292,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
     public function getFullName() {
         return ucfirst(strtolower($this->title)) . " " . ucfirst(strtolower($this->first_name)) . " " . ucfirst(strtolower($this->other_name)) . " " . ucfirst(strtolower($this->last_name));
     }
-	public static function getName() {
-        return  ucfirst(strtolower($this->first_name)) . " " . ucfirst(strtolower($this->last_name));
-    }
+
     /**
      * @return array
      */
@@ -337,6 +336,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         return \yii\helpers\ArrayHelper::map($query, 'first_name', 'name');
     }
 
+
     /**
      * @return array
      */
@@ -349,6 +349,17 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
                 ->asArray()
                 ->all();
         return ArrayHelper::map($query, 'id', 'name');
+    }
+    
+     public static function getUsers() {
+        $query = static::find()
+                ->select(["CONCAT(CONCAT(first_name,' ',other_name),' ',last_name) as name", 'id'])
+                ->where(['status' => self::STATUS_ACTIVE])
+                ->andWhere(['NOT IN',"id",[Yii::$app->user->identity->id]])
+                ->orderBy(['id' => SORT_ASC])
+                ->asArray()
+                ->all();
+        return ArrayHelper::map($query, 'name', 'name');
     }
 
 }

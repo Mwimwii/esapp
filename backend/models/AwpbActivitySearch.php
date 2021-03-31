@@ -17,7 +17,7 @@ class AwpbActivitySearch extends AwpbActivity
     public function rules()
     {
         return [
-            [['id', 'parent_activity_id', 'component_id', 'unit_of_measure_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'parent_activity_id','indicator_id', 'component_id', 'unit_of_measure_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['activity_code', 'description'], 'safe'],
             [['quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
         ];
@@ -62,6 +62,7 @@ class AwpbActivitySearch extends AwpbActivity
             'id' => $this->id,
             'parent_activity_id' => $this->parent_activity_id,
             'component_id' => $this->component_id,
+            'indicator_id'=>$this->indicator_id,
             'unit_of_measure_id' => $this->unit_of_measure_id,
             'quarter_one_budget' => $this->quarter_one_budget,
             'quarter_two_budget' => $this->quarter_two_budget,

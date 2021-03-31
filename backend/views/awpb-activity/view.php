@@ -89,8 +89,29 @@ if (!empty($expense_cat)) {
     if (!empty($parent_activity)) {
         $parent_act=  $parent_activity->activity_code;
         }
+  $expense="";
+$expense_cat = \backend\models\AwpbExpenseCategory::findOne(['id' => $model->expense_category_id]);
+	
+if (!empty($expense_cat)) {
+    $expense=  $expense_cat->name;
+    }
+
+    $parent_act="";
+    $parent_activity = \backend\models\AwpbActivity::findOne(['id' => $model->parent_activity_id]);
+        
+    if (!empty($parent_activity)) {
+        $parent_act=  $parent_activity->activity_code;
+        }
 
 
+        $indicator_name="";
+        $indicator = \backend\models\AwpbIndicator::findOne(['id' => $model->indicator_id]);
+            
+        if (!empty($indicator)) {
+            $indicator_name=  $indicator->name;
+            }
+        
+          
 ?>
 <?= DetailView::widget([
         'model' => $model,
@@ -110,6 +131,12 @@ if (!empty($expense_cat)) {
                 'value' => $comp
             ],
             [
+                'attribute'=>'indicator_id',
+                'format' => 'raw',
+                'label' => 'Indicator',
+                'value' => $indicator_name
+            ],
+            [
                 'attribute'=>'parent_activity_id',
                 'format' => 'raw',
                 'label' => 'Parent Activity',
@@ -117,20 +144,21 @@ if (!empty($expense_cat)) {
             ],
             'activity_code',
             'name',
+            'programme_target',
 
-            [
-                'attribute'=>'unit_of_measure_id',
-                'format' => 'raw',
-                'label' => 'Unit of Measure',
-                'value' => $unit
-            ],
+            // [
+            //     'attribute'=>'unit_of_measure_id',
+            //     'format' => 'raw',
+            //     'label' => 'Unit of Measure',
+            //     'value' => $unit
+            // ],
             [
                 'attribute'=>'expense_category_id',
                 'format' => 'raw',
                 'label' => 'Expense Category',
                 'value' =>  $expense
             ],
-            
+            'gl_account_code'
             // 'subcomponent',
             // 'created_at',
             // 'updated_at',

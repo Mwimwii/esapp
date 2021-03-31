@@ -9,6 +9,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!-- Info boxes -->
 <?php
+
 if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Collect commodity prices')) {
     echo '<p>
             Commodity price stats
@@ -30,6 +31,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                 ->andWhere(["year" => date("Y")])
                 ->distinct()
                 ->count();
+
         ?>
 		
         <div class="row">
@@ -168,13 +170,12 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
 if (User::userIsAllowedTo("Manage AWPB activities") || User::userIsAllowedTo('Manage AWPB template')) {
     echo '<p>
             Annual Work Plan and Budget
-        </p>';/* 
+        </p>'; 
 $awpb_template = \backend\models\AWPBTemplate::findOne([
     
     'status' => \backend\models\AWPBTemplate::STATUS_ACTIVE,
 ])  ;
-
-/* 
+/*
 		Post::findOne(['id' => Yii::$app->request->get('id')]);
 			$awpb_template = \backend\models\AWPBTemplate::findOne(['status'=> \backend\models\AWPBTemplate::STATUS_ACTIVE)
                 ->select(["fiscal_year"])
@@ -202,12 +203,20 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
 		
                 <div class=" info-box">
 				
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-location-arrow"></i></span>
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-wallet"></i></span>
 
                     <div class="info-box-content">
 					
-                        <span class="info-box-text">AWPB Template</span>
-                       
+                        <span class="info-box-text"> <?=$awpb_template->fiscal_year ." AWPB Template"?></span>
+                        <span class="info-box-number">
+
+                        <?=  Html::a('Click to view', ['awpb-template/view', 'id' => $awpb_template->id], [
+                        'class' => 'btn btn-primary'
+                        ,
+                    ]); 
+            
+                    ?>
+                        </span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -216,11 +225,20 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-map-pin"></i></span>
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-tasks"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Districts</span>
-                        <span class="info-box-number"><?= $Districts ?></span>
+                        <span class="info-box-text"> <?=$awpb_template->fiscal_year ." Budget Guidelines"?></span>
+                        <span class="info-box-number">
+                        
+                        <?= Html::a('Click to view', [
+   'awpb-template/read','id'=>$awpb_template->id,
+    
+], [
+    'class' => 'btn btn-primary',
+    //'target' => '_blank',
+]); ?>
+                        </span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -236,8 +254,18 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-map-marker"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Camps</span>
-                        <span class="info-box-number"> <?= $Camps ?></span>
+                        <span class="info-box-text"> <?=$awpb_template->fiscal_year ." Budget"?> </span>
+                        <span class="info-box-number">
+                        
+                        <?= Html::a('Click to Download', [
+   'awpb-activity-line/exc','id'=>$awpb_template->id,
+    
+], [
+    'class' => 'btn btn-primary',
+    //'target' => '_blank',
+]); ?>
+                         
+                         </span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -249,8 +277,16 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
                     <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-cart-plus"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Markets</span>
-                        <span class="info-box-number"><?= $markets ?></span>
+                        <span class="info-box-text"> <?=$awpb_template->fiscal_year ." Budget (Sage)"?></span>
+                        <span class="info-box-number">
+                        
+                        <?= Html::a('Click here to Export', [
+   'awpb-activity-line/exc','id'=>$awpb_template->id,
+    
+], [
+    'class' => 'btn btn-primary',
+    //'target' => '_blank',
+]); ?></span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>

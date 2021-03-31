@@ -202,8 +202,9 @@ class AwpbComponentController extends Controller
      */
     public function actionUpdate($id)
     {
-           if (User::userIsAllowedTo('Manage AWPB activity lines')) {
-          
+        if (User::userIsAllowedTo('Manage components')) 
+        {
+         
             $model = $this->findModel($id);
             $model->updated_by = Yii::$app->user->identity->id;
 
@@ -216,7 +217,33 @@ class AwpbComponentController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                
                
-                if ($model->save(true,['name','outcome', 'output','updated_by'])&& $model->validate()) {
+                if ($model->save(true,['name','outcome', 'output','access_level','updated_by'])&& $model->validate()) {
+
+
+                    $subcomponents = AwpbComponent::find()->where(['=','parent_component_id',$model->id])->all();
+         
+                    if(isset($subcomponents) )
+                    {
+                        if( $subcomponents !=null)
+                        {
+                        foreach($subcomponents as $sub)
+                        {
+                            $sub->access_level =$model->access_level;
+                            if ($sub->validate())
+                            {
+                                $sub->save();
+                            }
+                            else{
+                                Yii::$app->session->setFlash('error', 'An error occurred while updating subcomponents.');
+                                return $this->render('index');
+                            }
+                        }
+                    }
+                }
+
+
+
+
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
                     $audit->action = "Updated component: " . $model->code .' - '.$model->name;

@@ -63,12 +63,12 @@ class AwpbActivity extends \yii\db\ActiveRecord
     {
         return [
             [['activity_code', 'component_id',  'name','description'], 'required'],
-            [['id', 'parent_activity_id', 'component_id','type',  'unit_of_measure_id','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'parent_activity_id','indicator_id','component_id','type',  'unit_of_measure_id','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['programme_target','quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
             [['activity_code'], 'string', 'max' => 10],
             [['gl_account_code'], 'string', 'min' => 4,'max' => 4],
             [['name'], 'string', 'max' => 40],
-            [['description','name','indicator','activity_type'], 'string', 'max' => 255],          
+            [['description','name','activity_type'], 'string', 'max' => 255],          
             [['description','name',], 'unique'],
             ['parent_activity_id', 'required', 'when' => function($model) {
                 return $model->sub == 'Subactivity';
@@ -85,11 +85,12 @@ class AwpbActivity extends \yii\db\ActiveRecord
             ['programme_target', 'required', 'when' => function($model) {
                 return $model->sub == 'Subactivity';
                     }, 'message' => 'Programme target can not be blank!'],
-                    ['indicator', 'required', 'when' => function($model) {
+                    ['indicator_id', 'required', 'when' => function($model) {
                         return $model->sub == 'Subactivity';
                             }, 'message' => 'Indicator can not be blank!'],
                                             
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
+            [['indicator_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbIndicator::className(), 'targetAttribute' => ['indicator_id' => 'id']],
             [['expense_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbExpenseCategory::className(), 'targetAttribute' => ['expense_category_id' => 'id']],
            [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
            // [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
@@ -125,7 +126,7 @@ class AwpbActivity extends \yii\db\ActiveRecord
            // 'awpb_template_id' => 'AWPB Template',
             'description' => 'Description',
             'name'=>'Name',
-            'indcator'=>'Indicator',
+            'indicator_id'=>'Indicator',
             'programme_target'=>'Programme Target',
             'funder_id'=>'Funder',
             'gl_account_code' => 'General Ledger Account Code',

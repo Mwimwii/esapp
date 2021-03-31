@@ -18,7 +18,7 @@ class MarketsSearch extends Markets
     {
         return [
             [['id', 'district_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'description'], 'safe'],
+            [['name', 'description','province_id'], 'safe'],
         ];
     }
 

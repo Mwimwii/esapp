@@ -8,9 +8,6 @@ use kartik\form\ActiveForm;
 use yii\grid\ActionColumn;
 use backend\models\User;
 use \kartik\popover\PopoverX;
-use kartik\depdrop\DepDrop;
-use yii\helpers\Url;
-use kartik\export\ExportMenu;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CommodityTypesSearch */
@@ -133,9 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="modal-body">
                 <?php
-                $form = ActiveForm::begin([
-                            'action' => 'create',
-                        ])
+                $form = ActiveForm::begin(['action' => 'create',])
                 ?>
                 <?=
                         $form->field($model, 'category_id')

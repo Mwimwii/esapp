@@ -32,7 +32,7 @@ $form = ActiveForm::begin([
         $form->field($model, 'rights')->checkboxList(ArrayHelper::map(\common\models\Right::getAllRights(), 'right', 'right'), [
             'item' => function($index, $label, $name, $checked, $value) {
                 $checked = $checked ? 'checked' : '';
-                return "<label class='bt-df-checkbox col-md-3' > <input type='checkbox' {$checked} name='{$name}' value='{$value}'> {$label} </label>";
+                return "<label class='bt-df-checkbox col-lg-3' > <input type='checkbox' {$checked} name='{$name}' value='{$value}'> {$label} </label>";
             }
             , 'separator' => ' ', 'required' => true])->label(false)
         ?>

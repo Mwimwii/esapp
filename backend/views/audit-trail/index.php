@@ -12,8 +12,6 @@ use kartik\popover\PopoverX;
 
 $this->title = 'Audit logs';
 $this->params['breadcrumbs'][] = $this->title;
-
-
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
@@ -82,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'popoverOptions' => [
                                     'toggleButton' => ['class' => 'btn btn-secondary btn-md'],
                                     'placement' => PopoverX::ALIGN_BOTTOM_RIGHT,
-                                    'type'=>'success'
+                                    'type' => 'success'
                                 ]
                     ]);
                 }
@@ -93,6 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => false
             ],
         ];
+            
         $gridColumns2 = [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -126,32 +125,67 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'user_agent',
             ],
         ];
+
+
+        if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
+
+            $fullExportMenu = ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns2,
+                        'columnSelectorOptions' => [
+                            'label' => 'Cols...',
+                             'class' => 'btn btn-outline-success btn-sm',
+                        ],
+                        'batchSize' => 200,
+                        'exportConfig' => [
+                            ExportMenu::FORMAT_TEXT => false,
+                            ExportMenu::FORMAT_HTML => false,
+                            ExportMenu::FORMAT_EXCEL => false,
+                            ExportMenu::FORMAT_PDF => false,
+                            ExportMenu::FORMAT_CSV => false,
+                        ],
+                        'target' => ExportMenu::TARGET_BLANK,
+                        'pjaxContainerId' => 'kv-pjax-container',
+                        'exportContainer' => [
+                            'class' => 'btn-group mr-2'
+                        ],
+                        'filename' => 'audittraillogs' . date("YmdHis"),
+                        'dropdownOptions' => [
+                            'label' => 'Export to excel',
+                            'class' => 'btn btn-outline-success btn-sm',
+                            'itemsBefore' => [
+                                '<div class="dropdown-header">Export All Data</div>',
+                            ],
+                        ],
+            ]);
+            echo GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'condensed' => true,
+                'responsive' => true,
+                'hover' => true,
+                // 'pjax' => true,
+                'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
+                ],
+                // set a label for default menu
+                'export' => false,
+                'exportContainer' => [
+                    'class' => 'btn-group mr-2'
+                ],
+                // your toolbar can include the additional full export menu
+                'toolbar' => [
+                    '{export}',
+                    $fullExportMenu,
+                ]
+            ]);
+        } else {
+            echo '<p>There are currently no audit logs in the system!</p>';
+        }
         ?>
 
-        <?=
-        ExportMenu::widget([
-            'dataProvider' => $dataProvider,
-            'columns' => $gridColumns2,
-            'fontAwesome' => true,
-            'dropdownOptions' => [
-                'label' => 'Export All',
-                'class' => 'btn btn-default'
-            ],
-            'filename' => 'audittraillogs' . date("YmdHis")
-        ])
-        ?>
-        <?=
-        GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
-           // 'pjax' => true,
-            'columns' => $gridColumns,
-            'export' => [
-            'fontAwesome' => true,
-            ]
-        ]);
-        ?>
-        
 
     </div>
 </div>

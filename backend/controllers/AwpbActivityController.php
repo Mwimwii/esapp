@@ -95,6 +95,8 @@ class AwpbActivityController extends Controller
 		}
     }
     
+
+ 
     public function actionParentactivity() {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         if (isset(Yii::$app->request->post()['depdrop_parents'])) {

@@ -53,6 +53,7 @@ $this->params['breadcrumbs'][] = $model->role;
         <?=
         DetailView::widget([
             'model' => $model,
+            'template' => "<tr><th style='width: 12%;'>{label}</th><td>{value}.</td></tr>",
             'attributes' => [
                 'role:ntext',
                 [
@@ -63,25 +64,27 @@ $this->params['breadcrumbs'][] = $model->role;
                     }
                 ],
                 [
+                    'label' => 'Created by',
                     'attribute' => 'created_by',
                     'value' => function($model) {
                         return !empty($model->created_by) ? User::findOne(['id' => $model->created_by])->getFullName() : "";
                     }
                 ],
                 [
+                    'label' => 'Created at',
                     'attribute' => 'created_at',
                     'value' => function($model) {
                         return date('d-M-Y', $model->created_at);
                     }
                 ],
                 [
-                    'label' => 'Last Modified By',
+                    'label' => 'Last modified by',
                     'value' => function($model) {
                         return !empty($model->updated_by) ? User::findOne(['id' => $model->updated_by])->getFullName() : "";
                     }
                 ],
                 [
-                    'label' => 'Last Modified At',
+                    'label' => 'Last modified at',
                     'value' => function($model) {
                         return date('d-M-Y', $model->created_at);
                     }

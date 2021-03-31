@@ -258,7 +258,7 @@ $this->params['breadcrumbs'][] = $this->title;
     'update' => function ($url, $model) {
         if (User::userIsAllowedTo('Manage AWPB activities') ) {
             return Html::a(
-                            '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id], [
+                            '<span class="fas fa-edit"></span>',['update', 'id' => $model->id], [ 
                         'title' => 'Update component',
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',

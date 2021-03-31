@@ -96,23 +96,30 @@ $form->field($model, 'component_id')
 			);
 
 			echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-			echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
+			echo $form->field($model, 'description')->textarea(['rows' => 5],['maxlength' => true]);
 		
-		echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
-
 	  
 				   echo '
 				   </div>
 
 						  <div class="col-md-6">';
-						  echo $form->field($model, 'indicator')->textarea(['rows' => 3],['maxlength' => true]);
+						  echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
+
+	
+						  echo                
+						  $form->field($model, 'indicator_id')
+							  ->dropDownList(
+									  \backend\models\AwpbIndicator::getIndicatorsPerComponent($model->component_id), ['id' => 'indicator_id', 'custom' => true, 'prompt' => 'Please select indicator', 'required' => false]);
+							  
+						  ;
+						//  echo $form->field($model, 'indicator')->textarea(['rows' => 3],['maxlength' => true]);
 				  
-				   echo                
-				   $form->field($model, 'unit_of_measure_id')
-					   ->dropDownList(
-							   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
+				//    echo                
+				//    $form->field($model, 'unit_of_measure_id')
+				// 	   ->dropDownList(
+				// 			   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
 					   
-				   ;
+				//    ;
 				  
 		
 				   echo  $form->field($model, 'funder_id')

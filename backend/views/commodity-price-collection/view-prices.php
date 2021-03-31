@@ -35,21 +35,21 @@ $months = [
         $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
             // 'id',
-            // [
-            //     'label' => 'Province',
-            //     'attribute' => 'province_id',
-            //     'filterType' => GridView::FILTER_SELECT2,
-            //     'filterWidgetOptions' => [
-            //         'pluginOptions' => ['allowClear' => true],
-            //     ],
-            //     'filter' => \backend\models\Provinces::getProvinceList(),
-            //     'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
-            //     'value' => function ($model) {
-            //         $province_id = backend\models\Districts::findOne($model->district);
-            //         $name = backend\models\Provinces::findOne($province_id)->name;
-            //         return $name;
-            //     },
-            // ],
+            [
+                'label' => 'Province',
+                'attribute' => 'province_id',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                ],
+                'filter' => \backend\models\Provinces::getProvinceList(),
+                'filterInputOptions' => ['prompt' => 'Filter by Province', 'class' => 'form-control', 'id' => null],
+                'value' => function ($model) {
+                    $province_id = backend\models\Districts::findOne($model->district);
+                    $name = backend\models\Provinces::findOne($province_id)->name;
+                    return $name;
+                },
+            ],
             [
                 'class' => EditableColumn::className(),
                 'attribute' => 'district',
@@ -138,7 +138,11 @@ $months = [
                     'inputType' => Editable::INPUT_SELECT2,
                 ],
                 'value' => function ($model) {
-                    $name = backend\models\CommodityPriceLevels::findOne($model->market_id)->level;
+                    $name = "";
+                    $_model = backend\models\CommodityPriceLevels::findOne($model->market_id);
+                    if (!empty($_model)) {
+                        $name = $_model->level;
+                    }
                     return $name;
                 },
             ],
@@ -214,29 +218,65 @@ $months = [
                 ],
             ],
         ];
-        if ($dataProvider->getCount() > 0) {
-            echo ExportMenu::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumns,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Export All',
-                    'class' => 'btn btn-default'
-                ],
-                'filename' => 'commodity_prices' . date("YmdHis")
+        $fullExportMenu = "";
+        if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
+
+            $fullExportMenu = ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns,
+                        'columnSelectorOptions' => [
+                            'label' => 'Cols...',
+                            'class' => 'btn btn-outline-success btn-sm',
+                        ],
+                        'batchSize' => 200,
+                        'exportConfig' => [
+                            ExportMenu::FORMAT_TEXT => false,
+                            ExportMenu::FORMAT_HTML => false,
+                            ExportMenu::FORMAT_EXCEL => false,
+                            ExportMenu::FORMAT_PDF => false,
+                            ExportMenu::FORMAT_CSV => false,
+                        ],
+                        'target' => ExportMenu::TARGET_BLANK,
+                        'pjaxContainerId' => 'kv-pjax-container',
+                        'exportContainer' => [
+                            'class' => 'btn-group mr-2'
+                        ],
+                        'filename' => 'commodity_prices' . date("YmdHis"),
+                        'dropdownOptions' => [
+                            'label' => 'Export to excel',
+                            'class' => 'btn btn-outline-success btn-sm',
+                            'itemsBefore' => [
+                                '<div class="dropdown-header">Export All Data</div>',
+                            ],
+                        ],
             ]);
         }
-        ?>
-        <?=
-        GridView::widget([
+        echo GridView::widget([
             'dataProvider' => $dataProvider,
+            'columns' => $gridColumns,
             'filterModel' => $searchModel,
             'condensed' => true,
             'responsive' => true,
             'hover' => true,
-            'columns' => $gridColumns
+            // 'pjax' => true,
+            'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container']],
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+            // 'heading' => '<h3 class="panel-title"><i class="fas fa-book"></i> Library</h3>',
+            ],
+            // set a label for default menu
+            'export' => false,
+            'exportContainer' => [
+                'class' => 'btn-group mr-2'
+            ],
+            // your toolbar can include the additional full export menu
+            'toolbar' => [
+                '{export}',
+                $fullExportMenu,
+            ]
         ]);
         ?>
+
 
 
     </div>
