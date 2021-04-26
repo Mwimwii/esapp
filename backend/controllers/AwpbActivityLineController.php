@@ -128,7 +128,12 @@ class AwpbActivityLineController extends Controller
             'model' => $this->findModel($id),
         ]);
     }
-
+    public function actionViewm($id)
+    {
+        return $this->render('viewm', [
+            'model' => $this->findModel($id),
+        ]);
+    }
     /**
      * Creates a new AwpbActivityLine model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -456,41 +461,47 @@ class AwpbActivityLineController extends Controller
             $searchModel = new AwpbActivityLineSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $user = User::findOne(['id' => Yii::$app->user->id]);
+            
 
 
        if ($status==AWPBActivityLine:: STATUS_SUBMITTED && $user->district_id>0 ||$user->district_id!='')
        { 
+ 
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
+        $activitylines = AwpbActivityLine::find()->where(['district_id'=>$user->district_id])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_DRAFT])->all();
+        $returnpage="index";
         $district = \backend\models\Districts::findOne( $user->district_id)->name;
         $dear="Dear Provincial Officer";
         $bodymsg="We have submitted our";
         $bodymsg1 =" for your review and approval.";
         $subject = $awpb_template->fiscal_year ."AWPB for ".$district."District";
-        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
-        $activitylines = AwpbActivityLine::find()->where(['district_id'=>$user->district_id])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_DRAFT])->all();
-        $returnpage="index";
+
        }
        elseif ($status==AWPBActivityLine:: STATUS_REVIEWED && $user->province_id>0 ||$user->province_id!='')
        {
+       
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_SUBMITTED,]);
+        $activitylines = AwpbActivityLine::find()->where(['province_id'=>$user->province_id])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_SUBMITTED])->all();
+        $returnpage='mpc';
         $province = \backend\models\Provinces::findOne( $user->province_id)->name;
         $right="Approve AWPB - PCO";
         $dear="Dear PCO";
         $bodymsg="We have submitted our";
         $bodymsg1 =" for your review and approval.";
         $subject = $awpb_template->fiscal_year ."AWPB for ".$province." Province";
-        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_SUBMITTED,]);
-        $activitylines = AwpbActivityLine::find()->where(['province_id'=>$user->province_id])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_SUBMITTED])->all();
-        $returnpage='mpc';
        }
        elseif ($status==AWPBActivityLine:: STATUS_APPROVED && $user->province_id==0 ||$user->province_id=='')
        {
+     
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'province_id' => $id2,'status' => AWPBActivityLine:: STATUS_REVIEWED,]);
+        $activitylines = AwpbActivityLine::find()->where(['province_id' =>$id2])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_REVIEWED])->all();
+       
+        $returnpage="mpco";
+        $province = \backend\models\Provinces::findOne( $user->province_id)->name;
         $right="Approve AWPB - Ministry";
         $dear="Dear Ministry";
         $bodymsg="We have submitted our";
-        $bodymsg1 =" for your review and approval.";
-        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'province_id' => $id2,'status' => AWPBActivityLine:: STATUS_REVIEWED,]);
-        $activitylines = AwpbActivityLine::find()->where(['province_id' =>$id2])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_REVIEWED])->all();
         $subject = $awpb_template->fiscal_year ."AWPB for ".$province." Province";
-        $returnpage="mpco";
        }
        elseif ($status==AWPBActivityLine:: STATUS_MINISTRY && $user->province_id==0 ||$user->province_id=='')
        {
@@ -944,6 +955,189 @@ class AwpbActivityLineController extends Controller
      
  
   }
+  public function actionDeclinem() {
+    // public function actionDecline($district_id,$awpb_template_id) {
+
+     //$district_id=48;
+    // Yii::$app->session->setFlash('success', 'AWPB comment ' .$district.'was successfully added.');
+    $user = User::findOne(['id' => Yii::$app->user->id]);
+     if (User::userIsAllowedTo('Approve AWBP - Ministry') && $user->province_id==0 ||$user->province_id=='') {
+         $model = new \backend\models\AwpbComment();
+ 
+   
+         
+    $searchModel = new AwpbActivityLine();
+    $query = $searchModel::find();
+    $dear="";
+
+  
+    $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+    $query->where(['province_id'=>$model->province_id, 'awpb_template_id' =>$model->awpb_template_id,'status' => AwpbActivityLine::STATUS_APPROVED]);
+   // $status=AWPBActivityLine::STATUS_APPROVED;   
+    $dear .= "<p>Dear Budget Committee,<br/><br/>";     
+
+    // elseif(User::userIsAllowedTo('Approve AWBP - Ministry'))
+    // {
+    //     $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+    //     $query->where(['province_id'=>$model->province_id, 'awpb_template_id' =>$model->awpb_template_id,'status' => AwpbActivityLine::STATUS_APPROVED]);
+    //     $status=AWPBActivityLine::STATUS_REVIEWED;  
+    //     $dear .= "<p>Dear ESAPP,<br/><br/>";  
+    // }
+  //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
+   // $query->groupBy('district_id');
+    $query->all();
+
+    $dataProvider = new ActiveDataProvider([
+        'query' => $query,
+    ]);
+
+         if (Yii::$app->request->isAjax) {
+             $model->load(Yii::$app->request->post());
+             return Json::encode(\yii\widgets\ActiveForm::validate($model));
+         }
+
+         if ($model->load(Yii::$app->request->post())) {
+
+             $model->created_by = Yii::$app->user->identity->id;
+             $model->updated_by = Yii::$app->user->identity->id;
+            
+             if ($model->save()) {
+                $province="";
+                $pro = \backend\models\Provinces::findOne(['id' => $model->province_id]);
+        
+                if (!empty($pro)) {
+                $province=  $pro->name;
+                }
+
+                 $activitylines = AwpbActivityLine::find()->where(['province_id'=>$model->province_id])->andWhere(['awpb_template_id' =>$model->awpb_template_id])->andWhere(['status' => AWPBActivityLine::STATUS_APPROVED])->all();
+         
+                 if(isset($activitylines) )
+                 {
+                     if($activitylines!=null)
+                     {
+                     foreach($activitylines as $activityline)
+                     {
+                         $activityline->status = AWPBActivityLine::STATUS_REVIEWED;
+                         if ($activityline->validate())
+                         {
+                             $activityline->save();
+                             $audit = new AuditTrail();
+                             $audit->user = Yii::$app->user->id;
+                             $audit->action = "Decline budget line ".$activityline->id." : " .$activityline->name;
+                             $audit->ip_address = Yii::$app->request->getUserIP();
+                             $audit->user_agent = Yii::$app->request->getUserAgent();
+                             $audit->save();
+                           
+                         }
+                         
+
+                         else{
+                             Yii::$app->session->setFlash('error', 'An error occurred while declining the District AWPB.');
+                             return $this->render('mpco', [
+                                'searchModel' => $searchModel,
+                                // 'model' => $model,
+                                'dataProvider' => $dataProvider,
+                                'show_results' => 1,
+                                'id'=>$model->awpb_template_id
+                            ]);
+                         }
+                     }
+                   
+             
+                 $audit = new AuditTrail();
+                 $audit->user = Yii::$app->user->id;
+              //   $audit->action = "Added AWPB Commen for ".$district;
+                 $audit->ip_address = Yii::$app->request->getUserIP();
+                 $audit->user_agent = Yii::$app->request->getUserAgent();
+                 $audit->save();
+                 Yii::$app->session->setFlash('success', $province.' province AWPB was declined.');
+
+             //We send an email informing IKM Officers that a story has been submited for review
+             //We first get roles with the permission to review stories
+             $role_model = \common\models\RightAllocation::find()->where(['right' => 'Approve AWPB - Provincial'])->all();
+             if (!empty($role_model)) {
+                 $subject = $province ." province AWPB declined";
+                 foreach ($role_model as $_role) {
+                     //We now get all users with the fetched role
+                   //  $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
+                     $_user_model = User::find()
+                             ->where(['role' => $_role->role])
+                             ->andWhere(['province_id'=>$model->province_id])
+                             ->all();
+                     if (!empty($_user_model)) {
+                         //We send the emails
+                    //     $user = User::findOne(['id' => Yii::$app->user->id]);
+                         foreach ($_user_model as $_model) {
+                             $msg = "";
+                             $msg .= $dear;
+                             $msg .= "Your budget has been declined due to the following:<br/><br/>";
+                             $msg .=  $model->description . "<br/><br/>";
+                           //  $msg .= "Story category:<b>" . \backend\models\LkmStoryofchangeCategory::findOne($model->category)->name . "</b><br/>";
+                             $msg .= "Kindly address the issues and resubmit.<br/><br/>";
+                            // $msg .= "Interviewer:<b>" . $model->interviewer_names . "</b><br/>";
+                             $msg .= "Yours sincerely,<br/><br/></p>";
+                             $msg .= '<p>'.$user->title.' '.$user->first_name.' ' .$user->last_name.'</p>';
+                             Storyofchange::sendEmail($msg, $subject, $_model->email);
+                         }
+                     }
+                 }
+             }
+
+                
+             return $this->render('mpcm', [
+                'searchModel' => $searchModel,
+                // 'model' => $model,
+                'dataProvider' => $dataProvider,
+                'show_results' => 1,
+                'id'=>$model->awpb_template_id
+            ]);
+             
+                 }
+             
+                 return $this->render('mpcm', [
+                    'searchModel' => $searchModel,
+                    // 'model' => $model,
+                    'dataProvider' => $dataProvider,
+                    'show_results' => 1,
+                    'id'=>$model->awpb_template_id
+                ]);
+             }
+             return $this->render('mpcm', [
+                'searchModel' => $searchModel,
+                // 'model' => $model,
+                'dataProvider' => $dataProvider,
+                'show_results' => 1,
+                'id'=>$model->awpb_template_id
+            ]);
+         }
+         else {
+             $message = "";
+             foreach ($model->getErrors() as $error) {
+                 $message .= $error[0];
+             }
+             Yii::$app->session->setFlash('error', 'Error occured while adding AWPB comment::' . $message);
+           //  return $this->redirect(['home/home']);
+         
+
+         
+           return $this->render('mpcm', [
+            'searchModel' => $searchModel,
+            // 'model' => $model,
+            'dataProvider' => $dataProvider,
+            'show_results' => 1,
+            'id'=>$model->awpb_template_id
+        ]);
+
+         }
+         
+     }
+     } else {
+         Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+         return $this->redirect(['home/home']);
+     }
+ 
+
+}
 
 
 
@@ -1384,6 +1578,44 @@ class AwpbActivityLineController extends Controller
                 
             }
     }
+    public function actionMpcmp($id,$awpb_template_id)
+    {
+
+        if (User::userIsAllowedTo('Approve AWPB - Ministry') )
+        {            
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+            $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+          // $query->select(['district_id','activity_id','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            
+      //      $query->where('district_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'province_id'=>$id, 'status' => AwpbActivityLine::STATUS_APPROVED]);
+
+            $query->groupBy('district_id');
+            $query->all();
+            
+            $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                    ]);
+
+            return $this->render('mpcmp', [
+                                        'searchModel' => $searchModel,
+                                     'model' => $model,
+                                        'dataProvider' => $dataProvider,
+                                    'id' => $id,
+                                    'awpb_template_id'=>$awpb_template_id
+                                    ]);
+           // return $this->redirect(['mp/mpcd']);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['home/home']);
+                
+            }
+    }
 
     public function actionMpcod($id,$awpb_template_id)
     {
@@ -1410,6 +1642,47 @@ class AwpbActivityLineController extends Controller
                     ]);
 
             return $this->render('mpcod', [
+                                        'searchModel' => $searchModel,
+                                     'model' => $model,
+                                        'dataProvider' => $dataProvider,
+                                    'id' => $id,
+                                    'province_id'=> $district->province_id,
+                                    'awpb_template_id'=>$awpb_template_id
+                                    ]);
+           // return $this->redirect(['mp/mpcd']);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['home/home']);
+                
+            }
+    }
+    public function actionMpcmd($id,$awpb_template_id)
+    {
+
+        if (User::userIsAllowedTo('Approve AWPB - Ministry') )
+        {            
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+            //$query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['district_id','activity_id','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            
+      //      $query->where('district_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'district_id'=>$id, 'status' => AwpbActivityLine::STATUS_APPROVED]);
+
+            $query->groupBy('district_id');
+            $query->all();
+            
+            $district = \backend\models\Districts::findOne($id);
+                
+            $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                    ]);
+
+            return $this->render('mpcmd', [
                                         'searchModel' => $searchModel,
                                      'model' => $model,
                                         'dataProvider' => $dataProvider,
@@ -1489,6 +1762,43 @@ class AwpbActivityLineController extends Controller
                     ]);
 
             return $this->render('mpcoa', [
+                                        'searchModel' => $searchModel,
+                                        'model' => $model,
+                                        'dataProvider' => $dataProvider,
+                                        'distr' => $district_id
+                                    ]);
+        }
+        else
+        {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionMpcma($id, $district_id, $awpb_template_id)
+    {
+       // $awpb_template_id=32;
+       if (User::userIsAllowedTo('Approve AWPB - Ministry') )
+        {    
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+           // $searchModel = new AwpbActivityLine();
+            $query = $searchModel::find();
+            $query->select(['id','name','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            
+           // $query->where('activity_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'district_id'=>$district_id,'activity_id'=>$id, 'status' => AwpbActivityLine::STATUS_APPROVED]);
+
+           // $query->groupBy('activity_id');
+            $query->all();
+            
+            $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                    ]);
+
+            return $this->render('mpcma', [
                                         'searchModel' => $searchModel,
                                         'model' => $model,
                                         'dataProvider' => $dataProvider,

@@ -95,7 +95,7 @@ if (User::userIsAllowedTo('Approve AWPB - PCO') )
   {         
 
      echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
-     return false;"></i> Decline District AWPB </button>';
+     return false;"></i> Decline Provincial AWPB </button>';
 
     }
 

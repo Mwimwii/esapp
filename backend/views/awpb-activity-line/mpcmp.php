@@ -95,7 +95,7 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') )
   {         
 
      echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
-     return false;"></i> Decline District AWPB </button>';
+     return false;"></i> Decline Provincial AWPB </button>';
 
     }
 
@@ -431,7 +431,7 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') )
                  
                  Yii::$app->urlManager->createUrl($params);
 
-                $form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-activity-line/declinep']),])
+                $form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-activity-line/declinem']),])
                 //$form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-activity-line/decline','district_id' => $district_id,'awpb_template_id'=>  $awpb_template_id]),])
        
                //  'action' => 'add-activity?work_effort_id=' . $work_effort_id,

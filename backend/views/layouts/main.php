@@ -180,6 +180,8 @@ $session = Yii::$app->session;
 	
 							<!-------------------------------AWPB MANAGEMENT STARTS----------------------->
                             <?php
+                                 $user = User::findOne(['id' => Yii::$app->user->id]);
+                          
                             if (User::userIsAllowedTo("Manage components") 
                                 || User::userIsAllowedTo("View components") ||
                                     User::userIsAllowedTo("Manage AWPB templates") ||
@@ -248,8 +250,8 @@ $session = Yii::$app->session;
                                 </a>
                                 <ul class="nav nav-treeview">
                                 <?php
-                                if (User::userIsAllowedTo("Manage AWPB activity lines") ||
-                                    User::userIsAllowedTo("View AWPB activity lines") ) {
+                                if (User::userIsAllowedTo("Manage AWPB activity lines") 
+                                    && $user->district_id>0 ||$user->district_id!='' ) {
                                       echo '   <li class="nav-item">';
                                       if (Yii::$app->controller->id == "awpb-activity-line" &&
                                               (Yii::$app->controller->action->id == "index" ||
@@ -263,7 +265,7 @@ $session = Yii::$app->session;
                                       echo '</li>';
                                   }
 
-                                  if (User::userIsAllowedTo("Approve AWPB - Provincial")) {
+                                  if (User::userIsAllowedTo("Approve AWPB - Provincial") && $user->province_id>0 ||$user->province_id!='') {
                                     echo '   <li class="nav-item">';
                                     if (Yii::$app->controller->id == "awpb-activity-line" &&
                                             (Yii::$app->controller->action->id == "mpc" ||
@@ -276,8 +278,7 @@ $session = Yii::$app->session;
                                     echo '</li>';
                                 }
 
-                                $user = User::findOne(['id' => Yii::$app->user->id]);
-                                if (User::userIsAllowedTo('Approve AWBP - PCO') && $user->province_id==0 ||$user->province_id=='') {
+                                 if (User::userIsAllowedTo('Approve AWBP - PCO') && $user->province_id==0 ||$user->province_id=='') {
 
                                     echo '   <li class="nav-item">';
                                     if (Yii::$app->controller->id == "awpb-activity-line" &&
