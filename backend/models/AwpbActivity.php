@@ -216,6 +216,21 @@ class AwpbActivity extends \yii\db\ActiveRecord
          return $list;
 
     }
+    public static function getAwpbActivitiesListPW($access_level) {
+     
+
+        $activties  = self::find()
+        ->select(['awpb_activity.id',"CONCAT(awpb_activity.activity_code,' ',awpb_activity.name) as name"])
+        ->joinWith('component')
+        ->where(['!=', 'awpb_component.access_level', self::STATUS_ACTIVE])
+       // ->where(['awpb_component.access_level' =>self::STATUS_ACTIVE])
+        ->andWhere(['awpb_activity.type'=>self::TYPE_SUB])  
+      
+         ->all();
+         $list = ArrayHelper::map( $activties, 'id', 'name');
+         return $list;
+
+    }
 
     public static function getName($id) {
         $component = self::find()->where(['id' => $id])->one();

@@ -39,9 +39,9 @@ $access_level=1;
             <?php
    
           
-    if (User::userIsAllowedTo('Manage AWPB activity lines')&& $user->district_id>0 ||$user->district_id!='') {
+    if (User::userIsAllowedTo('Manage AWPB activity lines')&& $user->district_id==0 ||$user->district_id=='') {
        
-                echo Html::a('Add AWPB activity line', ['create'], ['class' => 'btn btn-success btn-sm']);
+                echo Html::a('Add AWPB activity line', ['createpw'], ['class' => 'btn btn-success btn-sm']);
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
           
                 echo Html::a('Submit District AWPB', ['submit','id'=>$id,'id2'=>$user->district_id, 'status'=>AWPBActivityLine:: STATUS_SUBMITTED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
@@ -120,7 +120,7 @@ $access_level=1;
 
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'label' => 'Item Description',
+                'label' => 'Activity',
                 'attribute' => 'name',
                 'readonly' =>true,
                 'editableOptions' => [

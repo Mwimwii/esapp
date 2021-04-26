@@ -93,6 +93,8 @@ class AwpbIndicatorController extends Controller
                 $parents = Yii::$app->request->post('depdrop_parents');
                 if ($parents != null) {
                     $comp_id = $parents[0];
+                   // $parent_comp = \backend\models\AwpbComponent::findOne(['id'=>$comp_id]);
+                  // $parent_comp=   \backend\models\AwpbComponent::find()->where(['=','id',$comp_id])->one();
                     return [
                         'output' => AwpbIndicator::getAwpbComponentIndicators($comp_id, true),
                         'selected' => '',

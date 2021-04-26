@@ -62,12 +62,12 @@ $access_level=1;
            
             <?php
 
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpc', 'id' => $model->province_id], [
+echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpc', 'id' => $awpb_template_id], [
     'title' => 'back',
     'data-toggle' => 'tooltip',
     'data-placement' => 'top',
 ]);
-  if (User::userIsAllowedTo('Submit Provincial AWPB') ) 
+  if (User::userIsAllowedTo('Approve AWPB - Provincial') ) 
   {          echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     //  echo Html::a('Decline District AWPB',   ['awpb-comment/create', 'id' =>$model->district_id,'template_id'],  ['class' => 'float-right btn btn-success btn-sm btn-space']);       
      // ['awpb-activity-line/mpca', 'id' => $model->activity_id,'district_id'=>$model->district_id]

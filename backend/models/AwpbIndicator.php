@@ -45,7 +45,7 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['component_id', 'name', 'description', 'unit_of_measure_id', 'created_at', 'updated_at'], 'required'],
+            [['component_id', 'name', 'description', 'unit_of_measure_id'], 'required'],
             [['component_id', 'unit_of_measure_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 40],
             [['description'], 'string', 'max' => 255],

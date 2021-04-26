@@ -41,7 +41,7 @@ $access_level=1;
    <p>
            
             <?php
-
+//var_dump(AwpbActivityLine::STATUS_APPR);
 
           //   echo CHtml::link('Download CSV',array('awpb-activity-line/export'));
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -139,14 +139,12 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') && $user->province_id==0 ||
             },
         //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
          ],
+         
         // [
-        //     'attribute' => 'district_id',
+        //     'attribute' => 'awpb_template_id',
         //     'format' => 'raw',
-        //     'label' => 'District',
-        //     'value' => function ($model) {
-        //         return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['mpcd','id' =>  $model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'mpcd']):"";
-        //         ;
-        //     },
+        //     'label' => 'District'
+           
         // //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
         //  ],
 
@@ -354,7 +352,7 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') && $user->province_id==0 ||
                 'update' => function ($url, $model) {
                     if (User::userIsAllowedTo('Approve AWPB - PCO') ) {
                         return Html::a(
-                                        '<span class="fas fa-edit"></span>',['submit','id'=>$model->awpb_template_id,'id2'=>$model->province_id,'status'=>AWPBActivityLine:: STATUS_MINISTRY], [ 
+                                        '<span class="fas fa-edit"></span>',['submit','id'=>$model->awpb_template_id,'id2'=>$model->province_id,'status'=>AwpbActivityLine::STATUS_MINISTRY], [ 
                                     'title' => 'Approve AWPB',
                                     'data-toggle' => 'tooltip',
                                     'data-placement' => 'top',
