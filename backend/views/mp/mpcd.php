@@ -14,18 +14,18 @@ use kartik\export\ExportMenu;
 use kartik\money\MaskMoney;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
-use backend\models\Storyofchange;
-use backend\models\AwpbActivityLine;
-use backend\models\AwpbActivityLineSearch;
-use yii\web\Controller;
-use yii\data\ActiveDataProvider;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Provincial AWPB';
-//$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
+
+$this->title = 'District AWPB';
+$this->params['breadcrumbs'][] = ['label' => 'Awpb Activity Lines', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+\yii\web\YiiAsset::register($this);
+
+//$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
+//$this->params['breadcrumbs'][] = $this->title;
 
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
 //$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
@@ -41,22 +41,11 @@ $access_level=1;
    <p>
            
             <?php
-
-
-          //   echo CHtml::link('Download CSV',array('awpb-activity-line/export'));
-            // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-            // echo Html::a('Decline District AWPB', ['decline'], ['class' => 'btn btn-success btn-sm']);
-            // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 ||$user->province_id!='') {
-       
-        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-  
-        echo Html::a('Submit Provincial AWPB', ['submit','id'=>$id,'id2'=>"",'status'=>AWPBActivityLine:: STATUS_REVIEWED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
-        
-}
-
-    ?>
-
+  if (User::userIsAllowedTo('Submit Provincial AWPB') ) 
+  {          echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      echo Html::a('Decline District AWPB',   ['decline', 'id' => $model->id],  ['class' => 'float-right btn btn-success btn-sm btn-space']);       
+  }
+            ?>
 
         </p>
 
@@ -73,7 +62,15 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
             'header'=>'',
             'headerOptions'=>['class'=>'kartik-sheet-style']
         ],
-  
+       // [
+        //     'attribute' => 'district_id',
+        //     'format' => 'raw',
+        //     'label' => 'District',
+        //     'value' => function ($model) {
+        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
+        //     },
+        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+        // ],
      
         // [
         //     'attribute' => 'awpb_template_id',
@@ -95,105 +92,37 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
         //     'filterInputOptions' => ['placeholder' => 'Filter by activity'],
         //     'format' => 'raw'
         // ],
-        // [
-        //     'attribute' => 'district_id',
-        //     'format' => 'raw',
-        //     'label' => 'District',
-        //     'value' => function ($model) {
-        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
-        //     },
-        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
-        // ],
-        // [
-        //     'attribute' => 'province_id',
-        //     'format' => 'raw',
-        //     'label' => 'Province',
-        //     'value' => function ($model) {
-        //         return !empty($model->province_id) && $model->province_id > 0 ?  Html::a(backend\models\Provinces::findOne($model->province_id)->name,['awpb-activity-line/mpcindex'], ['class' => 'awbp-activity-line']):"";
-        //         ;
-        //     },
-        // //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
-        //  ],
-        [
-            'attribute' => 'district_id',
-            'format' => 'raw',
-            'label' => 'District',
+        
+ 
+         [
+            'attribute' => 'activity_id',
+            'label' => 'Activity Code', 
+            'vAlign' => 'middle',
+            'width' => '180px',
+
             'value' => function ($model) {
-                return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['mpcd','id' =>  $model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'mpcd']):"";
-                ;
+                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
+                return Html::a($name, ['awpb-activity-line/mpca', 'id' => $model->activity_id], ['class' => 'awbp-activity-lined']);
             },
-        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
-         ],
-
-        // [
-        //     'attribute' => 'district_id',
-        //     'label' => 'District', 
-        //     'vAlign' => 'middle',
-        //     'width' => '180px',
-
-        //     'value' => function ($model) {
-        //         $name =  \backend\models\Districts::findOne(['id' =>  $model->district_id])->name;
-        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
-        //           },
            
-        //     // 'filterType' => GridView::FILTER_SELECT2,
-        //     // 'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-        //     // 'filterWidgetOptions' => [
-        //     //     'pluginOptions' => ['allowClear' => true],
-        //     //     'options' => ['multiple' => true]
-        //     // ],
-        //     // 'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-        //     // 'format' => 'raw'
-        // ],
-
-        // [
-        //     'label' => 'Activity Name',
-        //           'value' =>  function ($model) {
-        //             $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->name;
-        //             return $name;
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+                'options' => ['multiple' => true]
+            ],
+            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+            'format' => 'raw'
+        ],
+          [
+            'label' => 'Activity Name',
+                  'value' =>  function ($model) {
+                    $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->name;
+                   return $name;//Html::a($name, ['awpb-activity-line/mpcd', 'id' => $model->activity_id], ['class' => 'awbp-activity-line']);
+  
                       
-        //           }
-        //       ],
-
-          
-   
-
-            // [
-            //     'class' => 'kartik\grid\EditableColumn',
-            //     'label' => 'Item Description',
-            //     'attribute' => 'name',
-            //     'readonly' =>true,
-            //     'editableOptions' => [
-            //         'header' => 'Name', 
-            //         'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                    
-            //     ],
-            //     'hAlign' => 'left', 
-            //     'vAlign' => 'left',
-            //    // 'width' => '7%',
-              
-            // ],
-
-
-            // [
-            //     'class' => 'kartik\grid\EditableColumn',
-            //     'attribute' => 'unit_cost',
-            //     'readonly' =>true,
-            //     'refreshGrid' => true,
-            //     'editableOptions' => [
-            //         'header' => 'Unit Cost', 
-            //         'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-            //         'options' => [
-            //             'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
-            //         ]
-            //     ],
-            //     'hAlign' => 'right', 
-            //     'vAlign' => 'middle',
-            //     'width' => '7%',
-            //     'format' => ['decimal', 2],
-            //     'pageSummary' => false
-            // ],
-
+                  }
+              ],
             [
                 'class' => 'kartik\grid\EditableColumn',
                 'attribute' => 'quarter_one_amount', 
@@ -333,22 +262,6 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
             // ],
 
 
-            // [
-            //     'attribute' => 'status', 'format' => 'raw',
-            //     'value' => function($model) {
-            //         $str = "";
-            //         $id = 1;
-            //         //if ($model->status == AwpbActivityLine::STATUS_SUBMITTED) {
-            //             if ($id== 1) {
-            //             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-success'> "
-            //                     . "<i class='fa fa-check'></i> Accepted</p><br>";
-            //         } else {
-            //             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
-            //                     . "<i class='fa fa-hourglass-half'></i> Pending IKMO review</p><br>";
-            //         }
-            //         return $str;
-            //     },
-            // ],
 
             ];
 
@@ -384,10 +297,10 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
 
     <?=  GridView::widget([
         'dataProvider' => $dataProvider,
-       // 'filterModel' => $searchModel,
+      //  'filterModel' => $searchModel,
         'columns' => $gridColumns,
       
-       // 'pjax' => true,
+        'pjax' => true,
         //'bordered' => true,
        // 'striped' => false,
       // 'condensed' => false,
@@ -404,15 +317,12 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
 
 
 ]);
-?>
- 
+        
+ ?>
 
         
     </div>
 </div>
-
-
-
 <?php
 $this->registerCss('.popover-x {display:none}');
 ?>

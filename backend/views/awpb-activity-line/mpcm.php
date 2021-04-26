@@ -23,7 +23,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Provincial AWPB';
+$this->title = 'AWPB';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -47,16 +47,41 @@ $access_level=1;
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             // echo Html::a('Decline District AWPB', ['decline'], ['class' => 'btn btn-success btn-sm']);
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 ||$user->province_id!='') {
+if (User::userIsAllowedTo('Approve AWPB - Ministry') && $user->province_id==0 ||$user->province_id=='') {
        
         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   
-        echo Html::a('Submit Provincial AWPB', ['submit','id'=>$id,'id2'=>"",'status'=>AWPBActivityLine:: STATUS_REVIEWED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
+     //   echo Html::a('Submit AWPB', ['submit','id'=>$id, 'id2'=>status'=>AWPBActivityLine:: STATUS_REVIEWED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
         
 }
-
-    ?>
-
+// else 
+// {
+            
+          
+//     if (User::userIsAllowedTo('Manage AWPB activity lines')&& $user->district_id>0 ||$user->district_id!='') {
+       
+//                 echo Html::a('Add AWPB activity line', ['create'], ['class' => 'btn btn-success btn-sm']);
+//                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+          
+//                 echo Html::a('Submit District AWPB', ['approve'], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
+                
+//         }
+//         else
+//         {
+        
+//             if (User::userIsAllowedTo('Submit Provincial AWPB')&& $user->province_id>0 ||$user->province_id!=''&& $user->district_id==0 ||$user->district_id=='') {
+       
+//                     echo Html::a('Add AWPB activity line', ['create'], ['class' => 'btn btn-success btn-sm']);
+//                     echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+          
+//                     echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'float-right btn btn-success btn-sm btn-space']);  
+          
+           
+//         }
+    
+//     }
+// }
+            ?>
 
         </p>
 
@@ -104,26 +129,26 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
         //     },
         //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
         // ],
-        // [
-        //     'attribute' => 'province_id',
-        //     'format' => 'raw',
-        //     'label' => 'Province',
-        //     'value' => function ($model) {
-        //         return !empty($model->province_id) && $model->province_id > 0 ?  Html::a(backend\models\Provinces::findOne($model->province_id)->name,['awpb-activity-line/mpcindex'], ['class' => 'awbp-activity-line']):"";
-        //         ;
-        //     },
-        // //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
-        //  ],
         [
-            'attribute' => 'district_id',
+            'attribute' => 'province_id',
             'format' => 'raw',
-            'label' => 'District',
+            'label' => 'Province',
             'value' => function ($model) {
-                return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['mpcd','id' =>  $model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'mpcd']):"";
+                return !empty($model->province_id) && $model->province_id > 0 ?  Html::a(backend\models\Provinces::findOne($model->province_id)->name,['awpb-activity-line/mpcmp','id' =>  $model->province_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'awbp-activity-line']):"";
                 ;
             },
         //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
          ],
+        // [
+        //     'attribute' => 'district_id',
+        //     'format' => 'raw',
+        //     'label' => 'District',
+        //     'value' => function ($model) {
+        //         return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['mpcd','id' =>  $model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'mpcd']):"";
+        //         ;
+        //     },
+        // //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+        //  ],
 
         // [
         //     'attribute' => 'district_id',
@@ -320,36 +345,31 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
             //     'pageSummaryOptions' => ['colspan' => 3, 'data-colspan-dir' => 'rtl']
             // ],
 
-            // [
-            //     'class' => 'kartik\grid\ActionColumn',
-            //     'dropdown' => false,
-            //     'vAlign'=>'middle',
-            //     'template' => '{delete} {view}',
-            //     'urlCreator' => function($action, $model, $key, $index) { 
-            //             return Url::to([$action,'id'=>$key]);
-            //     },
-                  
-              
-            // ],
+            [
+                'class' => 'kartik\grid\ActionColumn',
+                'vAlign'=>'middle',
+            'template' => '{update}',
+            'buttons' => [
+                
+                'update' => function ($url, $model) {
+                    if (User::userIsAllowedTo('Approve AWPB - PCO') ) {
+                        return Html::a(
+                                        '<span class="fas fa-edit"></span>',['submit','id'=>$model->awpb_template_id,'id2'=>$model->province_id,'status'=>AWPBActivityLine:: STATUS_MINISTRY], [ 
+                                    'title' => 'Approve AWPB',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                   // 'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );
+                    }
+                },
+               
+            ]]
 
-
-            // [
-            //     'attribute' => 'status', 'format' => 'raw',
-            //     'value' => function($model) {
-            //         $str = "";
-            //         $id = 1;
-            //         //if ($model->status == AwpbActivityLine::STATUS_SUBMITTED) {
-            //             if ($id== 1) {
-            //             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-success'> "
-            //                     . "<i class='fa fa-check'></i> Accepted</p><br>";
-            //         } else {
-            //             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
-            //                     . "<i class='fa fa-hourglass-half'></i> Pending IKMO review</p><br>";
-            //         }
-            //         return $str;
-            //     },
-            // ],
-
+           
             ];
 
 

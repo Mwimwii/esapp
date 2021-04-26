@@ -71,12 +71,12 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
            
     
 <?php
-  echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcd', 'id' =>$distr,'awpb_template_id'=>$model1->awpb_template_id], [
+  echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcod', 'id' =>$distr,'awpb_template_id'=>$model1->awpb_template_id], [
     'title' => 'back',
     'data-toggle' => 'tooltip',
     'data-placement' => 'top',
 ]);
-  if (User::userIsAllowedTo('Submit Provincial AWPB') ) 
+  if (User::userIsAllowedTo('Approve AWPB - PCO') ) 
   {          echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     //  echo Html::a('Decline District AWPB',   ['awpb-comment/create', 'id' =>$model->district_id,'template_id'],  ['class' => 'float-right btn btn-success btn-sm btn-space']);       
      // ['awpb-activity-line/mpca', 'id' => $model->activity_id,'district_id'=>$model->district_id]
@@ -247,7 +247,7 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
                     'vAlign'=>'middle',
                     'template' => '{view}',
                     'urlCreator' => function($action, $model, $key, $index) { 
-                            return Url::to(['viewp','id'=>$key]);
+                            return Url::to(['viewo','id'=>$key]);
                     },
                       
                   
@@ -324,8 +324,7 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <?php
+            <div class="modal-body">               <?php
                  $_model = new backend\models\AwpbComment();
                  $controller = Yii::$app->controller;
                  $arrayParams = ['p1' => 'v1' , 'p2' => 'v2'];

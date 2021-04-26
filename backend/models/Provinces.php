@@ -91,5 +91,9 @@ class Provinces extends \yii\db\ActiveRecord {
         $province = self::find()->where(['id' => $id])->one();
         return $province->name;
     }
+    public static function getName($id) {
+        $province = self::find()->where(['id' => $id])->one();
+        return ucfirst(strtolower($this->name));
+    }
 
 }

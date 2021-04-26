@@ -95,6 +95,12 @@ class AwpbTemplate extends \yii\db\ActiveRecord
         $list = ArrayHelper::map($data, 'id', 'fiscal_year');
         return $list;
     }
+
+    public static function getId() {
+        $template = self::find()->where(['<>','status',AwpbTemplate::STATUS_OLD])->one();
+            
+        return  $template->id;
+    }
 	/* public function upload()
     {
         if ($this->validate()) {

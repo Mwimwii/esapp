@@ -19,7 +19,8 @@ use yii\data\ActiveDataProvider;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+use backend\models\Storyofchange;
+use backend\models\AwpbTemplate;
 
 /**
  * AwpbActivityLineController implements the CRUD actions for AwpbActivityLine model.
@@ -34,10 +35,12 @@ class AwpbActivityLineController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view'],
+                'only' => ['index', 'create', 'update', 'delete', 'view','decline','submit','viewo','viewp','mpc','mpca','mpcd','mpco','mpcop','mpcod','mpcoa'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view','decline','submit','viewo','viewp','mpc','mpca','mpcd','mpco','mpcop','mpcod','mpcoa'],
+                        //'story/create/<id:\d+>/<usr:\d+>' => 'story/create',
+                        //'awpb-activity-line/mpca/<id:\d+>/<distr:\d+>',
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -57,7 +60,7 @@ class AwpbActivityLineController extends Controller
      * Lists all AwpbActivityLine models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id)
     {
 
         $user = User::findOne(['id' => Yii::$app->user->id]);
@@ -65,14 +68,15 @@ class AwpbActivityLineController extends Controller
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $dataProvider->query->andFilterWhere(['district_id' => $user->district_id, 'created_by'=>$user->id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id, 'created_by'=>$user->id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
          return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        'id'=>$id
             ]);
 
     }
-    public function actionMpcindex()
+    public function actionMpcindex($id)
     {
 
         // $user = User::findOne(['id' => Yii::$app->user->id]);
@@ -89,7 +93,7 @@ class AwpbActivityLineController extends Controller
         $searchModel = new AwpbActivityLine();
         $query = $searchModel::find();
         $query->select(['district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
-        $query->where(['province_id'=>$user->province_id, 'status' => AwpbActivityLine::STATUS_SUBMITTED]);
+        $query->where(['awpb_template_id'=>$id,'province_id'=>$user->province_id, 'status' => AwpbActivityLine::STATUS_SUBMITTED]);
 
       //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
         $query->groupBy('district_id');
@@ -108,6 +112,19 @@ class AwpbActivityLineController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionViewp($id)
+    {
+        return $this->render('viewp', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+    public function actionViewo($id)
+    {
+        return $this->render('viewo', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -373,6 +390,8 @@ class AwpbActivityLineController extends Controller
     }
 
 
+
+
     /**
      * Updates an existing AwpbActivityLine model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -422,18 +441,69 @@ class AwpbActivityLineController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-    public function actionApprove()
-    {
-        if (User::userIsAllowedTo('Submit District AWPB')) {
-            
+    public function actionSubmit($id,$id2,$status)
+    { $user = User::findOne(['id' => Yii::$app->user->id]);
+        $subject ="";
+     
+        if (User::userIsAllowedTo('Submit District AWPB')||User::userIsAllowedTo('Approve AWBP - Provincial') ||User::userIsAllowedTo('Approve AWBP - PCO') || User::userIsAllowedTo('Approve AWBP - Ministry') ) {
+            $right="";
+            $returnpage="";
+           
+            $awpb_template = \backend\models\AwpbTemplate::findOne(['id' => $id]);
+                      
+                  
             $model = new AwpbActivityLine();
             $searchModel = new AwpbActivityLineSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $user = User::findOne(['id' => Yii::$app->user->id]);
 
-       
-            $dataProvider->query->andFilterWhere(['district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
-            $activitylines = AwpbActivityLine::find()->where(['district_id'=>$user->district_id])->andWhere(['status' => AWPBActivityLine:: STATUS_DRAFT])->all();
+
+       if ($status==AWPBActivityLine:: STATUS_SUBMITTED && $user->district_id>0 ||$user->district_id!='')
+       { 
+        $district = \backend\models\Districts::findOne( $user->district_id)->name;
+        $dear="Dear Provincial Officer";
+        $bodymsg="We have submitted our";
+        $bodymsg1 =" for your review and approval.";
+        $subject = $awpb_template->fiscal_year ."AWPB for ".$district."District";
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
+        $activitylines = AwpbActivityLine::find()->where(['district_id'=>$user->district_id])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_DRAFT])->all();
+        $returnpage="index";
+       }
+       elseif ($status==AWPBActivityLine:: STATUS_REVIEWED && $user->province_id>0 ||$user->province_id!='')
+       {
+        $province = \backend\models\Provinces::findOne( $user->province_id)->name;
+        $right="Approve AWPB - PCO";
+        $dear="Dear PCO";
+        $bodymsg="We have submitted our";
+        $bodymsg1 =" for your review and approval.";
+        $subject = $awpb_template->fiscal_year ."AWPB for ".$province." Province";
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'district_id' => $user->district_id,'status' => AWPBActivityLine:: STATUS_SUBMITTED,]);
+        $activitylines = AwpbActivityLine::find()->where(['province_id'=>$user->province_id])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_SUBMITTED])->all();
+        $returnpage='mpc';
+       }
+       elseif ($status==AWPBActivityLine:: STATUS_APPROVED && $user->province_id==0 ||$user->province_id=='')
+       {
+        $right="Approve AWPB - Ministry";
+        $dear="Dear Ministry";
+        $bodymsg="We have submitted our";
+        $bodymsg1 =" for your review and approval.";
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'province_id' => $id2,'status' => AWPBActivityLine:: STATUS_REVIEWED,]);
+        $activitylines = AwpbActivityLine::find()->where(['province_id' =>$id2])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_REVIEWED])->all();
+        $subject = $awpb_template->fiscal_year ."AWPB for ".$province." Province";
+        $returnpage="mpco";
+       }
+       elseif ($status==AWPBActivityLine:: STATUS_MINISTRY && $user->province_id==0 ||$user->province_id=='')
+       {
+        $right="View AWPB";
+        $dear="Dear All";
+        $bodymsg="The";
+        $bodymsg1 =" has been approved.";
+        $subject = $awpb_template->fiscal_year ."AWPB";
+        $dataProvider->query->andFilterWhere(['awpb_template_id'=>$id,'province_id' => $id2,'status' => AWPBActivityLine:: STATUS_REVIEWED,]);
+        $activitylines = AwpbActivityLine::find()->where(['province_id' =>$id2])->andWhere(['awpb_template_id'=>$id])->andWhere(['status' => AWPBActivityLine:: STATUS_REVIEWED])->all();
+           $returnpage="mpcm";
+       }
+
             // if (Yii::$app->request->isAjax) {
             //     $model->load(Yii::$app->request->post());
             //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
@@ -445,7 +515,7 @@ class AwpbActivityLineController extends Controller
                 {
                 foreach($activitylines as $activityline)
                 {
-                    $activityline->status = AWPBActivityLine::STATUS_SUBMITTED;
+                    $activityline->status = $status;
                     if ($activityline->validate())
                     {
                         $activityline->save();
@@ -455,32 +525,80 @@ class AwpbActivityLineController extends Controller
                         $audit->ip_address = Yii::$app->request->getUserIP();
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
+                         $role_model = \common\models\RightAllocation::find()->where(['right' => $right])->all();
+                        if (!empty($role_model)) {
+                            
+                            foreach ($role_model as $_role) {
+                                //We now get all users with the fetched role
+                              //  $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
+                              
+                              $_user_model="";
+                          
+
+                                        if ($status==AWPBActivityLine:: STATUS_SUBMITTED)
+                                        {
+                                            $_user_model = User::find()
+                                            ->where(['role' => $_role->role])
+                                            ->andWhere(['province_id'=> $user->province_id])
+                                            ->all();
+                                        }
+                                        else
+                                        {    $_user_model = User::find()
+                                            ->where(['role' => $_role->role])
+                                            ->all();
+                                        }
+                                    
+                                if (!empty($_user_model)) {
+                                    //We send the emails
+                                   
+                                    foreach ($_user_model as $_model) {
+                                        $msg = "";
+                                        $msg .= "<p>".$dear.",<br/><br/>";
+                                        $msg .=  $bodymsg." " . $awpb_template->fiscal_year ." Annual Work Plan and Budget". $bodymsg1 ."<br/><br/>";
+                                      //  $msg .=  $model->description . "<br/><br/>";
+                                      //  $msg .= "Story category:<b>" . \backend\models\LkmStoryofchangeCategory::findOne($model->category)->name . "</b><br/>";
+                                       // $msg .= "Kindly address the issues and resubmit.<br/><br/>";
+                                       // $msg .= "Interviewer:<b>" . $model->interviewer_names . "</b><br/>";
+                                        $msg .= "Yours sincerely,<br/><br/></p>";
+                                        $msg .= '<p>'.$user->title.' '.$user->first_name.' ' .$user->last_name.'</p>';
+                                        Storyofchange::sendEmail($msg, $subject, $_model->email);
+                                    }
+                                }
+                            }
+                        }
+        
+
+
                     }
                     else{
                         Yii::$app->session->setFlash('error', 'An error occurred while submitting the District AWPB.');
-                        return $this->render('index', [
+                        return $this->render( $returnpage, [
                             'searchModel' => $searchModel,
                             'model' => $model,
                             'dataProvider' => $dataProvider,
+                            'id'=>$id
+                           
                 ]);
                     }
                    
 
                 }
-                Yii::$app->session->setFlash('success', 'The District AWPB has been submitted successfully.');
-                return $this->render('index', [
+                Yii::$app->session->setFlash('success', 'The AWPB has been submitted successfully.');
+                return $this->render($returnpage, [
                     'searchModel' => $searchModel,
                     'model' => $model,
                     'dataProvider' => $dataProvider,
+                    'id'=>$id
         ]);
 
             }
               else{
                  Yii::$app->session->setFlash('error', 'No District AWPB to submit.');
-                 return $this->render('index', [
+                 return $this->render($returnpage, [
                     'searchModel' => $searchModel,
                     'model' => $model,
                     'dataProvider' => $dataProvider,
+                    'id'=>$id
         ]);
             }
         }     
@@ -489,262 +607,687 @@ class AwpbActivityLineController extends Controller
         Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
         return $this->redirect(['site/home']);
     }}
-    public function actionDecline()
-    {
-        if (User::userIsAllowedTo('Submit Provincial AWPB')) {
-            
-            $model = new AwpbActivityLine();
-            $searchModel = new AwpbActivityLineSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $user = User::findOne(['id' => Yii::$app->user->id]);
 
+    public function actionDecline() {
+       // public function actionDecline($district_id,$awpb_template_id) {
+  
+        //$district_id=48;
+       // Yii::$app->session->setFlash('success', 'AWPB comment ' .$district.'was successfully added.');
        
-            $dataProvider->query->andFilterWhere(['district_id' => $user->district_id,'status' => AWPBActivityLine::STATUS_SUBMITTED,]);
-            $activitylines = AwpbActivityLine::find()->where(['district_id'=>$user->district_id])->andWhere(['status' => AWPBActivityLine::STATUS_SUBMITTED])->all();
-            // if (Yii::$app->request->isAjax) {
-            //     $model->load(Yii::$app->request->post());
-            //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
-            // }
-            // if (!empty(Yii::$app->request->post())) {
-            if(isset($activitylines) )
-            {
-                if($activitylines!=null)
-                {
-                foreach($activitylines as $activityline)
-                {
-                    $activityline->status = AWPBActivityLine::STATUS_DRAFT;
-                    if ($activityline->validate())
+
+        if (User::userIsAllowedTo('Approve AWPB - Provincial') ||User::userIsAllowedTo('Approve AWBP - PCO')||User::userIsAllowedTo('Approve AWBP - Ministry')) {
+            $model = new \backend\models\AwpbComment();
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $district = \backend\models\Districts::findOne($model->district_id)->name;
+                  
+       $searchModel = new AwpbActivityLine();
+       $query = $searchModel::find();
+       $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+       $query->where(['province_id'=>$user->province_id, 'awpb_template_id' =>$model->awpb_template_id,'status' => AwpbActivityLine::STATUS_SUBMITTED]);
+
+     //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
+       $query->groupBy('district_id');
+       $query->all();
+  
+       $dataProvider = new ActiveDataProvider([
+           'query' => $query,
+       ]);
+
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+               
+                if ($model->save()) {
+
+                    $activitylines = AwpbActivityLine::find()->where(['district_id'=>$model->district_id])->andWhere(['awpb_template_id' =>$model->awpb_template_id])->andWhere(['status' => AWPBActivityLine::STATUS_SUBMITTED])->all();
+            
+                    if(isset($activitylines) )
                     {
-                        $activityline->save();
-                        $audit = new AuditTrail();
-                        $audit->user = Yii::$app->user->id;
-                        $audit->action = "Submitted ".$activityline->id." : " .$activityline->name;
-                        $audit->ip_address = Yii::$app->request->getUserIP();
-                        $audit->user_agent = Yii::$app->request->getUserAgent();
-                        $audit->save();
-                    }
-                    else{
-                        Yii::$app->session->setFlash('error', 'An error occurred while declining the District AWPB.');
-                        return $this->render('index', [
-                            'searchModel' => $searchModel,
-                            'model' => $model,
-                            'dataProvider' => $dataProvider,
-                ]);
-                    }
-                   
+                        if($activitylines!=null)
+                        {
+                        foreach($activitylines as $activityline)
+                        {
+                            $activityline->status = AWPBActivityLine::STATUS_DRAFT;
+                            if ($activityline->validate())
+                            {
+                                $activityline->save();
+                                $audit = new AuditTrail();
+                                $audit->user = Yii::$app->user->id;
+                                $audit->action = "Decline budget line ".$activityline->id." : " .$activityline->name;
+                                $audit->ip_address = Yii::$app->request->getUserIP();
+                                $audit->user_agent = Yii::$app->request->getUserAgent();
+                                $audit->save();
+                              
+                            }
+                            
 
+                            else{
+                                Yii::$app->session->setFlash('error', 'An error occurred while declining the District AWPB.');
+                                return $this->render('mpc',);
+                            }
+                        }
+                      
+                
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                 //   $audit->action = "Added AWPB Commen for ".$district;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', $district.' was declined.');
+
+                //We send an email informing IKM Officers that a story has been submited for review
+                //We first get roles with the permission to review stories
+                $role_model = \common\models\RightAllocation::find()->where(['right' => 'Submit District AWPB'])->all();
+                if (!empty($role_model)) {
+                    $subject = "AWPB for ".$district." declined";
+                    foreach ($role_model as $_role) {
+                        //We now get all users with the fetched role
+                      //  $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
+                        $_user_model = User::find()
+                                ->where(['role' => $_role->role])
+                                ->andWhere(['district_id'=>$model->district_id])
+                                ->all();
+                        if (!empty($_user_model)) {
+                            //We send the emails
+                       //     $user = User::findOne(['id' => Yii::$app->user->id]);
+                            foreach ($_user_model as $_model) {
+                                $msg = "";
+                                $msg .= "<p>Dear Budget Committee,<br/><br/>";
+                                $msg .= "Your budget has been declined due to the following:<br/><br/>";
+                                $msg .=  $model->description . "<br/><br/>";
+                              //  $msg .= "Story category:<b>" . \backend\models\LkmStoryofchangeCategory::findOne($model->category)->name . "</b><br/>";
+                                $msg .= "Kindly address the issues and resubmit.<br/><br/>";
+                               // $msg .= "Interviewer:<b>" . $model->interviewer_names . "</b><br/>";
+                                $msg .= "Yours sincerely,<br/><br/></p>";
+                                $msg .= '<p>'.$user->title.' '.$user->first_name.' ' .$user->last_name.'</p>';
+                                Storyofchange::sendEmail($msg, $subject, $_model->email);
+                            }
+                        }
+                    }
                 }
-                Yii::$app->session->setFlash('success', 'The Provincial AWPB has been  declined.');
-                return $this->render('index', [
+
+                   
+                    return $this->redirect(['mpc',]);
+                
+                    }
+                
+                             return $this->render('mpc', [
+                'searchModel' => $searchModel,
+                // 'model' => $model,
+                'dataProvider' => $dataProvider,
+                'show_results' => 1
+            ]);
+                }
+                return $this->render('mpc', [
                     'searchModel' => $searchModel,
-                    'model' => $model,
+                    // 'model' => $model,
                     'dataProvider' => $dataProvider,
-        ]);
+                    'show_results' => 1
+                    ]);
+            }
+            else {
+                $message = "";
+                foreach ($model->getErrors() as $error) {
+                    $message .= $error[0];
+                }
+                Yii::$app->session->setFlash('error', 'Error occured while adding AWPB comment::' . $message);
+              //  return $this->redirect(['home/home']);
+            
+
+            
+
+              return $this->render('mpc', [
+                'searchModel' => $searchModel,
+                // 'model' => $model,
+                'dataProvider' => $dataProvider,
+                'show_results' => 1
+            ]);
 
             }
-              else{
-                 Yii::$app->session->setFlash('error', 'No District AWPB to submit.');
-                 return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
-            }
-        }     
+            
         }
-     else {
-        Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-        return $this->redirect(['site/home']);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    
+
     }
-    }
 
+    public function actionDeclinep() {
+        // public function actionDecline($district_id,$awpb_template_id) {
+   
+         //$district_id=48;
+        // Yii::$app->session->setFlash('success', 'AWPB comment ' .$district.'was successfully added.');
+        $user = User::findOne(['id' => Yii::$app->user->id]);
+         if (User::userIsAllowedTo('Approve AWBP - PCO') && $user->province_id==0 ||$user->province_id=='') {
+             $model = new \backend\models\AwpbComment();
+     
+       
+             $status=AWPBActivityLine::STATUS_SUBMITTED ;  
+        $searchModel = new AwpbActivityLine();
+        $query = $searchModel::find();
+        $dear="";
 
-
-    public function actionApproveprovincial()
-    {
-        if (User::userIsAllowedTo('Submit Provincial AWPB')) {
+      
+        $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+        $query->where(['province_id'=>$model->province_id, 'awpb_template_id' =>$model->awpb_template_id,'status' => AwpbActivityLine::STATUS_REVIEWED]);
+        $status=AWPBActivityLine::STATUS_SUBMITTED;   
+        $dear .= "<p>Dear Budget Committee,<br/><br/>";     
+    
+        // elseif(User::userIsAllowedTo('Approve AWBP - Ministry'))
+        // {
+        //     $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+        //     $query->where(['province_id'=>$model->province_id, 'awpb_template_id' =>$model->awpb_template_id,'status' => AwpbActivityLine::STATUS_APPROVED]);
+        //     $status=AWPBActivityLine::STATUS_REVIEWED;  
+        //     $dear .= "<p>Dear ESAPP,<br/><br/>";  
+        // }
+      //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
+       // $query->groupBy('district_id');
+        $query->all();
+   
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+ 
+             if (Yii::$app->request->isAjax) {
+                 $model->load(Yii::$app->request->post());
+                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
+             }
+ 
+             if ($model->load(Yii::$app->request->post())) {
+ 
+                 $model->created_by = Yii::$app->user->identity->id;
+                 $model->updated_by = Yii::$app->user->identity->id;
+                
+                 if ($model->save()) {
+                    $province="";
+                    $pro = \backend\models\Provinces::findOne(['id' => $model->province_id]);
             
-            $model = new AwpbActivityLine();
-            $searchModel = new AwpbActivityLineSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $user = User::findOne(['id' => Yii::$app->user->id]);
+                    if (!empty($pro)) {
+                    $province=  $pro->name;
+                    }
+ 
+                     $activitylines = AwpbActivityLine::find()->where(['province_id'=>$model->province_id])->andWhere(['awpb_template_id' =>$model->awpb_template_id])->andWhere(['status' => AWPBActivityLine::STATUS_REVIEWED])->all();
+             
+                     if(isset($activitylines) )
+                     {
+                         if($activitylines!=null)
+                         {
+                         foreach($activitylines as $activityline)
+                         {
+                             $activityline->status = $status;
+                             if ($activityline->validate())
+                             {
+                                 $activityline->save();
+                                 $audit = new AuditTrail();
+                                 $audit->user = Yii::$app->user->id;
+                                 $audit->action = "Decline budget line ".$activityline->id." : " .$activityline->name;
+                                 $audit->ip_address = Yii::$app->request->getUserIP();
+                                 $audit->user_agent = Yii::$app->request->getUserAgent();
+                                 $audit->save();
+                               
+                             }
+                             
+ 
+                             else{
+                                 Yii::$app->session->setFlash('error', 'An error occurred while declining the District AWPB.');
+                                 return $this->render('mpco', [
+                                    'searchModel' => $searchModel,
+                                    // 'model' => $model,
+                                    'dataProvider' => $dataProvider,
+                                    'show_results' => 1,
+                                    'id'=>$model->awpb_template_id
+                                ]);
+                             }
+                         }
+                       
+                 
+                     $audit = new AuditTrail();
+                     $audit->user = Yii::$app->user->id;
+                  //   $audit->action = "Added AWPB Commen for ".$district;
+                     $audit->ip_address = Yii::$app->request->getUserIP();
+                     $audit->user_agent = Yii::$app->request->getUserAgent();
+                     $audit->save();
+                     Yii::$app->session->setFlash('success', $province.' province AWPB was declined.');
+ 
+                 //We send an email informing IKM Officers that a story has been submited for review
+                 //We first get roles with the permission to review stories
+                 $role_model = \common\models\RightAllocation::find()->where(['right' => 'Approve AWPB - Provincial'])->all();
+                 if (!empty($role_model)) {
+                     $subject = $province ." province AWPB declined";
+                     foreach ($role_model as $_role) {
+                         //We now get all users with the fetched role
+                       //  $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
+                         $_user_model = User::find()
+                                 ->where(['role' => $_role->role])
+                                 ->andWhere(['province_id'=>$model->province_id])
+                                 ->all();
+                         if (!empty($_user_model)) {
+                             //We send the emails
+                        //     $user = User::findOne(['id' => Yii::$app->user->id]);
+                             foreach ($_user_model as $_model) {
+                                 $msg = "";
+                                 $msg .= $dear;
+                                 $msg .= "Your budget has been declined due to the following:<br/><br/>";
+                                 $msg .=  $model->description . "<br/><br/>";
+                               //  $msg .= "Story category:<b>" . \backend\models\LkmStoryofchangeCategory::findOne($model->category)->name . "</b><br/>";
+                                 $msg .= "Kindly address the issues and resubmit.<br/><br/>";
+                                // $msg .= "Interviewer:<b>" . $model->interviewer_names . "</b><br/>";
+                                 $msg .= "Yours sincerely,<br/><br/></p>";
+                                 $msg .= '<p>'.$user->title.' '.$user->first_name.' ' .$user->last_name.'</p>';
+                                 Storyofchange::sendEmail($msg, $subject, $_model->email);
+                             }
+                         }
+                     }
+                 }
+ 
+                    
+                 return $this->render('mpco', [
+                    'searchModel' => $searchModel,
+                    // 'model' => $model,
+                    'dataProvider' => $dataProvider,
+                    'show_results' => 1,
+                    'id'=>$model->awpb_template_id
+                ]);
+                 
+                     }
+                 
+                     return $this->render('mpco', [
+                        'searchModel' => $searchModel,
+                        // 'model' => $model,
+                        'dataProvider' => $dataProvider,
+                        'show_results' => 1,
+                        'id'=>$model->awpb_template_id
+                    ]);
+                 }
+                 return $this->render('mpco', [
+                    'searchModel' => $searchModel,
+                    // 'model' => $model,
+                    'dataProvider' => $dataProvider,
+                    'show_results' => 1,
+                    'id'=>$model->awpb_template_id
+                ]);
+             }
+             else {
+                 $message = "";
+                 foreach ($model->getErrors() as $error) {
+                     $message .= $error[0];
+                 }
+                 Yii::$app->session->setFlash('error', 'Error occured while adding AWPB comment::' . $message);
+               //  return $this->redirect(['home/home']);
+             
+ 
+             
+               return $this->render('mpco', [
+                'searchModel' => $searchModel,
+                // 'model' => $model,
+                'dataProvider' => $dataProvider,
+                'show_results' => 1,
+                'id'=>$model->awpb_template_id
+            ]);
+ 
+             }
+             
+         }
+         } else {
+             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+             return $this->redirect(['home/home']);
+         }
+     
+ 
+  }
+
+
+
+
+//     public function actionDeclines($id)
+//     {
+//         if (User::userIsAllowedTo('Submit Provincial AWPB')) {
+            
+//             $model = new AwpbActivityLine();
+//             $searchModel = new AwpbActivityLineSearch();
+//             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//             $user = User::findOne(['id' => Yii::$app->user->id]);
 
        
-            $dataProvider->query->andFilterWhere(['provincial_id' => $user->provincial_id,'status' => AWPBActivityLine:: STATUS_SUBMITTED,]);
-            $activitylines = AwpbActivityLine::find()->where(['provincial_id'=>$user->provincial_id])->andWhere(['status' => AWPBActivityLine:: STATUS_SUBMITTED])->all();
-            // if (Yii::$app->request->isAjax) {
-            //     $model->load(Yii::$app->request->post());
-            //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
-            // }
-            // if (!empty(Yii::$app->request->post())) {
-            if(isset($activitylines) )
-            {
-                if($activitylines!=null)
-                {
-                foreach($activitylines as $activityline)
-                {
-                    $activityline->status = AWPBActivityLine::STATUS_REVIEWED;
-                    if ($activityline->validate())
-                    {
-                        $activityline->save();
-                        $audit = new AuditTrail();
-                        $audit->user = Yii::$app->user->id;
-                        $audit->action = "Submitted ".$activityline->id." : " .$activityline->name;
-                        $audit->ip_address = Yii::$app->request->getUserIP();
-                        $audit->user_agent = Yii::$app->request->getUserAgent();
-                        $audit->save();
-                    }
-                    else{
-                        Yii::$app->session->setFlash('error', 'An error occurred while submitting the District AWPB.');
-                        return $this->render('index', [
-                            'searchModel' => $searchModel,
-                            'model' => $model,
-                            'dataProvider' => $dataProvider,
-                ]);
-                    }
+//             $dataProvider->query->andFilterWhere(['awpb_template_id'=>$session['awpb_template_id'],'district_id' => $id,'status' => AWPBActivityLine::STATUS_SUBMITTED,]);
+            
+//             $activitylines = AwpbActivityLine::find()->where(['district_id'=>$id])->andWhere(['awpb_template_id'=>$session['awpb_template_id']])->andWhere(['status' => AWPBActivityLine::STATUS_SUBMITTED])->all();
+            
+//             if(isset($activitylines) )
+//             {
+//                 if($activitylines!=null)
+//                 {
+//                 foreach($activitylines as $activityline)
+//                 {
+//                     $activityline->status = AWPBActivityLine::STATUS_DRAFT;
+//                     if ($activityline->validate())
+//                     {
+//                         $activityline->save();
+//                         $audit = new AuditTrail();
+//                         $audit->user = Yii::$app->user->id;
+//                         $audit->action = "Submitted ".$activityline->id." : " .$activityline->name;
+//                         $audit->ip_address = Yii::$app->request->getUserIP();
+//                         $audit->user_agent = Yii::$app->request->getUserAgent();
+//                         $audit->save();
+//                     }
+//                     else{
+//                         Yii::$app->session->setFlash('error', 'An error occurred while declining the District AWPB.');
+//                         return $this->render('index', [
+//                             'searchModel' => $searchModel,
+//                             'model' => $model,
+//                             'dataProvider' => $dataProvider,
+//                 ]);
+//                     }
                    
 
-                }
-                Yii::$app->session->setFlash('success', 'The Provincial  AWPB has been submitted successfully.');
-                return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
+//                 }
+//                 Yii::$app->session->setFlash('success', 'The Provincial AWPB has been  declined.');
+//                 return $this->render('index', [
+//                     'searchModel' => $searchModel,
+//                     'model' => $model,
+//                     'dataProvider' => $dataProvider,
+//         ]);
 
-            }
-              else{
-                 Yii::$app->session->setFlash('error', 'No Provincial AWPB to submit.');
-                 return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
-            }
-        }     
-        }
-     else {
-        Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-        return $this->redirect(['site/home']);
-    }}
+//             }
+//               else{
+//                  Yii::$app->session->setFlash('error', 'No District AWPB to submit.');
+//                  return $this->render('index', [
+//                     'searchModel' => $searchModel,
+//                     'model' => $model,
+//                     'dataProvider' => $dataProvider,
+//         ]);
+//             }
+//         }     
+//         }
+//      else {
+//         Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+//         return $this->redirect(['site/home']);
+//     }
+//     }
 
-    public function actionDeclineprovincial()
-    {
-        if (User::userIsAllowedTo('Submit Provincial AWPB')) {
+
+
+    // public function actionApproveprovincial()
+    // {
+    //     if (User::userIsAllowedTo('Submit Provincial AWPB')) {
             
-            $model = new AwpbActivityLine();
-            $searchModel = new AwpbActivityLineSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $user = User::findOne(['id' => Yii::$app->user->id]);
+    //         $model = new AwpbActivityLine();
+    //         $searchModel = new AwpbActivityLineSearch();
+    //         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    //         $user = User::findOne(['id' => Yii::$app->user->id]);
 
        
-            $dataProvider->query->andFilterWhere(['provincial_id' => $user->provincial_id,'status' => AWPBActivityLine:: STATUS_ReVIEWED,]);
-            $activitylines = AwpbActivityLine::find()->where(['provincial_id'=>$user->provincial_id])->andWhere(['status' => AWPBActivityLine:: STATUS_REVIEWED])->all();
-            // if (Yii::$app->request->isAjax) {
-            //     $model->load(Yii::$app->request->post());
-            //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
-            // }
-            // if (!empty(Yii::$app->request->post())) {
-            if(isset($activitylines) )
-            {
-                if($activitylines!=null)
-                {
-                foreach($activitylines as $activityline)
-                {
-                    $activityline->status = AWPBActivityLine::STATUS_SUBMITTED;
-                    if ($activityline->validate())
-                    {
-                        $activityline->save();
-                        $audit = new AuditTrail();
-                        $audit->user = Yii::$app->user->id;
-                        $audit->action = "Submitted ".$activityline->id." : " .$activityline->name;
-                        $audit->ip_address = Yii::$app->request->getUserIP();
-                        $audit->user_agent = Yii::$app->request->getUserAgent();
-                        $audit->save();
-                    }
-                    else{
-                        Yii::$app->session->setFlash('error', 'An error occurred while submitting the District AWPB.');
-                        return $this->render('index', [
-                            'searchModel' => $searchModel,
-                            'model' => $model,
-                            'dataProvider' => $dataProvider,
-                ]);
-                    }
+    //         $dataProvider->query->andFilterWhere(['awpb_template_id'=>$session['awpb_template_id'],'provincial_id' => $user->provincial_id,'status' => AWPBActivityLine:: STATUS_SUBMITTED,]);
+    //         $activitylines = AwpbActivityLine::find()->where(['provincial_id'=>$user->provincial_id])->andWhere(['awpb_template_id'=>$session['awpb_template_id']])->andWhere(['status' => AWPBActivityLine:: STATUS_SUBMITTED])->all();
+    //         // if (Yii::$app->request->isAjax) {
+    //         //     $model->load(Yii::$app->request->post());
+    //         //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
+    //         // }
+    //         // if (!empty(Yii::$app->request->post())) {
+    //         if(isset($activitylines) )
+    //         {
+    //             if($activitylines!=null)
+    //             {
+    //             foreach($activitylines as $activityline)
+    //             {
+    //                 $activityline->status = AWPBActivityLine::STATUS_REVIEWED;
+    //                 if ($activityline->validate())
+    //                 {
+    //                     $activityline->save();
+    //                     $audit = new AuditTrail();
+    //                     $audit->user = Yii::$app->user->id;
+    //                     $audit->action = "Submitted ".$activityline->id." : " .$activityline->name;
+    //                     $audit->ip_address = Yii::$app->request->getUserIP();
+    //                     $audit->user_agent = Yii::$app->request->getUserAgent();
+    //                     $audit->save();
+    //                 }
+    //                 else{
+    //                     Yii::$app->session->setFlash('error', 'An error occurred while submitting the District AWPB.');
+    //                     return $this->render('index', [
+    //                         'searchModel' => $searchModel,
+    //                         'model' => $model,
+    //                         'dataProvider' => $dataProvider,
+    //             ]);
+    //                 }
                    
 
-                }
-                Yii::$app->session->setFlash('success', 'The Provincial  AWPB has been submitted successfully.');
-                return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
+    //             }
+    //             Yii::$app->session->setFlash('success', 'The Provincial  AWPB has been submitted successfully.');
+    //             return $this->render('index', [
+    //                 'searchModel' => $searchModel,
+    //                 'model' => $model,
+    //                 'dataProvider' => $dataProvider,
+    //     ]);
 
-            }
-              else{
-                 Yii::$app->session->setFlash('error', 'No Provincial AWPB to submit.');
-                 return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-        ]);
-            }
-        }     
-        }
-     else {
-        Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-        return $this->redirect(['site/home']);
-    }}
+    //         }
+    //           else{
+    //              Yii::$app->session->setFlash('error', 'No Provincial AWPB to submit.');
+    //              return $this->render('index', [
+    //                 'searchModel' => $searchModel,
+    //                 'model' => $model,
+    //                 'dataProvider' => $dataProvider,
+    //     ]);
+    //         }
+    //     }     
+    //     }
+    //  else {
+    //     Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+    //     return $this->redirect(['site/home']);
+    // }}
+
+    // public function actionDeclineprovincial()
+    // {
+    //     if (User::userIsAllowedTo('Submit Provincial AWPB')) {
+            
+    //         $model = new AwpbActivityLine();
+    //         $searchModel = new AwpbActivityLineSearch();
+    //         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    //         $user = User::findOne(['id' => Yii::$app->user->id]);
+
+       
+    //         $dataProvider->query->andFilterWhere(['awpb_template_id'=>$session['awpb_template_id'],'provincial_id' => $user->provincial_id,'status' => AWPBActivityLine:: STATUS_ReVIEWED,]);
+    //         $activitylines = AwpbActivityLine::find()->where(['provincial_id'=>$user->provincial_id])->andWhere(['awpb_template_id'=>$session['awpb_template_id']])->andWhere(['status' => AWPBActivityLine:: STATUS_REVIEWED])->all();
+    //         // if (Yii::$app->request->isAjax) {
+    //         //     $model->load(Yii::$app->request->post());
+    //         //     return Json::encode(\yii\widgets\ActiveForm::validate($model));
+    //         // }
+    //         // if (!empty(Yii::$app->request->post())) {
+    //         if(isset($activitylines) )
+    //         {
+    //             if($activitylines!=null)
+    //             {
+    //             foreach($activitylines as $activityline)
+    //             {
+    //                 $activityline->status = AWPBActivityLine::STATUS_SUBMITTED;
+    //                 if ($activityline->validate())
+    //                 {
+    //                     $activityline->save();
+    //                     $audit = new AuditTrail();
+    //                     $audit->user = Yii::$app->user->id;
+    //                     $audit->action = "Submitted ".$activityline->id." : " .$activityline->name;
+    //                     $audit->ip_address = Yii::$app->request->getUserIP();
+    //                     $audit->user_agent = Yii::$app->request->getUserAgent();
+    //                     $audit->save();
+    //                 }
+    //                 else{
+    //                     Yii::$app->session->setFlash('error', 'An error occurred while submitting the District AWPB.');
+    //                     return $this->render('index', [
+    //                         'searchModel' => $searchModel,
+    //                         'model' => $model,
+    //                         'dataProvider' => $dataProvider,
+    //             ]);
+    //                 }
+                   
+
+    //             }
+    //             Yii::$app->session->setFlash('success', 'The Provincial  AWPB has been submitted successfully.');
+    //             return $this->render('index', [
+    //                 'searchModel' => $searchModel,
+    //                 'model' => $model,
+    //                 'dataProvider' => $dataProvider,
+    //     ]);
+
+    //         }
+    //           else{
+    //              Yii::$app->session->setFlash('error', 'No Provincial AWPB to submit.');
+    //              return $this->render('index', [
+    //                 'searchModel' => $searchModel,
+    //                 'model' => $model,
+    //                 'dataProvider' => $dataProvider,
+    //     ]);
+    //         }
+    //     }     
+    //     }
+    //  else {
+    //     Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+    //     return $this->redirect(['site/home']);
+    // }}
 
 
 
 
 
-    public function actionMpc()
+    public function actionMpc($id)
     {
-       if (User::userIsAllowedTo('Manage province consolidated AWPB') )
+       if (User::userIsAllowedTo('Approve AWPB - Provincial') )
         {
             $user = User::findOne(['id' => Yii::$app->user->id]);
             $searchModel = new AwpbActivityLine();
             $query = $searchModel::find();
-            $query->select(['province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
-            $query->where(['province_id'=>$user->province_id, 'status' => AwpbActivityLine::STATUS_SUBMITTED]);
+            $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->where(['awpb_template_id'=>$id,'province_id'=>$user->province_id, 'status' => AwpbActivityLine::STATUS_SUBMITTED]);
    
           //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
             $query->groupBy('district_id');
             $query->all();
        
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
 
+            return $this->render('mpc', [
+                                    'searchModel' => $searchModel,
+                                    // 'model' => $model,
+                                    'dataProvider' => $dataProvider,
+                                    'show_results' => 1,
+                                    'id'=>$id
 
-
-$dataProvider = new ActiveDataProvider([
-    'query' => $query,
-]);
-
-                return $this->render('mpc', [
-                                         'searchModel' => $searchModel,
-                                        // 'model' => $model,
-                                         'dataProvider' => $dataProvider,
-                                         'show_results' => 1
-                                     ]);
-              
-       } else {
-           Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-           return $this->redirect(['site/home']);
-         
- }
+                                ]);
+                        
+                }
+                else 
+                {
+                    Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                    return $this->redirect(['home/home']);
+                }
    }
 
-    public function actionMpcd($id)
+
+   public function actionMpco($id)
+   {
+      if (User::userIsAllowedTo('Approve AWPB - PCO') )
+       {
+           $user = User::findOne(['id' => Yii::$app->user->id]);
+           $searchModel = new AwpbActivityLine();
+           $query = $searchModel::find();
+           $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+           $query->where(['awpb_template_id'=>$id, 'status' => AwpbActivityLine::STATUS_REVIEWED]);
+  
+         //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
+           $query->groupBy('province_id');
+           $query->all();
+      
+           $dataProvider = new ActiveDataProvider([
+               'query' => $query,
+           ]);
+
+           return $this->render('mpco', [
+                                   'searchModel' => $searchModel,
+                                   // 'model' => $model,
+                                   'dataProvider' => $dataProvider,
+                                   'show_results' => 1,
+                                   'id'=>$id
+                               ]);
+                       
+               }
+               else 
+               {
+                   Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                   return $this->redirect(['home/home']);
+               }
+  }
+
+  public function actionMpcm($id)
+  {
+     if (User::userIsAllowedTo('Approve AWPB - Ministry') )
+      {
+          $user = User::findOne(['id' => Yii::$app->user->id]);
+          $searchModel = new AwpbActivityLine();
+          $query = $searchModel::find();
+          $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+          $query->where(['awpb_template_id'=>$id, 'status' => AwpbActivityLine::STATUS_APPROVED]);
+ 
+        //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
+          $query->groupBy('province_id');
+          $query->all();
+     
+          $dataProvider = new ActiveDataProvider([
+              'query' => $query,
+          ]);
+
+          return $this->render('mpcm', [
+                                  'searchModel' => $searchModel,
+                                  // 'model' => $model,
+                                  'dataProvider' => $dataProvider,
+                                  'show_results' => 1,
+                                  'id'=>$id
+                              ]);
+                      
+              }
+              else 
+              {
+                  Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                  return $this->redirect(['home/home']);
+              }
+ }
+    public function actionMpcd($id,$awpb_template_id)
     {
+
+       // $id='48';
+
+        // $user = User::findOne(['id' => Yii::$app->user->id]);
+        // $searchModel = new AwpbActivityLineSearch();    
+
+        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        // $dataProvider->query->andFilterWhere(['district_id' => $user->district_id, 'created_by'=>$user->id,'status' => AWPBActivityLine:: STATUS_DRAFT,]);
+        //  return $this->render('index', [
+        //     'searchModel' => $searchModel,
+        //     'dataProvider' => $dataProvider,
+        //     ]);
+
+
+
         if (User::userIsAllowedTo('Manage province consolidated AWPB') )
         {            
             $user = User::findOne(['id' => Yii::$app->user->id]);
-            $searchModel = new AwpbActivityLine();
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
             $query = $searchModel::find();
-            $query->select(['activity_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['district_id','activity_id','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
             
-            $query->where('district_id = :field1', [':field1' =>$id]);
+      //      $query->where('district_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'district_id'=>$id, 'awpb_template_id'=>$awpb_template_id, 'status' => AwpbActivityLine::STATUS_SUBMITTED]);
+
             $query->groupBy('activity_id');
             $query->all();
             
@@ -754,31 +1297,154 @@ $dataProvider = new ActiveDataProvider([
 
             return $this->render('mpcd', [
                                         'searchModel' => $searchModel,
-                                    // 'model' => $model,
+                                     'model' => $model,
                                         'dataProvider' => $dataProvider,
-                                    // 'show_results' => 1
+                                    'district_id' => $id,
+                                    'awpb_template_id'=>$awpb_template_id
                                     ]);
-                
-        }
+           // return $this->redirect(['mp/mpcd']);
+            }
             else
             {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
-            
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['home/home']);
+                
             }
     }
 
-    public function actionMpca($id)
+    public function actionMpcoxxd($id,$awpb_template_id)
     {
-        if (User::userIsAllowedTo('Manage province consolidated AWPB') )
-        {            
+       if (User::userIsAllowedTo('Approve AWPB - PCO') )
+        {
             $user = User::findOne(['id' => Yii::$app->user->id]);
             $searchModel = new AwpbActivityLine();
             $query = $searchModel::find();
-            $query->select(['id','name','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'province_id'=>$id, 'status' => AwpbActivityLine::STATUS_REVIEWED]);
+   
+          //  $query->where('province_id = :field1', [':field1' =>$user->province_id]);
+            $query->groupBy('district_id');
+            $query->all();
+       
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+            return $this->render('mpcod', [
+                'searchModel' => $searchModel,
+             'model' => $model,
+                'dataProvider' => $dataProvider,
+            'district_id' => $id,
+            'awpb_template_id'=>$awpb_template_id
+            ]);
+                        
+                }
+                else 
+                {
+                    Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                    return $this->redirect(['home/home']);
+                }
+   }
+
+
+    public function actionMpcop($id,$awpb_template_id)
+    {
+
+        if (User::userIsAllowedTo('Approve AWPB - PCO') )
+        {            
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+            $query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+          // $query->select(['district_id','activity_id','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
             
-            $query->where('activity_id = :field1', [':field1' =>$id]);
-                  $query->groupBy('id');
+      //      $query->where('district_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'province_id'=>$id, 'status' => AwpbActivityLine::STATUS_REVIEWED]);
+
+            $query->groupBy('district_id');
+            $query->all();
+            
+            $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                    ]);
+
+            return $this->render('mpcop', [
+                                        'searchModel' => $searchModel,
+                                     'model' => $model,
+                                        'dataProvider' => $dataProvider,
+                                    'id' => $id,
+                                    'awpb_template_id'=>$awpb_template_id
+                                    ]);
+           // return $this->redirect(['mp/mpcd']);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['home/home']);
+                
+            }
+    }
+
+    public function actionMpcod($id,$awpb_template_id)
+    {
+
+        if (User::userIsAllowedTo('Approve AWPB - PCO') )
+        {            
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+            //$query->select(['awpb_template_id','province_id','district_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['district_id','activity_id','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            
+      //      $query->where('district_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'district_id'=>$id, 'status' => AwpbActivityLine::STATUS_REVIEWED]);
+
+            $query->groupBy('district_id');
+            $query->all();
+            
+            $district = \backend\models\Districts::findOne($id);
+                
+            $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                    ]);
+
+            return $this->render('mpcod', [
+                                        'searchModel' => $searchModel,
+                                     'model' => $model,
+                                        'dataProvider' => $dataProvider,
+                                    'id' => $id,
+                                    'province_id'=> $district->province_id,
+                                    'awpb_template_id'=>$awpb_template_id
+                                    ]);
+           // return $this->redirect(['mp/mpcd']);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+                return $this->redirect(['home/home']);
+                
+            }
+    }
+
+
+    public function actionMpca($id, $district_id, $awpb_template_id)
+    {
+       // $awpb_template_id=32;
+        if (User::userIsAllowedTo('Manage province consolidated AWPB'))
+        {   
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+           // $searchModel = new AwpbActivityLine();
+            $query = $searchModel::find();
+            $query->select(['id','name','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            
+           // $query->where('activity_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'district_id'=>$district_id,'activity_id'=>$id, 'status' => AwpbActivityLine::STATUS_SUBMITTED]);
+
+           // $query->groupBy('activity_id');
             $query->all();
             
             $dataProvider = new ActiveDataProvider([
@@ -787,18 +1453,53 @@ $dataProvider = new ActiveDataProvider([
 
             return $this->render('mpca', [
                                         'searchModel' => $searchModel,
-                                    // 'model' => $model,
+                                        'model' => $model,
                                         'dataProvider' => $dataProvider,
-                                    // 'show_results' => 1
+                                        'distr' => $district_id
                                     ]);
-                
         }
-            else
-            {
+        else
+        {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionMpcoa($id, $district_id, $awpb_template_id)
+    {
+       // $awpb_template_id=32;
+       if (User::userIsAllowedTo('Approve AWPB - PCO') )
+        {    
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+            $searchModel = new AwpbActivityLineSearch();
+            $model  = new AwpbActivityLine();
+            $query = $searchModel::find();
+           // $searchModel = new AwpbActivityLine();
+            $query = $searchModel::find();
+            $query->select(['id','name','awpb_template_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
             
-            }
+           // $query->where('activity_id = :field1', [':field1' =>$id]);
+            $query->where(['awpb_template_id'=>$awpb_template_id,'district_id'=>$district_id,'activity_id'=>$id, 'status' => AwpbActivityLine::STATUS_REVIEWED]);
+
+           // $query->groupBy('activity_id');
+            $query->all();
+            
+            $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                    ]);
+
+            return $this->render('mpcoa', [
+                                        'searchModel' => $searchModel,
+                                        'model' => $model,
+                                        'dataProvider' => $dataProvider,
+                                        'distr' => $district_id
+                                    ]);
+        }
+        else
+        {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
     }
     public function actionExc($id)
     {
@@ -807,8 +1508,7 @@ $dataProvider = new ActiveDataProvider([
             $user = User::findOne(['id' => Yii::$app->user->id]);
             $searchModel = new AwpbActivityLine();
             $query = $searchModel::find();
-            $query->select(['id','name','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
-            
+            $query->select(['id','name','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
             $query->where('activity_id = :field1', [':field1' =>$id]);
             $query->groupBy('id');
             $query->all();
@@ -842,6 +1542,62 @@ $dataProvider = new ActiveDataProvider([
             }
     }
    
+
+    public function actionSubmitStory($id) {
+        if (User::userIsAllowedTo('Submit story of change')) {
+            $model = $this->findModel($id);
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = 2;
+            if ($model->save()) {
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = "Submitted story of change: '" . $model->title . "' for review";
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                Yii::$app->session->setFlash('success', 'Story of change: "' . $model->title . '" was successfully submitted for review.');
+
+                //We send an email informing IKM Officers that a story has been submited for review
+                //We first get roles with the permission to review stories
+                $role_model = \common\models\RightAllocation::find()->where(['right' => 'Review Story of change'])->all();
+                if (!empty($role_model)) {
+                    $subject = "Case Study/Success Story review:" . $model->title;
+                    foreach ($role_model as $_role) {
+                        //We now get all users with the fetched role
+                        $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
+                        $_user_model = User::find()
+                                ->where(['role' => $_role->role])
+                                ->all();
+                        if (!empty($_user_model)) {
+                            //We send the emails
+                            foreach ($_user_model as $_model) {
+                                $msg = "";
+                                $msg .= "<p>Dear " . $_model->first_name . " " . $_model->other_name . " " . $_model->last_name . ",<br/><br/>";
+                                $msg .= "A Case Study/Success Story has been submitted for your review.See the details below<br>";
+                                $msg .= "Story title:<b>" . $model->title . "</b><br/>";
+                                $msg .= "Story category:<b>" . \backend\models\LkmStoryofchangeCategory::findOne($model->category)->name . "</b><br/>";
+                                $msg .= "Interviewee:<b>" . $model->interviewee_names . "</b><br/>";
+                                $msg .= "Interviewer:<b>" . $model->interviewer_names . "</b><br/>";
+                                $msg .= "Date of Interview:<b>" . $model->date_interviewed . "</b></p>";
+                                $msg .= '<p>You can login <i style="color: blue;">' . Html::a('(Click Here to Login)', $resetLink) . '</i> to see more details and review the submitted Case Study/Success Story</p>';
+                                Storyofchange::sendEmail($msg, $subject, $_model->email);
+                            }
+                        }
+                    }
+                }
+
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                Yii::$app->session->setFlash('error', 'Error occured while submitting story of change : "' . $model->title . '" for review');
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+
+
     public function actionExport($id){
 
     
@@ -885,11 +1641,7 @@ $dataProvider = new ActiveDataProvider([
           'registers-upto--'.date('d-m-Y H-i').".csv"
          );
       }
-      
-     
-      
+  
       //echo CHtml::link('Download CSV',array('site/export'));
     
-
-
 }

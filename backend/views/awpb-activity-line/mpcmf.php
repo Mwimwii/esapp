@@ -47,16 +47,41 @@ $access_level=1;
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             // echo Html::a('Decline District AWPB', ['decline'], ['class' => 'btn btn-success btn-sm']);
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 ||$user->province_id!='') {
+if (User::userIsAllowedTo('Approve AWPB - Ministry') && $user->province_id==0 ||$user->province_id=='') {
        
         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   
-        echo Html::a('Submit Provincial AWPB', ['submit','id'=>$id,'id2'=>"",'status'=>AWPBActivityLine:: STATUS_REVIEWED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
+        echo Html::a('Approve AWPB', ['submit','id'=>$id,'status'=>AWPBActivityLine:: STATUS_REVIEWED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
         
 }
-
-    ?>
-
+// else 
+// {
+            
+          
+//     if (User::userIsAllowedTo('Manage AWPB activity lines')&& $user->district_id>0 ||$user->district_id!='') {
+       
+//                 echo Html::a('Add AWPB activity line', ['create'], ['class' => 'btn btn-success btn-sm']);
+//                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+          
+//                 echo Html::a('Submit District AWPB', ['approve'], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
+                
+//         }
+//         else
+//         {
+        
+//             if (User::userIsAllowedTo('Submit Provincial AWPB')&& $user->province_id>0 ||$user->province_id!=''&& $user->district_id==0 ||$user->district_id=='') {
+       
+//                     echo Html::a('Add AWPB activity line', ['create'], ['class' => 'btn btn-success btn-sm']);
+//                     echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+          
+//                     echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'float-right btn btn-success btn-sm btn-space']);  
+          
+           
+//         }
+    
+//     }
+// }
+            ?>
 
         </p>
 
@@ -104,26 +129,26 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $user->province_id>0 |
         //     },
         //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
         // ],
-        // [
-        //     'attribute' => 'province_id',
-        //     'format' => 'raw',
-        //     'label' => 'Province',
-        //     'value' => function ($model) {
-        //         return !empty($model->province_id) && $model->province_id > 0 ?  Html::a(backend\models\Provinces::findOne($model->province_id)->name,['awpb-activity-line/mpcindex'], ['class' => 'awbp-activity-line']):"";
-        //         ;
-        //     },
-        // //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
-        //  ],
         [
-            'attribute' => 'district_id',
+            'attribute' => 'province_id',
             'format' => 'raw',
-            'label' => 'District',
+            'label' => 'Province',
             'value' => function ($model) {
-                return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['mpcd','id' =>  $model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'mpcd']):"";
+                return !empty($model->province_id) && $model->province_id > 0 ?  Html::a(backend\models\Provinces::findOne($model->province_id)->name,['awpb-activity-line/mpcindex'], ['class' => 'awbp-activity-line']):"";
                 ;
             },
         //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
          ],
+        // [
+        //     'attribute' => 'district_id',
+        //     'format' => 'raw',
+        //     'label' => 'District',
+        //     'value' => function ($model) {
+        //         return !empty($model->district_id) && $model->district_id > 0 ?  Html::a(backend\models\Districts::findOne($model->district_id)->name,['mpcd','id' =>  $model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'mpcd']):"";
+        //         ;
+        //     },
+        // //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
+        //  ],
 
         // [
         //     'attribute' => 'district_id',

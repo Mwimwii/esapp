@@ -35,19 +35,15 @@ $access_level=1;
     <div class="card-body" style="overflow: auto;">
    <p>
            
-            <?php
-   
-          
-    if (User::userIsAllowedTo('Manage AWPB activity lines')&& $user->district_id>0 ||$user->district_id!='') {
-       
-                echo Html::a('Add AWPB activity line', ['create'], ['class' => 'btn btn-success btn-sm']);
-                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-          
-                echo Html::a('Submit District AWPB', ['submit','id'=>$id,'id2'=>"", 'status'=>AWPBActivityLine:: STATUS_SUBMITTED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
-                
-        }
-       
-            ?>
+   <?php
+         
+         if (User::userIsAllowedTo('Submit Provincial AWPB') ) 
+         {
+                   
+                 echo Html::a('Decline District AWPB', ['decline'], ['class' => 'btn btn-success btn-sm']);
+                 
+         }
+                     ?>
 
         </p>
 
