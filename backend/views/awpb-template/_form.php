@@ -1,6 +1,6 @@
 <?php
-
-use yii\helpers\Html;
+use kartik\helpers\Html;
+//use yii\helpers\Html;
 //use yii\widgets\ActiveForm;
 //use yii\bootstrap4\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
@@ -12,6 +12,17 @@ use yii\helpers\Url;
 <div class="awpb-template-form">
 
     <?php 
+// $model1->icons = [
+//     'align-left' => Html::icon('align-left') . ' Align Left',
+//     'align-center' => Html::icon('align-center') . ' Align Center',
+//     'align-right' => Html::icon('align-right') . ' Align Right',
+//     'align-justify' => Html::icon('align-justify') . ' Align Justify',
+//     'arrow-down' => Html::icon('arrow-down') . ' Direction Down',
+//     'arrow-up' => Html::icon('arrow-up') . ' Direction Up',
+//     'arrow-left' => Html::icon('arrow-left') . ' Direction Left',
+//     'arrow-right' => Html::icon('arrow-right') . ' Direction Right',
+// ];
+
 	$form = ActiveForm::begin(['type' => ActiveForm::TYPE_VERTICAL, 'formConfig' => ['labelSpan' => 3, 'deviceSize' => ActiveForm::SIZE_SMALL],'options' => ['enctype' => 'multipart/form-data']]);
 	//$form = ActiveForm::begin(); 
 	?>
@@ -58,7 +69,7 @@ use yii\helpers\Url;
     <?= $form->field($model, 'budget_theme')->textarea(['rows' => 3]) ?>
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 4]) ?>
- <?= $form->field($model, 'guideline_file')->fileInput() ?>
+
 
 
   </div>

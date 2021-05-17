@@ -85,7 +85,7 @@ class AwpbFunder extends \yii\db\ActiveRecord
      */
     public function getAwpbActivityFunders()
     {
-        return $this->hasMany(AwpbActivityFunder::className(), ['funder_id' => 'id']);
+        return $this->hasMany(AwpbFunder::className(), ['funder_id' => 'id']);
     }
 
     public static function getAwpbFunderList() {

@@ -102,7 +102,7 @@ echo $form->field($model, 'activity_type')->hiddenInput(['value'=> $sub])->label
 	  [
 		'prompt'=>'Select component','id'=>'comp_id']);
 	
-
+		echo $form->field($model, 'activity_code')->textInput(['maxlength' => true]);	
 		echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 		echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
 		echo '
@@ -134,9 +134,8 @@ echo
 	$form->field($model, 'component_id')
 	->dropDownList(
 			\backend\models\AwpbComponent::getAwpbSubComponentsList(), ['id'=>'comp_id', 'custom' => true,  'prompt'=>'Select component', 'required' => true]);
-
+		
 echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->parent_activity_id, ['id' => 'selected_id']);
-echo Html::hiddenInput('selected_indicator_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_indicator_id']);
 
 echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_id']);
 
@@ -150,30 +149,42 @@ echo $form->field($model,'parent_activity_id')->widget(DepDrop::classname(),[
 'params' => ['selected_id'],
 ]
 ]);
+echo $form->field($model,'output_id')->dropDownList((\backend\models\AwpbOutput::getOutputs()),
+[
+	'prompt'=>'Select outcomes','id'=>'out_id']);
+// echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
+// 	//'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
+// 	'options'=>['id'=>'indicator_id', 'custom' => true, 'required' => TRUE],
+// 	'pluginOptions'=>[
+// 	  'depends'=>['comp_id'],
+// 	'placeholder'=>'Select indicator',
+// 	'url'=>Url::to(['awpb-indicator/componentindicators']),
+// 	'params' => ['selected_indicator_id'],
+// 	]
+// 	]);
 
-echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
-	//'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
-	'options'=>['id'=>'indicator_id', 'custom' => true, 'required' => TRUE],
-	'pluginOptions'=>[
-	  'depends'=>['comp_id'],
-	'placeholder'=>'Select indicator',
-	'url'=>Url::to(['awpb-indicator/componentindicators']),
-	'params' => ['selected_indicator_id'],
-	]
-	]);
+echo $form->field($model,'commodity_type_id')->dropDownList((\backend\models\AwpbCommodityTypes::getCommodityTypes()),
+[
+	'prompt'=>'Select commodity type','id'=>'ty_id']);
 
-
-				 echo $form->field($model, 'awpb_template_id')->hiddenInput(['value' => '0'])->label(false);
+				// echo $form->field($model, 'awpb_template_id')->hiddenInput(['value' => '0'])->label(false);
 				   
-				 echo $form->field($model, 'activity_code')->hiddenInput(['value' => '0'])->label(false);
+				// echo $form->field($model, 'activity_code')->hiddenInput(['value' => '0'])->label(false);
 				   
 				echo $form->field($model,'component_id')->hiddenInput(['value' => '0'])->label(false);
-		   
+					
+				echo $form->field($model, 'activity_code')->textInput(['maxlength' => true]);
+		
+				echo                
+				   $form->field($model, 'unit_of_measure_id')
+					   ->dropDownList(
+							   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
+					   
+				   ;
+				echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 			
-				echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
-	  
+			
 		  
-				   echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 				  
 	  
 				   echo '
@@ -190,7 +201,8 @@ echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
 					   
 				//    ;
 				  
-		
+				echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
+	  
 				   echo  $form->field($model, 'funder_id')
             		->dropDownList(
                     \backend\models\AwpbFunder::getAwpbFunderList(), ['id' => 'funder_id', 'custom' => true, 'prompt' => 'Please select a funder', 'required' => false]);

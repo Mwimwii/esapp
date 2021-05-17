@@ -209,6 +209,7 @@ $session = Yii::$app->session;
                             User::userIsAllowedTo("Setup AWPB") ||
                             User::userIsAllowedTo("View AWPB") ||
                             User::userIsAllowedTo("Manage AWPB activity lines") ||
+                            User::userIsAllowedTo("Manage programme-wide AWPB") ||
                             User::userIsAllowedTo("View AWPB activity lines")
 
                         ) {
@@ -246,8 +247,7 @@ $session = Yii::$app->session;
                                 <?php
 
                                 if (
-                                    User::userIsAllowedTo("Manage AWPB activity lines") ||
-                                    User::userIsAllowedTo("View AWPB activity lines")
+                                    User::userIsAllowedTo("Manage AWPB activity lines")&& ($user->district_id > 0 || $user->district_id != '')
                                 ) {
 
 
@@ -267,8 +267,7 @@ $session = Yii::$app->session;
                                 <ul class="nav nav-treeview">
                                     <?php
                                     if (
-                                        User::userIsAllowedTo("Manage AWPB activity lines")
-                                        && $user->district_id > 0 || $user->district_id != ''
+                                        User::userIsAllowedTo("Manage AWPB activity lines") && ($user->district_id > 0 || $user->district_id != '')
                                     ) {
                                         echo '   <li class="nav-item">';
                                         if (
@@ -285,7 +284,7 @@ $session = Yii::$app->session;
                                         echo '</li>';
                                     }
 
-                                    if (User::userIsAllowedTo("Approve AWPB - Provincial") && $user->province_id > 0 || $user->province_id != '') {
+                                    if (User::userIsAllowedTo("Approve AWPB - Provincial")&& ($user->province_id > 0 || $user->province_id != '')) {
                                         echo '   <li class="nav-item">';
                                         if (
                                             Yii::$app->controller->id == "awpb-activity-line" &&
@@ -300,7 +299,7 @@ $session = Yii::$app->session;
                                         echo '</li>';
                                     }
 
-                                    if (User::userIsAllowedTo('Approve AWBP - PCO') && $user->province_id == 0 || $user->province_id == '') {
+                                    if (User::userIsAllowedTo('Approve AWPB - PCO') && ($user->province_id == 0 || $user->province_id == '') ){
 
                                         echo '   <li class="nav-item">';
                                         if (
@@ -317,7 +316,7 @@ $session = Yii::$app->session;
                                         echo '</li>';
                                     }
 
-                                    if (User::userIsAllowedTo('Approve AWBP - Ministry') && $user->province_id == 0 || $user->province_id == '') {
+                                    if (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
                                         echo '   <li class="nav-item">';
                                         if (
                                             Yii::$app->controller->id == "awpb-activity-line" &&
@@ -335,10 +334,9 @@ $session = Yii::$app->session;
                                     ?>
 
                                 </ul>
-<?php
+                                <?php
                                 if (
-                                    User::userIsAllowedTo("Manage AWPB activity lines") ||
-                                    User::userIsAllowedTo("View AWPB activity lines")
+                                    User::userIsAllowedTo("Manage programme-wide AWPB") &&( $user->province_id == 0 || $user->province_id == '')
                                 ) {
 
 
@@ -351,16 +349,15 @@ $session = Yii::$app->session;
                                 ?>
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
-                                Programme-wide AWPB
+                                    Programme-wide AWPB
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <?php
-                                    if (
-                                        User::userIsAllowedTo("Manage programme-wide AWPB activity lines")
-                                        //&& $user->district_id == 0 || $user->district_id == ''
-                                    ) {
+
+
+                                    if (User::userIsAllowedTo('Manage programme-wide AWPB activity lines') && ( $user->district_id == 0 || $user->district_id == '')) {
                                         echo '   <li class="nav-item">';
                                         if (
                                             Yii::$app->controller->id == "awpb-activity-line" &&
@@ -376,49 +373,32 @@ $session = Yii::$app->session;
                                         echo '</li>';
                                     }
 
-                                    if (User::userIsAllowedTo("Approve AWPB - Provincial") && $user->province_id > 0 || $user->province_id != '') {
+                                
+                                    if (User::userIsAllowedTo('Approve AWPB - PCO') && ( $user->province_id == 0 || $user->province_id == '')) {
+
                                         echo '   <li class="nav-item">';
                                         if (
                                             Yii::$app->controller->id == "awpb-activity-line" &&
-                                            (Yii::$app->controller->action->id == "mpc" ||
-                                                Yii::$app->controller->action->id == "mcpd" ||
-                                                Yii::$app->controller->action->id == "mcpa")
+                                            (Yii::$app->controller->action->id == "mpwpco" ||
+                                                Yii::$app->controller->action->id == "mpwpcoa")
                                         ) {
-                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Provincial Approval</p>', ['awpb-activity-line/mpc', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpwpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
                                         } else {
-                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Provincal Approval</p>', ['awpb-activity-line/mpc', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpwpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
 
-                                    if (User::userIsAllowedTo('Approve AWBP - PCO') && $user->province_id == 0 || $user->province_id == '') {
-
+                                    if (User::userIsAllowedTo('Approve AWPB - Ministry') &&( $user->province_id == 0 || $user->province_id == '')) {
                                         echo '   <li class="nav-item">';
                                         if (
                                             Yii::$app->controller->id == "awpb-activity-line" &&
-                                            (Yii::$app->controller->action->id == "mpco" ||
-                                                Yii::$app->controller->action->id == "mpcop" ||
-                                                Yii::$app->controller->action->id == "mpcod" ||
-                                                Yii::$app->controller->action->id == "mpcoa")
+                                            (Yii::$app->controller->action->id == "mpwm" ||
+                                                Yii::$app->controller->action->id == "mpwma")
                                         ) {
-                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpwm', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
                                         } else {
-                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
-                                        }
-                                        echo '</li>';
-                                    }
-
-                                    if (User::userIsAllowedTo('Approve AWBP - Ministry') && $user->province_id == 0 || $user->province_id == '') {
-                                        echo '   <li class="nav-item">';
-                                        if (
-                                            Yii::$app->controller->id == "awpb-activity-line" &&
-                                            (Yii::$app->controller->action->id == "mpcm" ||
-                                                Yii::$app->controller->action->id == "mpcmd" ||
-                                                Yii::$app->controller->action->id == "mpcma")
-                                        ) {
-                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpcm', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
-                                        } else {
-                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpcm', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpwm', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
@@ -430,19 +410,19 @@ $session = Yii::$app->session;
 
                                 <?php
 
-                                if (User::userIsAllowedTo("Manage programme-wide AWPB")) {
-                                    echo '   <li class="nav-item">';
-                                    if (
-                                        Yii::$app->controller->id == "awpb-activity-line" &&
+                                // if (User::userIsAllowedTo("Manage programme-wide AWPB")) {
+                                //     echo '   <li class="nav-item">';
+                                //     if (
+                                //         Yii::$app->controller->id == "awpb-activity-line" &&
 
-                                        Yii::$app->controller->action->id == "mpw"
-                                    ) {
-                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link active"]);
-                                    } else {
-                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link"]);
-                                    }
-                                    echo '</li>';
-                                }
+                                //         Yii::$app->controller->action->id == "mpw"
+                                //     ) {
+                                //         echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link active"]);
+                                //     } else {
+                                //         echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link"]);
+                                //     }
+                                //     echo '</li>';
+                                // }
                                 if (
                                     User::userIsAllowedTo("Setup AWPB")
                                     || User::userIsAllowedTo("View AWPB")

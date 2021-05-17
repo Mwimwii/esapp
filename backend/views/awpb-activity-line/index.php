@@ -120,7 +120,7 @@ $access_level=1;
 
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'label' => 'Item Description',
+                'label' => 'Commodity Description',
                 'attribute' => 'name',
                 'readonly' =>true,
                 'editableOptions' => [

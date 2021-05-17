@@ -146,92 +146,7 @@ class AwpbActivityController extends Controller
 
     }
 
-/*
-	public function actionView($id) {
-        $model=$this->findModel($id);
-        $number_of_activities='';
-		$number_of_subactivities='';
-        if ($model->load(Yii::$app->request->post())&& $model->save(true,['activity_code','parent_activity_id','component_id','description', 'unit_of_measure','expense_category','updated_by']))
-		{     
-		//$model->guideline_file = UploadedFile::getInstance($model, 'guideline_file');
-		
-					
-				$activity_model = \backend\models\AwpbActivity::findOne(['id' => $model->id,]);	
-				$component = \backend\models\AWPBComponent::findOne(['id' => $model->component_id,]);					
-			
-					
-                $model->updated_by = Yii::$app->user->id;
-				
-				
-				if ($model->parent_activity_id!='')
-				{	
-					if ($activity_model->parent_activity_id !=$model->parent_activity_id)
-					{										
-						$number_of_subactivities = $model::find()
-						->where(["parent_activity_id" => $model->parent_activity_id])
-						->andWhere(["component_id" => $model->component_id])
-						->count();
-						$parent_model = $this->findModel($model->parent_activity_id);				
-						if($number_of_subactivities==0||$number_of_subactivities=='')
-						{
-								$activity_code  = $parent_model->activity_code .'1';	
-						}
-						if($number_of_subactivities>0||$number_of_subactivities!='')
-						{		
-							$ecl = $number_of_subactivities+1;				
-							$activity_code  =$parent_model->activity_code .''.$ecl;
-						}
-						$model->activity_code =	$activity_code;
-					}
-				}
-				else
-				{
-					$number_of_activities = $model::find()
-					->where(["component_id" => $model->component_id])
-					->andWhere(["awpb_template_id" => $model->awpb_template_id])
-					->count();
-					if ($number_of_activities==0||$number_of_activities=='')
-					{		
-						$activity_code = 67;					
-					}
-					else
-					{
-						$activity_code = 64+$number_of_activities ;
-					}
-					$model->activity_code = $component->component_code.'.'.chr($activity_code);
-					
-				}
-						
-                if ($model->save(true,['activity_code','parent_activity_id','component_id','description', 'unit_of_measure','expense_category','updated_by'])) {
-                    $audit = new AuditTrail();
-                    $audit->user = Yii::$app->user->id;
-                    $audit->action = "Updated activity : "  .$model->activity_code. ' '.$model->description;
-                    $audit->ip_address = Yii::$app->request->getUserIP();
-                    $audit->user_agent = Yii::$app->request->getUserAgent();
-                    $audit->save();
-                    Yii::$app->session->setFlash('success', 'activity ' . $model->activity_code. ' '.$model->description. ' was successfully updated. Act'.$number_of_activities. ' Sub ' .$number_of_subactivities++ );
-                } else {
-                    Yii::$app->session->setFlash(' error', 'Error occured while updating activity ' .$model->activity_code. ' '.$model->description);
-                }
-			 
-            //    return $this->redirect(['index']);
-				return $this->redirect(['view', 'id' => $model->id]);
-				
-		
-				
-        } else 
-		{
-            return $this->render('view', ['model'=>$model]);
-        }
-		//}
-    }
-*/
-    /**
-     * Creates a new AwpbActivity model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    
+
 
     public function actionCreate()
     {
@@ -267,21 +182,21 @@ class AwpbActivityController extends Controller
             
                     $parent_model = $this->findModel($model->parent_activity_id);
                     $component = \backend\models\AWPBComponent::findOne(['id' =>  $parent_model->component_id]);	
-                    $number_of_subactivities = $model::find()
-                    ->where(["parent_activity_id" => $model->parent_activity_id])
-                    ->andWhere(["component_id" => $parent_model->component_id])
-                    ->count();
+                    // $number_of_subactivities = $model::find()
+                    // ->where(["parent_activity_id" => $model->parent_activity_id])
+                    // ->andWhere(["component_id" => $parent_model->component_id])
+                    // ->count();
                                 
-                    if($number_of_subactivities==0||$number_of_subactivities=='')
-                    {
-                            $activity_code  = $parent_model->activity_code .'1';	
-                    }
-                    if($number_of_subactivities>0||$number_of_subactivities!='')
-                    {		
-                        $ecl = $number_of_subactivities+1;				
-                        $activity_code  =$parent_model->activity_code .''.$ecl;
-                    }
-                    $model->activity_code =	$activity_code;
+                    // if($number_of_subactivities==0||$number_of_subactivities=='')
+                    // {
+                    //         $activity_code  = $parent_model->activity_code .'1';	
+                    // }
+                    // if($number_of_subactivities>0||$number_of_subactivities!='')
+                    // {		
+                    //     $ecl = $number_of_subactivities+1;				
+                    //     $activity_code  =$parent_model->activity_code .''.$ecl;
+                    // }
+                   // $model->activity_code =	$activity_code;
                     $model->component_id= $parent_model->component_id;
                    // $model->awpb_template_id=$parent_model->awpb_template_id;
                     //$model->unit_of_measure_id=$model->unit_of_measure_id;
@@ -291,19 +206,19 @@ class AwpbActivityController extends Controller
                             
                 if ($model->activity_type== "Main Activity")
                 {
-                    $number_of_activities = $model::find()
-                    ->where(["component_id" => $model->component_id])
-                    ->andWhere(["awpb_template_id" => $model->awpb_template_id])
-                    ->count();
-                    if ($number_of_activities==0||$number_of_activities=='')
-                    {		
-                        $activity_code = 67;     
-                    }
-                    else
-                    {
-                        $activity_code = 64+$number_of_activities ;
-                    }
-                    $model->activity_code = $component->code.'.'.chr($activity_code);   
+                //     $number_of_activities = $model::find()
+                //     ->where(["component_id" => $model->component_id])
+                //    // ->andWhere(["awpb_template_id" => $model->awpb_template_id])
+                //     ->count();
+                //     if ($number_of_activities==0||$number_of_activities=='')
+                //     {		
+                //         $activity_code = 67;     
+                //     }
+                //     else
+                //     {
+                //         $activity_code = 64+$number_of_activities ;
+                //     }
+                //     $model->activity_code = $component->code.'.'.chr($activity_code);   
                     $model->type = AwpbActivity::TYPE_MAIN;
                 }
                                     

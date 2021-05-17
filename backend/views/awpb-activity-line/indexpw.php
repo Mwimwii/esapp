@@ -30,124 +30,113 @@ $months = [
     7 => "July", 8 => "August", 9 => "September", 10 => "October", 11 => "November", 12 => "December"
 ];
 $user = User::findOne(['id' => Yii::$app->user->id]);
-$access_level=1;
+$access_level = 1;
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-   <p>
-           
+        <p>
+
             <?php
-   
-          
-    if (User::userIsAllowedTo('Manage AWPB activity lines')&& $user->district_id==0 ||$user->district_id=='') {
-       
+            if (User::userIsAllowedTo('Manage programme-wide AWPB activity lines') && $user->district_id == 0 || $user->district_id == '') {
+
                 echo Html::a('Add AWPB activity line', ['createpw'], ['class' => 'btn btn-success btn-sm']);
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-          
-                echo Html::a('Submit District AWPB', ['submit','id'=>$id,'id2'=>$user->district_id, 'status'=>AWPBActivityLine:: STATUS_SUBMITTED], ['class' => 'float-right btn btn-success btn-sm btn-space']);   
-                
-        }
-       
+
+                echo Html::a('Submit District AWPB', ['submitpw', 'id' => $id, 'id2' => $user->district_id, 'status' => AWPBActivityLine::STATUS_REVIEWED], ['class' => 'float-right btn btn-success btn-sm btn-space']);
+            }
             ?>
 
         </p>
 
-
-
         <?php
-       $gridColumns = [
-        [
-            'class'=>'kartik\grid\SerialColumn',
-            'contentOptions'=>['class'=>'kartik-sheet-style'],
-            'width'=>'36px',
-            'pageSummary'=>'Total',
-            'pageSummaryOptions' => ['colspan' => 6],
-            'header'=>'',
-            'headerOptions'=>['class'=>'kartik-sheet-style']
-        ],
-  
-        [
-            'attribute' => 'activity_id',
-            'label' => 'Activity Code', 
-            'vAlign' => 'middle',
-            'width' => '180px',
-
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
-                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-            },
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
+        $gridColumns = [
+            [
+                'class' => 'kartik\grid\SerialColumn',
+                'contentOptions' => ['class' => 'kartik-sheet-style'],
+                'width' => '36px',
+                'pageSummary' => 'Total',
+                'pageSummaryOptions' => ['colspan' => 6],
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
-        [
-            'attribute' => 'awpb_template_id',
-            'label' => 'Fiscal Year', 
-            'vAlign' => 'middle',
-            'width' => '180px',
 
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
-                return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
-            },
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
+            [
+                'attribute' => 'activity_id',
+                'label' => 'Activity Code',
+                'vAlign' => 'middle',
+                'width' => '180px',
+
+                'value' => function ($model) {
+                    $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
+                    return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
+                },
+
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                    'options' => ['multiple' => true]
+                ],
+                'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+                'format' => 'raw'
             ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
-        [
-            'label' => 'Activity Name',
-                  'value' =>  function ($model) {
+            [
+                'attribute' => 'awpb_template_id',
+                'label' => 'Fiscal Year',
+                'vAlign' => 'middle',
+                'width' => '180px',
+
+                'value' => function ($model) {
+                    $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
+                    return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
+                },
+
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
+                'filterWidgetOptions' => [
+                    'pluginOptions' => ['allowClear' => true],
+                    'options' => ['multiple' => true]
+                ],
+                'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+                'format' => 'raw'
+            ],
+            [
+                'label' => 'Activity Name',
+                'value' =>  function ($model) {
                     $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->name;
                     return $name;
-                      
-                  }
-              ],
-
-          
-   
+                }
+            ],
 
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'label' => 'Activity',
+                'label' => 'Commodity Description',
                 'attribute' => 'name',
-                'readonly' =>true,
+                'readonly' => true,
                 'editableOptions' => [
-                    'header' => 'Name', 
+                    'header' => 'Name',
                     'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                    
-                ],
-                'hAlign' => 'left', 
-                'vAlign' => 'left',
-               // 'width' => '7%',
-              
-            ],
 
+                ],
+                'hAlign' => 'left',
+                'vAlign' => 'left',
+                // 'width' => '7%',
+
+            ],
 
             [
                 'class' => 'kartik\grid\EditableColumn',
                 'attribute' => 'unit_cost',
-                'readonly' =>true,
+                'readonly' => true,
                 'refreshGrid' => true,
                 'editableOptions' => [
-                    'header' => 'Unit Cost', 
+                    'header' => 'Unit Cost',
                     'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                     'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+                        'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
                     ]
                 ],
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'vAlign' => 'middle',
                 'width' => '7%',
                 'format' => ['decimal', 2],
@@ -156,20 +145,20 @@ $access_level=1;
 
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_one_quantity', 
-                'readonly' =>true,
+                'attribute' => 'quarter_one_quantity',
+                'readonly' => true,
                 //='readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
+                // },
+                'refreshGrid' => true,
                 'editableOptions' => [
-                    'header' => 'Q1 Qty', 
+                    'header' => 'Q1 Qty',
                     'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                     'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+                        'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
                     ]
                 ],
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'vAlign' => 'middle',
                 'width' => '7%',
                 'format' => ['decimal', 2],
@@ -177,20 +166,20 @@ $access_level=1;
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_two_quantity', 
-                'readonly' =>true,
+                'attribute' => 'quarter_two_quantity',
+                'readonly' => true,
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
+                // },
+                'refreshGrid' => true,
                 'editableOptions' => [
-                    'header' => 'Q2 Qty', 
+                    'header' => 'Q2 Qty',
                     'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                     'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+                        'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
                     ]
                 ],
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'vAlign' => 'middle',
                 'width' => '7%',
                 'format' => ['decimal', 2],
@@ -198,20 +187,20 @@ $access_level=1;
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_three_quantity', 
-                'readonly' =>true,
+                'attribute' => 'quarter_three_quantity',
+                'readonly' => true,
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
+                // },
+                'refreshGrid' => true,
                 'editableOptions' => [
-                    'header' => 'Q3 Qty', 
+                    'header' => 'Q3 Qty',
                     'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                     'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+                        'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
                     ]
                 ],
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'vAlign' => 'middle',
                 'width' => '7%',
                 'format' => ['decimal', 2],
@@ -219,41 +208,41 @@ $access_level=1;
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_four_quantity', 
-                'readonly' =>true,
+                'attribute' => 'quarter_four_quantity',
+                'readonly' => true,
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
+                // },
+                'refreshGrid' => true,
                 'editableOptions' => [
-                    'header' => 'Q4 Qty', 
+                    'header' => 'Q4 Qty',
                     'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                     'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+                        'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
                     ]
                 ],
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'vAlign' => 'middle',
                 'width' => '7%',
                 'format' => ['decimal', 2],
                 'pageSummary' => true
             ],
-           
-            
+
+
 
 
             [
-                'class' => 'kartik\grid\FormulaColumn', 
-                'attribute' => 'total_quantity', 
-                'header' => 'Total <br> Quantity', 
-               // 'refreshGrid' => true,
+                'class' => 'kartik\grid\FormulaColumn',
+                'attribute' => 'total_quantity',
+                'header' => 'Total <br> Quantity',
+                // 'refreshGrid' => true,
                 'vAlign' => 'middle',
-                'value' => function ($model, $key, $index, $widget) { 
+                'value' => function ($model, $key, $index, $widget) {
                     $p = compact('model', 'key', 'index');
-                    return $widget->col(6, $p)+$widget->col(7, $p)+$widget->col(8, $p) + $widget->col(9, $p);
+                    return $widget->col(6, $p) + $widget->col(7, $p) + $widget->col(8, $p) + $widget->col(9, $p);
                 },
                 'headerOptions' => ['class' => 'kartik-sheet-style'],
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'width' => '7%',
                 'format' => ['decimal', 2],
                 'mergeHeader' => true,
@@ -261,13 +250,13 @@ $access_level=1;
                 'footer' => true
             ],
             [
-                'class' => 'kartik\grid\FormulaColumn', 
-                'attribute' => 'total_amount', 
-                'header' => 'Total <br> Amount', 
+                'class' => 'kartik\grid\FormulaColumn',
+                'attribute' => 'total_amount',
+                'header' => 'Total <br> Amount',
                 'vAlign' => 'middle',
-                'hAlign' => 'right', 
+                'hAlign' => 'right',
                 'width' => '7%',
-                'value' => function ($model, $key, $index, $widget) { 
+                'value' => function ($model, $key, $index, $widget) {
                     $p = compact('model', 'key', 'index');
                     return $widget->col(10, $p) != 0 ? $widget->col(5, $p) * $widget->col(10, $p) : 0;
                 },
@@ -286,27 +275,76 @@ $access_level=1;
             //     'pageSummaryOptions' => ['colspan' => 3, 'data-colspan-dir' => 'rtl']
             // ],
 
+
+
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'dropdown' => false,
-                'vAlign'=>'middle',
-                'template' => '{delete} {view}',
-                'urlCreator' => function($action, $model, $key, $index) { 
-                        return Url::to([$action,'id'=>$key]);
-                },
-                  
-              
-            ],
+                'vAlign' => 'middle',
+                'template' => '{view}&nbsp;{update}&nbsp;{delete}',
+                'buttons' => [
+                    'view' => function ($url, $model) {
+                        if (User::userIsAllowedTo('Manage programme-wide AWPB activity lines') && $model->district_id == 0 || $model->district_id == '') {
+
+                            return Html::a(
+                                            '<span class="fa fa-eye"></span>', ['viewpw', 'id' => $model->id], [
+                                        'title' => 'View',
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                        'data-pjax' => '0',
+                                        'style' => "padding:5px;",
+                                        'class' => 'bt btn-lg'
+                                            ]
+                            );
+                        }
+                    },
+                    'update' => function ($url, $model) {
+                        if (User::userIsAllowedTo('Manage programme-wide AWPB activity lines') && $model->district_id == 0 || $model->district_id == '') {
 
 
+                            return Html::a(
+                                            '<span class="fas fa-edit"></span>', ['updatepw', 'id' => $model->id], [
+                                        'title' => 'Update',
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                        // 'target' => '_blank',
+                                        'data-pjax' => '0',
+                                        'style' => "padding:5px;",
+                                        'class' => 'bt btn-lg'
+                                            ]
+                            );
+                        }
+                    },
+                    'delete' => function ($url, $model) {
+                        if (User::userIsAllowedTo('Manage programme-wide AWPB activity lines') && $model->district_id == 0 || $model->district_id == '') {
+                
+                            return Html::a(
+                                            '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
+                                        'title' => 'Remove farmer',
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                        'data' => [
+                                            'confirm' => 'Are you sure you want to remove the AWPB activity line?',
+                                            'method' => 'post',
+                                        ],
+                                        'style' => "padding:5px;",
+                                        'class' => 'bt btn-lg'
+                                            ]
+                            );
+                        }
+                    },
+                ]
 
-            ];
+
+                ],
+
+
+        ];
 
 
 
         if ($dataProvider->getCount() > 0) {
-   
-          // echo ' </p>';
+
+            // echo ' </p>';
             echo ExportMenu::widget([
                 'dataProvider' => $dataProvider,
                 'columns' => $gridColumns,
@@ -317,47 +355,47 @@ $access_level=1;
                 ],
                 'filename' => 'AWPB Activity Lines' . date("YmdHis")
             ]);
-                 //   echo '<p>';
-                //  if (User::userIsAllowedTo('Submit District AWPB')&& $user->district_id>0 ||$user->district_id!='') {
-                //     //   echo Html::a('&nbsp;');
-                //      // btn btn-outline-primary btn-space
-                //            echo Html::a('Submit District AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
-                //    }
-                //    if (User::userIsAllowedTo('Submit Provincial AWPB')&& $user->province_id>0 ||$user->province_id!=''&& $user->district_id<0 ||$user->district_id=='') {
-                //     //   echo Html::a('&nbsp;');
-                //      // btn btn-outline-primary btn-space
-                //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
-                //    }
+            //   echo '<p>';
+            //  if (User::userIsAllowedTo('Submit District AWPB')&& $user->district_id>0 ||$user->district_id!='') {
+            //     //   echo Html::a('&nbsp;');
+            //      // btn btn-outline-primary btn-space
+            //            echo Html::a('Submit District AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
+            //    }
+            //    if (User::userIsAllowedTo('Submit Provincial AWPB')&& $user->province_id>0 ||$user->province_id!=''&& $user->district_id<0 ||$user->district_id=='') {
+            //     //   echo Html::a('&nbsp;');
+            //      // btn btn-outline-primary btn-space
+            //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
+            //    }
         }
         ?>
-      
-
-    <?=  GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $gridColumns,
-      
-        'pjax' => true,
-        //'bordered' => true,
-       // 'striped' => false,
-      // 'condensed' => false,
-       'responsive' => true,
-      //  'hover' => true,
-       // 'floatHeader' => true,
-       // 'floatHeaderOptions' => ['top' => $scrollingTop],
-        'showPageSummary' => true,
-        // 'panel' => [
-        //     'type' => GridView::TYPE_PRIMARY
-        // ],
 
 
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+            // 'panel' => [
+            //     'type' => GridView::TYPE_PRIMARY
+            // ],
 
 
-]);
-        
- ?>
 
-        
+
+        ]);
+
+        ?>
+
+
     </div>
 </div>
 <?php

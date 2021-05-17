@@ -76,7 +76,7 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
     'data-toggle' => 'tooltip',
     'data-placement' => 'top',
 ]);
-  if (User::userIsAllowedTo('Approve AWPB - PCO') ) 
+  if (User::userIsAllowedTo('Approve PW AWPB - PCO') ) 
   {          echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     //  echo Html::a('Decline District AWPB',   ['awpb-comment/create', 'id' =>$model->district_id,'template_id'],  ['class' => 'float-right btn btn-success btn-sm btn-space']);       
      // ['awpb-activity-line/mpca', 'id' => $model->activity_id,'district_id'=>$model->district_id]
@@ -341,7 +341,7 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
         <?php
             
            echo $form->field($_model, 'awpb_template_id')->hiddenInput(['value'=>$model1->awpb_template_id])->label(false);
-           echo $form->field($_model, 'district_id')->hiddenInput(['value'=> $distr])->label(false);
+//echo $form->field($_model, 'district_id')->hiddenInput(['value'=> $distr])->label(false);
                
                // echo $form->field($_model, 'awpb_template_id')->textInput(['maxlength' => true,'value'=>$fiscal, 'class' => "form-control"]);
               //  echo $form->field($_model, 'district_id')->textInput(['maxlength' => true,'value'=>$distr,'class' => "form-control"]);

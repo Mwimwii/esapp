@@ -32,9 +32,20 @@ use backend\models\UnitOfMeasure;
            <div class="row">
                     <div class="col-md-6">        
                      <?php 
-                    echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
-                    [
-                      'prompt'=>'Select component','id'=>'comp_id']);
+                  echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
+                  [
+                    'prompt'=>'Select component','id'=>'comp_id']);
+                    echo Html::hiddenInput('selected_outcome_id', $model->isNewRecord ? '' : $model->outcome_id, ['id' => 'selected_outcome_id']);
+                   echo $form->field($model,'outcome_id')->widget(DepDrop::classname(),[
+                     //'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
+                     'options'=>['id'=>'outcome_id', 'custom' => true, 'required' => TRUE],
+                     'pluginOptions'=>[
+                       'depends'=>['comp_id'],
+                     'placeholder'=>'Select indicator',
+                     'url'=>Url::to(['awpb-outcome/componentoutcomes']),
+                     'params' => ['selected_outcome_id'],
+                     ]
+                     ]);
                     ?>
              </div>
 
@@ -64,12 +75,12 @@ use backend\models\UnitOfMeasure;
                       echo $form->field($model, 'name')->textInput(['maxlength' => true]);
                       echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
               
-                      echo                
-                      $form->field($model, 'unit_of_measure_id')
-                          ->dropDownList(
-                                  \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
+                      //echo                
+                      // $form->field($model, 'unit_of_measure_id')
+                      //     ->dropDownList(
+                      //             \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
                           
-                      ;
+                      // ;
                       ?>
             
               </div>

@@ -62,6 +62,7 @@ echo '
     </div>
 	<div class="row">
 		<div class="col-md-6">';
+		echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 		echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
 	
 			echo '
@@ -95,25 +96,48 @@ $form->field($model, 'component_id')
 			\backend\models\AwpbActivity::getParentAwpbActivity($model->parent_activity_id), ['id' => 'paract_id', 'custom' => true, 'required' => true,'disabled' => ($model->isNewRecord) ? 'disabled' : true] 
 			);
 
-			echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-			echo $form->field($model, 'description')->textarea(['rows' => 5],['maxlength' => true]);
-		
+		echo $form->field($model,'output_id')->dropDownList((\backend\models\AwpbOutput::getOutputs()),
+[
+	'prompt'=>'Select outcomes','id'=>'out_id']);
+// echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
+// 	//'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
+// 	'options'=>['id'=>'indicator_id', 'custom' => true, 'required' => TRUE],
+// 	'pluginOptions'=>[
+// 	  'depends'=>['comp_id'],
+// 	'placeholder'=>'Select indicator',
+// 	'url'=>Url::to(['awpb-indicator/componentindicators']),
+// 	'params' => ['selected_indicator_id'],
+// 	]
+// 	]);
+
+echo $form->field($model,'commodity_type_id')->dropDownList((\backend\models\AwpbCommodityTypes::getCommodityTypes()),
+[
+	'prompt'=>'Select commodity type','id'=>'ty_id']);
+
+				// echo $form->field($model, 'awpb_template_id')->hiddenInput(['value' => '0'])->label(false);
+				   
+				// echo $form->field($model, 'activity_code')->hiddenInput(['value' => '0'])->label(false);
+				   
+			//	echo $form->field($model,'component_id')->hiddenInput(['value' => '0'])->label(false);
+					   echo                
+				   $form->field($model, 'unit_of_measure_id')
+					   ->dropDownList(
+							   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
+					   
+				   ;
+				echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+			
+			
+		  
+				  
 	  
 				   echo '
 				   </div>
 
 						  <div class="col-md-6">';
-						  echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
-
-	
-						  echo                
-						  $form->field($model, 'indicator_id')
-							  ->dropDownList(
-									  \backend\models\AwpbIndicator::getIndicatorsPerComponent($model->component_id), ['id' => 'indicator_id', 'custom' => true, 'prompt' => 'Please select indicator', 'required' => false]);
-							  
-						  ;
-						//  echo $form->field($model, 'indicator')->textarea(['rows' => 3],['maxlength' => true]);
-				  
+						  
+						  echo $form->field($model, 'description')->textarea(['rows' => 4],['maxlength' => true]);
+				
 				//    echo                
 				//    $form->field($model, 'unit_of_measure_id')
 				// 	   ->dropDownList(
@@ -121,7 +145,8 @@ $form->field($model, 'component_id')
 					   
 				//    ;
 				  
-		
+				echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
+	  
 				   echo  $form->field($model, 'funder_id')
             		->dropDownList(
                     \backend\models\AwpbFunder::getAwpbFunderList(), ['id' => 'funder_id', 'custom' => true, 'prompt' => 'Please select a funder', 'required' => false]);
@@ -131,24 +156,24 @@ $form->field($model, 'component_id')
 					\backend\models\AwpbExpenseCategory::getAwpbExpenseCategoryList(), ['id' => 'expense_category_id', 'custom' => true, 'prompt' => 'Please select an expense category', 'required' => false]);
 			
 		;
-			echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);   
-
-
-
-		echo '
-		</div>
-		</div>
-		<div class="row">
-		<div class="col-md-12">
-		<div class="form-group">';
-		echo Html::submitButton('Save', ['class' => 'btn btn-success']) ;
-		echo '</div>
-		</div>
-		</div>';
+			echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);                
+		
+				//   echo $form->field($model, 'expense_category_id')->hiddenInput(['value' => '0'])->label(true);
+//echo  $form->field($model, 'unit_of_measure_id')->hiddenInput(['value' => '0'])->label(false);
+				  
+				
+					   echo '
+					   </div>
+						 </div>
+					 <div class="row">
+						 <div class="col-md-12">
+						 <div class="form-group">';
+						 echo Html::submitButton('Save', ['class' => 'btn btn-success']) ;
+						 echo '</div>
+						  </div>
+						   </div>';
 						   }
 
 		
 ?>
     <?php ActiveForm::end(); ?>
-
-	

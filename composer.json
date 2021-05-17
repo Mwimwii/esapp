@@ -48,15 +48,18 @@
         "2amigos/yii2-chartjs-widget": "~2.0",
         "2amigos/yii2-highcharts-widget": "~1.0",
         "kartik-v/yii2-icons": "@dev",
+        "kartik-v/yii2-tabs-x": "@dev",
         "kartik-v/yii2-markdown": "dev-master",
         "kartik-v/yii2-editors": "dev-master",
         "yiidoc/yii2-redactor": "*",
-        "kartik-v/yii2-tabs-x": "dev-master",
         "kartik-v/yii2-widget-typeahead": "dev-master",
         "kartik-v/yii2-widget-timepicker": "dev-master",
         "kartik-v/yii2-builder": "dev-master",
         "phpoffice/phpspreadsheet": "^1.9",
         "phpoffice/phpword": "^0.17.0"
+      
+  
+        
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

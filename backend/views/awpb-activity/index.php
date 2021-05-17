@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'name', 
                 'vAlign' => 'middle',
-                'width' => '180px',
+               // 'width' => '180px',
                 'value' => function ($model, $key, $index, $widget) { 
                 return      Html::a($model->name, ['awpb-activity/view', 'id' => $model->id], ['class' => 'awbp-activity']);
                
@@ -90,8 +90,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw'
             ],
 
-            'indicator',
-            'programme_target',	
+           
+            [
+                'attribute' => 'programme_target',
+                'vAlign' => 'middle',
+                'width' => '180px',
+            ]
+            ,
             // [
             //     'label' => 'Funder',
             //           'value' => function($model) {

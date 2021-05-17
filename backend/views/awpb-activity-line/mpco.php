@@ -47,7 +47,7 @@ $access_level=1;
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             // echo Html::a('Decline District AWPB', ['decline'], ['class' => 'btn btn-success btn-sm']);
             // echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (User::userIsAllowedTo('Approve AWPB - PCO') && $user->province_id==0 ||$user->province_id=='') {
+if (User::userIsAllowedTo('Approve PW AWPB - PCO') && $user->province_id==0 ||$user->province_id=='') {
        
         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   

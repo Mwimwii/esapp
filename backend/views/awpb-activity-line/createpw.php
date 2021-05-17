@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /* @var $model backend\models\AwpbActivityLine */
 
 $this->title = 'Add Programme-Wide AWPB Activity Lines';
-$this->params['breadcrumbs'][] = ['label' => 'Programme-Wide AWPB Activity Lines', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Programme-Wide AWPB Activity Lines', 'url' => ['indexpw']];
 $this->params['breadcrumbs'][] = $this->title;
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;

@@ -102,7 +102,13 @@ if (!empty($expense_cat)) {
     if (!empty($parent_activity)) {
         $parent_act=  $parent_activity->activity_code;
         }
-
+        $outc="";
+        $output = \backend\models\AwpbOutput::findOne(['id' => $model->output_id]);
+            
+        if (!empty(  $output)) {
+            $outc=    $output->name;
+            }
+    
 
         $indicator_name="";
         $indicator = \backend\models\AwpbIndicator::findOne(['id' => $model->indicator_id]);
@@ -110,7 +116,13 @@ if (!empty($expense_cat)) {
         if (!empty($indicator)) {
             $indicator_name=  $indicator->name;
             }
-        
+            $funder_name="";
+            $funder = \backend\models\AwpbFunder::findOne(['id' => $model->funder_id]);
+                
+            if (!empty($funder)) {
+                $funder_name=  $funder->name;
+                }
+            
           
 ?>
 <?= DetailView::widget([
@@ -130,20 +142,32 @@ if (!empty($expense_cat)) {
                 'label' => 'Component',
                 'value' => $comp
             ],
-            [
-                'attribute'=>'indicator_id',
-                'format' => 'raw',
-                'label' => 'Indicator',
-                'value' => $indicator_name
-            ],
+            // [
+            //     'attribute'=>'indicator_id',
+            //     'format' => 'raw',
+            //     'label' => 'Indicator',
+            //     'value' => $indicator_name
+            // ],
             [
                 'attribute'=>'parent_activity_id',
                 'format' => 'raw',
                 'label' => 'Parent Activity',
                 'value' => $parent_act
             ],
+            [
+                'attribute'=>'output_id',
+                'format' => 'raw',
+                'label' => 'Output',
+                'value' => $outc            ],
+               [
+                'attribute'=>'unit_of_measure_id',
+                'format' => 'raw',
+                'label' => 'Unit of Measure',
+                'value' => $unit
+               ],
             'activity_code',
             'name',
+            'description',
             'programme_target',
 
             // [
@@ -152,6 +176,12 @@ if (!empty($expense_cat)) {
             //     'label' => 'Unit of Measure',
             //     'value' => $unit
             // ],
+            [
+            'attribute'=>'funder_id',
+            'format' => 'raw',
+            'label' => 'Funder',
+            'value' =>  $funder_name
+        ],
             [
                 'attribute'=>'expense_category_id',
                 'format' => 'raw',

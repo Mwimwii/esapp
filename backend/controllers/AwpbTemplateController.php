@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use backend\models\AuditTrail;
+use backend\models\AwpbTemplateActivity;
 use backend\models\User;
 use backend\models\UploadImageForm;
 use yii\web\UploadedFile;
@@ -330,7 +331,7 @@ public function actionRead($id)
     //     ]);
     // }
 
-    public function actionUpdate($id)
+    public function actionUpdate1($id)
     {
         if (User::userIsAllowedTo('Manage AWPB templates')) {
             $model = $this->findModel($id);
@@ -378,6 +379,78 @@ public function actionRead($id)
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['site/home']);
         }   
+    }
+
+
+    public function actionUpdate($id) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
+            $model = $this->findModel($id);
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+            $model->activities = \backend\models\AwpbTemplateActivity::getActivities($model->id);
+            $array = [];
+            foreach ($model->activities as $activity => $v) {
+                array_push($array, $activity);
+            }
+            $model->activities = $array;
+            if ($model->load(Yii::$app->request->post())) {
+                if (!empty($model->activities)) {
+                    $model->updated_by = Yii::$app->user->id;
+                    if ($model->save()) {
+                        $awpbTemplateActivity = new AwpbTemplateActivity();
+                        $awpbTemplateActivity::deleteAll(['awpb_tempate_id' => $id]);
+                        foreach ($model->activities as $activity) {
+                            //check if the right was already assigned to this role
+
+                            $awpbTemplateActivity->awpb_template_id=$id;
+                            $awpbTemplateActivity->activity_id = $activity->id ;
+                            $awpbTemplateActivity->id = NULL; //primary key(auto increment id) id
+                            $awpbTemplateActivity->isNewRecord = true;
+                           // $rightAllocation->right = $right;
+                            //$rightAllocation->created_by = Yii::$app->user->id;
+                            $awpbTemplateActivity->save();
+                        }
+
+                        //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
+                        // if (Yii::$app->getUser()->identity->role == $model->id) {
+                        //     $awpbTemplateActivityArray = \backend\models\AwpbTemplateActivity::getActivities($model->id);
+                        //     ($id);
+                        //     $awpbTemplateActivity = implode(",", $awpbTemplateActivityArray);
+
+                        //    // $session = Yii::$app->session;
+                        //    // $session->set('rights', $rights);
+                        // }
+
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Update tempate" . $model->activities;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success', 'Template ' . $model->activities . ' was successfully updated.');
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error occurred while updating role.Please try again.');
+                        return $this->render('update', ['id' => $model->id,]);
+                    }
+                } else {
+                    Yii::$app->session->setFlash('error', 'You need to select at least one right!');
+                    Yii::$app->session->setFlash('error',var_dump($model->activities));
+                    return $this->render('update', ['id' => $model->id,
+                    'model' => $model
+                    ]);
+                }
+            }
+
+            return $this->render('update', [
+                        'model' => $model
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
     }
 
 

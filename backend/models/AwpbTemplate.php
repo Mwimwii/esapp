@@ -6,6 +6,8 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use backend\models\AwpbComponent;
+use kartik\helpers\Html;
 use yii\web\IdentityInterface;
 use common\models\Role;
 
@@ -33,6 +35,8 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     const STATUS_MINISTRY = 3;
     const STATUS_APROVED = 4;
     const STATUS_OLD = 5;
+    public $activities;
+    public $icons;
     /**
      * {@inheritdoc}
      */
@@ -68,6 +72,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             'budget_theme' => 'Budget Theme',
             'comment' => 'Comment',
             'guideline_file' => 'Guidelines',
+            'activities'=>'Activities',
 			//'guideline_doc' => 'Guideline File',
             'status' => 'Status',
             'created_at' => 'Created At',

@@ -23,9 +23,9 @@ use yii\widgets\ActiveForm;
 
         echo  $form->field($model, 'access_level')->dropDownList(
                 [
+                    '0' => 'All',
             '1' => 'District',
-            '2' => 'Provincial',
-            '3' => 'Programme',
+            '2' => 'Programme',
 
                 ], ['prompt' => 'Select the access level', 'custom' => true, 'required' => false]
             );

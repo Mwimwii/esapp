@@ -96,17 +96,18 @@ $this->params['breadcrumbs'][] = $this->title;
             [
              'label' => 'Access Level',
              'value' => function($model) {
+                 if ($model->access_level==0)
+                 {
+                     return "All";
+                       
+                 }
                  if ($model->access_level==1)
                  {
                      return "District";
                        
                  }
+            
                  if ($model->access_level==2)
-                 {
-                     return "Provincial";
-                       
-                 }
-                 if ($model->access_level==3)
                  {
                      return "Programme";
                        

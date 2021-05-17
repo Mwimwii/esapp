@@ -87,7 +87,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
             'id' => 'ID',
             'activity_id' => 'Activity ID',
             'awpb_template_id' => 'AWPB Template',
-            'name' => 'Name',
+            'name' => 'Commodity description',
             'unit_cost' => 'Unit Cost',
             'mo_1' => 'Jan',
             'mo_2' => 'Feb',
