@@ -25,11 +25,12 @@ AppAsset::register($this);
     <body class="hold-transition login-page">
         <?php $this->beginBody() ?>
 
-        <div class="row login-logo" style="width:600px;padding-top: 45px;">
+        <div class="row" style="width:600px;padding-top: 45px;">
+        <!--<div class="row" style="width:600px;padding-top: 45px;">-->
             <div class="col-lg-12">&nbsp;&nbsp;&nbsp;</div>
             <div class="col-lg-3 logo-image text-left">
                 <?=
-                Html::img('@web/img/coa.png', ["class" => "brand-image",
+                Html::img('@web/img/coa.png', ["class" => "brand-image img-responsive",
                     'style' => 'width:120px; display: block; margin-left: auto; margin-right: auto;height: 120px']);
                 ?>
             </div>
