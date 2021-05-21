@@ -126,13 +126,14 @@ $list = \backend\models\MeFaabsGroups::find()
                         return !empty($_model) ? $_model->title . "" . $_model->first_name . " " . $_model->other_names . " " . $_model->last_name : "";
                     },
                 ],
+                'training_type',
                 'household_head_type',
                 'youth_non_youth',
                 [
                     'attribute' => "topic",
                     'value' => function($model) {
                         $_model = backend\models\MeFaabsTrainingTopics::findOne($model->topic);
-                        return !empty($_model) ? $_model->topic : "";
+                        return !empty($_model) ? $_model->topic.":".$model->topic : "";
                     },
                 ],
                 'facilitators:ntext',

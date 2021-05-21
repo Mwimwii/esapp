@@ -31,10 +31,20 @@ class ReportsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['facilitation-imporoved-technologies', 'download-fit-report'],
+                'only' => [
+                    'facilitation-imporoved-technologies',
+                    'download-fit-report',
+                    'training-attendance-cumulatives',
+                    'physical-tracking-table'
+                ],
                 'rules' => [
                     [
-                        'actions' => ['facilitation-imporoved-technologies', 'download-fit-report'],
+                        'actions' => [
+                            'facilitation-imporoved-technologies',
+                            'download-fit-report',
+                            'training-attendance-cumulatives',
+                            'physical-tracking-table'
+                        ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -49,14 +59,750 @@ class ReportsController extends Controller {
         ];
     }
 
+    /*
+     * 
+     */
+
+    public function actionPhysicalTrackingTable() {
+        if (User::userIsAllowedTo('View physical tracking table report')) {
+            $searchModel = new \backend\models\AwbpActivitySearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $year = date('Y');
+            if (isset(Yii::$app->request->queryParams['AwpbActivityLineSearch'])) {
+                if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id'])) {
+                    // $dataProvider->query->andFilterWhere(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']]);
+                    $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+                    if (!empty($awpb_template)) {
+                        $activity_ids = [];
+                        $activity_lines = \backend\models\AwpbActivityLine::find()
+                                ->where(['awpb_template_id' => $awpb_template->id])
+                                ->andWhere(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']])
+                                ->all();
+                        if (!empty($activity_lines)) {
+                            foreach ($activity_lines as $_activity) {
+                                array_push($activity_ids, $_activity['activity_id']);
+                            }
+                        }
+                        $dataProvider->query->andFilterWhere(["IN", 'id', $activity_ids]);
+                    }
+                }
+                if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['district_id'])) {
+                    $dataProvider->query->andFilterWhere(['district_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['district_id']]);
+                }
+                if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['year'])) {
+                    $year = Yii::$app->request->queryParams['AwpbActivityLineSearch']['year'];
+                    $dataProvider->query->andFilterWhere(['year' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['year']]);
+                }
+            } else {
+                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => date('Y')]);
+                //1. Load template for the current year
+                //2. use template to fetch activity lines for the year
+                //3. use Activity lines [activity_ids] to pull the subactivities from the activities table
+                //4. 
+                if (!empty($awpb_template)) {
+                    $activity_ids = [];
+                    $activity_lines = \backend\models\AwpbActivityLine::find()
+                            ->where(['awpb_template_id' => $awpb_template->id])
+                            ->all();
+                    if (!empty($activity_lines)) {
+                        foreach ($activity_lines as $_activity) {
+                            array_push($activity_ids, $_activity['activity_id']);
+                        }
+                    }
+                    $dataProvider->query->andFilterWhere(["IN", 'id', $activity_ids]);
+                }
+            }
+
+            //We only need sub activities
+            $dataProvider->query->andFilterWhere(['activity_type' => "Subactivity"]);
+
+            $dataProvider->setSort([
+                'attributes' => [
+                    'id' => [
+                        'desc' => ['id' => SORT_ASC],
+                        'default' => SORT_ASC
+                    ],
+                ],
+                'defaultOrder' => [
+                    'id' => SORT_ASC
+                ]
+            ]);
+
+
+
+            return $this->render('physical-tracking-table', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'fiscal_year' => $year,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    /*
+     * 
+     */
+
+    public function actionTrainingAttendanceCumulatives() {
+        if (User::userIsAllowedTo('View training attendance cumulative report')) {
+            $_data = [];
+            $searchModel = new \backend\models\MeFaabsTrainingAttendanceSheetSearch();
+
+
+            //Filter by province
+            if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
+                    empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
+                    empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
+                $district_ids = [];
+                $faabs_ids = [];
+                $_camp_ids = [];
+
+
+                //We get all the districts in a province
+                $districts = \backend\models\Districts::find()->where(['province_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']])->all();
+                if (!empty($districts)) {
+                    foreach ($districts as $id) {
+                        array_push($district_ids, $id['id']);
+                    }
+                }
+
+                //We get all the camps in a province
+                $camp_ids = \backend\models\Camps::find()
+                        ->select(['id'])
+                        ->where(["IN", 'district_id', $district_ids])
+                        ->asArray()
+                        ->all();
+
+
+                if (!empty($camp_ids)) {
+                    foreach ($camp_ids as $id) {
+                        array_push($_camp_ids, $id['id']);
+                    }
+                }
+
+
+                //We get all the FaaBS in a province
+                $faabs_model = MeFaabsGroups::find()->where(["IN", 'camp_id', $_camp_ids])
+                        ->asArray()
+                        ->all();
+
+                if (!empty($faabs_model)) {
+                    $_years = "";
+                    foreach ($faabs_model as $id) {
+                        if (!in_array($id['id'], $faabs_ids)) {
+                            array_push($faabs_ids, $id['id']);
+                            $_faabs = [];
+                            $jan_jun_count = 0;
+                            $jul_dec_count = 0;
+                            $_faabs[$id['name']] = [
+                                //'id' => $id['id'],
+                                'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
+                                'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
+                                        ->where(['faabs_group_id' => $id['id']])
+                                        ->count()
+                            ];
+
+
+                            //We get those trained in a year for a particular period
+                            /* $_years = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->select(['YEAR(training_date) as year'])
+                              ->where(["faabs_group_id" => $id['id']])
+                              ->distinct()
+                              ->all(); */
+                            //if (!empty($_years)) {
+                            //  foreach ($_years as $yr) {
+                            //We use hardcoded years instead of dynamically fetching them
+                            //2019,2020,2021,2022,2023,2024
+                            //1.2019
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2019'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+
+                            //2.2020
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2020'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //3.2021
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2021'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //4.2022
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2022'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //5.2023
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2023'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //6.2024
+                            /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $_cnt_array['2024'] = [
+                              'jan_jun' => $jan_jun_count,
+                              'jul_dec' => $jul_dec_count
+                              ];
+                              array_push($_faabs[$id['name']], $_cnt_array); */
+                            //}
+
+
+                            array_push($_data, $_faabs);
+                            //}
+                        }
+                    }
+                    //var_dump($_data);
+                }
+            }
+
+            //Filter by district
+            if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
+                    !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
+                    empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
+                $district_ids = [];
+                $faabs_ids = [];
+                $_camp_ids = [];
+
+                //We get all the camps in a district
+                $camp_ids = \backend\models\Camps::find()
+                        ->select(['id'])
+                        ->where(['district_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']])
+                        ->asArray()
+                        ->all();
+
+
+                if (!empty($camp_ids)) {
+                    foreach ($camp_ids as $id) {
+                        array_push($_camp_ids, $id['id']);
+                    }
+                }
+
+
+                //We get all the FaaBS in a district
+                $faabs_model = MeFaabsGroups::find()->where(["IN", 'camp_id', $_camp_ids])
+                        ->asArray()
+                        ->all();
+
+                if (!empty($faabs_model)) {
+                    $_years = "";
+                    foreach ($faabs_model as $id) {
+                        if (!in_array($id['id'], $faabs_ids)) {
+                            array_push($faabs_ids, $id['id']);
+                            $_faabs = [];
+                            $jan_jun_count = 0;
+                            $jul_dec_count = 0;
+                            $_faabs[$id['name']] = [
+                                //'id' => $id['id'],
+                                'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
+                                'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
+                                        ->where(['faabs_group_id' => $id['id']])
+                                        ->count()
+                            ];
+
+
+                            //We get those trained in a year for a particular period
+                            /* $_years = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->select(['YEAR(training_date) as year'])
+                              ->where(["faabs_group_id" => $id['id']])
+                              ->distinct()
+                              ->all(); */
+                            //if (!empty($_years)) {
+                            //  foreach ($_years as $yr) {
+                            //We use hardcoded years instead of dynamically fetching them
+                            //2019,2020,2021,2022,2023,2024
+                            //1.2019
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2019'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+
+                            //2.2020
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2020'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //3.2021
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2021'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //4.2022
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2022'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //5.2023
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2023'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //6.2024
+                            /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $_cnt_array['2024'] = [
+                              'jan_jun' => $jan_jun_count,
+                              'jul_dec' => $jul_dec_count
+                              ];
+                              array_push($_faabs[$id['name']], $_cnt_array); */
+                            //}
+
+
+                            array_push($_data, $_faabs);
+                            //}
+                        }
+                    }
+                    //var_dump($_data);
+                }
+            }
+
+            //Filter by camp
+            if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
+                    !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
+                    !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
+                $district_ids = [];
+                $faabs_ids = [];
+
+                //We get all the FaaBS in a camp
+                $faabs_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
+                        ->asArray()
+                        ->all();
+
+                if (!empty($faabs_model)) {
+                    $_years = "";
+                    foreach ($faabs_model as $id) {
+                        if (!in_array($id['id'], $faabs_ids)) {
+                            array_push($faabs_ids, $id['id']);
+                            $_faabs = [];
+                            $jan_jun_count = 0;
+                            $jul_dec_count = 0;
+                            $_faabs[$id['name']] = [
+                                //'id' => $id['id'],
+                                'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
+                                'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
+                                        ->where(['faabs_group_id' => $id['id']])
+                                        ->count()
+                            ];
+
+
+                            //We get those trained in a year for a particular period
+                            //if (!empty($_years)) {
+                            //  foreach ($_years as $yr) {
+                            //We use hardcoded years instead of dynamically fetching them
+                            //2019,2020,2021,2022,2023,2024
+                            //1.2019
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2019'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+
+                            //2.2020
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2020'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //3.2021
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2021'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //4.2022
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2022'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //5.2023
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2023'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //6.2024
+                            /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $_cnt_array['2024'] = [
+                              'jan_jun' => $jan_jun_count,
+                              'jul_dec' => $jul_dec_count
+                              ];
+                              array_push($_faabs[$id['name']], $_cnt_array); */
+                            //}
+
+
+                            array_push($_data, $_faabs);
+                            //}
+                        }
+                    }
+                    //var_dump($_data);
+                }
+            }
+            //Filter by camp for camp/district users only
+            if (empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
+                    empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
+                    !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
+                $district_ids = [];
+                $faabs_ids = [];
+
+                //We get all the FaaBS in a camp
+                $faabs_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
+                        ->asArray()
+                        ->all();
+
+                if (!empty($faabs_model)) {
+                    $_years = "";
+                    foreach ($faabs_model as $id) {
+                        if (!in_array($id['id'], $faabs_ids)) {
+                            array_push($faabs_ids, $id['id']);
+                            $_faabs = [];
+                            $jan_jun_count = 0;
+                            $jul_dec_count = 0;
+                            $_faabs[$id['name']] = [
+                                //'id' => $id['id'],
+                                'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
+                                'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
+                                        ->where(['faabs_group_id' => $id['id']])
+                                        ->count()
+                            ];
+
+
+                            //We get those trained in a year for a particular period
+                            //if (!empty($_years)) {
+                            //  foreach ($_years as $yr) {
+                            //We use hardcoded years instead of dynamically fetching them
+                            //2019,2020,2021,2022,2023,2024
+                            //1.2019
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2019'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2019'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+
+                            //2.2020
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2020'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2020'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //3.2021
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2021'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2021'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //4.2022
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2022'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2022'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //5.2023
+                            $_cnt_array = [];
+                            $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                    ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                                    ->andWhere(['YEAR(training_date)' => '2023'])
+                                    ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                                    ->count();
+                            $_cnt_array['2023'] = [
+                                'jan_jun' => $jan_jun_count,
+                                'jul_dec' => $jul_dec_count
+                            ];
+                            array_push($_faabs[$id['name']], $_cnt_array);
+                            //6.2024
+                            /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $jul_dec_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                              ->where(['IN', 'MONTH(training_date)', [7, 8, 9, 10, 11, 12]])
+                              ->andWhere(['YEAR(training_date)' => '2024'])
+                              ->andWhere(['training_type' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['training_type']])
+                              ->count();
+                              $_cnt_array['2024'] = [
+                              'jan_jun' => $jan_jun_count,
+                              'jul_dec' => $jul_dec_count
+                              ];
+                              array_push($_faabs[$id['name']], $_cnt_array); */
+                            //}
+
+
+                            array_push($_data, $_faabs);
+                            //}
+                        }
+                    }
+                    //var_dump($_data);
+                }
+            }
+
+            return $this->render('training-attendance-cumulatives', [
+                        'searchModel' => $searchModel,
+                        'data' => $_data,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
     /**
-     * Lists all MeFaabsGroups models.
+     * 
      * @return mixed
      */
     public function actionFacilitationImporovedTechnologies() {
         if (User::userIsAllowedTo('View facilitation of improved technologies/best practices report')) {
             $searchModel = new \backend\models\MeFaabsTrainingAttendanceSheetSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $subcomp_21 = [
                 'female' => 0,
                 'male' => 0,
@@ -769,6 +1515,197 @@ class ReportsController extends Controller {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
+    }
+
+    public function actionDownloadTacReport() {
+        $province_id = Yii::$app->request->post('province_id', null);
+        $district_id = Yii::$app->request->post('district_id', null);
+        $camp_id = Yii::$app->request->post('camp_id', null);
+        $training_type = Yii::$app->request->post('training_type', null);
+        $data = json_decode(Yii::$app->request->post('data', null), true);
+        // $camp_model = \backend\models\Camps::findOne($camp_id);
+        $district = !empty($district_id) ? \backend\models\Districts::findOne($district_id)->name : "";
+        $province = !empty($province_id) ? \backend\models\Provinces::findOne($province_id)->name : "";
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getDefaultStyle()->applyFromArray(
+                [
+                    'border' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ],
+                    ]
+                ]
+        );
+
+        $spreadsheet->getProperties()->setCreator('esappmis')
+                ->setLastModifiedBy('esappmis')
+                ->setTitle('Office 2007 XLSX FaaBS Training Attendance- cumulative Report')
+                ->setSubject('Office 2007 XLSX FaaBS Training Attendance- cumulative Report')
+                ->setDescription('FaaBS Training Attendance- cumulative report for Office 2007 XLSX, generated using PHP classes.')
+                ->setKeywords('office 2007 openxml php')
+                ->setCategory('Report');
+
+        //Row 1
+        if (!empty($province) || !empty($district)) {
+            $spreadsheet->setActiveSheetIndex(0)
+                    ->setCellValue('B1', 'Province')
+                    ->setCellValue('C1', !empty($province) ? $province : "")
+                    ->setCellValue('D1', 'District')
+                    ->setCellValue('E1', !empty($district) ? $district : "")
+                    ->setCellValue('F1', 'Reporting date')
+                    ->setCellValue('G1', date("Y/m/d"));
+            $spreadsheet->getActiveSheet()->getStyle("B1")->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle("D1")->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle("F1")->getFont()->setBold(true);
+        } else {
+            $spreadsheet->setActiveSheetIndex(0)
+                    ->setCellValue('B1', 'Reporting date')
+                    ->setCellValue('C1', date("Y/m/d"));
+            $spreadsheet->getActiveSheet()->getStyle("B1")->getFont()->setBold(true);
+        }
+
+        //Row 2
+        $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('B3', $training_type)
+                ->mergeCells('B3:O3');
+        $spreadsheet->getActiveSheet()->getStyle("B3")->getFont()->setBold(true);
+
+        //Row 3
+        $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('B4', 'FaaBS Location Details')
+                ->setCellValue('D4', '')
+                ->setCellValue('E4', '2019')
+                ->setCellValue('G4', '2020')
+                ->setCellValue('I4', '2021')
+                ->setCellValue('K4', '2022')
+                ->setCellValue('M4', '2023')
+                ->mergeCells('B4:C4')
+                ->mergeCells('E4:F4')
+                ->mergeCells('G4:H4')
+                ->mergeCells('I4:J4')
+                ->mergeCells('K4:L4')
+                ->mergeCells('M4:N4');
+        $spreadsheet->getActiveSheet()->getStyle("B4")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("E4")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("G4")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("I4")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("K4")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("M4")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("B4")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("E4")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("G4")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("I4")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("K4")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("M4")->getAlignment()->setHorizontal('center');
+
+        //Row 4
+        $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('B5', 'Name of FaaBS')
+                ->setCellValue('C5', 'Camp')
+                ->setCellValue('D5', 'Total number enrolled in FaaBS')
+                ->setCellValue('E5', '# of Trained [Jan-Jun]')
+                ->setCellValue('F5', '# of Trained [Jul-Dec]')
+                ->setCellValue('G5', '# of Trained [Jan-Jun]')
+                ->setCellValue('H5', '# of Trained [Jul-Dec]')
+                ->setCellValue('I5', '# of Trained [Jan-Jun]')
+                ->setCellValue('J5', '# of Trained [Jul-Dec]')
+                ->setCellValue('K5', '# of Trained [Jan-Jun]')
+                ->setCellValue('L5', '# of Trained [Jul-Dec]')
+                ->setCellValue('M5', '# of Trained [Jan-Jun]')
+                ->setCellValue('N5', '# of Trained [Jul-Dec]');
+
+        //Row 6
+        $sum_2019_jan_jun = 0;
+        $sum_2019_jul_dec = 0;
+        $sum_2020_jan_jun = 0;
+        $sum_2020_jul_dec = 0;
+        $sum_2021_jan_jun = 0;
+        $sum_2021_jul_dec = 0;
+        $sum_2022_jan_jun = 0;
+        $sum_2022_jul_dec = 0;
+        $sum_2023_jan_jun = 0;
+        $sum_2023_jul_dec = 0;
+        $sum_total_enrolled = 0;
+        $current_row = 6;
+
+        foreach ($data as $_data) {
+            foreach ($_data as $key => $value) {
+                $sum_2019_jan_jun += $value[0]['2019']['jan_jun'];
+                $sum_2019_jul_dec += $value[0]['2019']['jul_dec'];
+                $sum_2020_jan_jun += $value[1]['2020']['jan_jun'];
+                $sum_2020_jul_dec += $value[1]['2020']['jul_dec'];
+                $sum_2021_jan_jun += $value[2]['2021']['jan_jun'];
+                $sum_2021_jul_dec += $value[2]['2021']['jul_dec'];
+                $sum_2022_jan_jun += $value[3]['2022']['jan_jun'];
+                $sum_2022_jul_dec += $value[3]['2022']['jul_dec'];
+                $sum_2023_jan_jun += $value[4]['2023']['jan_jun'];
+                $sum_2023_jul_dec += $value[4]['2023']['jul_dec'];
+                $sum_total_enrolled += $value['total_faabs_enrolled'];
+
+                $spreadsheet->setActiveSheetIndex(0)
+                        ->setCellValue('B' . $current_row, $key)
+                        ->setCellValue('C' . $current_row, $value['camp'])
+                        ->setCellValue('D' . $current_row, $value['total_faabs_enrolled'])
+                        ->setCellValue('E' . $current_row, $value[0]['2019']['jan_jun'])
+                        ->setCellValue('F' . $current_row, $value[0]['2019']['jul_dec'])
+                        ->setCellValue('G' . $current_row, $value[1]['2020']['jan_jun'])
+                        ->setCellValue('H' . $current_row, $value[1]['2020']['jul_dec'])
+                        ->setCellValue('I' . $current_row, $value[2]['2021']['jan_jun'])
+                        ->setCellValue('J' . $current_row, $value[2]['2021']['jul_dec'])
+                        ->setCellValue('K' . $current_row, $value[3]['2022']['jan_jun'])
+                        ->setCellValue('L' . $current_row, $value[3]['2022']['jul_dec'])
+                        ->setCellValue('M' . $current_row, $value[4]['2023']['jan_jun'])
+                        ->setCellValue('N' . $current_row, $value[4]['2023']['jul_dec']);
+                $spreadsheet->getActiveSheet()->getStyle("D" . $current_row . ":N" . $current_row)->getAlignment()->setHorizontal('center');
+                $current_row++;
+            }
+        }
+
+        //Row after loop
+        $_next_row = $current_row;
+        $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('B' . $_next_row, "")
+                ->setCellValue('C' . $_next_row, "Total")
+                ->setCellValue('D' . $_next_row, $sum_total_enrolled)
+                ->setCellValue('E' . $_next_row, $sum_2019_jan_jun)
+                ->setCellValue('F' . $_next_row, $sum_2019_jul_dec)
+                ->setCellValue('G' . $_next_row, $sum_2020_jan_jun)
+                ->setCellValue('H' . $_next_row, $sum_2020_jul_dec)
+                ->setCellValue('I' . $_next_row, $sum_2021_jan_jun)
+                ->setCellValue('J' . $_next_row, $sum_2021_jul_dec)
+                ->setCellValue('K' . $_next_row, $sum_2022_jan_jun)
+                ->setCellValue('L' . $_next_row, $sum_2022_jul_dec)
+                ->setCellValue('M' . $_next_row, $sum_2023_jan_jun)
+                ->setCellValue('N' . $_next_row, $sum_2023_jul_dec);
+        $spreadsheet->getActiveSheet()->getStyle("D" . $_next_row . ":N" . $_next_row)->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("C" . $_next_row)->getAlignment()->setHorizontal('right');
+        $spreadsheet->getActiveSheet()->getStyle("C" . $_next_row . ":N" . $_next_row)->getFont()->setBold(true);
+
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle('Training attendance cumulative');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+
+        // Redirect output to a client's web browser (Xlsx)
+        $file = 'Training attendance cumulative_' . date("Ymdhis");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
     }
 
     public function actionDownloadFitReport() {

@@ -17,7 +17,8 @@ class MeFaabsTrainingAttendanceSheetSearch extends MeFaabsTrainingAttendanceShee
     public function rules() {
         return [
             [['id', 'faabs_group_id', 'farmer_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['household_head_type', 'topic', 'facilitators', 'partner_organisations', 'training_date', 'duration', 'province_id', 'district_id', 'camp_id', 'quarter','topic_indicator','topic_subcomponent'], 'safe'],
+            [['household_head_type', 'topic', 'facilitators', 'partner_organisations', 'training_date', 'duration', 
+                'province_id', 'district_id', 'camp_id', 'quarter','topic_indicator','topic_subcomponent','training_type'], 'safe'],
         ];
     }
 
@@ -64,6 +65,7 @@ class MeFaabsTrainingAttendanceSheetSearch extends MeFaabsTrainingAttendanceShee
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
+            'training_type' => $this->training_type,
         ]);
 
         $query->andFilterWhere(['like', 'household_head_type', $this->household_head_type])

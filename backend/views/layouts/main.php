@@ -279,18 +279,20 @@ $session = Yii::$app->session;
                                     User::userIsAllowedTo("Submit back to office report") ||
                                     User::userIsAllowedTo("View back to office report") ||
                                     User::userIsAllowedTo("Review back to office report") ||
-                                    //User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
-                                    //User::userIsAllowedTo("View camp/project site objectives for awpb") ||
+                                    User::userIsAllowedTo("Plan quarterly work schedules") ||
+                                    User::userIsAllowedTo("View quarterly work schedules") ||
                                     User::userIsAllowedTo("Manage FaaBS training topics") ||
                                     User::userIsAllowedTo("View FaaBS training topics") ||
                                     User::userIsAllowedTo("Plan camp monthly activities") ||
+                                    //User::userIsAllowedTo("Add training topics to FaaBS") ||
+                                    //User::userIsAllowedTo("Approve quarterly work schedules - provincial") ||
                                     User::userIsAllowedTo("Remove planned camp monthly activities") ||
                                     User::userIsAllowedTo("View planned camp monthly activities")
                             ) {
                                 if (Yii::$app->controller->id == "faabs-category-a-farmers" ||
                                         Yii::$app->controller->id == "faabs-training-attendance" ||
                                         Yii::$app->controller->id == "faabs-groups" ||
-                                        // Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" ||
+                                        //Yii::$app->controller->id == "quarterly-work-plan" ||
                                         Yii::$app->controller->id == "back-to-office-report" ||
                                         Yii::$app->controller->id == "camp-monthly-schedule" ||
                                         Yii::$app->controller->id == "faabs-training-topics"
@@ -416,7 +418,7 @@ $session = Yii::$app->session;
                                                 Yii::$app->controller->action->id == "work-effort" ||
                                                 Yii::$app->controller->action->id == "planned-activities" ||
                                                 Yii::$app->controller->action->id == "update")) {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly schedule</p>', ['/camp-monthly-schedule/index'], ["class" => "nav-link active"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly schedules</p>', ['/camp-monthly-schedule/index'], ["class" => "nav-link active"]);
                                             /* if (Yii::$app->controller->id == "camp-monthly-planned-work-effort") {
                                               echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly planning</p>', ['/camp-monthly-planned-work-effort/index'], ["class" => "nav-link active"]);
                                               }
@@ -427,10 +429,27 @@ $session = Yii::$app->session;
                                               echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly planning</p>', ['/camp-monthly-planned-activities-actual/index'], ["class" => "nav-link active"]);
                                               } */
                                         } else {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly schedule</p>', ['/camp-monthly-schedule/index'], ["class" => "nav-link"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp monthly schedules</p>', ['/camp-monthly-schedule/index'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
+                                   /* if (User::userIsAllowedTo("Plan quarterly work schedules") ||
+                                            User::userIsAllowedTo("Approve quarterly work schedules - provincial") ||
+                                            User::userIsAllowedTo("Approve quarterly work schedules - hq") ||
+                                            User::userIsAllowedTo("View quarterly work schedules")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "quarterly-work-plan" &&
+                                                (
+                                                Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Quarterly work schedules</p>', ['/quarterly-work-plan/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Quarterly work schedules</p>', ['/quarterly-work-plan/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }*/
                                     ?>
 
                                 </ul>
@@ -602,11 +621,12 @@ $session = Yii::$app->session;
                             <!-------------------------------CONFIGS ENDS----------------------------->
                             <!-------------------------------REPORTS STARTS--------------------------->
                             <?php
-                            if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report") 
-                                  //  User::userIsAllowedTo("Manage districts") ||
-                                   // User::userIsAllowedTo("Manage markets") ||
-                                   // User::userIsAllowedTo("Manage commodity configs") 
-                                    ) {
+                            if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report") ||
+                                    User::userIsAllowedTo("View physical tracking table report") ||
+                                    User::userIsAllowedTo("View training attendance cumulative report")
+                            // User::userIsAllowedTo("Manage markets") ||
+                            // User::userIsAllowedTo("Manage commodity configs") 
+                            ) {
                                 if (Yii::$app->controller->id == "reports") {
                                     echo '<li class="nav-item has-treeview menu-open">'
                                     . ' <a href="#" class="nav-link active">';
@@ -630,6 +650,30 @@ $session = Yii::$app->session;
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>
+                                    <?php
+                                    if (User::userIsAllowedTo("View training attendance cumulative report")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "reports" &&
+                                                (Yii::$app->controller->action->id == "training-attendance-cumulatives")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training attendance cumulative</p>', ['/reports/training-attendance-cumulatives'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training attendance cumulative</p>', ['/reports/training-attendance-cumulatives'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>
+                                    <?php
+                                    if (User::userIsAllowedTo("View physical tracking table report")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "reports" &&
+                                                (Yii::$app->controller->action->id == "physical-tracking-table")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Physical tracking table</p>', ['/reports/physical-tracking-table'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Physical tracking table</p>', ['/reports/physical-tracking-table'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }

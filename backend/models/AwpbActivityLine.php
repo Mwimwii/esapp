@@ -39,8 +39,8 @@ use Yii;
  *
  * @property AwpbActivity $activity
  */
-class AwpbActivityLine extends \yii\db\ActiveRecord
-{
+class AwpbActivityLine extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
@@ -49,20 +49,23 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
     const STATUS_PROGRAMME = 2;
     const STATUS_MINISTRY = 3;
 
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'awpb_activity_line';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['activity_id', 'name', 'unit_cost', 'total_quantity', 'total_amount', 'status', 'created_at', 'updated_at'], 'required'],
-            [['activity_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'total_amount'], 'number'],
+            [['year','mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount',
+            'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount',
+            'mo_10_amount', 'mo_11_amount', 'mo_12_amount',], 'safe'],
+            [['awpb_template_id','activity_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by', 'district_id', 'province_id'], 'integer'],
+            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 
+                'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 
+                'quarter_four_quantity', 'total_quantity', 'total_amount'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
         ];
@@ -71,8 +74,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'activity_id' => 'Activity ID',
@@ -111,8 +113,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getActivity()
-    {
+    public function getActivity() {
         return $this->hasOne(AwpbActivity::className(), ['id' => 'activity_id']);
     }
 
@@ -120,14 +121,16 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
         $list = self::find()->where(['activity_id' => $id])->all();
         return ArrayHelper::map($list, 'id', 'name');
     }
+
     // }
     // public static function getList($id) {
     //     $list = self::find()->where(['activity_id' => $id])->all();
     //     return ArrayHelper::map($list, 'id', 'name');
     // }
-    
+
     public static function getList() {
         $list = self::find()->orderBy(['name' => SORT_ASC])->all();
         return ArrayHelper::map($list, 'id', 'name');
     }
+
 }

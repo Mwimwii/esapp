@@ -25,10 +25,10 @@ class FaabsGroupsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'faabs-by-camp','farmers'],
+                'only' => ['index', 'create', 'delete', 'faabs-by-camp', 'farmers'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'faabs-by-camp','farmers'],
+                        'actions' => ['index', 'create', 'delete', 'faabs-by-camp', 'farmers'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -172,11 +172,105 @@ class FaabsGroupsController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    /* public function actionView($id) {
-      return $this->render('view', [
-      'model' => $this->findModel($id),
-      ]);
-      } */
+    public function actionView($id) {
+        if (User::userIsAllowedTo('Manage faabs groups')|| User::userIsAllowedTo('View faabs groups')) {
+            return $this->render('view', [
+                        'model' => $this->findModel($id),
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionAddTopics($id) {
+        $model = new \backend\models\MeFaabsTrainingTopicEnrolment();
+        if ($model->load(Yii::$app->request->post())) {
+
+            $count = 0;
+            foreach ($model->topics as $topic) {
+                $_model = new \backend\models\MeFaabsTrainingTopicEnrolment();
+                $_model->faabs_id = $id;
+                $_model->training_type = $model->training_type;
+                $_model->topic_id = $topic;
+                $_model->topics = "topics";
+                // $rightAllocation->created_by = Yii::$app->user->id;
+                if ($_model->save()) {
+                    $count++;
+                }
+            }
+            if ($count > 0) {
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = "Added training topics to FaaBS group:" . MeFaabsGroups::findOne($id)->name;
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                Yii::$app->session->setFlash('success', 'Training topics were successfully added to FaaBS group.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Training topics could not be added to FaaBS group.');
+            }
+            return $this->redirect(['view', 'id' => $id]);
+        }
+    }
+
+    public function actionUpdateTopics($id) {
+        $model = new \backend\models\MeFaabsTrainingTopicEnrolment();
+
+
+
+        if ($model->load(Yii::$app->request->post())) {
+            $_model = new \backend\models\MeFaabsTrainingTopicEnrolment();
+            $_model::deleteAll(['faabs_id' => $id]);
+            $count = 0;
+
+            foreach ($model->topics as $topic) {
+                $_model->id = NULL; //primary key(auto increment id) id
+                $_model->isNewRecord = true;
+                $_model->faabs_id = $id;
+                $_model->training_type = $model->training_type;
+                $_model->topic_id = $topic;
+                $_model->topics = "topics";
+                if ($_model->save()) {
+                    $count++;
+                }
+            }
+
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                if ($count > 0) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Updated training topics for FaaBS group:" . MeFaabsGroups::findOne($id)->name;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Training topics were successfully updated for FaaBS group.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Training topics could not be updated for FaaBS group.');
+                }
+                return $this->redirect(['view', 'id' => $id]);
+            }
+        }
+
+        $model->topics = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                ->where(['faabs_id' => $id])
+                ->all();
+        $array = [];
+        foreach ($model->topics as $topic => $v) {
+            array_push($array, $v['topic_id']);
+        }
+        //var_dump($array);
+        $model->training_type = \backend\models\MeFaabsTrainingTopicEnrolment::findOne(['faabs_id' => $id])->training_type;
+        $model->faabs_id = $id;
+        $model->topics = $array;
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('update-topic-modal', [
+                        'id' => $id,
+                        'model' => $model,
+            ]);
+        }
+    }
 
     /**
      * Creates a new MeFaabsGroups model.
@@ -202,7 +296,8 @@ class FaabsGroupsController extends Controller {
                     $audit->ip_address = Yii::$app->request->getUserIP();
                     $audit->user_agent = Yii::$app->request->getUserAgent();
                     $audit->save();
-                    Yii::$app->session->setFlash('success', 'FaaBS group: ' . $model->name . ' was successfully added.');
+                    Yii::$app->session->setFlash('success', 'FaaBS group: ' . $model->name . ' was successfully added. You can add training topics');
+                    return $this->redirect(['view', 'id' => $model->id]);
                 } else {
                     Yii::$app->session->setFlash('error', 'Error occured while adding FaaBS group ' . $model->name);
                 }
@@ -306,6 +401,8 @@ class FaabsGroupsController extends Controller {
     public function actionFarmers() {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $out = [];
+        //\Yii::info("I CAN GET HERE");
+
         if (isset($_POST['depdrop_parents'])) {
             $parents = $_POST['depdrop_parents'];
             $selected_id = $_POST['depdrop_all_params']['selected_id'];
@@ -318,8 +415,201 @@ class FaabsGroupsController extends Controller {
                         ->orderBy(['id' => SORT_ASC])
                         ->asArray()
                         ->all();
-
+                //\Yii::warning($out);
                 return ['output' => $out, 'selected' => $selected_id];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+    public function actionTopics() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+
+        if (isset($_POST['depdrop_parents'])) {
+
+            $parents = $_POST['depdrop_parents'];
+            $selected_id = $_POST['depdrop_all_params']['selected_id'];
+            if ($parents != null) {
+                //Lets get topics that a farmer has already been trained on
+                $topic_ids = [];
+                $topic_ids1 = [];
+                $final_out = [];
+                $farmer_trained_topics = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                        ->where(['farmer_id' => $parents[0]])
+                        ->andWhere(['faabs_group_id' => $parents[1]])
+                        ->asArray()
+                        ->all();
+                //  \Yii::warning($farmer_trained_topics);
+
+                $faabs_topics = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                        ->where(['faabs_id' => $parents[1]])
+                        ->asArray()
+                        ->all();
+
+
+
+                if (!empty($farmer_trained_topics)) {
+
+                    foreach ($farmer_trained_topics as $trained_topic) {
+                        array_push($topic_ids1, $trained_topic['topic']);
+                    }
+
+                    foreach ($faabs_topics as $topic) {
+                        array_push($topic_ids, $topic['topic_id']);
+                    }
+
+                    //\Yii::warning($topic_ids);
+
+                    $training_topics = \backend\models\MeFaabsTrainingTopics::find()
+                            ->select(["CONCAT(category,' - ',topic) as name", 'id'])
+                            ->where(['IN', 'id', $topic_ids])
+                            ->orderBy(['id' => SORT_ASC])
+                            ->asArray()
+                            ->all();
+                    foreach ($training_topics as $topics) {
+                        if (!in_array($topics['id'], $topic_ids1)) {
+                            $_arr = [
+                                'id' => $topics['id'],
+                                'name' => $topics['name']
+                            ];
+                            array_push($final_out, $_arr);
+                        }
+                    }
+
+                    // \Yii::warning($final_out);
+                    return ['output' => $final_out, 'selected' => $selected_id];
+                } else {
+                    if (!empty($faabs_topics)) {
+                        foreach ($faabs_topics as $topic) {
+                            array_push($topic_ids, $topic['topic_id']);
+                        }
+
+                        $out = \backend\models\MeFaabsTrainingTopics::find()
+                                ->select(["CONCAT(category,' - ',topic) as name", 'id'])
+                                ->where(['IN', 'id', $topic_ids])
+                                ->orderBy(['id' => SORT_ASC])
+                                ->asArray()
+                                ->all();
+                    }
+                    return ['output' => $out, 'selected' => $selected_id];
+                }
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+    public function actionTopicss() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+
+        if (isset($_POST['depdrop_parents'])) {
+
+            $parents = $_POST['depdrop_parents'];
+            $selected_id = $_POST['depdrop_all_params']['selected_id2'];
+
+            if ($parents != null) {
+                //Lets get topics that a farmer has already been trained on
+                $topic_ids = [];
+                $topic_ids1 = [];
+                $final_out = [];
+                $farmer_trained_topics = \backend\models\MeFaabsTrainingAttendanceSheet::find()
+                        ->where(['farmer_id' => $parents[0]])
+                        ->andWhere(['faabs_group_id' => $parents[1]])
+                        ->asArray()
+                        ->all();
+                //  \Yii::warning($farmer_trained_topics);
+
+                $faabs_topics = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                        ->where(['faabs_id' => $parents[1]])
+                        ->asArray()
+                        ->all();
+
+
+
+                if (!empty($farmer_trained_topics)) {
+
+                    //We make sure that the topic we are trying to update is also in the list
+                    foreach ($farmer_trained_topics as $trained_topic) {
+                        if ($selected_id != $trained_topic['topic']) {
+                            array_push($topic_ids1, $trained_topic['topic']);
+                        }
+                    }
+
+                    foreach ($faabs_topics as $topic) {
+                        array_push($topic_ids, $topic['topic_id']);
+                    }
+
+                    //\Yii::warning($topic_ids);
+
+                    $training_topics = \backend\models\MeFaabsTrainingTopics::find()
+                            ->select(["CONCAT(category,' - ',topic) as name", 'id'])
+                            ->where(['IN', 'id', $topic_ids])
+                            ->orderBy(['id' => SORT_ASC])
+                            ->asArray()
+                            ->all();
+
+                    foreach ($training_topics as $topics) {
+                        if (!in_array($topics['id'], $topic_ids1)) {
+                            $_arr = [
+                                'id' => $topics['id'],
+                                'name' => $topics['name']
+                            ];
+                            array_push($final_out, $_arr);
+                        }
+                    }
+
+                    // \Yii::warning($final_out);
+                    return ['output' => $final_out, 'selected' => $selected_id];
+                } else {
+                    //  \Yii::warning("Selected::::");
+                    //  \Yii::warning($selected_id);
+                    if (!empty($faabs_topics)) {
+                        foreach ($faabs_topics as $topic) {
+                            array_push($topic_ids, $topic['topic_id']);
+                        }
+
+                        $out = \backend\models\MeFaabsTrainingTopics::find()
+                                ->select(["CONCAT(category,' - ',topic) as name", 'id'])
+                                ->where(['IN', 'id', $topic_ids])
+                                ->orderBy(['id' => SORT_ASC])
+                                ->asArray()
+                                ->all();
+                    }
+                    return ['output' => $out, 'selected' => $selected_id];
+                }
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+    public function actionTopic() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //$selected_id = $_POST['depdrop_all_params']['selected_id2'];
+
+            if ($parents != null) {
+                $topic_ids = [];
+                $faabs_topics = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                        ->where(['faabs_id' => $parents[0]])
+                        ->asArray()
+                        ->all();
+                if (!empty($faabs_topics)) {
+                    foreach ($faabs_topics as $topic) {
+                        array_push($topic_ids, $topic['topic_id']);
+                    }
+
+                    $out = \backend\models\MeFaabsTrainingTopics::find()
+                            ->select(["CONCAT(category,' - ',topic) as name", 'id'])
+                            ->where(['IN', 'id', $topic_ids])
+                            ->orderBy(['id' => SORT_ASC])
+                            ->asArray()
+                            ->all();
+                    \Yii::warning("OUTPUT::::");
+                    \Yii::warning($out);
+                    return ['output' => $out, 'selected' => ""];
+                }
             }
         }
         return ['output' => '', 'selected' => ''];
