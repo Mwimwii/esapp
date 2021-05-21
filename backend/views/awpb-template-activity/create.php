@@ -5,8 +5,6 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplateActivity */
 
-
-
 $this->title = 'Link Activity to AWPB Template ';
 $this->params['breadcrumbs'][] = ['label' => 'AWPB Template and Activities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;

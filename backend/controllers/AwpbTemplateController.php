@@ -15,7 +15,7 @@ use backend\models\AwpbTemplateActivity;
 use backend\models\User;
 use backend\models\UploadImageForm;
 use yii\web\UploadedFile;
-
+use yii\helpers\ArrayHelper;
 
 /**
  * AwpbTemplateController implements the CRUD actions for AwpbTemplate model.
@@ -331,7 +331,87 @@ public function actionRead($id)
     //     ]);
     // }
 
-    public function actionUpdate1($id)
+    public function actionUpdate($id) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
+            $model = $this->findModel($id);
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+            
+            $model->activities = AwpbTemplateActivity::getActivities($id);
+            $array = [];
+            foreach ($model->activities as $activity => $v) {
+                array_push($array, $activity);
+            }
+            $model->activities = $array;
+            if ($model->load(Yii::$app->request->post())) {
+                var_dump(Yii::$app->request->post());
+                var_dump($model->activities);
+               // var_dump($model->budget_theme);
+                // if (!empty($model->activities)) {
+                //     $model->updated_by = Yii::$app->user->id;
+                //     if ($model->save()) {
+                //         $awpbTemplateActivity = new AwpbTemplateActivity();
+                //         $awpbTemplateActivity::deleteAll(['awpb_template_id' => $id]);
+                //         foreach ($model->activities as $activity) {
+                //             //check if the right was already assigned to this role
+
+                //             $awpbTemplateActivity->awpb_template_id = $id;
+                //             $awpbTemplateActivity->id = NULL; //primary key(auto increment id) id
+                //             $awpbTemplateActivity->isNewRecord = true;
+                //             $awpbTemplateActivity->activity_id = $activity;
+                //             //$rightAllocation->created_by = Yii::$app->user->id;
+                //             $awpbTemplateActivity->save();
+                //         }
+
+                //         //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
+                //         // if (Yii::$app->getUser()->identity->role == $model->id) {
+                //         //     $rightsArray = \common\models\RightAllocation::getRights(Yii::$app->getUser()->identity->role);
+                //         //     $rights = implode(",", $rightsArray);
+
+                //         //     $session = Yii::$app->session;
+                //         //     $session->set('rights', $rights);
+                //         // }
+
+                //         $audit = new AuditTrail();
+                //         $audit->user = Yii::$app->user->id;
+                //         $audit->action = "Updated " . $model->fiscal_year ." fiscal year";
+                //         $audit->ip_address = Yii::$app->request->getUserIP();
+                //         $audit->user_agent = Yii::$app->request->getUserAgent();
+                //         $audit->save();
+                //         Yii::$app->session->setFlash('success',  $model->fiscal_year. ' was successfully updated.');
+                //        // return $this->redirect(['view', 'id' => $model->id]);
+                //     } else {
+                //         Yii::$app->session->setFlash('error', 'Error occurred while updating template. Please try again.');
+                        
+                //         // return $this->render('update', [
+                //         //     'id' => $model->id                     
+                //         // ]);
+                //     }
+                   
+                } 
+                else {
+                    Yii::$app->session->setFlash('error', 'You need to select at least one activity!');
+                    // return $this->render('update', [
+                    //     'model' => $model,
+                    //     'id' => $model->id,]);
+                }
+            
+
+            // return $this->render('update', [
+            //             'model' => $model
+            // ]);
+        
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+
+
+    public function actionUpdate4($id)
     {
         if (User::userIsAllowedTo('Manage AWPB templates')) {
             $model = $this->findModel($id);
@@ -341,21 +421,43 @@ public function actionRead($id)
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
             }
-          
-
+          $test="";
             if ($model->load(Yii::$app->request->post())) {
                
-               
                 if ($model->save(true,['budget_theme','comment','status','updated_at','updated_by']) && $model->validate()) {
+
+                   //$activities = \backend\models\AwpbActivity::getSubActivities();
+                    $awpbTemplateActivity = new AwpbTemplateActivity();
+                    $awpbTemplateActivity::deleteAll(['awpb_template_id' => $id]);
+                   
+                    
+                    if(isset($model->activities))
+    {
+        foreach($model->activities as $row)
+        {
+            $awpbTemplateActivity->awpb_template_id=$id;
+            $awpbTemplateActivity->activity_id = $row[0] ;
+            $awpbTemplateActivity->id = NULL; //primary key(auto increment id) id
+            $awpbTemplateActivity->isNewRecord = true;
+            // $rightAllocation->right = $right;
+            //$rightAllocation->created_by = Yii::$app->user->id;
+            $awpbTemplateActivity->save();//true,['awpb_template_id','activity_id','updated_at','updated_by']);
+            $test =   $row[0];
+        }
+
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
                     $audit->action = "Updated " . $model->fiscal_year ." AWPB template";
                     $audit->ip_address = Yii::$app->request->getUserIP();
                     $audit->user_agent = Yii::$app->request->getUserAgent();
                     $audit->save();
-                    Yii::$app->session->setFlash('success', $model->fiscal_year. " AWPB template details were successfully updated.");
-                    return $this->redirect(['view', 'id' => $model->id]); 
-                   
+                    Yii::$app->session->setFlash('success', $model->fiscal_year. " AWPB template details were successfully updated. ".$test);
+                    Yii::$app->session->setFlash('error',var_dump($model->activities));
+                  
+                   // return $this->redirect(['view', 'id' => $model->id]); 
+                }
+                    Yii::$app->session->setFlash('error',var_dump($model->activities));
+
                 } else {
                     $message = '';
                     foreach ($model->getErrors() as $error) {
@@ -366,8 +468,9 @@ public function actionRead($id)
                         'model' => $model,                      
                     ]);
                 }
+                    Yii::$app->session->setFlash('error',var_dump($model->activities));
                
-                return $this->redirect(['view', 'id' => $model->id]);
+                //return $this->redirect(['view', 'id' => $model->id]);
             }
 
             return $this->render('update', [
@@ -382,30 +485,33 @@ public function actionRead($id)
     }
 
 
-    public function actionUpdate($id) {
+    public function actionUpdate2($id) {
         if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
             }
-            $model->activities = \backend\models\AwpbTemplateActivity::getActivities($model->id);
+
+
+            $activities = $model->activities;
             $array = [];
-            foreach ($model->activities as $activity => $v) {
-                array_push($array, $activity);
-            }
+             foreach ($activities as $act => $v) {
+                 array_push($array, $act);
+             }
+
             $model->activities = $array;
             if ($model->load(Yii::$app->request->post())) {
                 if (!empty($model->activities)) {
                     $model->updated_by = Yii::$app->user->id;
                     if ($model->save()) {
                         $awpbTemplateActivity = new AwpbTemplateActivity();
-                        $awpbTemplateActivity::deleteAll(['awpb_tempate_id' => $id]);
+                        $awpbTemplateActivity::deleteAll(['awpb_template_id' => $id]);
                         foreach ($model->activities as $activity) {
                             //check if the right was already assigned to this role
 
                             $awpbTemplateActivity->awpb_template_id=$id;
-                            $awpbTemplateActivity->activity_id = $activity->id ;
+                            $awpbTemplateActivity->activity_id = $activity;
                             $awpbTemplateActivity->id = NULL; //primary key(auto increment id) id
                             $awpbTemplateActivity->isNewRecord = true;
                            // $rightAllocation->right = $right;

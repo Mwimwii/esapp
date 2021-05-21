@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -44,14 +45,24 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id', 'activities', 'awpb_template_id','created_at', 'updated_at'], 'required'],
+            [['activity_id', 'awpb_template_id'], 'required'],
             [['activity_id', 'component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
         ];
     }
-
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -107,7 +118,11 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
         $data = self::find()
         ->where(['id'=>$id])
         ->all();
-        $list = ArrayHelper::map($data, 'id','id');
+        $list = ArrayHelper::map($data, 'id','name');
         return $list;
+    }
+    public static function getAllRights() {
+        $query = self::find()->all();
+        return $query;
     }
 }
