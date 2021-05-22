@@ -22,7 +22,8 @@ $this->params['breadcrumbs'][] = 'Update';
         <hr class="dotted short">
 
         <?=
-        $this->render('_form_1', [
+
+        $this->render('_form', [
             'model' => $model,
         ])
         ?>

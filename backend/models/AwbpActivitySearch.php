@@ -19,7 +19,9 @@ class AwbpActivitySearch extends AwpbActivity
         return [
             [['id', 'parent_activity_id', 'component_id', 'awpb_template_id', 'funder_id','unit_of_measure_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['activity_code', 'description','gl_account_code'], 'safe'],
+
              [['year','district_id', 'province_id'], 'safe'],
+
             [['programme_target','quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
         ];
     }

@@ -27,6 +27,7 @@ $district = !empty($district_model) ? $district_model->name : "";
         if (User::userIsAllowedTo('Manage faabs groups')) {
             if (!empty(backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id))) {
                 $ready_only = false;
+
                 echo '<p> 
                           <h5>Instructions</h5>
                           <ol>
@@ -93,7 +94,11 @@ $district = !empty($district_model) ? $district_model->name : "";
                     'pluginOptions' => ['allowClear' => true],
                 ],
                 //  'filter' => true,
-                'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
+
+                //'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
+
+                'filter' => !empty(Yii::$app->user->identity->district_id)?\backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id):backend\models\Camps::getList(),
+
                 'filterInputOptions' => ['prompt' => 'Filter by camp', 'class' => 'form-control', 'id' => null],
                 'readonly' => $ready_only,
                 'refreshGrid' => true,
@@ -188,6 +193,7 @@ $district = !empty($district_model) ? $district_model->name : "";
                     return date('d F Y H:i:s', $model->created_at);
                 }
             ],
+
             [
                 'filter' => false,
                 'contentOptions' => ['class' => 'text-center', 'style' => ''],
@@ -208,6 +214,7 @@ $district = !empty($district_model) ? $district_model->name : "";
                 },
                 'format' => 'raw',
             ],
+
             // 'description:ntext',
             // 'latitude',
             //'longitude',
@@ -217,6 +224,7 @@ $district = !empty($district_model) ? $district_model->name : "";
             //'updated_by',
             ['class' => ActionColumn::className(),
                 'options' => ['style' => 'width:130px;'],
+
                 'template' => '{view}{delete}',
                 'buttons' => [
                     'view' => function ($url, $model) {
@@ -231,6 +239,7 @@ $district = !empty($district_model) ? $district_model->name : "";
                                         ]
                         );
                     },
+
                     'delete' => function ($url, $model) {
                         if (User::userIsAllowedTo('Remove faabs groups')) {
                             return Html::a(

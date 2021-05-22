@@ -293,6 +293,147 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             </div>
         </div>
     </div>
+
+    <div class="col-lg-5">
+        <!-- TO DO List -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ion ion-clipboard mr-1"></i>
+                   AWPB Downloads
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <ul class="todo-list" data-widget="todo-list">
+                    <li>
+                        <?php
+
+$awpb_template = \backend\models\AWPBTemplate::findOne([
+    
+    'status' => \backend\models\AWPBTemplate::STATUS_ACTIVE,
+])  ;
+                        echo Html::a(
+                                '<div  class="icheck-primary d-inline ml-2">
+                            <i class="fa fa-file-pdf fa-2x"></i>
+                        </div>
+                        <!-- todo text -->
+                        <span class="text">'.$awpb_template->fiscal_year . ' Budget Guidelines</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+
+                                ['awpb-template/read','id'=>$awpb_template->id,], [
+                            'title' => $awpb_template->fiscal_year .' budget uidelines',
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                                ]
+                        );
+                        ?>
+
+                    </li>
+                    <li>
+                        <?php
+                        echo Html::a(
+                                '<div  class="icheck-primary d-inline ml-2">
+                            <i class="fa fa-file-excel fa-2x"></i>
+                        </div>
+                        <!-- todo text -->
+                        <span class="text">'.$awpb_template->fiscal_year . ' Sage Pastel Budget File</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+
+                     
+
+                         ['reports/download-budget','id'=>$awpb_template->id,
+                             
+                        ], [
+                            'title' => 'Download Cat A farmer registration form',
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                                ]
+                        );
+                        ?>
+                    </li>
+                    <!--<li>-->
+                    <?php
+                    /* echo Html::a(
+                      '<div  class="icheck-primary d-inline ml-2">
+                      <i class="fa fa-file-pdf fa-2x"></i>
+                      </div>
+                      <!-- todo text -->
+                      <span class="text">Farming as Business(FaaBS) Register form</span>
+                      <div class="tools">
+                      <i class="fas fa-download fa-2x"></i>
+                      </div>',
+                      ['/interview-guide-template/download-template',], [
+                      'title' => 'Download interview guide template',
+                      'target' => '_blank',
+                      'data-toggle' => 'tooltip',
+                      'data-placement' => 'top',
+                      'data-pjax' => '0',
+                      'style' => "padding:5px;",
+                      ]
+                      ); */
+                    ?>
+                    <!-- </li>-->
+                    <li>
+                        <?php
+                        if (!empty(Yii::$app->user->identity->district_id)) {
+                            echo Html::a(
+                                    '<div  class="icheck-primary d-inline ml-2">
+                            <i class="fa fa-file-pdf fa-2x"></i>
+                        </div>
+                        <!-- todo text -->
+                        <span class="text">Farming as Business(FaaBS) Attendance Sheet</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+                                    ['',], [
+                                'title' => 'Download FaaBS training attendance sheet',
+                                'target' => '_blank',
+                                "data-toggle" => "modal",
+                                "data-target" => "#faabsModal",
+                                // 'data-toggle' => 'tooltip',
+                                // 'data-placement' => 'top',
+                                // 'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                    ]
+                            );
+                        } else {
+                            echo Html::a(
+                                    '<div  class="icheck-primary d-inline ml-2">
+                          <i class="fa fa-file-pdf fa-2x"></i>
+                          </div>
+                          <!-- todo text -->
+                          <span class="text">Farming as Business(FaaBS) Attendance Sheet</span>
+                          <div class="tools">
+                          <i class="fas fa-download fa-2x"></i>
+                          </div>',
+                                    ['/downloads/faabs-attendance-sheet',], [
+                                'title' => 'Download FaaBS training attendance sheet',
+                                'target' => '_blank',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                    ]
+                            );
+                        }
+                        ?>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div class="card card-success card-outline">
@@ -490,6 +631,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     ]
                 ]);
 
+
                 echo $form->field($faabs_model, 'topic')->widget(DepDrop::classname(), [
                     'options' => ['id' => 'topic_id', 'custom' => true, 'required' => TRUE],
                     'pluginOptions' => [
@@ -503,6 +645,9 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
 
 
                 //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
+
+                echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector'=>'radio']);
+
                 ?>
             </div>
             <div class="modal-footer justify-content-between">
