@@ -489,7 +489,20 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                         'params' => ['selected_id'],
                     ]
                 ]);
-                echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector'=>'radio']);
+
+                echo $form->field($faabs_model, 'topic')->widget(DepDrop::classname(), [
+                    'options' => ['id' => 'topic_id', 'custom' => true, 'required' => TRUE],
+                    'pluginOptions' => [
+                        'depends' => ['faabs_id'],
+                      //  'initialize' => $model->isNewRecord ? false : true,
+                        'placeholder' => 'Please select a topic',
+                        'url' => yii\helpers\Url::to(['/faabs-groups/topic']),
+                        'params' => ['selected_id'],
+                    ]
+                ]);
+
+
+                //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
                 ?>
             </div>
             <div class="modal-footer justify-content-between">

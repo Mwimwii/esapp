@@ -141,10 +141,18 @@ $ready_only = true;
                 },
                 'format' => 'raw',
             ],
+            /* [
+              'attribute' => "household_head_type",
+              'filter' => false,
+              'visible' => empty(Yii::$app->user->identity->district_id) ? false : true
+              ], */
             [
-                'attribute' => "household_head_type",
+                'attribute' => "training_type",
                 'filter' => false,
-                'visible' => empty(Yii::$app->user->identity->district_id) ? false : true
+                'value' => function($model) {
+                    return $model->training_type == "Participants under Direct/Intensive Training [Stream 1]" ?
+                            "Direct/Intensive Training" : "Non-Direct/Other Training";
+                }
             ],
             [
                 'attribute' => "topic",
@@ -287,6 +295,10 @@ $ready_only = true;
                     $_model = backend\models\MeFaabsCategoryAFarmers::findOne($model->farmer_id);
                     return !empty($_model) ? $_model->title . "" . $_model->first_name . " " . $_model->other_names . " " . $_model->last_name : "";
                 },
+            ],
+            [
+                'attribute' => "training_type",
+                'filter' => false,
             ],
             [
                 'attribute' => "household_head_type",

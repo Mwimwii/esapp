@@ -239,12 +239,13 @@ class FaabsTrainingAttendanceController extends Controller {
                 }
                 $month = date("n", strtotime($model->training_date));
                 $model->quarter = MeFaabsTrainingAttendanceSheet::getQuarter($month);
-                
+
                 //Also this is data duplication but its the best and efficient solution
                 //For the reports
-                $model->topic_indicator= \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->output_level_indicator;
-                $model->topic_subcomponent=\backend\models\MeFaabsTrainingTopics::findOne($model->topic)->subcomponent;
+                $model->topic_indicator = \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->output_level_indicator;
+                $model->topic_subcomponent = \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->subcomponent;
 
+                $model->training_type = \backend\models\MeFaabsTrainingTopicEnrolment::findOne(["topic_id" => $model->topic])->training_type;
                 if ($model->save()) {
                     $audit = new AuditTrail();
                     $audit->user = Yii::$app->user->id;
@@ -303,10 +304,11 @@ class FaabsTrainingAttendanceController extends Controller {
 
                 $month = date("n", strtotime($model->training_date));
                 $model->quarter = MeFaabsTrainingAttendanceSheet::getQuarter($month);
-                 //Also this is data duplication but its the best and efficient solution
+                //Also this is data duplication but its the best and efficient solution
                 //For the reports
-                $model->topic_indicator= \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->output_level_indicator;
-                $model->topic_subcomponent=\backend\models\MeFaabsTrainingTopics::findOne($model->topic)->subcomponent;
+                $model->topic_indicator = \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->output_level_indicator;
+                $model->topic_subcomponent = \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->subcomponent;
+                $model->training_type = \backend\models\MeFaabsTrainingTopicEnrolment::findOne(["topic_id" => $model->topic])->training_type;
                 
                 if ($model->save()) {
                     $audit = new AuditTrail();

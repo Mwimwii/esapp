@@ -57,14 +57,27 @@ use kartik\select2\Select2;
             <?php
             echo $form->field($model, 'team_members')->widget(Select2::classname(), [
                 'data' => \backend\models\User::getUsers(),
-                'options' => ['placeholder' => 'Select team members....', 'custom' => true],
+                'options' => ['placeholder' => 'Select a team member ...', 'multiple' => true],
                 'theme' => Select2::THEME_MATERIAL,
                 'size' => Select2::SMALL,
                 'pluginOptions' => [
-                    'allowClear' => true,
-                    'multiple' => true
+                    'tags' => true,
+                    'tokenSeparators' => [','],
+                    'maximumInputLength' => 10
                 ],
-            ]);
+            ])->label("Team members")->hint("Use commas to separate team members");
+
+            /* echo $form->field($model, 'team_members')->widget(Select2::classname(), [
+              'data' => \backend\models\User::getUsers(),
+              'options' => ['placeholder' => 'Select team members....', 'custom' => true, 'multiple' => true],
+              'theme' => Select2::THEME_MATERIAL,
+              'size' => Select2::SMALL,
+              'pluginOptions' => [
+              'allowClear' => true,
+              'tags' => true,
+              //'multiple' => true
+              ],
+              ]); */
             ?>
         </div>
         <div class="col-lg-6 form-group">

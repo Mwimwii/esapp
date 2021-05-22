@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4fd04c78f0c2268ab4c2aa4f6bf95ae4",
+    "content-hash": "2d7d5cccfd9350e669d2b4287c495ac7",
     "packages": [
         {
             "name": "2amigos/yii2-chartjs-widget",
@@ -763,6 +763,47 @@
                 "source": "https://github.com/giggsey/Locale/tree/master"
             },
             "time": "2020-07-07T11:16:24+00:00"
+        },
+        {
+            "name": "ivankff/yii2-modal-ajax",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivankff/yii2-modal-ajax.git",
+                "reference": "3860e1654e17cf82a8d3b63b3bb1903e565223e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivankff/yii2-modal-ajax/zipball/3860e1654e17cf82a8d3b63b3bb1903e565223e9",
+                "reference": "3860e1654e17cf82a8d3b63b3bb1903e565223e9",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "~2.0.14"
+            },
+            "default-branch": true,
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "ivankff\\yii2ModalAjax\\\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A wrapper around Yii2 Bootstrap Modal for using an ActiveForm via AJAX inside",
+            "homepage": "https://github.com/ivankff/yii2-modal-ajax",
+            "keywords": [
+                "ajax-modal",
+                "bootstrap",
+                "modal",
+                "yii2"
+            ],
+            "support": {
+                "source": "https://github.com/ivankff/yii2-modal-ajax/tree/4.1.0"
+            },
+            "time": "2020-01-15T10:42:32+00:00"
         },
         {
             "name": "kartik-v/bootstrap-checkbox-x",
@@ -9668,7 +9709,8 @@
         "kartik-v/yii2-tabs-x": 20,
         "kartik-v/yii2-widget-typeahead": 20,
         "kartik-v/yii2-widget-timepicker": 20,
-        "kartik-v/yii2-builder": 20
+        "kartik-v/yii2-builder": 20,
+        "ivankff/yii2-modal-ajax": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
