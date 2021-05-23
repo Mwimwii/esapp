@@ -58,6 +58,7 @@ class Right extends \yii\db\ActiveRecord {
     }
 
     public static function seedRights() {
+        //Please add rights to the end of the $rights array in below format
         //Right => Definition
         $rights = [
             "Commodity-Specific AWPB" => "Commodity-Specific AWPB",
