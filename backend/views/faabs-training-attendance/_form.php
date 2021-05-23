@@ -99,10 +99,10 @@ use yii\helpers\Url;
         ]);
         ?>
         <?= $form->field($model, 'partner_organisations')->textInput(['placeholder' => 'Enter partner organisations']) ?>
-        <?=
-                $form->field($model, "household_head_type", ['enableAjaxValidation' => true])
+        <?php
+               /* $form->field($model, "household_head_type", ['enableAjaxValidation' => true])
                 ->dropDownList(['Female headed' => "Female headed", "Male headed" => "Male headed"], ['custom' => true, 'prompt' => 'Select household head type', 'required' => false]
-        );
+        );*/
         ?>
     </div>
 

@@ -68,7 +68,7 @@ class MeFaabsTrainingAttendanceSheet extends \yii\db\ActiveRecord {
             //Hence this filter to cast to integer 
             [['farmer_id', 'faabs_group_id'], 'filter', 'filter' => 'intval'],
             [['topic', 'facilitators', 'partner_organisations'], 'string'],
-            [['household_head_type'], 'string', 'max' => 45],
+           // [['household_head_type'], 'string', 'max' => 45],
             [['duration'], 'string', 'max' => 10],
 
             [['province_id', 'district_id', 'camp_id', 'training_date','year', 'quarter','topic_indicator','topic_subcomponent','training_type'], 'safe'],

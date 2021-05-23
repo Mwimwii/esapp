@@ -86,6 +86,7 @@ class HomeController extends Controller {
             'options' => [
                 'text_input_as_HTML' => true,
                 'target' => '_blank',
+                'data-pjax'=>0
             // any mpdf options you wish to set
             ],
             'methods' => [

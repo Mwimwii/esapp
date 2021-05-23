@@ -66,7 +66,7 @@ class MeFaabsCategoryAFarmers extends \yii\db\ActiveRecord {
                     return $model->isAttributeChanged('nrc');
                 }, 'message' => 'NRC already in use!'],
             [['marital_status'], 'string', 'max' => 15],
-            [['province_id', 'district_id', 'camp_id'], 'safe'],
+            [['province_id', 'district_id', 'camp_id','household_head_type'], 'safe'],
             //[['contact_number'], 'string', 'max' => 16],
             [['contact_number'], PhoneInputValidator::className()],
             [['relationship_to_household_head'], 'string', 'max' => 50],
@@ -105,6 +105,7 @@ class MeFaabsCategoryAFarmers extends \yii\db\ActiveRecord {
             'nrc' => 'NRC',
             'marital_status' => 'Marital status',
             'contact_number' => 'Contact No.',
+            'household_head_type' => 'HH head type',
             'relationship_to_household_head' => 'Relationship to HH head',
             'registration_date' => 'Registration Date',
             'status' => 'Status',

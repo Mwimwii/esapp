@@ -258,12 +258,12 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                         </div>',
                                     ['',], [
                                 'title' => 'Download FaaBS training attendance sheet',
-                                'target' => '_blank',
+                                // 'target' => '_blank',
                                 "data-toggle" => "modal",
                                 "data-target" => "#faabsModal",
                                 // 'data-toggle' => 'tooltip',
                                 // 'data-placement' => 'top',
-                                // 'data-pjax' => '0',
+                                'data-pjax' => '0',
                                 'style' => "padding:5px;",
                                     ]
                             );
@@ -322,7 +322,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                             <i class="fas fa-download fa-2x"></i>
                         </div>',
                                 ['awpb-template/read', 'id' => (!empty($awpb_template->id) ? $awpb_template->id : ""),], [
-                            'title' => $fiscal_y. ' budget uidelines',
+                            'title' => $fiscal_y . ' budget uidelines',
                             'target' => '_blank',
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
@@ -344,7 +344,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                         <div class="tools">
                             <i class="fas fa-download fa-2x"></i>
                         </div>',
-                                ['reports/download-budget', 'id' =>(!empty($awpb_template->id) ? $awpb_template->id : ""),
+                                ['reports/download-budget', 'id' => (!empty($awpb_template->id) ? $awpb_template->id : ""),
                                 ], [
                             'title' => 'Download Cat A farmer registration form',
                             'target' => '_blank',
@@ -380,30 +380,9 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     <!-- </li>-->
                     <li>
                         <?php
-                        if (!empty(Yii::$app->user->identity->district_id)) {
-                            echo Html::a(
-                                    '<div  class="icheck-primary d-inline ml-2">
-                            <i class="fa fa-file-pdf fa-2x"></i>
-                        </div>
-                        <!-- todo text -->
-                        <span class="text">Farming as Business(FaaBS) Attendance Sheet</span>
-                        <div class="tools">
-                            <i class="fas fa-download fa-2x"></i>
-                        </div>',
-                                    ['',], [
-                                'title' => 'Download FaaBS training attendance sheet',
-                                'target' => '_blank',
-                                "data-toggle" => "modal",
-                                "data-target" => "#faabsModal",
-                                // 'data-toggle' => 'tooltip',
-                                // 'data-placement' => 'top',
-                                // 'data-pjax' => '0',
-                                'style' => "padding:5px;",
-                                    ]
-                            );
-                        } else {
-                            echo Html::a(
-                                    '<div  class="icheck-primary d-inline ml-2">
+                        /* if (!empty(Yii::$app->user->identity->district_id)) {
+                          echo Html::a(
+                          '<div  class="icheck-primary d-inline ml-2">
                           <i class="fa fa-file-pdf fa-2x"></i>
                           </div>
                           <!-- todo text -->
@@ -411,16 +390,37 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                           <div class="tools">
                           <i class="fas fa-download fa-2x"></i>
                           </div>',
-                                    ['/downloads/faabs-attendance-sheet',], [
-                                'title' => 'Download FaaBS training attendance sheet',
-                                'target' => '_blank',
-                                'data-toggle' => 'tooltip',
-                                'data-placement' => 'top',
-                                'data-pjax' => '0',
-                                'style' => "padding:5px;",
-                                    ]
-                            );
-                        }
+                          ['',], [
+                          'title' => 'Download FaaBS training attendance sheet',
+                          'target' => '_blank',
+                          "data-toggle" => "modal",
+                          "data-target" => "#faabsModal",
+                          // 'data-toggle' => 'tooltip',
+                          // 'data-placement' => 'top',
+                          // 'data-pjax' => '0',
+                          'style' => "padding:5px;",
+                          ]
+                          );
+                          } else {
+                          echo Html::a(
+                          '<div  class="icheck-primary d-inline ml-2">
+                          <i class="fa fa-file-pdf fa-2x"></i>
+                          </div>
+                          <!-- todo text -->
+                          <span class="text">Farming as Business(FaaBS) Attendance Sheet</span>
+                          <div class="tools">
+                          <i class="fas fa-download fa-2x"></i>
+                          </div>',
+                          ['/downloads/faabs-attendance-sheet',], [
+                          'title' => 'Download FaaBS training attendance sheet',
+                          'target' => '_blank',
+                          'data-toggle' => 'tooltip',
+                          'data-placement' => 'top',
+                          'data-pjax' => '0',
+                          'style' => "padding:5px;",
+                          ]
+                          );
+                          } */
                         ?>
                     </li>
                 </ul>
@@ -597,16 +597,17 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <?php
+            $faabs_model = new \backend\models\Downloads();
+            ?>
+            <?php
+            $form = ActiveForm::begin([
+                        'action' => 'faabs-attendance-sheet',
+                             // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
+                    ])
+            ?>
             <div class="modal-body">
-                <?php
-                $faabs_model = new \backend\models\Downloads();
-                ?>
-                <?php
-                $form = ActiveForm::begin([
-                            'action' => 'faabs-attendance-sheet',
-                            'options' => ['target' => '_blank']
-                        ])
-                ?>
+
                 <?php
                 echo $form->field($faabs_model, 'camp')
                         ->dropDownList(
@@ -646,8 +647,8 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-danger btn-xs" data-dismiss="modal"><span class="fa fa-times-circle"></span> <span class="text-xs">Close</span></button>
                 <?= Html::submitButton('<span class="fa fa-download"></span> <span class="text-xs">Download</span>', ['class' => 'btn btn-success btn-xs']) ?>
-                <?php ActiveForm::end() ?>
             </div>
+            <?php ActiveForm::end() ?>
         </div>
         <!-- /.modal-content -->
     </div>

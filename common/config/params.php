@@ -20,5 +20,5 @@ return [
         'allowNegative' => false,
     ],
     'youthMinAge' => 15,
-    'youthMaxAge' => 24
+    'youthMaxAge' => 35,
 ];
