@@ -176,6 +176,8 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
+
+
                             <!-------------------------------LKM DATA STARTS------------------------------>
                             <?php
                             if (User::userIsAllowedTo("Manage interview guide template questions") ||
@@ -268,6 +270,142 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------LKM ENDS------------------------------------->
+
+
+                            
+                            <!-------------------------------MATCHING GRANT FACILITY----------------------->
+                            <?php
+                            if (User::userIsAllowedTo("View MGF module")) {
+                                if (Yii::$app->controller->id == "mgf-applicant" ||
+                                        Yii::$app->controller->id == "mgf-applicant") {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                                <i class="nav-icon fas fa-money-check-alt"></i>
+                                <p>
+                                    Matching Grant Facility<i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                    if (User::userIsAllowedTo("View MGF Applicants")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-applicant" &&
+                                        (Yii::$app->controller->action->id == "index" ||
+                                        Yii::$app->controller->action->id == "update" ||
+                                        Yii::$app->controller->action->id == "view")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Applicants</p>', ['/mgf-applicant/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Applicants</p>', ['/mgf-applicant/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("View MGF Organisations")) {
+                                        echo '   <li class="nav-item">';
+                                        if ((Yii::$app->controller->id == "mgf-organisation" || Yii::$app->controller->id == "mgf-contact") &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "open" ||
+                                                Yii::$app->controller->action->id == "manage" ||
+                                                Yii::$app->controller->action->id == "veryfy" ||
+                                                Yii::$app->controller->action->id == "update" ||
+                                                Yii::$app->controller->action->id == "applications")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Organisations</p>', ['mgf-organisation/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Organisations</p>', ['mgf-organisation/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("View MGF Concept Note")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-concept-note" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Concept Notes</p>', ['mgf-concept-note/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Concept Notes</p>', ['mgf-concept-note/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("View MGF Application")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-application" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "applications" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "manage")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Applications</p>', ['mgf-application/index','status'=>4], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Applications</p>', ['mgf-application/index','status'=>4], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    if (User::userIsAllowedTo("View MGF Approvals")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-approval" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "review" ||
+                                                Yii::$app->controller->action->id == "accept" ||
+                                                Yii::$app->controller->action->id == "certify" ||
+                                                Yii::$app->controller->action->id == "approve")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Approvals</p>', ['mgf-approval/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Approvals</p>', ['mgf-approval/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    
+
+                                    if (User::userIsAllowedTo("View MGF Proposals")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-proposal" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "open" ||
+                                                Yii::$app->controller->action->id == "assigned" ||
+                                                Yii::$app->controller->action->id == "unassigned" ||
+                                                Yii::$app->controller->action->id == "review" ||
+                                                Yii::$app->controller->action->id == "reviewers" ||
+                                                Yii::$app->controller->action->id == "approvals")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Proposals</p>', ['mgf-proposal/index','status'=>0], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Proposals</p>', ['mgf-proposal/index','status'=>0], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("View MGF Evaluations")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-final-evaluation" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "evaluations")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Evaluations</p>', ['mgf-final-evaluation/index','status'=>4], ["class" => "nav-link active"]);
+                                            
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Evaluations</p>', ['mgf-final-evaluation/index','status'=>4], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>                           
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------MATCHING GRANT FACILITY ENDS------------------------->
+
                             <!-------------------------------M&E DATA STARTS------------------------------>
                             <?php
                             if (User::userIsAllowedTo("Manage faabs groups") ||

@@ -4,6 +4,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\User;
+use common\models\Role;
 
 /**
  * Signup form
@@ -11,6 +12,11 @@ use common\models\User;
 class SignupForm extends Model
 {
     public $username;
+    public $first_name;
+    public $last_name;
+    public $other_name;
+    public $phone;
+    public $nrc;
     public $email;
     public $password;
 
@@ -23,6 +29,10 @@ class SignupForm extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
+            ['first_name', 'required'],
+            ['last_name', 'required'],
+            ['phone', 'required'],
+            ['nrc', 'required'],
             ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
@@ -33,7 +43,9 @@ class SignupForm extends Model
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
             ['password', 'required'],
-            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+            ['other_name', 'required'],
+            ['password', 'string', 'min' => 5],
+            //['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
         ];
     }
 
@@ -42,20 +54,37 @@ class SignupForm extends Model
      *
      * @return bool whether the creating new account was successful and email was sent
      */
-    public function signup()
-    {
+    public function signup(){
         if (!$this->validate()) {
             return null;
         }
         
         $user = new User();
+        $role=Role::find()->where(['role'=>'Applicant'])->one();
         $user->username = $this->username;
+        $user->first_name = $this->first_name;
+        $user->last_name = $this->last_name;
+        $user->other_name = $this->other_name;
+        $user->nrc = $this->nrc;
+        $user->phone = $this->phone;
         $user->email = $this->email;
+        $user->role = $role->id;
+        $user->type_of_user='Applicant';
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-        return $user->save() && $this->sendEmail($user);
+        if($this->password==$this->other_name){
+            return $user->save() && $this->sendEmail($user);
+        }else{
+            Yii::$app->session->setFlash('error', 'Passwords DO NOT match');
+        }
+    }
 
+    public function attributeLabels(){
+        return [
+            'other_name' => 'Confirm Password',
+            'nrc'=>'NRC',
+        ];
     }
 
     /**
@@ -63,8 +92,7 @@ class SignupForm extends Model
      * @param User $user user model to with email should be send
      * @return bool whether the email was sent
      */
-    protected function sendEmail($user)
-    {
+    public function sendEmail($user){
         return Yii::$app
             ->mailer
             ->compose(

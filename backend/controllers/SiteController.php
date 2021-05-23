@@ -99,9 +99,7 @@ class SiteController extends Controller {
             return $this->redirect(['home/home']);
         }
         $model->password = '';
-        return $this->render('login', [
-                    'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model,]);
     }
 
 
