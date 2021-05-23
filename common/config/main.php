@@ -36,7 +36,7 @@ return [
                     'weight' => 100,
                 ],
             ],
-            'useMemcached' => false,
+            'useMemcached' => true,
         ],
         
         'urlManager' => [

@@ -300,7 +300,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="ion ion-clipboard mr-1"></i>
-                   AWPB Downloads
+                    AWPB Downloads
                 </h3>
             </div>
             <!-- /.card-header -->
@@ -308,23 +308,21 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                 <ul class="todo-list" data-widget="todo-list">
                     <li>
                         <?php
-
-$awpb_template = \backend\models\AWPBTemplate::findOne([
-    
-    'status' => \backend\models\AWPBTemplate::STATUS_ACTIVE,
-])  ;
+                        $awpb_template = \backend\models\AwpbTemplate::findOne([
+                                    'status' => \backend\models\AwpbTemplate::STATUS_ACTIVE,
+                        ]);
+                        $fiscal_y = !empty($awpb_template->fiscal_year) ? $awpb_template->fiscal_year : "";
                         echo Html::a(
                                 '<div  class="icheck-primary d-inline ml-2">
                             <i class="fa fa-file-pdf fa-2x"></i>
                         </div>
                         <!-- todo text -->
-                        <span class="text">'.$awpb_template->fiscal_year . ' Budget Guidelines</span>
+                        <span class="text">' . $fiscal_y . ' Budget Guidelines</span>
                         <div class="tools">
                             <i class="fas fa-download fa-2x"></i>
                         </div>',
-
-                                ['awpb-template/read','id'=>$awpb_template->id,], [
-                            'title' => $awpb_template->fiscal_year .' budget uidelines',
+                                ['awpb-template/read', 'id' => (!empty($awpb_template->id) ? $awpb_template->id : ""),], [
+                            'title' => $fiscal_y. ' budget uidelines',
                             'target' => '_blank',
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
@@ -342,16 +340,12 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
                             <i class="fa fa-file-excel fa-2x"></i>
                         </div>
                         <!-- todo text -->
-                        <span class="text">'.$awpb_template->fiscal_year . ' Sage Pastel Budget File</span>
+                        <span class="text">' . $fiscal_y . ' Sage Pastel Budget File</span>
                         <div class="tools">
                             <i class="fas fa-download fa-2x"></i>
                         </div>',
-
-                     
-
-                         ['reports/download-budget','id'=>$awpb_template->id,
-                             
-                        ], [
+                                ['reports/download-budget', 'id' =>(!empty($awpb_template->id) ? $awpb_template->id : ""),
+                                ], [
                             'title' => 'Download Cat A farmer registration form',
                             'target' => '_blank',
                             'data-toggle' => 'tooltip',
@@ -445,7 +439,7 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
     <div class="card-body">
         <?php
         $count = 0;
-        //Lets get case study stories that needs to be reviewed
+//Lets get case study stories that needs to be reviewed
         $_case_study_model = backend\models\Storyofchange::find()
                 ->where(['status' => 2]);
         if (!empty($_case_study_model)) {
@@ -457,7 +451,7 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
             }
         }
 
-        //Lets get BTOR reports that needs to be reviewed
+//Lets get BTOR reports that needs to be reviewed
         $_btor_model = backend\models\MeBackToOfficeReport::find()
                 ->where(['status' => 2]);
         if (!empty($_btor_model)) {
@@ -636,7 +630,7 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
                     'options' => ['id' => 'topic_id', 'custom' => true, 'required' => TRUE],
                     'pluginOptions' => [
                         'depends' => ['faabs_id'],
-                      //  'initialize' => $model->isNewRecord ? false : true,
+                        //  'initialize' => $model->isNewRecord ? false : true,
                         'placeholder' => 'Please select a topic',
                         'url' => yii\helpers\Url::to(['/faabs-groups/topic']),
                         'params' => ['selected_id'],
@@ -646,8 +640,7 @@ $awpb_template = \backend\models\AWPBTemplate::findOne([
 
                 //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
 
-                echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector'=>'radio']);
-
+                echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
                 ?>
             </div>
             <div class="modal-footer justify-content-between">
