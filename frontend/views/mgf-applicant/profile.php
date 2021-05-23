@@ -289,6 +289,8 @@ if ($applicant->organisation_id>0) {
                             'data-placement' => 'top','data-pjax' => '0','style' => "padding:5px;",]);
                         ?>
                     </li>
+                    
+                    
 
                     <li>
                         <?php
@@ -300,7 +302,7 @@ if ($applicant->organisation_id>0) {
                             'data-placement' => 'top','data-pjax' => '0','style' => "padding:5px;",]);
                         ?>
                     </li>
-                    
+
                    
                     
                     <li>
