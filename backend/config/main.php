@@ -1,8 +1,8 @@
 <?php
 
 $params = array_merge(
-        require __DIR__ . '/../../common/config/params.php', 
-        require __DIR__ . '/../../common/config/params-local.php', 
+        require __DIR__ . '/../../common/config/params.php',
+        require __DIR__ . '/../../common/config/params-local.php',
         require __DIR__ . '/params.php',
         require __DIR__ . '/params-local.php'
 );
@@ -22,7 +22,7 @@ return [
             'identityClass' => 'backend\models\User',
             'enableAutoLogin' => false,
             'loginUrl' => ['site/login'],
-            'authTimeout' => 14400,
+            'authTimeout' => 1 * 24 * 60 * 60,
             'identityCookie' => [
                 'name' => 'essap_identity-backend',
                 'httpOnly' => true,
@@ -41,17 +41,17 @@ return [
                 'lifetime' => 1 * 24 * 60 * 60,
             ],
         ],
-        //'cache' => [
-            //'class' => 'yii\caching\MemCache',
-            //'servers' => [
-                //[
-                    //'host' => '127.0.0.1',
-                    //'port' => 11211,
-                    //'weight' => 100,
-                //],
-            //],
-            //'useMemcached' => true,
-        //],
+       /* 'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'servers' => [
+                [
+                    'host' => '127.0.0.1',
+                    'port' => 11211,
+                    'weight' => 100,
+                ],
+            ],
+            'useMemcached' => true,
+        ],*/
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

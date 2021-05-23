@@ -133,7 +133,15 @@ class Right extends \yii\db\ActiveRecord {
             'Remove FaaBS training topics' => "",
             'View facilitation of improved technologies/best practices report' => "",
             'View training attendance cumulative report' => "",
-            'View physical tracking table report' => "View physical tracking table report"
+            'View physical tracking table report' => "View physical tracking table report",
+            'View MGF module' => "",
+            'View MGF Applicants' => "",
+            'View MGF Organisations' => "",
+            'View MGF Concept Note' => "",
+            'View MGF Application' => "",
+            'View MGF Approvals' => "",
+            'View MGF Proposals' => "",
+            'View MGF Evaluations' => "",
         ];
 
         $count = 0;
