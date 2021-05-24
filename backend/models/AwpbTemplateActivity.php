@@ -31,8 +31,8 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public $activities;
-    public $icons;
+    //public $activities;
+   // public $icons;
     
     public static function tableName()
     {
@@ -114,15 +114,27 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
     }
-    public static function getActivities($id) {
-        $data = self::find()
-        ->where(['id'=>$id])
-        ->all();
-        $list = ArrayHelper::map($data, 'id','name');
-        return $list;
+    // public static function getActivities($id) {
+    //     $data = self::find()
+    //     ->where(['awpb_template_id'=>$id])
+ 
+    //     ->all();
+    //     $list = ArrayHelper::map($data, 'id','name');
+    //     return $list;
+    // }
+    // public static function getAllRights() {
+    //     $query = self::find()->all();
+    //     return $query;
+    // }
+ 
+    
+    public static function getActivities($template_id) {
+              $rights = self::find()
+              
+                ->where(['awpb_template_id'=>$template_id])
+                ->all();
+        
+        return \yii\helpers\ArrayHelper::map($rights, 'id', 'name');
     }
-    public static function getAllRights() {
-        $query = self::find()->all();
-        return $query;
-    }
+
 }
