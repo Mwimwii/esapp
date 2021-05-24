@@ -105,6 +105,7 @@ class AwpbIndicator extends \yii\db\ActiveRecord
 
     public static function getIndicatorsPerComponent($id) {
         $data = self::find()->orderBy(['name' => SORT_ASC])
+
       ->where(['component_id'=>$id])
         ->all();
         $list = ArrayHelper::map($data, 'id','name');

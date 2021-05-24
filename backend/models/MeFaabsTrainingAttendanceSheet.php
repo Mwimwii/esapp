@@ -56,7 +56,9 @@ class MeFaabsTrainingAttendanceSheet extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['faabs_group_id', 'farmer_id', 'topic', 'facilitators', 'training_date', 'duration'], 'required'],
+
+            [['faabs_group_id', 'farmer_id', 'topic', 'facilitators', 'training_date', 'duration','training_type'], 'required'],
+
             [['faabs_group_id', 'farmer_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             //Needed for validation since Loading Post request returns all strings
             //and 'isAttributeChanged' will treat integers that in string formart
@@ -66,9 +68,11 @@ class MeFaabsTrainingAttendanceSheet extends \yii\db\ActiveRecord {
             //Hence this filter to cast to integer 
             [['farmer_id', 'faabs_group_id'], 'filter', 'filter' => 'intval'],
             [['topic', 'facilitators', 'partner_organisations'], 'string'],
-            [['household_head_type'], 'string', 'max' => 45],
+           // [['household_head_type'], 'string', 'max' => 45],
             [['duration'], 'string', 'max' => 10],
-            [['province_id', 'district_id', 'camp_id', 'training_date','year', 'quarter','topic_indicator','topic_subcomponent'], 'safe'],
+
+            [['province_id', 'district_id', 'camp_id', 'training_date','year', 'quarter','topic_indicator','topic_subcomponent','training_type'], 'safe'],
+
             ['farmer_id', 'unique', 'when' => function($model) {
                     return $this->isAttributeChanged('farmer_id') && !empty(self::findOne(['farmer_id' => $model->farmer_id, "training_date" => $model->training_date, "topic" => $model->topic,"faabs_group_id" => $model->faabs_group_id]));
                 }, 'message' => 'FaaBS training attendance is already submtted for this farmer for the entered training date and topic!'
@@ -114,6 +118,7 @@ class MeFaabsTrainingAttendanceSheet extends \yii\db\ActiveRecord {
             'facilitators' => 'Facilitators',
             'partner_organisations' => 'Partner organisations',
             'training_date' => 'Training date',
+            'training_type' => 'Training type',
             'duration' => 'Duration',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

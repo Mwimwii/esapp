@@ -194,7 +194,7 @@ class AwpbComponent extends \yii\db\ActiveRecord
       
     public static function getName($id) {
         $component = self::find()->where(['id' => $id])->one();
-        return ucfirst(strtolower($this->name));
+        return ucfirst(strtolower($component->name));
     
     }
 

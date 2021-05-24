@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use kartik\form\ActiveForm;
 use kartik\depdrop\DepDrop;
 use yii\helpers\Url;
 
@@ -13,6 +13,21 @@ use yii\helpers\Url;
 
 
 <?php
+if(!empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['province_id'])){
+    $model->province_id=$_GET['MeFaabsTrainingAttendanceSheetSearch']['province_id'];
+}
+if(!empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['district_id'])){
+    $model->district_id=$_GET['MeFaabsTrainingAttendanceSheetSearch']['district_id'];
+}
+if(!empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])){
+    $model->camp_id=$_GET['MeFaabsTrainingAttendanceSheetSearch']['camp_id'];
+}
+if(!empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['year'])){
+    $model->year=$_GET['MeFaabsTrainingAttendanceSheetSearch']['year'];
+}
+if(!empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['quarter'])){
+    $model->quarter=$_GET['MeFaabsTrainingAttendanceSheetSearch']['quarter'];
+}
 $form = ActiveForm::begin([
             'action' => ['facilitation-imporoved-technologies'],
             'method' => 'get',
@@ -24,7 +39,9 @@ $form = ActiveForm::begin([
         echo
                 $form->field($model, 'province_id')
                 ->dropDownList(
-                        \backend\models\Provinces::getProvinceList(), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select a province', 'required' => true]
+                        \backend\models\Provinces::getProvinceList(), 
+                        ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select a province', 
+                            'required' => true]
                 )->label("Province");
         ?>
     </div>
@@ -94,5 +111,3 @@ $form = ActiveForm::begin([
 </div>
 
 <?php ActiveForm::end(); ?>
-
-

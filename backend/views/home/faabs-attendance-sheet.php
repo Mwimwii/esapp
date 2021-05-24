@@ -38,7 +38,7 @@ use yii\helpers\Html;
         if (!empty($faabs_group)) {
             echo '<span style="font-size: 11px;"> Session duration:_____________hrs___________minutes.&nbsp;Name of FaaBS:  </span>';
             echo '<span style="font-size:1em;text-decoration:underline;">'
-            . '<span style="font-size: 11px;">&nbsp;&nbsp;' . $faabs_group . '&nbsp;&nbsp;</span></span>';
+            . '<span style="font-size: 11px;">&nbsp;&nbsp;' . $faabs_group->name . '&nbsp;&nbsp;</span></span>';
         } else {
             echo '<span style="font-size: 11px;"> Session duration:_____________hrs___________minutes.&nbsp;Name of FaaBS:____________________________________________</span>';
         }
@@ -87,21 +87,77 @@ use yii\helpers\Html;
             <td style="font-weight: normal;width:100px;" class="text-center">Signature</td>
         </tr>
         <?php
+        //We get farmers that belong to the FaaBS
+        $farmers = \backend\models\MeFaabsCategoryAFarmers::find()
+                ->where(['faabs_group_id' => $faabs_group->id])
+                ->asArray()
+                ->all();
+
+
         $count = 1;
-        for ($i = 1; $i < 29; $i++) {
-            echo ' <tr>
-            <td style="font-weight: bold;padding:8px;" class="text-center">' . $count . '</td>
-            <td style="font-weight: bold;" class="text-center"></td>
-            <td style="font-weight: bold;" class="text-center"></td>
-            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
-            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
-            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
-            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
-        </tr>';
-            $count++;
+        //If FaaBS has farmers, we check if there are some that have graduated
+        //and pick only those that are still being trained
+        if (!empty($farmers)) {
+            foreach ($farmers as $farmer) {
+                //Get how many topics farmer has been trained on
+                $trained = backend\models\MeFaabsTrainingAttendanceSheet::find()
+                        ->where(['faabs_group_id' => $faabs_group->id])
+                        ->andWhere(['farmer_id' => $farmer['id']])
+                        ->count();
+
+                //Get total topics for a FaaBS
+                $total = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                        ->where(['faabs_id' => $faabs_group->id])
+                        ->count();
+
+                //If farmer has graduated, we skip that farmer, it means they were trained on all topics
+                if ($total > $trained) {
+                    $farmer_names = $farmer['first_name'] . " " . $farmer['other_names'] . " " . $farmer['last_name'];
+                    echo
+                    '<tr>
+                            <td style="font-weight: bold;padding:8px;" class="text-center">' . $count . '</td>
+                            <td style="font-weight: bold;" class="text-left">' . $farmer_names . '</td>
+                            <td style="font-weight: bold;" class="text-center"></td>
+                            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                            <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                         </tr>';
+                    $count++;
+                }
+            }
+
+            //We add extra rows at the end of the sheet if the number of farmers is less than 29
+            if (count($farmers) < 29) {
+                for ($i = 1; $i < (29 - count($farmers)); $i++) {
+                    echo
+                    '<tr>
+                    <td style="font-weight: bold;padding:8px;" class="text-center">' . $count . '</td>
+                    <td style="font-weight: bold;" class="text-center"></td>
+                    <td style="font-weight: bold;" class="text-center"></td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                  </tr>';
+                    $count++;
+                }
+            }
+        } else {
+            for ($i = 1; $i < 29; $i++) {
+                echo
+                '<tr>
+                    <td style="font-weight: bold;padding:8px;" class="text-center">' . $count . '</td>
+                    <td style="font-weight: bold;" class="text-center"></td>
+                    <td style="font-weight: bold;" class="text-center"></td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+                    <td style="font-weight: bold;" class="text-center">&nbsp;</td>
+             </tr>';
+                $count++;
+            }
         }
         ?>
     </table>
 </div>
-
-

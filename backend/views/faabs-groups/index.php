@@ -9,6 +9,7 @@ use yii\grid\ActionColumn;
 use backend\models\User;
 use kartik\popover\PopoverX;
 use kartik\export\ExportMenu;
+use kartik\touchspin\TouchSpin;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\MeFaabsGroupsSearch */
@@ -27,6 +28,16 @@ $district = !empty($district_model) ? $district_model->name : "";
         if (User::userIsAllowedTo('Manage faabs groups')) {
             if (!empty(backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id))) {
                 $ready_only = false;
+
+                echo '<p> 
+                          <h5>Instructions</h5>
+                          <ol>
+                          <li>Click the button <span class="badge badge-success"><i class="fa fa-plus"></i> Add FaaBS Group</span> to add a new FaaBS group</li>
+                           <li>Clicking the view icon: <span class="fas fa-eye"></span> next to the FaaBS in the table below
+                           will allow you to add training topics/course that farmers will need to attend in order to graduat</li>
+                          
+                          </ol>
+                     </p>';
                 echo '<button class="btn btn-success btn-xs" href="#" onclick="$(\'#addNewModal\').modal(); 
                     return false;"><i class="fa fa-plus"></i> Add FaaBS Group</button>';
                 echo '<hr class="dotted short">';
@@ -84,7 +95,8 @@ $district = !empty($district_model) ? $district_model->name : "";
                     'pluginOptions' => ['allowClear' => true],
                 ],
                 //  'filter' => true,
-                'filter' => !empty(Yii::$app->user->identity->district_id)?\backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id):backend\models\Camps::getList(),
+                //'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
+                'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
                 'filterInputOptions' => ['prompt' => 'Filter by camp', 'class' => 'form-control', 'id' => null],
                 'readonly' => $ready_only,
                 'refreshGrid' => true,
@@ -119,24 +131,22 @@ $district = !empty($district_model) ? $district_model->name : "";
                 'refreshGrid' => true,
                 'readonly' => $ready_only,
             ],
-            /* [
-              'class' => EditableColumn::className(),
-              'enableSorting' => true,
-              'attribute' => 'code',
-              'editableOptions' => [
-              'type' => 'success',
-              'asPopover' => true,
-              'size' => PopoverX::SIZE_MEDIUM,
-              ],
-              'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
-              'filterWidgetOptions' => [
-              'pluginOptions' => ['allowClear' => true],
-              ],
-              'filter' => \backend\models\MeFaabsGroups::getNames(),
-              'filterInputOptions' => ['prompt' => 'Filter by FaaBS name', 'class' => 'form-control',],
-              'format' => 'raw',
-              'refreshGrid' => true,
-              ], */
+            [
+                'class' => EditableColumn::className(),
+                'enableSorting' => true,
+                'attribute' => 'max_farmer_graduation_training_topics',
+                'editableOptions' => [
+                    'type' => 'success',
+                    'asPopover' => true,
+                    'size' => PopoverX::SIZE_MEDIUM,
+                    'inputType' => Editable::INPUT_WIDGET,
+                    'widgetClass' => '\kartik\touchspin\TouchSpin',
+                ],
+                'filter' => false,
+                'format' => 'raw',
+                'refreshGrid' => true,
+                'readonly' => $ready_only,
+            ],
             [
                 'class' => EditableColumn::className(),
                 'attribute' => 'status',
@@ -179,6 +189,26 @@ $district = !empty($district_model) ? $district_model->name : "";
                     return date('d F Y H:i:s', $model->created_at);
                 }
             ],
+            [
+                'filter' => false,
+                'contentOptions' => ['class' => 'text-center', 'style' => ''],
+                'label' => 'Has training topics',
+                'value' => function($model) {
+                    $faabs_topic_model = backend\models\MeFaabsTrainingTopicEnrolment::find()
+                            ->where(['faabs_id' => $model->id])
+                            ->count();
+                    $str = "";
+                    if ($faabs_topic_model > 0) {
+                        $str = "<span class='fas fa-check text-success'> "
+                                . "</span><br>";
+                    } else {
+                        $str = "<span class='fas fa-times text-danger'> "
+                                . "</span><br>";
+                    }
+                    return $str;
+                },
+                'format' => 'raw',
+            ],
             // 'description:ntext',
             // 'latitude',
             //'longitude',
@@ -188,8 +218,20 @@ $district = !empty($district_model) ? $district_model->name : "";
             //'updated_by',
             ['class' => ActionColumn::className(),
                 'options' => ['style' => 'width:130px;'],
-                'template' => '{delete}',
+                'template' => '{view}{delete}',
                 'buttons' => [
+                    'view' => function ($url, $model) {
+                        return Html::a(
+                                        '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
+                                    'title' => 'Add training topics',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    'data-pjax' => '0',
+                                    'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );
+                    },
                     'delete' => function ($url, $model) {
                         if (User::userIsAllowedTo('Remove faabs groups')) {
                             return Html::a(
@@ -301,6 +343,16 @@ $district = !empty($district_model) ? $district_model->name : "";
                 <?=
                 $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'placeholder' =>
                     'Enter name of FaaBS group', 'id' => "province", 'required' => true,])
+                ?>
+                <?=
+                $form->field($model, 'max_farmer_graduation_training_topics')->widget(TouchSpin::classname(), [
+                    'options' => ['placeholder' => 'Enter max topics farmer needs to graduate'],
+                    'pluginOptions' => [
+                        // 'initval' => 3.00,
+                        'min' => 1,
+                        'max' => 1000,
+                    ],
+                ])->hint("Enter the maximum number of topics farmer needs to graduate");
                 ?>
 
             </div>

@@ -360,6 +360,10 @@ class CampMonthlyScheduleController extends Controller {
                 $activity_line_model->$column += $model->achieved_activity_target;
                 $activity_line_model->save(false);
 
+                //We also add to the cumulative actual for the activity
+                $activity_model = \backend\models\AwpbActivity::findOne($activity_line_model->activity_id);
+                $activity_model->cumulative_actual += $model->achieved_activity_target;
+                $activity_model->save(false);
 
                 if (Yii::$app->request->isAjax) {
                     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -407,6 +411,12 @@ class CampMonthlyScheduleController extends Controller {
                 //First we remove what we added then we add the new achieved target
                 $activity_line_model->$column -= $old_achieved_target;
                 $activity_line_model->$column += $model->achieved_activity_target;
+
+                //We also add to the cumulative actual for the activity
+                $activity_model = \backend\models\AwpbActivity::findOne($activity_line_model->activity_id);
+                $activity_model->cumulative_actual -= $old_achieved_target;
+                $activity_model->cumulative_actual += $model->achieved_activity_target;
+                $activity_model->save(false);
 
                 $activity_line_model->save(false);
                 if (Yii::$app->request->isAjax) {

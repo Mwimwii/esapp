@@ -15,6 +15,13 @@ use backend\models\AwpbActivitySearch;
  * @property int $id
  * @property string $code
  * @property int|null $parent_component_id
+ * @property string $description
+ * @property string $name
+ * @property string|null $outcome
+ * @property string|null $output
+ * @property string|null $subcomponent
+ * @property int $funder_id
+ * @property int $expense_category_id
  * @property string $name
  * @property string $description
  * @property string|null $outcome
@@ -33,29 +40,29 @@ use backend\models\AwpbActivitySearch;
  * @property AwpbActivity[] $awpbActivities
  * @property AwpbExpenseCategory $expenseCategory
  * @property AwpbFunder $funder
+
  * @property AwpbIndicator[] $awpbIndicators
  * @property AwpbOutcome[] $awpbOutcomes
  * @property AwpbTemplateActivity[] $awpbTemplateActivities
  */
-class AwpbComponent extends \yii\db\ActiveRecord
-{
+class AwpbComponent extends \yii\db\ActiveRecord {
+
     const TYPE_MAIN = 0;
     const TYPE_SUB = 1;
 
     public $sub_component;
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'awpb_component';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['code', 'name', 'description', 'type'], 'required'],
             [['parent_component_id', 'type', 'access_level', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
@@ -67,8 +74,8 @@ class AwpbComponent extends \yii\db\ActiveRecord
             [['name'], 'unique'],
             [['description'], 'unique'],
             ['access_level', 'required', 'when' => function($model) {
-                return $model->subcomponent== 'Component';
-                       }, 'message' => 'Access level can not be blank for a main component!'],
+                    return $model->subcomponent == 'Component';
+                }, 'message' => 'Access level can not be blank for a main component!'],
             [['expense_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbExpenseCategory::className(), 'targetAttribute' => ['expense_category_id' => 'id']],
             [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
         ];
@@ -77,8 +84,7 @@ class AwpbComponent extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'code' => 'Code',
@@ -105,8 +111,7 @@ class AwpbComponent extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbActivities()
-    {
+    public function getAwpbActivities() {
         return $this->hasMany(AwpbActivity::className(), ['component_id' => 'id']);
     }
 
@@ -115,8 +120,7 @@ class AwpbComponent extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getExpenseCategory()
-    {
+    public function getExpenseCategory() {
         return $this->hasOne(AwpbExpenseCategory::className(), ['id' => 'expense_category_id']);
     }
 
@@ -125,18 +129,33 @@ class AwpbComponent extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getFunder()
-    {
+    public function getFunder() {
         return $this->hasOne(AwpbFunder::className(), ['id' => 'funder_id']);
     }
+
+ 
+
+    public static function findById($id) {
+        return static::findOne(['id' => $id]);
+    }
+
+    public static function getComponentById($id) {
+        $data = self::find()->where(['code' => $id])->one();
+        return $data->code;
+    }
+
+    public static function getName($id) {
+        $component = self::find()->where(['id' => $id])->one();
+        return ucfirst(strtolower($component->name));
+    }
+
 
     /**
      * Gets query for [[AwpbIndicators]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbIndicators()
-    {
+    public function getAwpbIndicators() {
         return $this->hasMany(AwpbIndicator::className(), ['component_id' => 'id']);
     }
 
@@ -145,8 +164,7 @@ class AwpbComponent extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbOutcomes()
-    {
+    public function getAwpbOutcomes() {
         return $this->hasMany(AwpbOutcome::className(), ['component_id' => 'id']);
     }
 
@@ -155,47 +173,58 @@ class AwpbComponent extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbTemplateActivities()
-    {
+    public function getAwpbTemplateActivities() {
         return $this->hasMany(AwpbTemplateActivity::className(), ['component_id' => 'id']);
     }
 
-    public static function getAwpbComponentsList() {
-        
-            $components = self::find()
-            ->where(['type'=>self::TYPE_MAIN ])
-            ->orderBy(['name' => SORT_ASC])->all();
-            $list = ArrayHelper::map($components, 'id', 'name');
-            return $list;
-        }
     
-        public static function getAwpbSubComponentsList() {
-       
-                $components = self::find()
-                ->where(['type'=>self::TYPE_SUB ])
-                ->orderBy(['name' => SORT_ASC])->all();
-                $list = ArrayHelper::map($components, 'id', 'name');
-                return $list;   
-            }
-        
-        public static function getAwpbComponentCodes() {
-            $components = self::find()->orderBy(['code' => SORT_ASC])->all();
-            $list = ArrayHelper::map($components, 'id', 'code');
-            return $list;
-        }
-         public static function findById($id) {
-            return static::findOne(['id' => $id]);
-        }
-        public static function getComponentById($id) {
-            $data = self::find()->where(['code' => $id])->one();
-           return $data->code;
-           }
-          
-        public static function getName($id) {
-            $component = self::find()->where(['id' => $id])->one();
-            return ucfirst(strtolower($this->name));
-        
-        }
+       public static function getAwpbComponentsList() {
+        //     $countActivities = AwpbActivity::find()->select('component_id');
+        //     $subQuery = AwpbActivity::find()->select('id');
+        //    // $components = self::find()->where(['type', 'id', $subQuery])->all();
+        //     $components = self::find()->where('id Not IN (SELECT component_id from awpb_activity)')->all();
+        //     $list = ArrayHelper::map($components, 'id', 'name');
+        //     return $list;
+        //     ->where(['type'=>TYPE_MAIN ])
+        //     $rc=0;
+        $components = self::find()
+                        ->where(['type' => self::TYPE_MAIN])
+                        ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
 
+        //     $components = self::find()
+        //     ->joinWith(['AwpbActivity'])
+        //     ->select(['*', 'COUNT(AwpbActivity.*) as cnt'])
+        //     ->orderBy(['cnt' => 'DESC'])
+        //     ->where(['type'=>TYPE_MAIN ])
+        //     ->andWhere(['parent_component_id'=>null])
+        //     ->all();
+        //     $list = ArrayHelper::map($components, 'id', 'name');
+        //     return $list;
+        //     $count = (new \yii\db\Query())
+        //     ->from('user')
+        //     ->where(['last_name' => 'Smith'])
+        //     ->count();
+        // return  $awpbactivities;
+    }
+
+    public static function getAwpbSubComponentsList() {
+
+        $components = self::find()
+                        ->where(['type' => self::TYPE_SUB])
+                        ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
+    }
+
+    public static function getAwpbComponentCodes() {
+        $components = self::find()->orderBy(['code' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'code');
+        return $list;
+    }
+
+
+  
 
 }

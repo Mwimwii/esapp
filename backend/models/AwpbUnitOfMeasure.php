@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -12,12 +13,16 @@ use common\models\Role;
  * This is the model class for table "awpb_unit_of_measure".
  *
  * @property int $id
+
+ * @property string $name
+
  * @property string $description
  * @property int $status
  * @property int $created_by
  * @property int $created_at
  * @property int $updated_by
  * @property int $updated_at
+
  *
  * @property AwpbActivity[] $awpbActivities
  */
@@ -37,6 +42,7 @@ class AwpbUnitOfMeasure extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
             [['name', 'status'], 'required'],
             [['status', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 40],

@@ -98,15 +98,15 @@ class SiteController extends Controller {
             $session->set('user', $user->getFullName());
             $session->set('rights', $rights);
             $session->set('created_at', $user->created_at);
+
             $session->set('awpb_template_id',  AwpbTemplate::getId());
             
      
+
             return $this->redirect(['home/home']);
         }
         $model->password = '';
-        return $this->render('login', [
-                    'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model,]);
     }
 
 

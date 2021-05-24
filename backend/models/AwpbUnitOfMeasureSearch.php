@@ -7,7 +7,7 @@ use yii\data\ActiveDataProvider;
 use backend\models\AwpbUnitOfMeasure;
 
 /**
- * AwpbUnitOfMeasureSearch represents the model behind the search form of `app\models\AwpbUnitOfMeasure`.
+ * AwpbUnitOfMeasureSearch represents the model behind the search form of `backend\models\AwpbUnitOfMeasure`.
  */
 class AwpbUnitOfMeasureSearch extends AwpbUnitOfMeasure
 {
@@ -17,6 +17,7 @@ class AwpbUnitOfMeasureSearch extends AwpbUnitOfMeasure
     public function rules()
     {
         return [
+
             [['id'], 'integer'],
             [['name'], 'safe'],
         ];
@@ -59,6 +60,11 @@ class AwpbUnitOfMeasureSearch extends AwpbUnitOfMeasure
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'status' => $this->status,
+            'created_by' => $this->created_by,
+            'created_at' => $this->created_at,
+            'updated_by' => $this->updated_by,
+            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

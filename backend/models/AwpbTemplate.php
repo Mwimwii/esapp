@@ -25,9 +25,9 @@ use common\models\Role;
  * @property int|null $created_by
  * @property int|null $updated_by
  */
-class AwpbTemplate extends \yii\db\ActiveRecord
-{
-	const STATUS_INACTIVE = 0;
+class AwpbTemplate extends \yii\db\ActiveRecord {
+
+    const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_DISTRICT = 0;
     const STATUS_PROVINCIAL = 1;
@@ -35,28 +35,28 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     const STATUS_MINISTRY = 3;
     const STATUS_APROVED = 4;
     const STATUS_OLD = 5;
+
     public $activities;
     public $icons;
+
     /**
      * {@inheritdoc}
      */
-	 //public $guideline_doc;
-    public static function tableName()
-    {
+    //public $guideline_doc;
+    public static function tableName() {
         return 'awpb_template';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['fiscal_year', 'budget_theme', 'comment', 'status'], 'required'],
             [['fiscal_year', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['budget_theme', 'comment'], 'string'],
-           // [['guideline_file'], 'string', 'max' => 255],
-			[['guideline_file'], 'file',  'extensions' => 'pdf'],         
+            // [['guideline_file'], 'string', 'max' => 255],
+            [['guideline_file'], 'file', 'extensions' => 'pdf'],
             [['fiscal_year'], 'unique'],
         ];
     }
@@ -64,16 +64,15 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'fiscal_year' => 'Fiscal Year',
             'budget_theme' => 'Budget Theme',
             'comment' => 'Comment',
             'guideline_file' => 'Guidelines',
-            'activities'=>'Activities',
-			//'guideline_doc' => 'Guideline File',
+            'activities' => 'Activities',
+            //'guideline_doc' => 'Guideline File',
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -81,7 +80,8 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
         ];
     }
-	public function behaviors() {
+
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
@@ -95,18 +95,19 @@ class AwpbTemplate extends \yii\db\ActiveRecord
 
     public static function getAwpbTemplates() {
         $data = self::find()->orderBy(['fiscal_year' => SORT_ASC])
-        ->where(['status'=>self::STATUS_ACTIVE])
-        ->all();
+                ->where(['status' => self::STATUS_ACTIVE])
+                ->all();
         $list = ArrayHelper::map($data, 'id', 'fiscal_year');
         return $list;
     }
 
     public static function getId() {
-        $template = self::find()->where(['<>','status',AwpbTemplate::STATUS_OLD])->one();
-            
-        return  $template->id;
+        $template = self::find()->where(['<>', 'status', AwpbTemplate::STATUS_OLD])->one();
+
+        return !empty($template->id) ? $template->id : "";
     }
 
+<<<<<<< HEAD
     public function getAwpbTemplateActivities() {
         return $this->hasMany(AwpbTemplateActivity::className(), ['awpb_template_id' => 'id']);
     }
@@ -120,4 +121,15 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             return false;
         }
     }*/
+=======
+    /* public function upload()
+      {
+      if ($this->validate()) {
+      $this->guideline_doc->saveAs('uploads/' . $this->guideline_doc->baseName . '.' . $this->guideline_doc->extension);
+      return true;
+      } else {
+      return false;
+      }
+      } */
+>>>>>>> 83ba00ee3497f921f3368bad9bb14a56fb066b0b
 }

@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </td>
                             <td>
                                 <?php
-                                if (!empty($model->) && !empty($model->category_id) &&
+                                if (!empty($model->category_id) &&
                                         !empty($model->interviewee_names) && !empty($model->interviewer_names) &&
                                         !empty($model->date_interviewed)) {
                                     echo '<span class="badge badge-success">COMPLETED</span>';

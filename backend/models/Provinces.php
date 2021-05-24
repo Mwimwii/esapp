@@ -73,7 +73,7 @@ class Provinces extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getDistricts() {
-        return $this->hasMany(District::className(), ['province_id' => 'id']);
+        return $this->hasMany(Districts::className(), ['province_id' => 'id']);
     }
 
     public static function getProvinceList() {
@@ -93,7 +93,7 @@ class Provinces extends \yii\db\ActiveRecord {
     }
     public static function getName($id) {
         $province = self::find()->where(['id' => $id])->one();
-        return ucfirst(strtolower($this->name));
+        return ucfirst(strtolower($province->name));
     }
 
 }

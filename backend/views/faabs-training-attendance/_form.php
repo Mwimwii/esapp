@@ -1,3 +1,4 @@
+
 <?php
 
 use yii\helpers\Html;
@@ -6,6 +7,7 @@ use kartik\date\DatePicker;
 use kartik\widgets\TimePicker;
 use kartik\depdrop\DepDrop;
 use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\MeFaabsTrainingAttendanceSheet */
 /* @var $form yii\widgets\ActiveForm */
@@ -33,23 +35,38 @@ use yii\helpers\Url;
                 'params' => ['selected_id'],
             ]
         ]);
+
+        echo $form->field($model, 'topic', ['enableAjaxValidation' => true])->widget(DepDrop::classname(), [
+            'options' => ['id' => 'topic_id', 'custom' => true, 'required' => TRUE],
+            'pluginOptions' => [
+                'depends' => ['farm_id', 'faabs_id'],
+                'initialize' => $model->isNewRecord ? false : true,
+                'placeholder' => 'Please select a topic',
+                'url' => Url::to(['/faabs-groups/topics']),
+                'params' => ['selected_id'],
+            ]
+        ]);
         ?>
-        <?=
-                $form->field($model, "household_head_type", ['enableAjaxValidation' => true])
-                ->dropDownList(['Female headed' => "Female headed", "Male headed" => "Male headed"], ['custom' => true, 'prompt' => 'Select household head type', 'required' => true]
-        );
+        <?php
+        /*  $form->field($model, "training_type", ['enableAjaxValidation' => true])
+          ->dropDownList(
+          [
+          'Participants under Direct/Intensive Training [Stream 1]' => "Participants under Direct/Intensive Training [Stream 1]",
+          "Participants under non-Direct/Other Training [Stream 2]" => "Participants under non-Direct/Other Training [Stream 2]"
+          ], ['custom' => true, 'prompt' => 'Select training type', 'required' => true]
+          ); */
         ?>
+
         <?= $form->field($model, 'facilitators')->textInput(['placeholder' => 'Enter facilitators']) ?>
-        <?= $form->field($model, 'partner_organisations')->textInput(['placeholder' => 'Enter partner organisations']) ?>
 
     </div>
 
     <div class="col-lg-6">
-        <?=
-        $form->field($model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), [
-            'selector' => 'radio',
-            'height' => "200px"
-        ]);
+        <?php
+        /* $form->field($model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), [
+          'selector' => 'radio',
+          'height' => "200px"
+          ]); */
         ?>
 
         <?=
@@ -81,6 +98,12 @@ use yii\helpers\Url;
                     ]
         ]);
         ?>
+        <?= $form->field($model, 'partner_organisations')->textInput(['placeholder' => 'Enter partner organisations']) ?>
+        <?php
+               /* $form->field($model, "household_head_type", ['enableAjaxValidation' => true])
+                ->dropDownList(['Female headed' => "Female headed", "Male headed" => "Male headed"], ['custom' => true, 'prompt' => 'Select household head type', 'required' => false]
+        );*/
+        ?>
     </div>
 
     <div class="col-lg-12 form-group">
@@ -89,5 +112,3 @@ use yii\helpers\Url;
     </div>
 </div>
 <?php ActiveForm::end(); ?>
-
-

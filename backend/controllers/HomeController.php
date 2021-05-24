@@ -53,7 +53,9 @@ class HomeController extends Controller {
         $district_model = \backend\models\Districts::findOne(['id' => Yii::$app->user->identity->district_id]);
         $district = !empty($district_model) ? $district_model->name : "";
         $province = !empty($district_model) ? \backend\models\Provinces::findOne(['id' => $district_model->province_id])->name : "";
-        $faabs_group = \backend\models\MeFaabsGroups::findOne($model->faabs_group)->name;
+
+        $faabs_group = \backend\models\MeFaabsGroups::findOne($model->faabs_group);
+
         $camp = \backend\models\Camps::findOne($model->camp)->name;
         $topic = !empty($model->topic) ? \backend\models\MeFaabsTrainingTopics::findOne($model->topic)->topic : "";
 
@@ -84,6 +86,7 @@ class HomeController extends Controller {
             'options' => [
                 'text_input_as_HTML' => true,
                 'target' => '_blank',
+                'data-pjax'=>0
             // any mpdf options you wish to set
             ],
             'methods' => [

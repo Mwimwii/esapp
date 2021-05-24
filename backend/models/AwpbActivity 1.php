@@ -191,7 +191,7 @@ class AwpbActivity extends \yii\db\ActiveRecord
      */
     public function getAwpbActivityFunders()
     {
-        return $this->hasMany(AwpbActivityFunder::className(), ['activity_id' => 'id']);
+        return $this->hasMany(AwpbFunder::className(), ['activity_id' => 'id']);
     }
 
     /**
@@ -199,10 +199,7 @@ class AwpbActivity extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbActivitiesLineItems()
-    {
-        return $this->hasMany(AwpbActivityLineItem::className(), ['activity_id' => 'id']);
-    }
+
 	  public static function getAwpbActivitiesList($access_level) {
      
 
@@ -234,7 +231,7 @@ class AwpbActivity extends \yii\db\ActiveRecord
 
     public static function getName($id) {
         $component = self::find()->where(['id' => $id])->one();
-        return ucfirst(strtolower($this->name));
+        return ucfirst(strtolower($component->name));
     }
     public static function getAwpbActivityCodeName($id) {
       

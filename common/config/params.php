@@ -6,7 +6,7 @@ return [
     'senderName' => 'E-SAPP MIS',
     'supportEmail' => 'esappmis@noreply.gov.zm',
     'senderEmail' => 'esappmis@noreply.gov.zm',
-    'bsVersion' => '4',
+    'bsVersion' => '4.x',
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength'=>7,
     'maskMoneyOptions' => [
@@ -18,5 +18,7 @@ return [
         'precision' => 2,
         'allowZero' => false,
         'allowNegative' => false,
-    ]
+    ],
+    'youthMinAge' => 15,
+    'youthMaxAge' => 35,
 ];

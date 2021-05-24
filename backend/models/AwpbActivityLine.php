@@ -44,6 +44,7 @@ use common\models\Role;
  *
  * @property AwpbActivity $activity
  */
+
 class AwpbActivityLine extends \yii\db\ActiveRecord
 {
     /**
@@ -63,7 +64,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+ public function rules()
     {
         return [
             [['activity_id','awpb_template_id', 'name', 'unit_cost', 'total_quantity', 'total_amount', 'status'], 'required'],
@@ -81,6 +82,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+
     public function attributeLabels()
     {
         return [
@@ -127,6 +129,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
 
+
      	
     public function behaviors() {
         return [
@@ -152,13 +155,18 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
         $list = self::find()->where(['activity_id' => $id])->all();
         return ArrayHelper::map($list, 'id', 'name');
     }
-  
-    
+
+
+    // }
+    // public static function getList($id) {
+    //     $list = self::find()->where(['activity_id' => $id])->all();
+    //     return ArrayHelper::map($list, 'id', 'name');
+    // }
+
+
     public static function getList() {
         $list = self::find()->orderBy(['name' => SORT_ASC])->all();
         return ArrayHelper::map($list, 'id', 'name');
     }
-
-  
 
 }
