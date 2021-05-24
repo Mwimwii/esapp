@@ -8,11 +8,6 @@ use backend\models\AwpbUnitOfMeasureSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use yii\helpers\Json;
-use backend\models\AuditTrail;
-use backend\models\User;
-
 
 /**
  * AwpbUnitOfMeasureController implements the CRUD actions for AwpbUnitOfMeasure model.
