@@ -309,7 +309,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     <li>
                         <?php
                         $awpb_template = \backend\models\AwpbTemplate::findOne([
-                                    'status' => \backend\models\AwpbTemplate::STATUS_ACTIVE,
+                                    'status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED,
                         ]);
                         $fiscal_y = !empty($awpb_template->fiscal_year) ? $awpb_template->fiscal_year : "";
                         echo Html::a(

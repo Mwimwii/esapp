@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\AwpbTemplate;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use kartik\grid\GridView;
@@ -7,7 +8,7 @@ use kartik\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Storyofchange */
 
-$this->title = "Checklist for" .$model_fiscal ."AWPB template";
+$this->title = "Checklist for " .$model->fiscal_year ." AWPB template";
 $this->params['breadcrumbs'][] = ['label' => 'AWPB Template', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php
                 echo Html::a(
                         '<span class="fa fa-eye fa-2x"></span>', ['view', 'id' => $model->id], [
-                    'title' => 'View story details',
+                    'title' => 'View template',
                     'data-toggle' => 'tooltip',
                     'data-placement' => 'top',
                     'data-pjax' => '0',
@@ -40,12 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 );
                 if ($model->status == 0 || $model->status == 3) {
                     echo Html::a('<i class="fas fa-trash fa-2x"></i>', ['delete', 'id' => $model->id], [
-                        'title' => 'Remove Story',
+                        'title' => 'Delete Temaplate',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
                         'style' => "padding:30px;",
                         'data' => [
-                            'confirm' => 'Are you sure you want to remove story: ' . $model->title . '?',
+                            'confirm' => 'Are you sure you want to remove ' . $model->fiscal_year . ' AWPB template?',
                             'method' => 'post',
                         ],
                     ]);
@@ -86,16 +87,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <td><b>Template  details</b>(i.e. Budget theme, schedule etc)&emsp;&emsp;
                                 <?php
-                                if ($model->status == 1) {
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
                                     echo Html::a('<i class="fa fa-link"></i> Update section', ['update', 'id' => $model->id]);
                                 }
                                 ?>
                             </td>
                             <td>
                                 <?php
-                                if (!empty($model->category_id) &&
-                                        !empty($model->interviewee_names) && !empty($model->interviewer_names) &&
-                                        !empty($model->date_interviewed)) {
+                                // if (!empty($model->preparation_deadline_first_draft) && !empty($model->submission_dealine) && !empty($model->consolidation_deadline) 
+                                // && !empty($model->review_deadline) && !empty($model->preparation_deadline_second_draft) && !empty($model->review_deadline_pco) 
+                                // && !empty($model->finalisation_deadline_pco) && !empty($model->submission_deadline_moa_mfl) && !empty($model->approval_deadline_jpsc) 
+                                // && !empty($model->incorpation_deadline_pco_moa_mfl) && !empty($model->submission_dealine_ifad))
+                                //
+                                if (!empty($model->guideline_file) ){
                                     echo '<span class="badge badge-success">COMPLETED</span>';
                                 } else {
                                     echo '<span class="badge badge-danger">INCOMPLETE</span>';
@@ -104,16 +108,16 @@ $this->params['breadcrumbs'][] = $this->title;
                             </td>
                         </tr>
                         <tr>
-                            <td><b>Budget Guideline</b>&emsp;&emsp;
+                            <td><b>Activities</b>&emsp;&emsp;
                                 <?php
-                                if ($model->status == 0 || $model->status == 3) {
-                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/storyofchange/introduction', 'id' => $model->id]);
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
+                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template/activities', 'id' => $model->id]);
                                 }
                                 ?>
                             </td>
                             <td>
                                 <?php
-                                if (!empty($model->introduction)) {
+                                if (!empty($model->status_activities)) {
                                     echo '<span class="badge badge-success">COMPLETED</span>';
                                 } else {
                                     echo '<span class="badge badge-danger">INCOMPLETE</span>';
@@ -124,14 +128,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <td><b>Budget Committee</b> (Users allowed to conduct budgeting activities)&emsp;&emsp;
                                 <?php
-                                if ($model->status == 0 || $model->status == 3) {
-                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/storyofchange/challenges', 'id' => $model->id]);
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
+                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template/template-users', 'id' => $model->id]);
                                 }
                                 ?>
                             </td>
                             <td>
                                 <?php
-                                if (!empty($model->challenge)) {
+                                if (!empty($model->status_users)) {
                                     echo '<span class="badge badge-success">COMPLETED</span>';
                                 } else {
                                     echo '<span class="badge badge-danger">INCOMPLETE</span>';
@@ -139,98 +143,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ?>
                             </td>
                         </tr>
-                        <tr>
-                            <td><b>The action</b> (what was done, how, by and with who etc)&emsp;&emsp;
-                                <?php
-                                if ($model->status == 0 || $model->status == 3) {
-                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['storyofchange/actions', 'id' => $model->id]);
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                if (!empty($model->actions)) {
-                                    echo '<span class="badge badge-success">COMPLETED</span>';
-                                } else {
-                                    echo '<span class="badge badge-danger">INCOMPLETE</span>';
-                                }
-                                ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b>The result</b> (what changed – what difference was made)&emsp;&emsp;
-                                <?php
-                                if ($model->status == 0 || $model->status == 3) {
-                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/storyofchange/results', 'id' => $model->id]);
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                if (!empty($model->results)) {
-                                    echo '<span class="badge badge-success">COMPLETED</span>';
-                                } else {
-                                    echo '<span class="badge badge-danger">INCOMPLETE</span>';
-                                }
-                                ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b>The conclusions</b>&emsp;&emsp;
-                                <?php
-                                if ($model->status == 0 || $model->status == 3) {
-                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/storyofchange/conclusions', 'id' => $model->id]);
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                if (!empty($model->conclusions)) {
-                                    echo '<span class="badge badge-success">COMPLETED</span>';
-                                } else {
-                                    echo '<span class="badge badge-danger">INCOMPLETE</span>';
-                                }
-                                ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b>The sequel</b> (what next)&emsp;&emsp;
-                                <?php
-                                if ($model->status == 0 || $model->status == 3) {
-                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/storyofchange/sequel', 'id' => $model->id]);
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                if (!empty($model->sequel)) {
-                                    echo '<span class="badge badge-success">COMPLETED</span>';
-                                } else {
-                                    echo '<span class="badge badge-danger">INCOMPLETE</span>';
-                                }
-                                ?>
-                            </td>
-                        </tr>
+                       
+                        
 
                     </tbody>
 
                 </table>
                 <?php
-                if ($model->status == 0 || $model->status == 3) {
-                    if (!empty($model->sequel) && !empty($model->conclusions) &&
-                            !empty($model->results) && !empty($model->actions) && !empty($model->challenge) &&
-                            !empty($model->introduction)) {
+                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
+                    if (!empty($model->status_activities) && !empty($model->status_users)&& !empty($model->guideline_file)) {
                         ?>
                         <?=
-                        Html::a('Submit for review',
-                                ['storyofchange/submit-story', 'id' => $model->id],
+                        Html::a('Publish AWPB Template',
+                                ['awpb-template/publish', 'id' => $model->id],
                                 [
                                     'class' => 'btn btn-success btn-xs',
                                     'data-toggle' => 'tooltip',
                                     'data-placement' => 'top',
                                     'data' => [
-                                        'confirm' => 'Are you sure you want to submit story:"' . $model->title . '" for review?'
-                                        . '<br>You will not be able to make changes to the story once submitted',
+                                        'confirm' => 'Are you sure you want to publish the ' . $model->fiscal_year . '" AWPB Template?'
+                                        . '<br>Once published, you will not be able to make changes to the AWPB Template',
                                         'method' => 'post',
                                     ],
                         ]);
@@ -249,7 +181,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?> 
             </div>
             <div class="col-lg-5">
-                <p>Story of change media</p>
+                <p></p>
             </div>
         </div>
     </div>

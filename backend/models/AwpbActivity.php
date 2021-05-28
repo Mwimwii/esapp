@@ -461,14 +461,14 @@ class AwpbActivity extends \yii\db\ActiveRecord {
         return $list;
     }
 
-    public static function getRightList() {
-        $rights = self::find()->orderBy(['name' => SORT_ASC])->all();
-        $list = ArrayHelper::map($rights, 'right', 'right');
-        return $list;
-    }
+   
 
-    public static function getAllRights() {
-        $query = self::find()->all();
+    public static function getAllSubActivities() {
+        $query = self::find()
+        ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+        ->where(['type' => self::TYPE_SUB])
+        ->orderBy(['parent_activity_id' => SORT_ASC])
+        ->all();
         return $query;
     }
 

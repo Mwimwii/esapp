@@ -32,8 +32,7 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
      * {@inheritdoc}
      */
     //public $activities;
-   // public $icons;
-    
+        
     public static function tableName()
     {
         return 'awpb_template_activity';
@@ -46,6 +45,8 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return [
             [['activity_id', 'awpb_template_id'], 'required'],
+            [['activity_code'], 'string', 'max' => 10],
+            [['name'], 'string', 'max' => 40],
             [['activity_id', 'component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
@@ -71,6 +72,8 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'activity_id' => 'Activity ID',
+            'activity_code' => 'Activity Code',    
+            'name' => 'Name',
             'component_id' => 'Component ID',
             'outcome_id' => 'Outcome ID',
             'output_id' => 'Output ID',
@@ -129,12 +132,42 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
  
     
     public static function getActivities($template_id) {
-              $rights = self::find()
-              
+    
+
+
+        $activties = self::find()
+                ->select(['activity_id', 'name'])
+            
                 ->where(['awpb_template_id'=>$template_id])
+               // ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.activity_id'])
                 ->all();
+      // $list = ArrayHelper::map($activties, 'id', 'name');
+        return  $activties;
+
+
+
+    }
+
+
+    public static function getActivities1($template_id) {
+
         
-        return \yii\helpers\ArrayHelper::map($rights, 'id', 'name');
+        // $activties = self::find()
+        //         ->select(['awpb_template_activity.activity_id', "CONCAT(awpb_activity.activity_code,' ',awpb_activity.name) as name"])
+        //         ->joinWith('activity')  
+        //         ->where(['awpb_template_activity.awpb_template_id'=>$template_id])
+        //         ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.id'])
+        //         ->all();
+
+
+                
+              
+                    $query = self::find()
+                    ->where(['awpb_template_id'=>$template_id])
+                    ->all();
+                    return $query;
+                
+
     }
 
 }

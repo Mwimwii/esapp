@@ -97,7 +97,7 @@ $form = ActiveForm::begin([
                            
                         <div class="tab-pane fade show active" id="activities" role="tabpanel" aria-labelledby="activities-tab">
                         <?=
-        $form->field($model, 'activities')->checkboxList(ArrayHelper::map(\backend\models\AwpbActivity::getAllRights(), 'id', 'name'), [
+        $form->field($model, 'activities')->checkboxList(ArrayHelper::map(\backend\models\AwpbActivity::getAllSubActivities(), 'id', 'name'), [
             'item' => function($index, $label, $name, $checked, $value) {
                 $checked = $checked ? 'checked' : '';
                 return "<label  > <input type='checkbox' {$checked} name='{$name}' value='{$value}'> {$label} </label>";
