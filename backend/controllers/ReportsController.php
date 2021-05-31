@@ -5,6 +5,9 @@ namespace backend\controllers;
 use Yii;
 use backend\models\MeFaabsGroups;
 use backend\models\MeFaabsGroupsSearch;
+use backend\models\AwpbActivityLine;
+use backend\models\AwpbActivity;
+use backend\models\AwpbActivityLineSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -67,32 +70,33 @@ class ReportsController extends Controller {
         if (User::userIsAllowedTo('View physical tracking table report')) {
             $searchModel = new \backend\models\AwbpActivitySearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            // var_dump($dataProvider->getModels());
             $year = date('Y');
-            if (isset(Yii::$app->request->queryParams['AwpbActivityLineSearch'])) {
-                if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id'])) {
-                    // $dataProvider->query->andFilterWhere(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']]);
-                    $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
-                    if (!empty($awpb_template)) {
-                        $activity_ids = [];
-                        $activity_lines = \backend\models\AwpbActivityLine::find()
-                                ->where(['awpb_template_id' => $awpb_template->id])
-                                ->andWhere(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']])
-                                ->all();
-                        if (!empty($activity_lines)) {
-                            foreach ($activity_lines as $_activity) {
-                                array_push($activity_ids, $_activity['activity_id']);
-                            }
-                        }
-                        $dataProvider->query->andFilterWhere(["IN", 'id', $activity_ids]);
-                    }
-                }
-                if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['district_id'])) {
-                    $dataProvider->query->andFilterWhere(['district_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['district_id']]);
-                }
-                if (!empty(Yii::$app->request->queryParams['AwpbActivityLineSearch']['year'])) {
-                    $year = Yii::$app->request->queryParams['AwpbActivityLineSearch']['year'];
-                    $dataProvider->query->andFilterWhere(['year' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['year']]);
-                }
+            if (isset(Yii::$app->request->queryParams['AwbpActivitySearch'])) {
+                /* if (!empty(Yii::$app->request->queryParams['AwbpActivitySearch']['province_id'])) {
+                  // $dataProvider->query->andFilterWhere(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']]);
+                  $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+                  if (!empty($awpb_template)) {
+                  $activity_ids = [];
+                  $activity_lines = \backend\models\AwpbActivityLine::find()
+                  ->where(['awpb_template_id' => $awpb_template->id])
+                  ->andWhere(['province_id' => Yii::$app->request->queryParams['AwbpActivitySearch']['province_id']])
+                  ->all();
+                  if (!empty($activity_lines)) {
+                  foreach ($activity_lines as $_activity) {
+                  array_push($activity_ids, $_activity['activity_id']);
+                  }
+                  }
+                  $dataProvider->query->andFilterWhere(["IN", 'id', $activity_ids]);
+                  }
+                  }
+                  if (!empty(Yii::$app->request->queryParams['AwbpActivitySearch']['district_id'])) {
+                  $dataProvider->query->andFilterWhere(['district_id' => Yii::$app->request->queryParams['AwbpActivitySearch']['district_id']]);
+                  }
+                  if (!empty(Yii::$app->request->queryParams['AwbpActivitySearch']['year'])) {
+                  $year = Yii::$app->request->queryParams['AwbpActivitySearch']['year'];
+                  $dataProvider->query->andFilterWhere(['year' => Yii::$app->request->queryParams['AwbpActivitySearch']['year']]);
+                  } */
             } else {
                 $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => date('Y')]);
                 //1. Load template for the current year
@@ -797,12 +801,17 @@ class ReportsController extends Controller {
 
     /**
      * 
+     * Lists all MeFaabsGroups models.
      * @return mixed
      */
     public function actionFacilitationImporovedTechnologies() {
         if (User::userIsAllowedTo('View facilitation of improved technologies/best practices report')) {
             $searchModel = new \backend\models\MeFaabsTrainingAttendanceSheetSearch();
+
             //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
             $subcomp_21 = [
                 'female' => 0,
                 'male' => 0,
@@ -1517,6 +1526,251 @@ class ReportsController extends Controller {
         }
     }
 
+    public function actionDownloadPhysicalTrackingTable() {
+        $searchModel = new \backend\models\AwbpActivitySearch();
+
+        $province_id = Yii::$app->request->post('province_id', null);
+        $district_id = Yii::$app->request->post('district_id', null);
+        $year = Yii::$app->request->post('year', null);
+        $dataProvider = $searchModel->searchByYearProvinceDistrict($year, $province_id, $district_id);
+        //var_dump($dataProvider->getModels());
+        $district = !empty($district_id) ? \backend\models\Districts::findOne($district_id)->name : "";
+        $province = !empty($province_id) ? \backend\models\Provinces::findOne($province_id)->name : "";
+
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getDefaultStyle()->applyFromArray(
+                [
+                    'border' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ],
+                    ]
+                ]
+        );
+        $spreadsheet->getProperties()->setCreator('esappmis')
+                ->setLastModifiedBy('esappmis')
+                ->setTitle('Office 2007 XLSX Physical tracking table')
+                ->setSubject('Office 2007 XLSX Physical tracking table')
+                ->setDescription('Physical tracking table for Office 2007 XLSX, generated using PHP classes.')
+                ->setKeywords('office 2007 openxml php')
+                ->setCategory('Report');
+
+        //Header row
+        $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('B1', 'Physical Progress Tracking Table')
+                ->setCellValue('H1', "Planned AWPB ")
+                ->setCellValue('M1', 'Actual AWPB ')
+                ->setCellValue('R1', "")
+                ->mergeCells('B1:G1')
+                ->mergeCells('H1:L1')
+                ->mergeCells('M1:Q1')
+                ->mergeCells('R1:V1');
+        $spreadsheet->getActiveSheet()->getStyle("B1:G1")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("B1:G1")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("H1:L1")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("M1:Q1")->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->getStyle("R1:V1")->getAlignment()->setHorizontal('center');
+
+
+        //Second row
+        $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('B2', 'Comp#')
+                ->setCellValue('C2', 'Sub-comp')
+                ->setCellValue('D2', 'Activity Description#')
+                ->setCellValue('E2', 'Indicator')
+                ->setCellValue('F2', 'Unity')
+                ->setCellValue('G2', 'AWPB target')
+                ->setCellValue('H2', 'Q1')
+                ->setCellValue('I2', "Q2")
+                ->setCellValue('J2', 'Q3')
+                ->setCellValue('K2', "Q4")
+                ->setCellValue('L2', "Total")
+                ->setCellValue('M2', "Q1")
+                ->setCellValue('N2', "Q2")
+                ->setCellValue('O2', "Q3")
+                ->setCellValue('P2', "Q4")
+                ->setCellValue('Q2', "Total")
+                ->setCellValue('R2', "% AWPB Achieved")
+                ->setCellValue('S2', "Cum Actual")
+                ->setCellValue('T2', "Appr Target")
+                ->setCellValue('U2', "% Appr Target")
+                ->setCellValue('V2', "Remarks");
+        $current_row = 3;
+        foreach ($dataProvider->getModels() as $models => $model) {
+            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+            //Get component
+            $component = "";
+            $component_model = \backend\models\AwpbComponent::findOne($model->component_id);
+            if (!empty($component_model)) {
+                if ($component_model->subcomponent == "Subcomponent") {
+                    $component = \backend\models\AwpbComponent::findOne($component_model->parent_component_id)->code;
+                } else {
+                    $component = $component_model->code;
+                }
+            }
+
+            //Get subcomponent
+            $subcomponent = "";
+            if (!empty($component_model)) {
+                if ($component_model->subcomponent == "Subcomponent") {
+                    $subcomponent = $component_model->code;
+                }
+            }
+
+            //get indicator
+            $awpb_indicator = \backend\models\AwpbIndicator::findOne($model->indicator_id);
+            //Get awpb target
+            $awpb_q_total = 0;
+            if (!empty($awpb_template)) {
+                //Get all activity lines that belongs to this subactivity
+                $activity_lines = \backend\models\AwpbActivityLine::find()
+                        ->where(['activity_id' => $model->id])
+                        ->andWhere(['awpb_template_id' => $awpb_template->id])
+                        ->all();
+                if (!empty($activity_lines)) {
+                    foreach ($activity_lines as $_line) {
+                        $awpb_q_total += $_line['mo_1'];
+                        $awpb_q_total += $_line['mo_2'];
+                        $awpb_q_total += $_line['mo_3'];
+                        $awpb_q_total += $_line['mo_4'];
+                        $awpb_q_total += $_line['mo_5'];
+                        $awpb_q_total += $_line['mo_6'];
+                        $awpb_q_total += $_line['mo_7'];
+                        $awpb_q_total += $_line['mo_8'];
+                        $awpb_q_total += $_line['mo_9'];
+                        $awpb_q_total += $_line['mo_10'];
+                        $awpb_q_total += $_line['mo_11'];
+                        $awpb_q_total += $_line['mo_12'];
+                    }
+                }
+            }
+
+            //Planned q1
+            $planned_q1_total = 0;
+            //Planned q2
+            $planned_q2_total = 0;
+            //Planned q3
+            $planned_q3_total = 0;
+            //Planned q4
+            $planned_q4_total = 0;
+            //actuals
+            $actual_q1_total = 0;
+            $actual_q2_total = 0;
+            $actual_q3_total = 0;
+            $actual_q4_total = 0;
+
+            if (!empty($awpb_template)) {
+                //Get all activity lines that belongs to this subactivity
+                $activity_lines = \backend\models\AwpbActivityLine::find()
+                        ->where(['activity_id' => $model->id])
+                        ->andWhere(['awpb_template_id' => $awpb_template->id])
+                        ->all();
+                if (!empty($activity_lines)) {
+                    foreach ($activity_lines as $_line) {
+                        $planned_q1_total += $_line['mo_1'];
+                        $planned_q1_total += $_line['mo_2'];
+                        $planned_q1_total += $_line['mo_3'];
+                        $planned_q2_total += $_line['mo_4'];
+                        $planned_q2_total += $_line['mo_5'];
+                        $planned_q2_total += $_line['mo_6'];
+                        $planned_q3_total += $_line['mo_7'];
+                        $planned_q3_total += $_line['mo_8'];
+                        $planned_q3_total += $_line['mo_9'];
+                        $planned_q4_total += $_line['mo_10'];
+                        $planned_q4_total += $_line['mo_11'];
+                        $planned_q4_total += $_line['mo_12'];
+
+                        $actual_q1_total += $_line['mo_1_actual'];
+                        $actual_q1_total += $_line['mo_2_actual'];
+                        $actual_q1_total += $_line['mo_3_actual'];
+                        $actual_q2_total += $_line['mo_4_actual'];
+                        $actual_q2_total += $_line['mo_5_actual'];
+                        $actual_q2_total += $_line['mo_6_actual'];
+                        $actual_q3_total += $_line['mo_7_actual'];
+                        $actual_q3_total += $_line['mo_8_actual'];
+                        $actual_q3_total += $_line['mo_9_actual'];
+                        $actual_q4_total += $_line['mo_10_actual'];
+                        $actual_q4_total += $_line['mo_11_actual'];
+                        $actual_q4_total += $_line['mo_12_actual'];
+                    }
+                }
+            }
+
+            //calculate planned/achieved percentage
+            $awpb_achieved = 0;
+            $planned_q_total = $planned_q1_total + $planned_q2_total + $planned_q3_total + $planned_q4_total;
+            $actual_q_total = $actual_q1_total + $actual_q2_total + $actual_q3_total + $actual_q4_total;
+            if ($planned_q_total > 0) {
+                $awpb_achieved = round(($actual_q_total / $planned_q_total) * 100, 1);
+            }
+
+            $appr_percentage = 0;
+            $appr = !empty($model->programme_target) ? $model->programme_target : 0;
+            $cum_actual = !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
+            if ($appr > 0) {
+                $appr_percentage = round(($cum_actual / $appr) * 100, 2);
+            }
+
+            $spreadsheet->setActiveSheetIndex(0)
+                    ->setCellValue("B" . $current_row, $component)
+                    ->setCellValue("C" . $current_row, $subcomponent)
+                    ->setCellValue("D" . $current_row, $model->name)
+                    ->setCellValue("E" . $current_row, !empty($awpb_indicator) ? $awpb_indicator->name : "")
+                    ->setCellValue("F" . $current_row, !empty($model->unit_of_measure_id) ? \backend\models\AwpbUnitOfMeasure::findOne($model->unit_of_measure_id)->name : "")
+                    ->setCellValue("G" . $current_row, $awpb_q_total)
+                    ->setCellValue("H" . $current_row, $planned_q1_total)
+                    ->setCellValue("I" . $current_row, $planned_q2_total)
+                    ->setCellValue("J" . $current_row, $planned_q3_total)
+                    ->setCellValue("K" . $current_row, $planned_q4_total)
+                    ->setCellValue("L" . $current_row, $planned_q_total)
+                    ->setCellValue("M" . $current_row, $actual_q1_total)
+                    ->setCellValue("N" . $current_row, $actual_q2_total)
+                    ->setCellValue("O" . $current_row, $actual_q3_total)
+                    ->setCellValue("P" . $current_row, $actual_q4_total)
+                    ->setCellValue("Q" . $current_row, $actual_q_total)
+                    ->setCellValue("R" . $current_row, $awpb_achieved)
+                    ->setCellValue("S" . $current_row, $appr_percentage)
+                    ->setCellValue("T" . $current_row, $appr)
+                    ->setCellValue("U" . $current_row, $appr_percentage)
+                    ->setCellValue("V" . $current_row, "");
+            $current_row++;
+        }
+
+
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        $file = 'Physical_tracking_table' . date("Ymdhis");
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle('Physical tracking table');
+        // Redirect output to a client's web browser (Xlsx)
+        if (!empty($province)) {
+            $file = 'Physicaltrktbl' . $province . date("Ymdhis");
+            $spreadsheet->getActiveSheet()->setTitle('Physicaltrktbl|' . $province);
+        }
+        if (!empty($district) && !empty($province)) {
+            $file = 'Physicaltrktbl' . $province . "_" . $district . date("Ymdhis");
+            $spreadsheet->getActiveSheet()->setTitle('Physicaltrktbl|' . $province . "|" . $district);
+        }
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+
     public function actionDownloadTacReport() {
         $province_id = Yii::$app->request->post('province_id', null);
         $district_id = Yii::$app->request->post('district_id', null);
@@ -1910,6 +2164,168 @@ class ReportsController extends Controller {
 
         // Redirect output to a client's web browser (Xlsx)
         $file = $camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+
+    public function actionDownloadBudget($id) {
+
+// 	$user = User::findOne(['id' => Yii::$app->user->id]);
+//     $searchModel = new AwpbActivityLine();
+//     $query = $searchModel::find();
+//     $query->select(['SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
+//    // $query->where('Awpb_Template.fiscal_year= :field1', [':field1' =>$id]);
+//    // $query->groupBy('Awpb_Activity.gl_account_code');
+//    // $query->select(['Awpb_Template.fiscal_year as year','Awpb_Activity.gl_account_code as code','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
+//     //$query->leftJoin('Awpb_Activity', 'Awpb_Activity.id = AwpbActivityLine.activity_id');
+//     //$query->where('Awpb_Template.fiscal_year= :field1', [':field1' =>$id]);
+//     //$query->groupBy('Awpb_Activity.gl_account_code');
+//     $query->asArray();
+//     $query->all();
+//     if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch'])) {
+//         $faabs_ids = [];
+//         $budget_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
+//                 ->all();
+//         if (!empty($faabs_model)) {
+//             foreach ($faabs_model as $id) {
+//                 array_push($faabs_ids, $id['id']);
+//             }
+//         }
+
+        $budget_model = \backend\models\AwpbActivityLine::find()
+                ->select(['awpb_template.fiscal_year as year', 'awpb_activity.gl_account_code as code',
+                    'SUM(mo_1_amount) as m1',
+                    'SUM(mo_2_amount) as m2',
+                    'SUM(mo_3_amount) as m3',
+                    'SUM(mo_4_amount) as m4',
+                    'SUM(mo_5_amount) as m5',
+                    'SUM(mo_6_amount) as m6',
+                    'SUM(mo_7_amount) as m7',
+                    'SUM(mo_8_amount) as m8',
+                    'SUM(mo_9_amount) as m9',
+                    'SUM(mo_10_amount) as m10',
+                    'SUM(mo_11_amount) as m11',
+                    'SUM(mo_12_amount) as m12',
+                ])
+                ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_activity_line.awpb_template_id')
+                ->where(['awpb_activity_line.awpb_template_id' => $id])
+                // ->andWhere(['quarter' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['quarter']])
+                //  ->andWhere(['IN', 'faabs_group_id', $faabs_ids])
+                // ->andWhere(['youth_non_youth' => 'Youth'])
+                // ->andWhere(['YEAR(training_date)' => date("Y", strtotime(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['year']))])
+                ->groupBy(['code'])
+                ->asArray()
+                ->all();
+
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getDefaultStyle()->applyFromArray(
+                [
+                    'border' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ],
+                    ]
+                ]
+        );
+
+        $spreadsheet->getProperties()->setCreator('esappmis')
+                ->setLastModifiedBy('esappmis')
+                ->setTitle('Office 2007 XLSX Facilitation of Improved Technologies/Best Practices Report')
+                ->setSubject('Office 2007 XLSX Facilitation of Improved Technologies/Best Practices Report')
+                ->setDescription('Facilitation of Improved Technologies/Best Practices report for Office 2007 XLSX, generated using PHP classes.')
+                ->setKeywords('office 2007 openxml php')
+                ->setCategory('Report');
+
+        if (!empty($budget_model)) {
+            $row = 0;
+            foreach ($budget_model as $_model) {
+                $year = $_model['year'];
+                $row1 = $row + 1;
+                $row2 = $row1 + 1;
+                $row3 = $row2 + 1;
+                $row4 = $row3 + 1;
+                $row5 = $row4 + 1;
+                $row6 = $row5 + 1;
+                $row7 = $row6 + 1;
+                $row8 = $row7 + 1;
+                $row9 = $row8 + 1;
+                $row10 = $row9 + 1;
+                $row11 = $row10 + 1;
+                $row12 = $row11 + 1;
+                //Legder Account, Budget Period Date, Budget
+                //       0700        2019-02-31      K2000
+                //
+                $spreadsheet->setActiveSheetIndex(0)
+                        // ->setCellValue('B1', $_model['quarter_one_amount'])
+                        // ->setCellValue('B2',$_model['mo_1'])
+                        // ->setCellValue('B3', $_model['quarter_three_amount'])
+                        // ->setCellValue('B4',$_model['quarter_four_amount'])
+                        ->setCellValue('A' . $row1, $_model['code'])
+                        ->setCellValue('B' . $row1, $_model['year'] . '-01-31')
+                        ->setCellValue('C' . $row1, $_model['m1'])
+                        ->setCellValue('A' . $row2, $_model['code'])
+                        ->setCellValue('B' . $row2, $_model['year'] . '-02-28')
+                        ->setCellValue('C' . $row2, $_model['m2'])
+                        ->setCellValue('A' . $row3, $_model['code'])
+                        ->setCellValue('B' . $row3, $_model['year'] . '-03-31')
+                        ->setCellValue('C' . $row3, $_model['m3'])
+                        ->setCellValue('A' . $row4, $_model['code'])
+                        ->setCellValue('B' . $row4, $_model['year'] . '-04-30')
+                        ->setCellValue('C' . $row4, $_model['m4'])
+                        ->setCellValue('A' . $row5, $_model['code'])
+                        ->setCellValue('B' . $row5, $_model['year'] . '-06-31')
+                        ->setCellValue('C' . $row5, $_model['m5'])
+                        ->setCellValue('A' . $row6, $_model['code'])
+                        ->setCellValue('B' . $row6, $_model['year'] . '-08-30')
+                        ->setCellValue('C' . $row6, $_model['m6'])
+                        ->setCellValue('A' . $row7, $_model['code'])
+                        ->setCellValue('B' . $row7, $_model['year'] . '-07-31')
+                        ->setCellValue('C' . $row7, $_model['m7'])
+                        ->setCellValue('A' . $row8, $_model['code'])
+                        ->setCellValue('B' . $row8, $_model['year'] . '-08-31')
+                        ->setCellValue('C' . $row8, $_model['m8'])
+                        ->setCellValue('A' . $row9, $_model['code'])
+                        ->setCellValue('B' . $row9, $_model['year'] . '-09-30')
+                        ->setCellValue('C' . $row9, $_model['m9'])
+                        ->setCellValue('A' . $row10, $_model['code'])
+                        ->setCellValue('B' . $row10, $_model['year'] . '-10-31')
+                        ->setCellValue('C' . $row10, $_model['m10'])
+                        ->setCellValue('A' . $row11, $_model['code'])
+                        ->setCellValue('B' . $row11, $_model['year'] . '-11-30')
+                        ->setCellValue('C' . $row11, $_model['m11'])
+                        ->setCellValue('A' . $row12, $_model['code'])
+                        ->setCellValue('B' . $row12, $_model['year'] . '-12-31')
+                        ->setCellValue('C' . $row12, $_model['m12']);
+
+                $row = $row + 12;
+                //$row10 = $row+1;$row11 = $row+1;$row12 = $row+1;
+            }
+        }
+
+
+        $spreadsheet->getActiveSheet()->setTitle('2020 Budget');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+
+        // Redirect output to a client's web browser (Xlsx)
+        $file = '_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
         header('Cache-Control: max-age=0');

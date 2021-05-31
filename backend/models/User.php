@@ -297,7 +297,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      * @return array
      */
     public static function getOtherNames() {
-        $users = HeaUser::find()->orderBy(['other_name' => SORT_ASC])->all();
+        $users = self::find()->orderBy(['other_name' => SORT_ASC])->all();
         $list = ArrayHelper::map($users, 'other_name', 'other_name');
         return $list;
     }
@@ -306,7 +306,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      * @return array
      */
     public static function getLastNames() {
-        $users = HeaUser::find()->orderBy(['last_name' => SORT_ASC])->all();
+        $users = self::find()->orderBy(['last_name' => SORT_ASC])->all();
         $list = ArrayHelper::map($users, 'last_name', 'last_name');
         return $list;
     }
@@ -315,7 +315,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      * @return array
      */
     public static function getUsernames() {
-        $users = HeaUser::find()
+        $users = self::find()
                         ->orderBy(['username' => SORT_ASC])->all();
         $list = ArrayHelper::map($users, 'username', 'username');
         return $list;
@@ -336,7 +336,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         return \yii\helpers\ArrayHelper::map($query, 'first_name', 'name');
     }
 
-
     /**
      * @return array
      */
@@ -350,12 +349,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
                 ->all();
         return ArrayHelper::map($query, 'id', 'name');
     }
-    
-     public static function getUsers() {
+
+    public static function getUsers() {
         $query = static::find()
                 ->select(["CONCAT(CONCAT(first_name,' ',other_name),' ',last_name) as name", 'id'])
                 ->where(['status' => self::STATUS_ACTIVE])
-                ->andWhere(['NOT IN',"id",[Yii::$app->user->identity->id]])
+                ->andWhere(['NOT IN', "id", [Yii::$app->user->identity->id]])
                 ->orderBy(['id' => SORT_ASC])
                 ->asArray()
                 ->all();
@@ -375,6 +374,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
             $role->active = 1;
             $role->rights = "NA";
             if ($role->save()) {
+
                 //Then we assign the ultimate permissions to the role,
                 //The rest is history
                 $rights = [

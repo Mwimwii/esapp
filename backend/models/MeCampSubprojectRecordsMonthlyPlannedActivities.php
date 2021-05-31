@@ -128,7 +128,9 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
     }
 
     public static function getActivityListByDistrictId($id) {
-        $list = AwpbActivityLine::find()->where(['district_id' => $id])->orderBy(['id' => SORT_ASC])->all();
+        $list = AwpbActivityLine::find()
+                        ->where(['district_id' => $id])
+                        ->orderBy(['id' => SORT_ASC])->all();
         return ArrayHelper::map($list, 'id', 'name');
     }
 
@@ -153,13 +155,16 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
 
         //var_dump($activity_ids);
         $list = AwpbActivityLine::find()
-                ->where(['district_id' => $id])
-                ->andWhere(['year' => $year])
-                ->andWhere(['NOT IN', 'id', $activity_ids])
-                ->andWhere(['>=', $columnName, 1])
-                ->orderBy(['id' => SORT_ASC])
+                //->select(["awpb_activity_line.activity_id"])
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_activity_line.awpb_template_id')
+                ->where(['awpb_activity_line.district_id' => $id])
+                ->andWhere(['awpb_template.fiscal_year' => $year])
+                ->andWhere(['NOT IN', 'awpb_activity_line.id', $activity_ids])
+                ->andWhere(['>=', "awpb_activity_line." . $columnName, 1])
+                ->orderBy(['awpb_activity_line.id' => SORT_ASC])
                 ->all();
-        return ArrayHelper::map($list, 'id', 'name');
+        $response = ArrayHelper::map($list, 'id', 'name');
+        return $response;
     }
 
     public static function getMonthColumnName($month) {
@@ -202,7 +207,7 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
         }
         return $columnName;
     }
-    
+
     public static function getMonthColumnNameActuals($month) {
         $columnName = "";
         if ($month == 1) {

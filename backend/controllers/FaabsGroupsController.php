@@ -173,7 +173,7 @@ class FaabsGroupsController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        if (User::userIsAllowedTo('Manage faabs groups')|| User::userIsAllowedTo('View faabs groups')) {
+        if (User::userIsAllowedTo('Manage faabs groups') || User::userIsAllowedTo('View faabs groups')) {
             return $this->render('view', [
                         'model' => $this->findModel($id),
             ]);
@@ -268,6 +268,15 @@ class FaabsGroupsController extends Controller {
             return $this->renderAjax('update-topic-modal', [
                         'id' => $id,
                         'model' => $model,
+            ]);
+        }
+    }
+
+    public function actionViewTrainedTopics($id, $faabs) {
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('view-trained-topics', [
+                        'id' => $id,
+                        'faabs' => $faabs,
             ]);
         }
     }

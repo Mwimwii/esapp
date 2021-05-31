@@ -27,6 +27,7 @@ return [
                 ],
             ]
         ],
+
         'cache' => [
             'class' => 'yii\caching\MemCache',
             'servers' => [
@@ -38,11 +39,13 @@ return [
             ],
             'useMemcached' => true,
         ],
+
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
+
     ],
     'modules' => [
         'dynagrid' => [
@@ -54,3 +57,4 @@ return [
         'redactor' => 'yii\redactor\RedactorModule',
     ],
 ];
+ 
