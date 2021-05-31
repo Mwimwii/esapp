@@ -362,4 +362,80 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         return ArrayHelper::map($query, 'name', 'name');
     }
 
+<<<<<<< Updated upstream
+=======
+    /**
+     * Function for seeding default system user
+     * NOTE:: USER should be removed after an admin user is created
+     */
+    public static function seedUser() {
+        //We check if seed has run already
+        if (empty(Role::findOne(["role" => "Admin"]))) {
+            //First we create a role
+            $role = new Role();
+            $role->role = "Admin";
+            $role->active = 1;
+            $role->rights = "NA";
+            if ($role->save()) {
+                //Then we assign the ultimate permissions to the role,
+                //The rest is history
+                $rights = [
+                    "Manage Users", "Manage Roles","View Roles","View Users"
+                ];
+
+                $count = 0;
+                foreach ($rights as $right) {
+                    $right_to_role = new \common\models\RightAllocation();
+                    $right_to_role->role = $role->id;
+                    $right_to_role->right = $right;
+                    $right_to_role->save();
+                    $count++;
+                }
+
+                //We try to create the user
+                echo self::createTempAdminUser($role->id, $count);
+            } else {
+                $message = "";
+                foreach ($role->getErrors() as $error) {
+                    $message .= $error[0];
+                }
+                echo "Error occured while running user seeder. Error:" . $message;
+            }
+        } else {
+            echo "User seed has already been run!";
+        }
+    }
+
+    public static function createTempAdminUser($id, $count) {
+        // [['role', 'username', 'first_name', 'last_name', 'auth_key', 'email'], 'required'],
+        if ($count > 0) {
+            $model = new User();
+            $model->first_name = 'Please';
+            $model->other_name = 'delete';
+            $model->last_name = "me";
+            $model->email = "admin@emis.com";
+            $model->status = self::STATUS_ACTIVE;
+            $model->auth_key = Yii::$app->security->generateRandomString();
+            //Temp password hash 
+            $model->password = Yii::$app->getSecurity()->generatePasswordHash("Q!weRTy@134" . $model->auth_key);
+            //Default username to email
+            $model->username = $model->email;
+            $model->type_of_user = "Other user";
+            $model->role = $id;
+
+            if ($model->save()) {
+                echo "User seeding was successful!";
+            } else {
+                $message = "";
+                foreach ($model->getErrors() as $error) {
+                    $message .= $error[0];
+                }
+                echo "Error occured while running user seeder. Could not create user.Errors:" . $message;
+            }
+        } else {
+            echo "Error occured while running user seeder. Could not assign permissions to role!";
+        }
+    }
+
+>>>>>>> Stashed changes
 }

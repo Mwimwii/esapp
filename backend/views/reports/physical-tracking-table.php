@@ -37,10 +37,33 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
             $province_id = "";
             $district_id = "";
             $year = "";
+<<<<<<< Updated upstream
             if (isset($_GET['AwpbActivityLineSearch'])) {
                 $province_id = !empty($_GET['AwpbActivityLineSearch']['province_id']) ? $_GET['AwpbActivityLineSearch']['province_id'] : "";
                 $district_id = !empty($_GET['AwpbActivityLineSearch']['district_id']) ? $_GET['AwpbActivityLineSearch']['district_id'] : "";
                 $year = !empty($_GET['AwpbActivityLineSearch']['year']) ? $_GET['AwpbActivityLineSearch']['year'] : "";
+=======
+            if (isset($_GET['AwbpActivitySearch'])) {
+                $province_id = !empty($_GET['AwbpActivitySearch']['province_id']) ? $_GET['AwbpActivitySearch']['province_id'] : "";
+                $district_id = !empty($_GET['AwbpActivitySearch']['district_id']) ? $_GET['AwbpActivitySearch']['district_id'] : "";
+                $year = !empty($_GET['AwbpActivitySearch']['year']) ? $_GET['AwbpActivitySearch']['year'] : "";
+            }
+            if ($dataProvider->getCount() > 0) {
+                echo Html::a('<span class="fas fa-file-excel"></span> Export to Excel',
+                        ['reports/download-physical-tracking-table'], [
+                    'data-method' => 'POST',
+                    'data-params' => [
+                        'province_id' => $province_id,
+                        'district_id' => $district_id,
+                        'year' => $year,
+                    //'data' => json_encode($dataProvider->getModels())
+                    ],
+                    'title' => 'Download report in excel',
+                    'data-toggle' => 'tooltip',
+                    'data-placement' => 'top',
+                    'class' => 'btn btn-success btn-xs'
+                ]);
+>>>>>>> Stashed changes
             }
             echo Html::a('<span class="fas fa-file-excel"></span> Export to Excel',
                     ['reports/download-physical-tracking-table'], [

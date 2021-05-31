@@ -40,9 +40,66 @@ class AwbpActivitySearch extends AwpbActivity
      *
      * @return ActiveDataProvider
      */
+<<<<<<< Updated upstream
     public function search($params)
     {
         $query = AwpbActivity::find();
+=======
+    public function search($params) {
+        //Needed for a search filter
+        if (!empty($params['AwbpActivitySearch']['district_id']) ||
+                !empty($params['AwbpActivitySearch']['province_id']) ||
+                !empty($params['AwbpActivitySearch']['year'])) {
+            $district_id = !empty($params['AwbpActivitySearch']['district_id']) ? $params['AwbpActivitySearch']['district_id'] : "";
+            $province_id = !empty($params['AwbpActivitySearch']['province_id']) ? $params['AwbpActivitySearch']['province_id'] : "";
+            $year = $params['AwbpActivitySearch']['year'];
+            if ((!empty($province_id) && empty($district_id)) || !empty($year)) {
+                //We get activities for district and fiscal year
+                $activity_ids = [];
+                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+
+                if (!empty($awpb_template)) {
+                    $activity_lines = \backend\models\AwpbActivityLine::find()
+                            ->where(['awpb_template_id' => $awpb_template->id])
+                            ->andWhere(['province_id' => $province_id])
+                            ->all();
+                    if (!empty($activity_lines)) {
+                        foreach ($activity_lines as $_activity) {
+                            array_push($activity_ids, $_activity['activity_id']);
+                        }
+                    }
+                }
+
+
+                $query = AwpbActivity::find()
+                        ->where(["IN", 'id', $activity_ids]);
+            }
+            if (!empty($district_id)) {
+                //We get activities for district, province and fiscal year
+                $activity_ids = [];
+                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+
+                if (!empty($awpb_template)) {
+                    $activity_lines = \backend\models\AwpbActivityLine::find()
+                            ->where(['awpb_template_id' => $awpb_template->id])
+                            ->andWhere(['province_id' => $province_id])
+                            ->andWhere(['district_id' => $district_id])
+                            ->all();
+                    if (!empty($activity_lines)) {
+                        foreach ($activity_lines as $_activity) {
+                            array_push($activity_ids, $_activity['activity_id']);
+                        }
+                    }
+                }
+
+
+                $query = AwpbActivity::find()
+                        ->where(["IN", 'id', $activity_ids]);
+            }
+        } else {
+            $query = AwpbActivity::find();
+        }
+>>>>>>> Stashed changes
 
         // add conditions that should always apply here
 

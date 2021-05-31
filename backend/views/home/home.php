@@ -490,7 +490,12 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     ]
                 ]);
 
+<<<<<<< Updated upstream
                 echo $form->field($faabs_model, 'topic')->widget(DepDrop::classname(), [
+=======
+
+               /* echo $form->field($faabs_model, 'topic')->widget(DepDrop::classname(), [
+>>>>>>> Stashed changes
                     'options' => ['id' => 'topic_id', 'custom' => true, 'required' => TRUE],
                     'pluginOptions' => [
                         'depends' => ['faabs_id'],
@@ -499,7 +504,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                         'url' => yii\helpers\Url::to(['/faabs-groups/topic']),
                         'params' => ['selected_id'],
                     ]
-                ]);
+                ]);*/
 
 
                 //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
