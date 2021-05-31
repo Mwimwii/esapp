@@ -14,8 +14,8 @@ $this->title = 'Physical tracking table';
 $this->params['breadcrumbs'][] = "Reports";
 $this->params['breadcrumbs'][] = $this->title;
 $year = "";
-if (isset($_GET['AwpbActivityLineSearch'])) {
-    $year = $_GET['AwpbActivityLineSearch']['year'];
+if (isset($_GET['AwbpActivitySearch'])) {
+    $year = $_GET['AwbpActivitySearch']['year'];
 } else {
     $year = date('Y');
 }
@@ -37,12 +37,6 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
             $province_id = "";
             $district_id = "";
             $year = "";
-<<<<<<< Updated upstream
-            if (isset($_GET['AwpbActivityLineSearch'])) {
-                $province_id = !empty($_GET['AwpbActivityLineSearch']['province_id']) ? $_GET['AwpbActivityLineSearch']['province_id'] : "";
-                $district_id = !empty($_GET['AwpbActivityLineSearch']['district_id']) ? $_GET['AwpbActivityLineSearch']['district_id'] : "";
-                $year = !empty($_GET['AwpbActivityLineSearch']['year']) ? $_GET['AwpbActivityLineSearch']['year'] : "";
-=======
             if (isset($_GET['AwbpActivitySearch'])) {
                 $province_id = !empty($_GET['AwbpActivitySearch']['province_id']) ? $_GET['AwbpActivitySearch']['province_id'] : "";
                 $district_id = !empty($_GET['AwbpActivitySearch']['district_id']) ? $_GET['AwbpActivitySearch']['district_id'] : "";
@@ -56,29 +50,14 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
                         'province_id' => $province_id,
                         'district_id' => $district_id,
                         'year' => $year,
-                    //'data' => json_encode($dataProvider->getModels())
+                        //'data' => json_encode($dataProvider->getModels())
                     ],
                     'title' => 'Download report in excel',
                     'data-toggle' => 'tooltip',
                     'data-placement' => 'top',
                     'class' => 'btn btn-success btn-xs'
                 ]);
->>>>>>> Stashed changes
             }
-            echo Html::a('<span class="fas fa-file-excel"></span> Export to Excel',
-                    ['reports/download-physical-tracking-table'], [
-                'data-method' => 'POST',
-                'data-params' => [
-                    'province_id' => $province_id,
-                    'district_id' => $district_id,
-                    'year' => $year,
-                    'data' => json_encode($dataProvider)
-                ],
-                'title' => 'Download report in excel',
-                'data-toggle' => 'tooltip',
-                'data-placement' => 'top',
-                'class' => 'btn btn-success btn-xs'
-            ]);
             ?>
         </p>
         <?php
@@ -161,8 +140,7 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
                         'label' => 'Unity',
                         'enableSorting' => true,
                         'value' => function ($model) {
-                            return !empty($model->unit_of_measure_id) ?
-                                    backend\models\AwpbUnitOfMeasure::findOne($model->unit_of_measure_id)->name : "";
+                            return !empty($model->unit_of_measure_id) ? backend\models\AwpbUnitOfMeasure::findOne($model->unit_of_measure_id)->name : "";
                         }
                     ],
                     [
@@ -170,7 +148,36 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
                         'label' => 'AWPB target',
                         'enableSorting' => true,
                         'filter' => false,
-                        'attribute' => 'total_quantity'
+                        'attribute' => 'total_quantity',
+                        'value' => function ($model) use($fiscal_year) {
+                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
+                            $q_total = 0;
+                            if (!empty($awpb_template)) {
+                                //Get all activity lines that belongs to this subactivity
+                                $activity_lines = \backend\models\AwpbActivityLine::find()
+                                        ->where(['activity_id' => $model->id])
+                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
+                                        ->all();
+                                if (!empty($activity_lines)) {
+                                    foreach ($activity_lines as $_line) {
+                                        $q_total += $_line['mo_1'];
+                                        $q_total += $_line['mo_2'];
+                                        $q_total += $_line['mo_3'];
+                                        $q_total += $_line['mo_4'];
+                                        $q_total += $_line['mo_5'];
+                                        $q_total += $_line['mo_6'];
+                                        $q_total += $_line['mo_7'];
+                                        $q_total += $_line['mo_8'];
+                                        $q_total += $_line['mo_9'];
+                                        $q_total += $_line['mo_10'];
+                                        $q_total += $_line['mo_11'];
+                                        $q_total += $_line['mo_12'];
+                                    }
+                                }
+                            }
+
+                            return $q_total;
+                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -527,31 +534,7 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
                         'enableSorting' => true,
                         'filter' => false,
                         'value' => function ($model) use($fiscal_year) {
-                            $q_total1 = 0;
-                            //Get all activity lines that belongs to this subactivity
-                            $activity_lines = \backend\models\AwpbActivityLine::find()
-                                    ->where(['activity_id' => $model->id])
-                                    //->andWhere(['awpb_template_id' => $awpb_template->id])
-                                    ->all();
-                            if (!empty($activity_lines)) {
-                                foreach ($activity_lines as $_line) {
-
-                                    $q_total1 += $_line['mo_1_actual'];
-                                    $q_total1 += $_line['mo_2_actual'];
-                                    $q_total1 += $_line['mo_3_actual'];
-                                    $q_total1 += $_line['mo_4_actual'];
-                                    $q_total1 += $_line['mo_5_actual'];
-                                    $q_total1 += $_line['mo_6_actual'];
-                                    $q_total1 += $_line['mo_7_actual'];
-                                    $q_total1 += $_line['mo_8_actual'];
-                                    $q_total1 += $_line['mo_9_actual'];
-                                    $q_total1 += $_line['mo_10_actual'];
-                                    $q_total1 += $_line['mo_11_actual'];
-                                    $q_total1 += $_line['mo_12_actual'];
-                                }
-                            }
-
-                            return $q_total1;
+                            return !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
                         }
                     ],
                     [
@@ -561,18 +544,9 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
                         'label' => 'Appr Target',
                         'enableSorting' => true,
                         'filter' => false,
-                    /* 'value' => function ($model) {
-                      $appr = 0;
-                      $appr_model = \backend\models\AwpbActivityLine::find()
-                      ->where(['activity_id' => $model->activity_id])
-                      ->all();
-                      if (!empty($appr_model)) {
-                      foreach ($appr_model as $_model) {
-                      $appr += $_model->total_quantity;
-                      }
-                      }
-                      return $appr;
-                      } */
+                        'value' => function ($model) {
+                            return !empty($model->programme_target) ? $model->programme_target : 0;
+                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -581,36 +555,15 @@ if (isset($_GET['AwpbActivityLineSearch'])) {
                         'label' => '% Appr Target',
                         'enableSorting' => true,
                         'filter' => false,
-                    /* 'value' => function ($model) {
-                      $appr_percentage = 0;
-                      $appr = 0;
-                      $actual = 0;
-                      $actual_model = \backend\models\AwpbActivityLine::find()
-                      ->where(['activity_id' => $model->activity_id])
-                      ->all();
-                      if (!empty($actual_model)) {
-                      foreach ($actual_model as $_model) {
-                      $actual += $model->mo_1_actual;
-                      $actual += $model->mo_2_actual;
-                      $actual += $model->mo_3_actual;
-                      $actual += $model->mo_4_actual;
-                      $actual += $model->mo_5_actual;
-                      $actual += $model->mo_6_actual;
-                      $actual += $model->mo_10_actual;
-                      $actual += $model->mo_11_actual;
-                      $actual += $model->mo_12_actual;
-                      $actual += $model->mo_10_actual;
-                      $actual += $model->mo_11_actual;
-                      $actual += $model->mo_12_actual;
-
-                      $appr += $_model->total_quantity;
-                      }
-                      }
-                      if ($appr > 0) {
-                      $appr_percentage = round(($actual / $appr) * 100, 2);
-                      }
-                      return $appr_percentage;
-                      } */
+                        'value' => function ($model) {
+                            $appr_percentage = 0;
+                            $appr = !empty($model->programme_target) ? $model->programme_target : 0;
+                            $cum_actual = !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
+                            if ($appr > 0) {
+                                $appr_percentage = round(($cum_actual / $appr) * 100, 2);
+                            }
+                            return $appr_percentage;
+                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],

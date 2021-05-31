@@ -362,8 +362,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         return ArrayHelper::map($query, 'name', 'name');
     }
 
-<<<<<<< Updated upstream
-=======
     /**
      * Function for seeding default system user
      * NOTE:: USER should be removed after an admin user is created
@@ -437,5 +435,4 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         }
     }
 
->>>>>>> Stashed changes
 }
