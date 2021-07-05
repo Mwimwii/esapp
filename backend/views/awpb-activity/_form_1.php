@@ -40,42 +40,32 @@ echo $form->field($model, 'activity_type')->hiddenInput(['value'=> $sub])->label
 	
 		<?php
 
+	 if ($model->activity_type=== "Main Activity")
+	  {
+			echo $form->field($model, 'component_id')
+				->dropDownList(
+						\backend\models\AwpbComponent::getAwpbSubComponentsList(), ['id' => 'comp_id', 'custom' => true, 'required' => true,'disabled' => ($model->isNewRecord) ? 'disabled' : true] 
+			);
 
 
-
-
-
-	 if ($model->activity_type=== "Main Activity") {
-
-	  
-		
-		echo
-		$form->field($model, 'component_id')
-		->dropDownList(
-				\backend\models\AwpbComponent::getAwpbSubComponentsList(), ['id' => 'comp_id', 'custom' => true, 'required' => true,'disabled' => ($model->isNewRecord) ? 'disabled' : true] 
-		);
-
-
-echo '
- </div>
- 		
-    </div>
-	<div class="row">
-		<div class="col-md-6">';
-		echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-		echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
-	
 			echo '
-			</div>
-			  </div>
-		  <div class="row">
-			  <div class="col-md-12">
-			  <div class="form-group">';
-			  echo Html::submitButton('Save', ['class' => 'btn btn-success']) ;
-			  echo '</div>
-			   </div>
-				</div>';
-				}
+			</div>		
+				</div>
+				<div class="row">
+					<div class="col-md-6">';
+					echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+					echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
+					echo '
+						</div>
+						</div>
+						<div class="row">
+						<div class="col-md-12">
+						<div class="form-group">';
+							echo Html::submitButton('Save', ['class' => 'btn btn-success']) ;
+							echo '</div>
+							</div>
+						</div>';
+	}
 				
 
 if ($model->activity_type === "Subactivity") {

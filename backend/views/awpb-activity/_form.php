@@ -11,6 +11,8 @@ use backend\models\AwpbComponent;
 use backend\models\AwpbActivity;
 use backend\models\AwpbTemplate;
 use backend\models\AwpbIndicator;
+
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbActivity */
 /* @var $form yii\widgets\ActiveForm */
@@ -94,14 +96,31 @@ echo $form->field($model, 'activity_type')->hiddenInput(['value'=> $sub])->label
 		   <div class="row">
 			   <div class="col-md-6">';	  
 	
-	
-	
+			
 		
 	 	
 	 echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
 	  [
 		'prompt'=>'Select component','id'=>'comp_id']);
+
+
+
 	
+
+echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+
+
+			echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+				'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+				'pluginOptions' => [
+					'depends' => ['comp_id'],
+					'initialize' => $model->isNewRecord ? false : true,
+					'placeholder' => 'Select a output',
+					'url' => Url::to(['/awpb-component/outputs']),
+					'params' => ['selected_id'],
+				]
+			]);
+
 		echo $form->field($model, 'activity_code')->textInput(['maxlength' => true]);	
 		echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 		echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
@@ -130,63 +149,59 @@ if ($sub === "Subactivity") {
 	   </div>
 	   <div class="row">
 		   <div class="col-md-6">';   	
-echo
-	$form->field($model, 'component_id')
-	->dropDownList(
-			\backend\models\AwpbComponent::getAwpbSubComponentsList(), ['id'=>'comp_id', 'custom' => true,  'prompt'=>'Select component', 'required' => true]);
-		
-echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->parent_activity_id, ['id' => 'selected_id']);
 
-echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_id']);
+	 	
+			echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
+			[
+			  'prompt'=>'Select component','id'=>'comp_id']);
+	  
+	  
+	  
+	  echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+	  
+	  
+				  echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+					  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+					  'pluginOptions' => [
+						  'depends' => ['comp_id'],
+						  'initialize' => $model->isNewRecord ? false : true,
+						  'placeholder' => 'Select an output',
+						  'url' => Url::to(['/awpb-component/outputs']),
+						  'params' => ['comp_id'],
+					  ]
+				  ]);
+
+
+		
+echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->parent_activity_id, ['id' => 'selected_activity_id']);
+
 
 echo $form->field($model,'parent_activity_id')->widget(DepDrop::classname(),[
-//'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
-'options'=>['id'=>'parent_activity_id', 'custom' => true, 'required' => TRUE],
-'pluginOptions'=>[
-  'depends'=>['comp_id'],
-'placeholder'=>'Select parent activity',
-'url'=>Url::to(['awpb-activity/parentactivity']),
-'params' => ['selected_id'],
-]
+	'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
+	'pluginOptions' => [
+		'depends' => ['output_id1'],
+		'initialize' => $model->isNewRecord ? false : true,
+		'placeholder' => 'Select a parent activity',
+		'url' => Url::to(['/awpb-output/activities']),
+		'params' => ['output_id1'],
+	]
 ]);
-echo $form->field($model,'output_id')->dropDownList((\backend\models\AwpbOutput::getOutputs()),
-[
-	'prompt'=>'Select outcomes','id'=>'out_id']);
-// echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
-// 	//'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
-// 	'options'=>['id'=>'indicator_id', 'custom' => true, 'required' => TRUE],
-// 	'pluginOptions'=>[
-// 	  'depends'=>['comp_id'],
-// 	'placeholder'=>'Select indicator',
-// 	'url'=>Url::to(['awpb-indicator/componentindicators']),
-// 	'params' => ['selected_indicator_id'],
-// 	]
-// 	]);
 
 echo $form->field($model,'commodity_type_id')->dropDownList((\backend\models\AwpbCommodityTypes::getCommodityTypes()),
 [
 	'prompt'=>'Select commodity type','id'=>'ty_id']);
-
-				// echo $form->field($model, 'awpb_template_id')->hiddenInput(['value' => '0'])->label(false);
-				   
-				// echo $form->field($model, 'activity_code')->hiddenInput(['value' => '0'])->label(false);
-				   
 				echo $form->field($model,'component_id')->hiddenInput(['value' => '0'])->label(false);
 					
 				echo $form->field($model, 'activity_code')->textInput(['maxlength' => true]);
 		
-				echo                
-				   $form->field($model, 'unit_of_measure_id')
-					   ->dropDownList(
-							   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
+				// echo                
+				//    $form->field($model, 'unit_of_measure_id')
+				// 	   ->dropDownList(
+				// 			   \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
 					   
-				   ;
+				//    ;
 				echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-			
-			
-		  
-				  
-	  
+		
 				   echo '
 				   </div>
 

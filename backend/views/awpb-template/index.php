@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             . "<i class='fa fa-check'></i>Current budget</p><br>";
                         } else {
                             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
-                            . "<i class='fa fa-times'></i> Old budget</p><br>";
+                            . "<i class='fa fa-times'></i>". $model->fiscal_year." budget</p><br>";
                           
                         }
                         return $str;

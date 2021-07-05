@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\checkbox\CheckboxX;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbComponent */
@@ -14,31 +15,65 @@ use yii\widgets\ActiveForm;
     <?php
     if ($model->type ==0) {
 
+        echo $form->field($model, 'code')->textInput(['maxlength' => true]);		
         echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-        echo  $form->field($model, 'description')->textInput(['maxlength' => true]);
+        echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
+      //  echo $form->field($model, 'access_level_district')->checkBox(['rows' => 3],['maxlength' => true]);
+   
+     
+?>
+      <!-- Krajee Flat Blue Theme -->
+      <legend><h6>Component Access Level</h6></legend>
+      <div class="form-group">
+      
 
-        echo  $form->field($model, 'outcome')->textarea(['rows' => 3]) ;
-
-        echo  $form->field($model, 'output')->textarea(['rows' => 3]) ;
-
-        echo  $form->field($model, 'access_level')->dropDownList(
-                [
-                    '0' => 'All',
-            '1' => 'District',
-            '2' => 'Programme',
-
-                ], ['prompt' => 'Select the access level', 'custom' => true, 'required' => false]
-            );
+<?php
+echo '<div class="row">';
+    
+echo '<div class="col-md-2">';
+        echo $form->field($model, 'access_level_district')->widget(CheckboxX::classname(), [
+            'initInputType' => CheckboxX::INPUT_CHECKBOX,
+            'autoLabel' => true,
+            'labelSettings' => [
+                'label' => 'District',
+                'position' => CheckboxX::LABEL_LEFT
+            ]
+        ])->label(false);
+        echo '</div><div class="col-md-2">';
+        echo $form->field($model, 'access_level_province')->widget(CheckboxX::classname(), [
+            'initInputType' => CheckboxX::INPUT_CHECKBOX,
+            'autoLabel' => true,
+           // 'pluginOptions'=>['threeState'=>false],
+            'labelSettings' => [
+                'label' => 'Province',
+                'position' => CheckboxX::LABEL_LEFT
+            ]
+        ])->label(false);
+        echo '</div><div class="col-md-2">';
+        echo $form->field($model, 'access_level_programme')->widget(CheckboxX::classname(), [
+            'initInputType' => CheckboxX::INPUT_CHECKBOX,
+            'autoLabel' => true,
+            'labelSettings' => [
+                'label' => 'Programme',
+                'position' => CheckboxX::LABEL_LEFT
+            ]
+        ])->label(false);
+         
+     
+      ?>
+       </div></div></div>
+          </label>
+          
+          <?php 
+             echo '</div>';
+             echo '</div>';
         }
         else{
             
+    echo $form->field($model, 'code')->textInput(['maxlength' => true]);
     echo $form->field($model, 'name')->textInput(['maxlength' => true]);
     echo  $form->field($model, 'description')->textInput(['maxlength' => true]);
-
-echo  $form->field($model, 'outcome')->textarea(['rows' => 3]) ;
-
-echo  $form->field($model, 'output')->textarea(['rows' => 3]) ;
-echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);
+    echo $form->field($model, 'gl_account_code')->textInput(['maxlength' => true]);
 
         }
         ?>

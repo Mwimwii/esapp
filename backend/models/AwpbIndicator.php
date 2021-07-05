@@ -1,22 +1,19 @@
 <?php
 
 namespace backend\models;
+
 use Yii;
-use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use yii\web\IdentityInterface;
-use common\models\Role;
-
-use yii\helpers\Html;
-
-use yii\helpers\Url;
 
 /**
  * This is the model class for table "awpb_indicator".
  *
  * @property int $id
+ * @property int $activity_id
  * @property int $component_id
+ * @property int $outcome_id
+ * @property int|null $output_id
  * @property string $name
  * @property string $description
  * @property int $unit_of_measure_id
@@ -26,8 +23,11 @@ use yii\helpers\Url;
  * @property int|null $updated_by
  *
  * @property AwpbActivity[] $awpbActivities
- * @property AwpbComponent $component
+ * @property AwpbActivityLine[] $awpbActivityLines
  * @property AwpbUnitOfMeasure $unitOfMeasure
+ * @property AwpbActivity $activity
+ * @property AwpbComponent $component
+ * @property AwpbOutput $output
  */
 class AwpbIndicator extends \yii\db\ActiveRecord
 {
@@ -45,12 +45,15 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['outcome_id', 'name', 'description'], 'required'],
-            [['component_id', 'outcome_id','output_id','created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['activity_id', 'component_id','output_id', 'unit_of_measure_id', 'name', 'description', 'unit_of_measure_id'], 'required'],
+            [['activity_id', 'component_id', 'outcome_id', 'output_id', 'unit_of_measure_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 40],
             [['description'], 'string', 'max' => 255],
+            [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
+            [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
-           
+            [['output_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutput::className(), 'targetAttribute' => ['output_id' => 'id']],
+                [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
         ];
     }
 
@@ -61,11 +64,13 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'activity_id' => 'Activity ID',
             'component_id' => 'Component ID',
-            'outcome_id'=>'Outcome',
-            'output-id'=>'Output',
+            'outcome_id' => 'Outcome ID',
+            'output_id' => 'Output ID',
             'name' => 'Name',
             'description' => 'Description',
+            'unit_of_measure_id' => 'Unit Of Measure ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -84,13 +89,13 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Component]].
+     * Gets query for [[AwpbActivityLines]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComponent()
+    public function getAwpbActivityLines()
     {
-        return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
+        return $this->hasMany(AwpbActivityLine::className(), ['indicator_id' => 'id']);
     }
 
     /**
@@ -103,6 +108,35 @@ class AwpbIndicator extends \yii\db\ActiveRecord
         return $this->hasOne(AwpbUnitOfMeasure::className(), ['id' => 'unit_of_measure_id']);
     }
 
+    /**
+     * Gets query for [[Activity]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getActivity()
+    {
+        return $this->hasOne(AwpbActivity::className(), ['id' => 'activity_id']);
+    }
+
+    /**
+     * Gets query for [[Component]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComponent()
+    {
+        return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
+    }
+
+    /**
+     * Gets query for [[Output]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOutput()
+    {
+        return $this->hasOne(AwpbOutput::className(), ['id' => 'output_id']);
+    }
     public static function getIndicatorsPerComponent($id) {
         $data = self::find()->orderBy(['name' => SORT_ASC])
 
@@ -121,7 +155,12 @@ class AwpbIndicator extends \yii\db\ActiveRecord
         return  $awpbindicators;
    
     }
-
-
-  
+    public static function getIndicators() {
+        $data = self::find()->orderBy(['name' => SORT_ASC])
+        ->orderBy(['activity_id' => SORT_ASC])
+     // ->where(['component_id'=>$id])
+        ->all();
+        $list = ArrayHelper::map($data, 'id','name');
+        return $list;
+    }
 }

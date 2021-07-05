@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_by',
             //'updated_by',
 
-            ['class' => 'yii\grid\ActionColumn'],
+        
             ['class' => 'yii\grid\ActionColumn',
 'template' => '{view}{update}{delete}',
 'buttons' => [

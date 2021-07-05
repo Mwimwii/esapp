@@ -1,46 +1,52 @@
 <?php
 
 use yii\helpers\Html;
+
+use backend\models\AwpbComponent;
 use borales\extensions\phoneInput\PhoneInput;
 use kartik\form\ActiveForm;
 use kartik\depdrop\DepDrop;
 use yii\helpers\Url;
 use kartik\money\MaskMoney;
-use yii\widgets\MaskedInput;
-
-use backend\models\AwpbComponent;
-use backend\models\AwpbActivity;
-use backend\models\AwpbTemplate;
-use backend\models\AwpbIndicator;
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbOutput */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
-<div class="card">
-
-<div class="card-body">
+<div class="card card-success card-outline">
+    <div class="card-body">
 <div class="row">
 		<div class="col-md-12">
 
-        <?php
+        <div class="awpb-output-create">
+   
+    <?php
     $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
-    echo $form->field($model,'outcome_id')->dropDownList((AwpbOutcome::getOutcomes()),
+    $outputs = self::find()
+    ->select(["CONCAT(code,' ',name) as name", 'id'])
+    //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+    ->where(['component_id' => $id])
+    ->asArray()
+    ->all();
+    		
+    var_dump(  $outputs);
+	 echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
      [
-       'prompt'=>'Select outcomes','id'=>'out_id']);
-       echo Html::hiddenInput('selected_outcome_id', $model->isNewRecord ? '' : $model->outcome_id, ['id' => 'selected_outcome_id']);
-         
+       'prompt'=>'Select component','id'=>'comp_id']);
+       echo $form->field($model, 'code')->textInput(['maxlength' => true]) ;
         echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-        echo $form->field($model, 'output_description')->textInput(['maxlength' => true]);
-
- ?>
+        echo $form->field($model, 'description')->textInput(['maxlength' => true]);
+?>
+      
 </div>
 </div>
+</div>
+<div class="row">
+		<div class="col-md-12">
+   
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
-
+    </div>  </div>
     <?php ActiveForm::end(); ?>
 
 </div>

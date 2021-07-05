@@ -1,7 +1,6 @@
 <?php
 
-
-
+use backend\models\AwpbActivity;
 use yii\helpers\Html;
 //use yii\widgets\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
@@ -17,36 +16,56 @@ use backend\models\UnitOfMeasure;
 /* @var $model backend\models\AwpbIndicator */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
-<div class="awpb-indicator-form">
-
+<div class="card card-success card-outline">
+    <div class="card-body">
                   <?php 
                 $form = ActiveForm::begin(['type' => ActiveForm::TYPE_VERTICAL, 'formConfig' => ['labelSpan' => 3, 'deviceSize' => ActiveForm::SIZE_SMALL]]);
-
-
                 ?>
            
 
-
-
            <div class="row">
-                    <div class="col-md-6">        
+                    <div class="col-md-6">      
                      <?php 
-                  echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
-                  [
-                    'prompt'=>'Select component','id'=>'comp_id']);
-                    echo Html::hiddenInput('selected_outcome_id', $model->isNewRecord ? '' : $model->outcome_id, ['id' => 'selected_outcome_id']);
-                   echo $form->field($model,'outcome_id')->widget(DepDrop::classname(),[
-                     //'data' => AwpbActivity::getAwpbComponentActivities($model->component_id),
-                     'options'=>['id'=>'outcome_id', 'custom' => true, 'required' => TRUE],
-                     'pluginOptions'=>[
-                       'depends'=>['comp_id'],
-                     'placeholder'=>'Select indicator',
-                     'url'=>Url::to(['awpb-outcome/componentoutcomes']),
-                     'params' => ['selected_outcome_id'],
-                     ]
-                     ]);
+                echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
+                [
+                'prompt'=>'Select component','id'=>'comp_id']);
+
+                echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+
+
+                echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+                  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+                  'pluginOptions' => [
+                    'depends' => ['comp_id'],
+                    'initialize' => $model->isNewRecord ? false : true,
+                    'placeholder' => 'Select an output',
+                    'url' => Url::to(['/awpb-component/outputs']),
+                    'params' => ['comp_id'],
+                  ]
+                ]);
+
+
+                echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
+
+
+                echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
+                'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
+                'pluginOptions' => [
+                'depends' => ['output_id1'],
+                'initialize' => $model->isNewRecord ? false : true,
+                'placeholder' => 'Select a parent activity',
+                'url' => Url::to(['/awpb-activity/childactivities']),
+                'params' => ['output_id1'],
+                ]
+                ]);
+
+                echo                
+                $form->field($model, 'unit_of_measure_id')->dropDownList(
+                          \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);          ;
+                echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+                echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
                     ?>
+                    
              </div>
 
              <div class="col-md-6">
@@ -70,19 +89,6 @@ use backend\models\UnitOfMeasure;
                 <div class="row">
                     <div class="col-md-6">
                   
-                  
-                    <?php 
-                      echo $form->field($model, 'name')->textInput(['maxlength' => true]);
-                      echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
-              
-                      //echo                
-                      // $form->field($model, 'unit_of_measure_id')
-                      //     ->dropDownList(
-                      //             \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);
-                          
-                      // ;
-                      ?>
-            
               </div>
                 </div>
             <div class="row">
@@ -95,4 +101,4 @@ use backend\models\UnitOfMeasure;
             
                 <?php ActiveForm::end(); ?>
             
-            </div>
+                </div>    </div>

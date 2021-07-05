@@ -72,6 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'visible' => !empty($model->parent_component_id) && $model->parent_component_id > 0 ? TRUE : FALSE,
             ],
+
             [
                 'label' => 'Component Type',
                 'value' => function($model) {
@@ -89,31 +90,56 @@ $this->params['breadcrumbs'][] = $this->title;
      
            
         
-            'outcome:ntext',
-            'output:ntext',
+           // 'outcome:ntext',
+           // 'output:ntext',
             'gl_account_code',
             
             [
-             'label' => 'Access Level',
+             'label' => 'Accessible at District Level',
              'value' => function($model) {
-                 if ($model->access_level==0)
+                 if ($model->access_level_district==1)
                  {
-                     return "All";
+                     return "Yes";
                        
                  }
-                 if ($model->access_level==1)
+                 else
                  {
-                     return "District";
-                       
-                 }
-            
-                 if ($model->access_level==2)
-                 {
-                     return "Programme";
-                       
-                 }}
-                 
+                    return "No";
+                      
+                }
+                }       
          ],
+         [
+            'label' => 'Accessible at Province Level',
+            'value' => function($model) {
+                if ($model->access_level_province==1)
+                {
+                    return "Yes";
+                      
+                }
+                else
+                {
+                   return "No";
+                     
+               }
+               }       
+        ],
+         [
+            'label' => 'Accessible at Programme Level',
+            'value' => function($model) {
+                if ($model->access_level_programme==1)
+                {
+                    return "Yes";
+                      
+                }
+                else
+                {
+                   return "No";
+                     
+               }
+               }       
+        ],
+      
             // 'subcomponent',
             // 'created_at',
             // 'updated_at',

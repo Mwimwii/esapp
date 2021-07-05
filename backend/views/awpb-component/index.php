@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
 
 $this->title = 'Components';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
@@ -20,7 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <p>
             <?php
             if (\backend\models\User::userIsAllowedTo('Manage components')) {
-               echo Html::a('<i class="fa fa-plus"></i> Add component', ['create'], ['class' => 'btn btn-success btn-sm']);
+               
+                     echo Html::a('<i class="fa fa-plus"></i> Add component', ['create'], ['class' => 'btn btn-success btn-sm']);
+                
             }
             ?>
         </p>
@@ -38,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'code', 
                     'vAlign' => 'top',
-                    'width' => '180px',
+                    'width' => '50px',
                     'value' => function ($model, $key, $index, $widget) { 
                     return      Html::a($model->code, ['awpb-component/view', 'id' => $model->id], ['class' => 'awbp-component']);
                    
@@ -56,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'name', 
                     'vAlign' => 'top',
-                    'width' => '180px',
+                    'width' => '800px',
                     'value' => function ($model, $key, $index, $widget) { 
                     return      Html::a($model->name, ['awpb-component/view', 'id' => $model->id], ['class' => 'awbp-component']);
                    
@@ -101,22 +104,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label' => 'Access Level',
                     'value' => function($model) {
-                        if ($model->access_level==0)
+                        $access="";
+                        if ($model->access_level_district==1)
                         {
-                            return "All";
-                              
+                            $access .= "District";
+                            return  $access;
                         }
-                        if ($model->access_level==1)
+                        if ($model->access_level_province==1)
                         {
-                            return "District";
-                              
+                            $access .= " Province";
+                            return  $access;
                         }
-                      
-                        if ($model->access_level==2)
+                        if ($model->access_level_programme==1)
                         {
-                            return "Programme";
-                              
+                            $access .= " Programme";
+                            return  $access;
                         }
+                           
                        
                                            }
                 ],
@@ -182,9 +186,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 //         return $name;
                 //     }
                 // ],
-         'gl_account_code',
-               'outcome',
-                'output',
+                [
+                    'attribute' =>  'gl_account_code', 
+                    'vAlign' => 'top',
+                    'width' => '150px',
+                ],
+         //'gl_account_code',
+              // 'outcome',
+               // 'output',
                
                     
                 //'created_at',
@@ -192,6 +201,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'updated_by',
                 //'created_by',
                 ['class' => 'yii\grid\ActionColumn',
+                'options' => ['style' => 'width:150px;'],
                     'template' => '{view}{update}{delete}',
                     'buttons' => [
                         'view' => function ($url, $model) {

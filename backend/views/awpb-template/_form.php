@@ -10,9 +10,8 @@ use kartik\depdrop\DepDrop;
 use yii\helpers\Url;
 use backend\models\AwpbTemplate;
 ?>
-
-<div class="awpb-template-form">
-
+<div class="card card-success card-outline">
+    <div class="card-body">
     <?php 
 // $model1->icons = [
 //     'align-left' => Html::icon('align-left') . ' Align Left',
@@ -188,7 +187,7 @@ use backend\models\AwpbTemplate;
 
     <?php ActiveForm::end(); ?>
 
-</div>
+</div></div>
 
  
 

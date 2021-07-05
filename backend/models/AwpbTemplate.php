@@ -149,14 +149,15 @@ class AwpbTemplate extends \yii\db\ActiveRecord
         return $this->hasMany(AwpbTemplateUsers::className(), ['awpb_template_id' => 'id']);
     }
     public static function getId() {
-        $template = self::find()->where(['<>','status',AwpbTemplate::STATUS_OLD_BUDGET])->one();
-            
+        //$template = self::find()->where(['<>','status',AwpbTemplate::STATUS_OLD_BUDGET])->one();
+        $template = self::find()->where(['status'=>self::STATUS_PUBLISHED])->one();
+             
         return  $template->id;
     }
     public static function getAwpbTemplates() {
         $data = self::find()->orderBy(['fiscal_year' => SORT_ASC])
         ->where(['status'=>self::STATUS_PUBLISHED])
-        ->all();
+        ->one();
         $list = ArrayHelper::map($data, 'id', 'fiscal_year');
         return $list;
     }

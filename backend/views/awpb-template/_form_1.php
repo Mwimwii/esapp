@@ -21,9 +21,8 @@ use lo\widgets\modal\ModalAjax;
 
 
 ?>
-
-<div class="awpb-template-form">
-
+<div class="card card-success card-outline">
+    <div class="card-body">
     <?php            
 //	$form = ActiveForm::begin(['type' => ActiveForm::TYPE_VERTICAL, 'formConfig' => ['labelSpan' => 3, 'deviceSize' => ActiveForm::SIZE_SMALL],'options' => ['enctype' => 'multipart/form-data']]);
 	//$form = ActiveForm::begin(); 
@@ -541,7 +540,7 @@ $form = ActiveForm::begin([
 
 </div>
 
- 
+ </div>
 
 
 <?php   $this->registerJs("jQuery('#checkAll').change(function(){jQuery('.activity').prop('checked',this.checked?'checked':'');})");?>
