@@ -71,9 +71,18 @@ class AwpbComponent extends \yii\db\ActiveRecord {
             [['code'], 'string', 'max' => 10],
             [['name', 'description', 'subcomponent'], 'string', 'max' => 255],
             [['gl_account_code'], 'string', 'max' => 4],
-            [['code'], 'unique'],
-            [['name'], 'unique'],
-            [['description'], 'unique'],
+             ['parent_component_id', 'required', 'when' => function($model) {
+                    return $model->subcomponent== 'Subcomponent';
+                }, 'message' => 'Parent component can not be blank!'],
+            [['code'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('code');
+                }, 'message' => 'Component code already in use!'],
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Component name already in use!'],
+            [['description'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('description');
+                }, 'message' => 'Component description already in use!'],
             // ['access_level', 'required', 'when' => function($model) {
             //         return $model->subcomponent == 'Component';
             //     }, 'message' => 'Access level can not be blank for a main component!'],
@@ -226,6 +235,17 @@ class AwpbComponent extends \yii\db\ActiveRecord {
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
     }
+     public static function getAwpbSubComponentsListPW() {
+
+        $components = self::find()
+        ->select(["CONCAT(code,' ',name) as name", 'id'])
+                        ->where(['type' => self::TYPE_SUB])
+                        ->andWhere(['access_level_programme' => self::TYPE_SUB])
+                        ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
+    }
+
     public static function getAwpbSubComponentsListDistrict() {
 
         $components = self::find()

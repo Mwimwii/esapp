@@ -43,27 +43,29 @@ use backend\models\UnitOfMeasure;
                     'params' => ['comp_id'],
                   ]
                 ]);
+                
 
+//
+//                echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
+//
+//
+//                echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
+//                'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
+//                'pluginOptions' => [
+//                'depends' => ['output_id1'],
+//                'initialize' => $model->isNewRecord ? false : true,
+//                'placeholder' => 'Select a parent activity',
+//                'url' => Url::to(['/awpb-activity/childactivities']),
+//                'params' => ['output_id1'],
+//                ]
+//                ]);
 
-                echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
-
-
-                echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
-                'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
-                'pluginOptions' => [
-                'depends' => ['output_id1'],
-                'initialize' => $model->isNewRecord ? false : true,
-                'placeholder' => 'Select a parent activity',
-                'url' => Url::to(['/awpb-activity/childactivities']),
-                'params' => ['output_id1'],
-                ]
-                ]);
-
-                echo                
-                $form->field($model, 'unit_of_measure_id')->dropDownList(
-                          \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);          ;
-                echo $form->field($model, 'name')->textInput(['maxlength' => true]);
+              echo $form->field($model, 'name')->textInput(['maxlength' => true]);
                 echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
+                          
+               echo $form->field($model, 'unit_of_measure_id')->dropDownList(
+                          \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);          ;
+               echo $form->field($model, 'programme_target')->textInput(['maxlength' => true]);
                     ?>
                     
              </div>

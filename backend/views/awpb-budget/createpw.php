@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbBudget */
 
-$this->title = 'Add Programme-Wide AWPB Activity Lines';
-$this->params['breadcrumbs'][] = ['label' => 'Programme-Wide AWPB Activity Lines', 'url' => ['indexpw']];
+$this->title = 'Add AWPB';
+$this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form_1', [
                         'model' => $model,
+                        'template_id'=>$template_id
                         
             ]) ?>
 

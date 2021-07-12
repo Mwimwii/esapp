@@ -87,6 +87,7 @@ class AwpbInput extends \yii\db\ActiveRecord
     const STATUS_REVIEWED = 2;
     const STATUS_APPROVED = 3;
     const STATUS_MINISTRY = 4;
+    public $quarter;
     public static function tableName()
     {
         return 'awpb_input';
@@ -98,11 +99,13 @@ class AwpbInput extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id', 'awpb_template_id', 'indicator_id', 'budget_id', 'name','unit_of_measure_id', 'unit_cost'], 'required'],
-            [['activity_id', 'awpb_template_id', 'indicator_id', 'budget_id', 'status','unit_of_measure_id', 'camp_id','district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['component_id', 'output_id', 'budget_id', 'name','unit_of_measure_id', 'unit_cost'], 'required'],
+            [['activity_id', 'awpb_template_id', 'indicator_id', 'budget_id', 'status','unit_of_measure_id','cost_centre_id', 'camp_id','district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount', 'mo_1_actual', 'mo_2_actual', 'mo_3_actual', 'mo_4_actual', 'mo_5_actual', 'mo_6_actual', 'mo_7_actual', 'mo_8_actual', 'mo_9_actual', 'mo_10_actual', 'mo_11_actual', 'mo_12_actual'], 'number'],
             [['name'], 'string', 'max' => 255],
-             [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
+            [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
+            [['output_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutput::className(), 'targetAttribute' => ['output_id' => 'id']],
+            [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
             [['budget_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbBudget::className(), 'targetAttribute' => ['budget_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
@@ -121,41 +124,44 @@ class AwpbInput extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+             'component_id' => 'Component',
+            'output_id' => 'Output',
             'activity_id' => 'Activity',
             'awpb_template_id' => 'AWPB Template',
             'indicator_id' => 'Programme Indicator',
              'budget_id' => 'Budget',
             'name' => 'Name',
+            'quarter'=>"",
             'unit_cost' => 'Unit Cost',
-            'mo_1' => 'Jan',
-            'mo_2' => 'Feb',
-            'mo_3' => 'Mar',
-            'mo_4' => 'Apr',
-            'mo_5' => 'May',
-            'mo_6' => 'Jun',
-            'mo_7' => 'Jul',
-            'mo_8' => 'Aug',
-            'mo_9' => 'Sep',
-            'mo_10' => 'Oct',
-            'mo_11' => 'Nov',
-            'mo_12' => 'Dec',
+            'mo_1' => 'Jan Qty',
+            'mo_2' => 'Feb Qty',
+            'mo_3' => 'Mar Qty',
+            'mo_4' => 'Apr Qty',
+            'mo_5' => 'May Qty',
+            'mo_6' => 'Jun Qty',
+            'mo_7' => 'Jul Qty',
+            'mo_8' => 'Aug Qty',
+            'mo_9' => 'Sep Qty',
+            'mo_10' => 'Oct Qty',
+            'mo_11' => 'Nov Qty',
+            'mo_12' => 'Dec Qty',
             'quarter_one_quantity' => 'Q1 Qty',
             'quarter_two_quantity' => 'Q2 Qty',
             'quarter_three_quantity' => 'Q3 Qty',
             'quarter_four_quantity' => 'Q4 Qty',
             'total_quantity' => 'Total Qty',
-            'mo_1_amount' => 'Jan',
-            'mo_2_amount' => 'Feb',
-            'mo_3_amount' =>'Mar',
-            'mo_4_amount' => 'Apr',
-            'mo_5_amount' => 'May',
-            'mo_6_amount' => 'Jun',
-            'mo_7_amount' => 'Jul',
-            'mo_8_amount' => 'Aug',
-            'mo_9_amount' => 'Sep',
-            'mo_10_amount' => 'Oct',
+            'mo_1_amount' => 'Jan Amt',
+            'mo_2_amount' => 'Feb Amt',
+            'mo_3_amount' =>'Mar Amt',
+            'mo_4_amount' => 'Apr Amt',
+            'mo_5_amount' => 'May Amt',
+            'mo_6_amount' => 'Jun Amt',
+            'mo_7_amount' => 'Jul Amt',
+            'mo_8_amount' => 'Aug Amt',
+            'mo_9_amount' => 'Sep Amt',
+            'mo_10_amount' => 'Oct Amt',
             'mo_11_amount' => 'Nov',
-            'mo_12_amount' => 'Dec',
+            'mo_12_amount' => 'Dec Amt',
             'quarter_one_amount' => 'Q1 Budget',
             'quarter_two_amount' => 'Q2 Budget',
             'quarter_three_amount' => 'Q3 Budget',
@@ -176,6 +182,7 @@ class AwpbInput extends \yii\db\ActiveRecord
             'mo_12_actual' => 'Mo 12 Actual',
             'status' => 'Status',
             'camp_id'=>'Camp',
+            'cost_centre_id'=>'Cost Centre',
             'district_id' => 'District ID',
             'province_id' => 'Province ID',
             'created_at' => 'Created At',
@@ -233,6 +240,10 @@ class AwpbInput extends \yii\db\ActiveRecord
     public function getDistrict()
     {
         return $this->hasOne(District::className(), ['id' => 'district_id']);
+    }
+        public function getAwpbDistrict()
+   {
+        return $this->hasOne(AwpbDistrict::className(), ['district_id' => 'district_id','awpb_template_id'=>'awpb_template_id']);
     }
 
     /**

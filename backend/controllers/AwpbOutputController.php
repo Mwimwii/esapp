@@ -8,6 +8,8 @@ use backend\models\AwpbOutputSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\models\User;
+use backend\models\AuditTrail;
 
 /**
  * AwpbOutputController implements the CRUD actions for AwpbOutput model.
@@ -63,16 +65,49 @@ class AwpbOutputController extends Controller
      * @return mixed
      */
     public function actionCreate()
-    {
-        $model = new AwpbOutput();
+    {        
+           if (User::userIsAllowedTo('Setup AWPB')) {
+              $model = new AwpbOutput();
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load(Yii::$app->request->post())) {
+
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Added output : " . $model->name;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Output ' . $model->name . ' was successfully added.');
+//                } else {
+//                    Yii::$app->session->setFlash('error', 'Error occured while adding output ' . $model->name);
+//                }
+                } else {
+                        $message = '';
+                        foreach ($model->getErrors() as $error) {
+                            $message .= $error[0];
+                              Yii::$app->session->setFlash('error', "Error occured while creating an output: ". $message);
+                              //Yii::$app->session->setFlash('error', 'Error occured while adding output ' . $model->name);
+                               return $this->redirect(['index',]);
+                        }
+                }
+                
+                return $this->redirect(['index']);
+            }
+            return $this->render('create', [
+                        'model' => $model,
+                       
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -143,6 +178,29 @@ class AwpbOutputController extends Controller
 
 
                 return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+   public function actionIndicators() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_indicator_id= $_POST['depdrop_params'];
+            if ($parents != null) {
+                $out_id = $parents[0];
+                $out = \backend\models\AwpbIndicator::find()
+                ->select(['name', 'id'])
+               // ->where(['type' =>\backend\models\AwpbActivity::TYPE_MAIN])
+                ->where(['output_id' => $out_id])
+                ->asArray()
+                ->all();
+
+
+                return ['output' => $out, 'selected' => $selected_indicator_id[0]];
             }
         }
         return ['output' => '', 'selected' => ''];

@@ -71,36 +71,20 @@ if (!empty($province)) {
 
 
 <?php
-// const STATUS_DRAFT = 0;
-//    const STATUS_SUBMITTED = 1;
-//    const STATUS_REVIEWED = 2;
-//    const STATUS_APPROVED = 3;
-//    const STATUS_MINISTRY = 4;
 
-if ($model->status == \backend\models\AwpbBudget::STATUS_DRAFT){
-  
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->awpb_template_id], [
+
+echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa','status'=>$status,'district_id' =>  $model->district_id,'province_id'=>$model->province_id,'awpb_template_id'=>$model->awpb_template_id,'output_id' => $model->output_id,'activity_id' => $model->activity_id], [
     'title' => 'back',
     'data-toggle' => 'tooltip',
     'data-placement' => 'top',
 ]);
-}
-
-if ($model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED){
-  //  return Html::a($name, ['awpb-budget/mpcdoa', 'activity_id' => $model->activity_id, 'district_id'=>$model->district_id,'awpb_template_id'=>$model->awpb_template_id], ['class' => 'awbp-budget']);
-     
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa', 'activity_id' => $model->activity_id, 'district_id'=>$model->district_id,'awpb_template_id'=>$model->awpb_template_id], [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
-}
+//}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (\backend\models\User::userIsAllowedTo('Manage AWPB')) {
+if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
 
 
-    if ($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status == \backend\models\AwpbBudget::STATUS_REVIEWED) {
+    if ($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED) {
         echo Html::a(
                 '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id], [
             'title' => 'Update AWPB',
@@ -687,13 +671,13 @@ if (\backend\models\User::userIsAllowedTo('Manage AWPB')) {
                             }
                         },
                         'update' => function ($url, $model) {
-                            if (($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_REVIEWED) && User::userIsAllowedTo('Manage AWPB') ) {
-                                return Html::a(
+                             if  (($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED)  && (User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') )) {
+                            return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
                                             'title' => 'Update input',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
-                                            // 'target' => '_blank',
+                                            // 'target' => '_blank',)
                                             'data-pjax' => '0',
                                             'style' => "padding:5px;",
                                             'class' => 'bt btn-lg'
@@ -702,7 +686,7 @@ if (\backend\models\User::userIsAllowedTo('Manage AWPB')) {
                             }
                         },
                         'delete' => function ($url, $model) {
-                            if  (($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_REVIEWED) && User::userIsAllowedTo('Manage AWPB') ) {
+                            if  (($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED)  && (User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') )) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id], [
                                             'title' => 'delete component',

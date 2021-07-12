@@ -46,6 +46,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     const STATUS_OLD_BUDGET = 3;
     public $activities;
     public $users;
+    public $districts;
     /**
      * {@inheritdoc}
      */
@@ -151,8 +152,8 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     public static function getId() {
         //$template = self::find()->where(['<>','status',AwpbTemplate::STATUS_OLD_BUDGET])->one();
         $template = self::find()->where(['status'=>self::STATUS_PUBLISHED])->one();
-             
-        return  $template->id;
+           return     !empty( $template->id) ? $template->id : 0;
+     
     }
     public static function getAwpbTemplates() {
         $data = self::find()->orderBy(['fiscal_year' => SORT_ASC])

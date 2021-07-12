@@ -47,7 +47,7 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id','component_id',  'output_id', 'awpb_template_id'], 'required'],
+            [['activity_id','component_id',  'awpb_template_id'], 'required'],
             [['activity_code'], 'string', 'max' => 10],
             [['name'], 'string', 'max' => 40],
             [['activity_id', 'component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
@@ -141,14 +141,14 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     
 
 
-        $activties = self::find()
+        $activities = self::find()
                 ->select(['activity_id', 'name'])
             
                 ->where(['awpb_template_id'=>$template_id])
                // ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.activity_id'])
                 ->all();
       // $list = ArrayHelper::map($activties, 'id', 'name');
-        return  $activties;
+        return  $activities;
 
 
 

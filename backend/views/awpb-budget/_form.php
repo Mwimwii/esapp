@@ -24,49 +24,64 @@ echo $form->field($model,'component_id')->dropDownList((\backend\models\AwpbComp
 [
 'prompt'=>'Select component','id'=>'comp_id']);
 
-echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
-
-
-echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
-  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
-  'pluginOptions' => [
-    'depends' => ['comp_id'],
-    'initialize' => $model->isNewRecord ? false : true,
-    'placeholder' => 'Select an output',
-    'url' => Url::to(['/awpb-component/outputs']),
-    'params' => ['comp_id'],
-  ]
-]);
-
-
 echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
 
-
 echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
-    'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
+    'options' => ['id' => 'activity_id1', 'custom' => true, 'required' => TRUE],
     'pluginOptions' => [
-    'depends' => ['output_id1'],
+    'depends' => ['comp_id'],
     'initialize' => $model->isNewRecord ? false : true,
     'placeholder' => 'Select a parent activity',
     'url' => Url::to(['/awpb-activity/templateactivities']),
-    'params' => ['selected_id'],
+    'params' => ['comp_id'],
     ]
     ]);
 
 
- echo Html::hiddenInput('selected_indicator_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_indicator_id']);
-                   echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
-                   
-                     'options'=>['id'=>'indicator_id1', 'custom' => true, 'required' => TRUE],
-                     'pluginOptions'=>[
-                       'depends'=>['parent_activity_id1'],
-                     'placeholder'=>'Select indicator',
-                     'url'=>Url::to(['awpb-activity/actvityindicators']),
-                     'params' => ['selected_activity_id'],
-                    
-                     ]
-                     ]);
-       
+
+//echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+//
+//
+//echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+//  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+//  'pluginOptions' => [
+//    'depends' => ['comp_id'],
+//    'initialize' => $model->isNewRecord ? false : true,
+//    'placeholder' => 'Select an output',
+//    'url' => Url::to(['/awpb-component/outputs']),
+//    'params' => ['comp_id'],
+//  ]
+//]);
+//
+//
+//echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
+
+
+//echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
+//    'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
+//    'pluginOptions' => [
+//    'depends' => ['output_id1'],
+//    'initialize' => $model->isNewRecord ? false : true,
+//    'placeholder' => 'Select a parent activity',
+//    'url' => Url::to(['/awpb-activity/templateactivities']),
+//    'params' => ['selected_id'],
+//    ]
+//    ]);
+
+//
+// echo Html::hiddenInput('selected_indicator_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_indicator_id']);
+//                   echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
+//                   
+//                     'options'=>['id'=>'indicator_id1', 'custom' => true, 'required' => TRUE],
+//                     'pluginOptions'=>[
+//                       'depends'=>['parent_activity_id1'],
+//                     'placeholder'=>'Select indicator',
+//                     'url'=>Url::to(['awpb-activity/actvityindicators']),
+//                     'params' => ['selected_activity_id'],
+//                    
+//                     ]
+//                     ]);
+//       
        // echo $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Input description'])->label("Input description");
       
         /*echo  $form->field($model, 'unit_cost', ['enableAjaxValidation' => false])->widget(MaskMoney::classname(), [

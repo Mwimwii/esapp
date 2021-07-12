@@ -16,7 +16,7 @@ $indicator = \backend\models\AwpbBudget::findOne(['id' => $id]);
 <div class="card">
 
     <div class="card-body">
-       
+        
         <?=
         $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Input description'])->label("Input description");
         ?>      
@@ -147,6 +147,8 @@ $indicator = \backend\models\AwpbBudget::findOne(['id' => $id]);
                         ->label("Dec");
                 // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'Enter quantity'])->hint('Enter quantity'); 
                 ?>
+                 <?= $form->field($model, 'budget_id')->hiddenInput(['value' => $indicator->id])->label(false);
+        ?>
             </div>
 
         </div>
@@ -155,14 +157,7 @@ $indicator = \backend\models\AwpbBudget::findOne(['id' => $id]);
                 <?= Html::submitButton('Save', ['class' => ' btn btn-success']) ?>
         </div>
     </div>
-     <?=
-        $form->field($model, 'awpb_template_id')->hiddenInput(['value' => $indicator->awpb_template_id])->label(false);
-        ?>
-        <?=
-        $form->field($model, 'activity_id')->hiddenInput(['value' => $indicator->activity_id])->label(false);
-        ?>
-        <?= $form->field($model, 'indicator_id')->hiddenInput(['value' => $indicator->indicator_id])->label(false);
-        ?>
+ 
         <?= $form->field($model, 'budget_id')->hiddenInput(['value' => $indicator->id])->label(false);
         ?>
 <?php ActiveForm::end(); ?>

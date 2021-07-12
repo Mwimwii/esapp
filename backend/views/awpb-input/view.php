@@ -9,6 +9,7 @@ use yii\helpers\Url;
 use kartik\money\MaskMoney;
 use yii\widgets\MaskedInput;
 use kartik\detail\DetailView;
+use backend\models\User;
 
 
 /* @var $this yii\web\View */
@@ -20,7 +21,7 @@ $this->params['breadcrumbs'][] = ['label' => 'AWPB Inputy Lines', 'url' => ['ind
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
-
+ $user = User::findOne(['id' => Yii::$app->user->id]);
 $tem="";
 $template= \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
 	
@@ -93,13 +94,24 @@ $model_budget =new  \backend\models\AwpbBudget();
     <p>
     
             <?php
-            
+       if (User::userIsAllowedTo('Approve AWPB - Provincial') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+
       
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/view', 'id' => $model->budget_id,'status'=>$_model->status], [
+echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/viewp', 'id' => $model->budget_id,'status'=>$_model->status], [
     'title' => 'back',
     'data-toggle' => 'tooltip',
     'data-placement' => 'top',
 ]);
+       }
+       else
+       {
+           echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/view', 'id' => $model->budget_id,'status'=>$_model->status], [
+    'title' => 'back',
+    'data-toggle' => 'tooltip',
+    'data-placement' => 'top',
+]);
+           
+       }
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 if ($status ==0 && \backend\models\User::userIsAllowedTo('Manage AWPB')) {

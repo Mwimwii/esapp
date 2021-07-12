@@ -11,24 +11,74 @@ use yii\widgets\MaskedInput;
 
 $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
 //$form = ActiveForm::begin();
-  echo $form->field($model, 'awpb_template_id')->hiddenInput(['value'=> $model->awpb_template_id])->label(false);
-          //  echo $form->field($model, 'component_id')->hiddenInput(['value'=>$model->component_id])->label(false);
-           // echo $form->field($model, 'output_id')->hiddenInput(['value'=>$model->output_id])->label(false);
-            //echo $form->field($model, 'activity_id')->hiddenInput(['value'=>$model->activity_id])->label(false);
-            //echo $form->field($model, 'indicator_id')->hiddenInput(['value'=>$model->indicator_id])->label(false);  
 ?>
-<div class="card card-success card-outline">
+<div class="card">
 
     <div class="card-body">
-        <?php
-         echo
-                    $form->field($model, 'camp_id', ['enableAjaxValidation' => true,])->label('Camp')
-                    ->dropDownList(
-                            \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id), ['prompt' => 'Please select a camp', 'required' => true]
-            );
-          
-            
-             echo $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Description', 'disabled' => true])->label("Indicator description");
+     
+    
+        
+<?php
+echo $form->field($model, 'awpb_template_id')->hiddenInput(['value'=> $template_id])->label(false);
+echo $form->field($model,'component_id')->dropDownList((\backend\models\AwpbComponent::getAwpbSubComponentsListPW()),
+[
+'prompt'=>'Select component','id'=>'comp_id']);
+
+//echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+//
+//
+//echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+//  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+//  'pluginOptions' => [
+//    'depends' => ['comp_id'],
+//    'initialize' => $model->isNewRecord ? false : true,
+//    'placeholder' => 'Select an output',
+//    'url' => Url::to(['/awpb-component/outputs']),
+//    'params' => ['comp_id'],
+//  ]
+//]);
+
+
+echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
+
+echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
+    'options' => ['id' => 'activity_id1', 'custom' => true, 'required' => TRUE],
+    'pluginOptions' => [
+    'depends' => ['comp_id'],
+    'initialize' => $model->isNewRecord ? false : true,
+    'placeholder' => 'Select a parent activity',
+    'url' => Url::to(['/awpb-activity/templateactivities']),
+    'params' => ['selected_activity_id'],
+    ]
+    ]);
+
+
+//echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
+//    'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
+//    'pluginOptions' => [
+//    'depends' => ['output_id1'],
+//    'initialize' => $model->isNewRecord ? false : true,
+//    'placeholder' => 'Select a parent activity',
+//    'url' => Url::to(['/awpb-activity/templateactivities']),
+//    'params' => ['selected_id'],
+//    ]
+//    ]);
+
+
+// echo Html::hiddenInput('selected_indicator_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_indicator_id']);
+//                   echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
+//                   
+//                     'options'=>['id'=>'indicator_id1', 'custom' => true, 'required' => TRUE],
+//                     'pluginOptions'=>[
+//                       'depends'=>['parent_activity_id1'],
+//                     'placeholder'=>'Select indicator',
+//                     'url'=>Url::to(['awpb-activity/actvityindicators']),
+//                     'params' => ['selected_activity_id'],
+//                    
+//                     ]
+//                     ]);
+       
+       // echo $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Input description'])->label("Input description");
       
         /*echo  $form->field($model, 'unit_cost', ['enableAjaxValidation' => false])->widget(MaskMoney::classname(), [
             'pluginOptions' => [
@@ -37,10 +87,17 @@ $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
             ]
         ])->label("Unit Cost");
         */
-            
-            ?>
-        
-         <hr class="dotted">  
+//                   
+          echo
+                    $form->field($model, 'cost_centre_id', ['enableAjaxValidation' => true,])->label('Cost Centre')
+                    ->dropDownList(
+                    \backend\models\AwpbCostCentre::getAwpbCostCentreList(), ['prompt' => 'Please select a cost centre', 'required' => true]
+            );
+          
+
+          
+        ?>
+              <hr class="dotted">  
         <div class="form-group row mb-0">
             
                        
@@ -76,7 +133,7 @@ $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
                 ?>
             </div>
             <div class="col-sm-5">
-               <?= $form->field($model, 'number_of_not_young_people', ['enableAjaxValidation' => false])->textInput(['maxlength' => true, 'placeholder' => 'Enter quantity'])  ->label("Not Youmg");
+               <?= $form->field($model, 'number_of_not_young_people', ['enableAjaxValidation' => false])->textInput(['maxlength' => true, 'placeholder' => 'Enter quantity'])  ->label("Not Young");
                 //$form->field($model, 'from_date',['showLabels'=>false])->textInput(['placeholder'=>'From Date'])->hint('Enter begin date'); 
                 ?>
 
@@ -102,7 +159,6 @@ $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
                 ?>
 
             </div>
-          
           
 
 
@@ -231,6 +287,7 @@ $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
                 // $form->field($model, 'to_date',['showLabels'=>false])->textInput(['placeholder'=>'Enter quantity'])->hint('Enter quantity'); 
                 ?>
             </div>
+
         </div>
         <div class="row">
 	<div class="col-md-12">

@@ -27,16 +27,15 @@ $this->title = 'Provincial AWPB';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
 
-//$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
-//$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
-$months = [
-    1 => "January", 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June",
-    7 => "July", 8 => "August", 9 => "September", 10 => "October", 11 => "November", 12 => "December"
-];
 $user = User::findOne(['id' => Yii::$app->user->id]);
 $access_level=1;
  global $province_id;
  $province_id = 0;
+ 
+ $time = new \DateTime('now');
+$today = $time->format('Y-m-d');
+$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
@@ -305,9 +304,16 @@ $access_level=1;
             'template' => '{update} {delete}',
             'buttons' => [
                 
-                'update' => function ($url, $model) use ($editable){
-                    if ((User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) && $editable ==1 ) {
-                       
+                'update' => function ($url, $model) use ($user){
+                  $awpb_province =  \backend\models\AwpbProvince::findOne(['awpb_template_id' =>$model->awpb_template_id, 'province_id'=>$model->province_id]);
+                            $status=100;
+                            if (!empty($awpb_province)) {
+                              $status= $awpb_province->status;
+
+                            }
+                    if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
+
+                              
                         return Html::a(
                                         '<span class="fas fa-check"></span>',['submit','id'=>$model->awpb_template_id,'id2'=>$model->province_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
                                     'title' => 'Approve Provincial AWPB',
@@ -322,9 +328,16 @@ $access_level=1;
                         
                     }
                 },
-                           'delete' => function ($url, $model) use ($editable) {
-                    if ((User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) && $editable ==1  ) {
-                       
+                           'delete' => function ($url, $model) use ($user) {
+                            $awpb_province =  \backend\models\AwpbProvince::findOne(['awpb_template_id' =>$model->awpb_template_id,'province_id'=>$model->province_id]);
+                            $status=100;
+                            if (!empty($awpb_province)) {
+                              $status= $awpb_province->status;
+
+                            }
+                  if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
+
+                          
                         $province_id = $model->province_id;
                         return Html::a('<span class="fas fa-times-circle"></span>',
                     ['mp','province_id' => $model->province_id], 

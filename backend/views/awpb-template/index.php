@@ -134,7 +134,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     },
                    'check-list' => function ($url, $model) {
-                          if (User::userIsAllowedTo('Setup AWPB') && $model->status==AwpbTemplate::STATUS_DRAFT){
+                       //  if (User::userIsAllowedTo('Setup AWPB') && $model->status==AwpbTemplate::STATUS_DRAFT){
+                          if (User::userIsAllowedTo('Setup AWPB') &&($model->status==AwpbTemplate::STATUS_DRAFT || $model->status==AwpbTemplate::STATUS_PUBLISHED)){
                             return Html::a(
                                             '<span class="fas fa-edit"></span>', ['check-list', 'id' => $model->id], [
                                         'title' => 'Update template',
@@ -149,7 +150,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     },
                     'delete' => function ($url, $model) {
-                        if (User::userIsAllowedTo('Manage AWPB templates') && $model->status==AwpbTemplate::STATUS_DRAFT) {
+                       if (User::userIsAllowedTo('Setup AWPB') && $model->status==AwpbTemplate::STATUS_DRAFT){
                             return Html::a(
                                             '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                         'title' => 'Delete AWPB template',

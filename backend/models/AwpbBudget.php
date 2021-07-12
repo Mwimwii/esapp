@@ -121,11 +121,24 @@ class AwpbBudget extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    
+    
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     public function rules()
     {
         return [
-            [['component_id', 'output_id', 'activity_id', 'awpb_template_id', 'indicator_id'], 'required'],
-            [['component_id', 'output_id', 'activity_id', 'awpb_template_id', 'indicator_id', 'status', 'number_of_females', 'number_of_males', 'number_of_young_people', 'number_of_not_young_people', 'number_of_women_headed_households', 'number_of_non_women_headed_households', 'number_of_household_members', 'camp_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['component_id', 'output_id', 'activity_id', 'awpb_template_id','camp_id', 'indicator_id'], 'required'],
+            [['component_id', 'output_id', 'activity_id', 'awpb_template_id', 'indicator_id','cost_centre_id', 'status', 'number_of_females', 'number_of_males', 'number_of_young_people', 'number_of_not_young_people', 'number_of_women_headed_households', 'number_of_non_women_headed_households', 'number_of_household_members', 'camp_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount', 'mo_1_actual', 'mo_2_actual', 'mo_3_actual', 'mo_4_actual', 'mo_5_actual', 'mo_6_actual', 'mo_7_actual', 'mo_8_actual', 'mo_9_actual', 'mo_10_actual', 'mo_11_actual', 'mo_12_actual', 'quarter_one_actual', 'quarter_two_actual', 'quarter_three_actual', 'quarter_four_actual', 'number_of_females_actual', 'number_of_males_actual', 'number_of_young_people_actual', 'number_of_not_young_people_actual', 'number_of_women_headed_households_actual', 'number_of_non_women_headed_households_actual', 'number_of_household_members_actual'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
@@ -136,6 +149,7 @@ class AwpbBudget extends \yii\db\ActiveRecord
             [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => Districts::className(), 'targetAttribute' => ['district_id' => 'id']],
             [['province_id'], 'exist', 'skipOnError' => true, 'targetClass' => Provinces::className(), 'targetAttribute' => ['province_id' => 'id']],
             [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
+            [['cost_centre_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbCostCentre::className(), 'targetAttribute' => ['cost_centre_id' => 'id']],
         ];
     }
 
@@ -151,6 +165,7 @@ class AwpbBudget extends \yii\db\ActiveRecord
             'activity_id' => 'Activity',
             'awpb_template_id' => 'Template',
             'indicator_id' => 'Indicator',
+            'cost_centre_id'=>"Cost Centre",
             'name' => 'Name',
              'unit_of_measure_id' => 'Unit Of Measure',
             'unit_cost' => 'Unit Cost',
@@ -205,6 +220,7 @@ class AwpbBudget extends \yii\db\ActiveRecord
             'quarter_three_actual' => 'Quarter Three Actual',
             'quarter_four_actual' => 'Quarter Four Actual',
             'status' => 'Status',
+           
             'number_of_females' => 'Number Of Females',
             'number_of_males' => 'Number Of Males',
             'number_of_young_people' => 'Number Of Young People',
@@ -309,6 +325,10 @@ class AwpbBudget extends \yii\db\ActiveRecord
         return $this->hasOne(Camp::className(), ['id' => 'camp_id']);
     }
 
+       public function getCostCentre()
+    {
+        return $this->hasOne(AwpbCostCentre::className(), ['id' => 'cost_centre_id']);
+    }
     /**
      * Gets query for [[AwpbInputs]].
      *

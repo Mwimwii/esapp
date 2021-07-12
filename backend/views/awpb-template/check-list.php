@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <td><b>Template  details</b>(i.e. Budget theme, schedule etc)&emsp;&emsp;
                                 <?php
-                                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_PUBLISHED) {
                                     echo Html::a('<i class="fa fa-link"></i> Update section', ['update', 'id' => $model->id]);
                                 }
                                 ?>
@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <td><b>Activities</b>&emsp;&emsp;
                                 <?php
-                                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_PUBLISHED) {
                                     echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template/activities', 'id' => $model->id]);
                                 }
                                 ?>
@@ -128,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <td><b>Budget Committee</b> (Users allowed to conduct budgeting activities)&emsp;&emsp;
                                 <?php
-                                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_PUBLISHED) {
                                     echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template/template-users', 'id' => $model->id]);
                                 }
                                 ?>
@@ -144,14 +144,32 @@ $this->params['breadcrumbs'][] = $this->title;
                             </td>
                         </tr>
                        
-                        
+                                 <tr>
+                            <td><b>Districts</b> (Districts where E-SAPP will undertaken activities)&emsp;&emsp;
+                                <?php
+                                if ($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_PUBLISHED) {
+                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template/template-districts', 'id' => $model->id]);
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                if (!empty($model->status_district)) {
+                                    echo '<span class="badge badge-success">COMPLETED</span>';
+                                } else {
+                                    echo '<span class="badge badge-danger">INCOMPLETE</span>';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                       
 
                     </tbody>
 
                 </table>
                 <?php
                 if ($model->status == AwpbTemplate::STATUS_DRAFT) {
-                    if (!empty($model->status_activities) && !empty($model->status_users)&& !empty($model->guideline_file)) {
+                    if (!empty($model->status_activities) && !empty($model->status_users)&& !empty($model->guideline_file)&& !empty($model->status_district)) {
                         ?>
                         <?=
                         Html::a('Publish AWPB Template',

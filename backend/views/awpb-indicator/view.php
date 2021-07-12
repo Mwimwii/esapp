@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $act="";
 $activity = \backend\models\AWPBActivity::findOne(['id' => $model->activity_id]);
 if (!empty($activity)) {
-    $act=  $activity->description;
+    $act=  $activity->activity_code .' ' .$activity->name;
 }
 $outi="";
 $output = \backend\models\AWPBOutput::findOne(['id' => $model->output_id]);
@@ -68,7 +68,7 @@ if (!empty($output)) {
     $component = \backend\models\AWPBComponent::findOne(['id' => $model->component_id]);
         
     if (!empty($component)) {
-        $comp=  $component->code;
+        $comp=  $component->code .' '. $component->name;
         }
         $unit="";
     $unit_of_me = \backend\models\AwpbUnitOfMeasure::findOne(['id' => $model->unit_of_measure_id]);
@@ -101,16 +101,16 @@ if (!empty($output)) {
                 'label' => 'Activity',
                 'value' => $act
             ],
-            [
+         
+            'name',
+            'description',
+    [
                 'attribute'=>'unit_of_measure_id',
                 'format' => 'raw',
                 'label' => 'Unit of Measure',
                 'value' => $unit
                ],
-                    
-            'name',
-            'description',
-
+                   
             // 'unit_of_measure_id',
             // 'created_at',
             // 'updated_at',

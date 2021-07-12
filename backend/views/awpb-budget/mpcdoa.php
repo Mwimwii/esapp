@@ -53,6 +53,15 @@ $this->params['breadcrumbs'][] = $this->title;
 $user = User::findOne(['id' => Yii::$app->user->id]);
 $role = \common\models\Role::findOne(['id' => $user->role])->role;
 $access_level=1;
+$time = new \DateTime('now');
+$today = $time->format('Y-m-d');
+$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+$awpb_province =  \backend\models\AwpbProvince::findOne(['awpb_template_id' =>$awpb_template_id, 'province_id'=>$province_id]);
+$status=100;
+if (!empty($awpb_province)) {
+  $status= $awpb_province->status;
+   
+}
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
@@ -67,7 +76,8 @@ echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>',['mpcdo','status'=>
           
 if (User::userIsAllowedTo('Approve AWPB - Provincial') && ($user->province_id>0 ||$user->province_id!='')) {
          
-        
+        if(strtotime($template_model->consolidation_deadline) >= strtotime($today)&& $status == \backend\models\AwpbBudget::STATUS_SUBMITTED){
+   
         echo Html::a(
                                         '<span class="fas fa-check"></span>',['submit','id'=>$awpb_template_id,'id2'=>$province_id,'status'=> \backend\models\AwpbBudget:: STATUS_REVIEWED], [ 
                                     'title' => 'Approve Provincial AWPB',
@@ -86,10 +96,11 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && ($user->province_id>0 
                             return false;"></i> Decline District AWPB </button>';
    // }   
     }
+}
     
 
-if (User::userIsAllowedTo('Approve AWPB - PCO') && (($user->province_id==0 ||$user->province_id==''))) {
-          echo Html::a(
+ if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && ($user->province_id==0 ||$user->province_id=='')) {
+                echo Html::a(
                         '<span class="fas fa-check"></span>',['submit','id'=>$awpb_template_id,'id2'=>$province_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
                     'title' => 'Approve Provincial AWPB',
                     'data-toggle' => 'tooltip',
@@ -186,26 +197,26 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') && (($user->province_id==0 
             'label' => 'Indicator', 
             'vAlign' => 'middle',
            // 'width' => '360px',
-  'value' => function ($model, $key, $index, $widget) {
+  'value' => function ($model, $key, $index, $widget) use ($status) {
              
              
-             
-                 $_role = \common\models\Role::findOne(['id' => Yii::$app->getUser()->identity->role])->role;
-           //Yii::$app->getUser()->identity->role])->role
-           $status=0;
-           if($_role=="Provincial")
-           {
-               $status= \backend\models\AwpbBudget::STATUS_SUBMITTED;
-           }
-            if($_role=="PCO")
-           {
-               $status= \backend\models\AwpbBudget::STATUS_REVIEWED;
-           }
-            if($_role=="Ministry")
-           {
-               $status= \backend\models\AwpbBudget::STATUS_APPROVED;
-           }
-           var_dump($model->id);
+//             
+//                 $_role = \common\models\Role::findOne(['id' => Yii::$app->getUser()->identity->role])->role;
+//           //Yii::$app->getUser()->identity->role])->role
+//           $status=0;
+//           if($_role=="Provincial")
+//           {
+//               $status= \backend\models\AwpbBudget::STATUS_SUBMITTED;
+//           }
+//            if($_role=="PCO")
+//           {
+//               $status= \backend\models\AwpbBudget::STATUS_REVIEWED;
+//           }
+//            if($_role=="Ministry")
+//           {
+//               $status= \backend\models\AwpbBudget::STATUS_APPROVED;
+//           }
+//         
            return !empty($model->indicator_id) && $model->indicator_id > 0 ?  Html::a(backend\models\AwpbIndicator::findOne(['id' =>  $model->indicator_id])->name,['awpb-budget/viewp', 'id' => $model->id, 'status'=>$status], ['class' => 'mpcd']):"";
            },
             'filterType' => GridView::FILTER_SELECT2,
@@ -472,7 +483,7 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') && (($user->province_id==0 
                  $params = array_merge(["{$controller->id}/{$controller->action->id}"], $arrayParams);
                  
                  Yii::$app->urlManager->createUrl($params);
-if (User::userIsAllowedTo('Approve AWPB - Provincial') && (($user->province_id!=0 ||$user->province_id!=''))) {
+if (User::userIsAllowedTo('Approve AWPB - Provincial') &&   $status == \backend\models\AwpbBudget::STATUS_SUBMITTED && (($user->province_id!=0 ||$user->province_id!=''))) {
      
             $form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-budget/decline','status' => $status]),]);
                
@@ -534,6 +545,9 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && (($user->province_id!=
         </div>
         <!-- /.modal-dialog -->
     </div>
-<?php
+
+
+        
+        <?php
 $this->registerCss('.popover-x {display:none}');
 ?>

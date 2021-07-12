@@ -2,7 +2,12 @@
 
 namespace backend\models;
 
-use Yii;use yii\helpers\ArrayHelper;
+use Yii;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
+
 /**
  * This is the model class for table "awpb_output".
  *
@@ -18,6 +23,9 @@ use Yii;use yii\helpers\ArrayHelper;
  * @property int|null $updated_by
  *
  * @property AwpbActivity[] $awpbActivities
+ * @property AwpbActivityLine[] $awpbActivityLines
+ * @property AwpbBudget[] $awpbBudgets
+ * @property AwpbIndicator[] $awpbIndicators
  * @property AwpbOutcome $outcome
  * @property AwpbComponent $component
  */
@@ -34,15 +42,35 @@ class AwpbOutput extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+      public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
+
     public function rules()
     {
         return [
-            [['code', 'component_id', 'name', 'description'], 'required'],
+            [['code', 'component_id', 'name', 'description',], 'required'],
             [['component_id', 'outcome_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['code'], 'string', 'max' => 10],
-            [['name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => 100],
             [['description'], 'string', 'max' => 255],
-            [['code'], 'unique'],
+           [['code'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('code');
+                }, 'message' => 'Code already in use!'],
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Name already in use!'],
+            [['description'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('description');
+                }, 'message' => 'Description already in use!'],
             [['outcome_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutcome::className(), 'targetAttribute' => ['outcome_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
         ];
@@ -56,8 +84,8 @@ class AwpbOutput extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'code' => 'Code',
-            'component_id' => 'Component',
-            'outcome_id' => 'Outcome',
+            'component_id' => 'Component ID',
+            'outcome_id' => 'Outcome ID',
             'name' => 'Name',
             'description' => 'Description',
             'created_at' => 'Created At',
@@ -75,6 +103,36 @@ class AwpbOutput extends \yii\db\ActiveRecord
     public function getAwpbActivities()
     {
         return $this->hasMany(AwpbActivity::className(), ['output_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbActivityLines]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbActivityLines()
+    {
+        return $this->hasMany(AwpbActivityLine::className(), ['output_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbBudgets]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbBudgets()
+    {
+        return $this->hasMany(AwpbBudget::className(), ['output_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbIndicators]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbIndicators()
+    {
+        return $this->hasMany(AwpbIndicator::className(), ['output_id' => 'id']);
     }
 
     /**
@@ -96,7 +154,7 @@ class AwpbOutput extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
     }
-    public static function getOutputs() {
+     public static function getOutputs() {
         $data = self::find()->orderBy(['name' => SORT_ASC])
         //->where(['id'=>$id])
         ->all();

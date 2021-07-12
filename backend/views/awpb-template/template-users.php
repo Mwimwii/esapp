@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
                 <h5>Instructions</h5>
                 <ol>
-                    <li>The list below allows you to select users that be allowed to undertake budgetting activities for the <code><?php echo $fiscal_year ?> fiscal year</code>
+                    <li>The list below allows you to select users that be allowed to undertake budgeting activities for the <code><?php echo $fiscal_year ?> fiscal year</code>
                     </li>
                     <li>You can select specific users or select all by ticking <code>Check all users checkbox</code>
                     </li>

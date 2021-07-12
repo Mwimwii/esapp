@@ -94,15 +94,22 @@ class AwpbActivity extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['activity_code', 'output_id','component_id', 'description', 'name'], 'required'],
+            [['activity_code','component_id', 'description', 'name'], 'required'],
             [['parent_activity_id', 'component_id', 'outcome_id', 'output_id', 'commodity_type_id', 'type', 'awpb_template_id', 'unit_of_measure_id', 'indicator_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['programme_target', 'cumulative_planned', 'cumulative_actual', 'quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
             [['activity_code'], 'string', 'max' => 10],
             [['activity_type', 'description'], 'string', 'max' => 255],
-            [['name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => 100],
             [['gl_account_code'], 'string', 'max' => 4],
-            [['description'], 'unique'],
-            [['name'], 'unique'],
+            [['activity_code'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('activity_code');
+                }, 'message' => 'Code already in use!'],
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Name already in use!'],
+            [['description'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('description');
+                }, 'message' => 'Description already in use!'],
             ['parent_activity_id', 'required', 'when' => function($model) {
                     return $model->sub == 'Subactivity';
                 }, 'message' => 'Parent activity can not be blank!'],

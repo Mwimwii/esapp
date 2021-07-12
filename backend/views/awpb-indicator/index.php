@@ -31,8 +31,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+           
+[
+            'class'=>'kartik\grid\SerialColumn',
+            'contentOptions'=>['class'=>'kartik-sheet-style'],
+            'width'=>'36px',
+           // 'pageSummary'=>'Total',
+           // 'pageSummaryOptions' => ['colspan' => 2],
+          //  'header'=>'',
+          //  'headerOptions'=>['class'=>'kartik-sheet-style']
+        ],
+            
+            
+            
             [
                 'attribute' => 'component_id', 
                 'vAlign' => 'middle',
@@ -56,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'output_id', 
                 'vAlign' => 'middle',
-                'width' => '150px',
+                //'width' => '350px',
                 'value' => function ($model, $key, $index, $widget) {
                     $outcome= \backend\models\AwpbOutput::findOne(['id' => $model->output_id]);						
                 
@@ -74,47 +85,50 @@ $this->params['breadcrumbs'][] = $this->title;
             ], 
          
 
-            [
-                'attribute' => 'activity_id', 
-                'vAlign' => 'middle',
-                'width' => '200px',
-                'value' => function ($model, $key, $index, $widget) {
-                    $activity= \backend\models\AWPBActivity::findOne(['id' => $model->activity_id]);						
-                
-                return     !empty( $activity) ? Html::a( $activity->name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']):"";
-               
-                },
-                'filterType' => GridView::FILTER_SELECT2,
-                'filter' => ArrayHelper::map(backend\models\AwpbActivity::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
-                'filterWidgetOptions' => [
-                    'pluginOptions' => ['allowClear' => true],
-                    'options' => ['multiple' => true]
-                ],
-                'filterInputOptions' => ['placeholder' => 'Filter by name'],
-                'format' => 'raw'
-            ], 
+//            [
+//                'attribute' => 'activity_id', 
+//                
+//                
+//                'vAlign' => 'middle',
+//                'width' => '350px',
+//                'value' => function ($model, $key, $index, $widget) {
+//                    $activity= \backend\models\AWPBActivity::findOne(['id' => $model->activity_id]);						
+//                
+//                return     !empty( $activity) ? Html::a( $activity->activity_code.' '.$activity->name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']):"";
+//               
+//                },
+//                'filterType' => GridView::FILTER_SELECT2,
+//                'filter' => ArrayHelper::map(backend\models\AwpbActivity::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
+//                'filterWidgetOptions' => [
+//                    'pluginOptions' => ['allowClear' => true],
+//                    'options' => ['multiple' => true]
+//                ],
+//                'filterInputOptions' => ['placeholder' => 'Filter by name'],
+//                'format' => 'raw'
+//            ], 
        
             [
                 'attribute' => 'name', 
             'filter'=>false,
             'vAlign' => 'middle',
-            'width' => '350px',
+           // 'width' => '450px',
             ],
-            [
-                'attribute' => 'description', 
-            'filter'=>false,
-            'vAlign' => 'middle',
-            'width' => '750px',
-            ],
+//            [
+//                'attribute' => 'description', 
+//            'filter'=>false,
+//            'vAlign' => 'middle',
+//            'width' => '750px',
+//            ],
             //'created_at',
             //'updated_at',
             //'created_by',
             //'updated_by',
-
-          
-            ['class' => 'yii\grid\ActionColumn',
-            'options' => ['style' => 'width:150px;'],
-'template' => '{view}{update}{delete}',
+    [
+                'class' => 'kartik\grid\ActionColumn',
+                'vAlign'=>'middle',
+                                     'width' => '11%',
+            'template' => '{view}{update}{delete}',
+           
 'buttons' => [
     'view' => function ($url, $model) {
         if (User::userIsAllowedTo('View AWPB') ) {

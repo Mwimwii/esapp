@@ -107,20 +107,32 @@ echo $form->field($model, 'activity_type')->hiddenInput(['value'=> $sub])->label
 
 	
 
-echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
-
-
-			echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
-				'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
-				'pluginOptions' => [
-					'depends' => ['comp_id'],
-					'initialize' => $model->isNewRecord ? false : true,
-					'placeholder' => 'Select a output',
-					'url' => Url::to(['/awpb-component/outputs']),
-					'params' => ['selected_id'],
-				]
-			]);
-
+//echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+//
+//
+//			echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+//				'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+//				'pluginOptions' => [
+//					'depends' => ['comp_id'],
+//					'initialize' => $model->isNewRecord ? false : true,
+//					'placeholder' => 'Select a output',
+//					'url' => Url::to(['/awpb-component/outputs']),
+//					'params' => ['selected_id'],
+//				]
+//			]);
+//                       echo Html::hiddenInput('selected_indicator_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_indicator_id']);
+//
+//
+//echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
+//    'options' => ['id' => 'indicator_id1', 'custom' => true, 'required' => TRUE],
+//    'pluginOptions' => [
+//    'depends' => ['output_id1'],
+//    'initialize' => $model->isNewRecord ? false : true,
+//    'placeholder' => 'Select an indicator',
+//    'url' => Url::to(['/awpb-output/indicators']),
+//    'params' => ['selected_indicator_id'],
+//    ]
+//    ]);
 		echo $form->field($model, 'activity_code')->textInput(['maxlength' => true]);	
 		echo $form->field($model, 'name')->textInput(['maxlength' => true]);
 		echo $form->field($model, 'description')->textarea(['rows' => 3],['maxlength' => true]);
@@ -156,34 +168,38 @@ if ($sub === "Subactivity") {
 			  'prompt'=>'Select component','id'=>'comp_id']);
 	  
 	  
-	  
-	  echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
-	  
-	  
-				  echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
-					  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
-					  'pluginOptions' => [
-						  'depends' => ['comp_id'],
-						  'initialize' => $model->isNewRecord ? false : true,
-						  'placeholder' => 'Select an output',
-						  'url' => Url::to(['/awpb-component/outputs']),
-						  'params' => ['comp_id'],
-					  ]
-				  ]);
+
+
+                        
+                        
+//	  
+//	  echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
+//	  
+//	  
+//				  echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
+//					  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
+//					  'pluginOptions' => [
+//						  'depends' => ['comp_id'],
+//						  'initialize' => $model->isNewRecord ? false : true,
+//						  'placeholder' => 'Select an output',
+//						  'url' => Url::to(['/awpb-component/outputs']),
+//						  'params' => ['comp_id'],
+//					  ]
+//				  ]);
 
 
 		
-echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->parent_activity_id, ['id' => 'selected_activity_id']);
+echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->parent_activity_id, ['id' => 'selected_id']);
 
 
 echo $form->field($model,'parent_activity_id')->widget(DepDrop::classname(),[
 	'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
 	'pluginOptions' => [
-		'depends' => ['output_id1'],
+		'depends' => ['comp_id'],
 		'initialize' => $model->isNewRecord ? false : true,
 		'placeholder' => 'Select a parent activity',
-		'url' => Url::to(['/awpb-output/activities']),
-		'params' => ['output_id1'],
+		'url' => Url::to(['/awpb-component/parentactivities']),
+		'params' => ['comp_id'],
 	]
 ]);
 
