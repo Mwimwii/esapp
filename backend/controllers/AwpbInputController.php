@@ -3,20 +3,27 @@
 namespace backend\controllers;
 
 use Yii;
+use backend\models\AwpbBudget;
 use backend\models\AwpbInput;
 use backend\models\AwpbInputSearch;
 use backend\models\AwpbIndicator;
 use backend\models\AwpbIndicatorSearch;
+use backend\models\AuditTrail;
+use backend\models\User;
+use common\models\Role;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
-use backend\models\AuditTrail;
-use backend\models\User;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
-use common\models\Role;
+use yii\base\Model;
+use yii\caching\DbDependency;
+use yii\data\ActiveDataProvider;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 /**
  * AwpbInputController implements the CRUD actions for AwpbInput model.
@@ -33,14 +40,14 @@ class AwpbInputController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'delete', 'view',   'viewo', 'viewp', 'viewpwpco', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcop', 'mpcod', 'mpcoa',
-                    'index', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
+                    'index', 'index_1',  'index_2', 'index_3', 'index_4',   'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
                     'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'decline', 'submitpw', 'submit', 'mpwpcoa'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'delete', 'view',   'viewo', 'viewp', 'viewpwpco', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcop', 'mpcod', 'mpcoa',
-                            'index', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
+                            'delete', 'view', 'index_1'  ,'viewo', 'viewp', 'viewpwpco', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcop', 'mpcod', 'mpcoa',
+                            'index', 'index_1',  'index_2', 'index_3', 'index_4','indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
                             'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'decline', 'submitpw', 'submit', 'mpwpcoa'
                         ],
                         //'story/create/<id:\d+>/<usr:\d+>' => 'story/create',
@@ -80,6 +87,112 @@ class AwpbInputController extends Controller {
         ]);
     }
 
+    
+     public function actionIndex_1($id,$id2) {
+
+        // $category = common\models\AwpbDistrict::find()->where(['c_id'=>$category_id])->one
+       
+                 $quarter="";
+               
+//                 if (Yii::$app->request->isAjax) {
+//                    $model->load(Yii::$app->request->post());
+//                    return Json::encode(\yii\widgets\ActiveForm::validate($model));
+//                }
+    
+                if (Yii::$app->request->post('addQuarter') == 'true') {
+                    // var_dump(Yii::$app->request->post()['User']['user_type']);
+                    $quarter= Yii::$app->request->post()['AwpbInput']['quarter'];
+                }
+    
+         
+       
+        return $this->render('index_1', [
+//                    'searchModel' => $searchModel,
+//                    'dataProvider' => $dataProvider,
+                    'id' => $id,
+             'id2' => $id2,
+            'quarter'=> $quarter
+            
+        ]);
+    }
+  public function actionIndex_2($id,$id2) {
+      
+   
+
+       
+                 $quarter="";
+               
+//                 if (Yii::$app->request->isAjax) {
+//                    $model->load(Yii::$app->request->post());
+//                    return Json::encode(\yii\widgets\ActiveForm::validate($model));
+//                }
+    
+                if (Yii::$app->request->post('addQuarter') == 'true') {
+                    // var_dump(Yii::$app->request->post()['User']['user_type']);
+                    $quarter= Yii::$app->request->post()['AwpbInput']['quarter'];
+                }
+    
+  
+        return $this->render('index_2', [
+//                    'searchModel' => $searchModel,
+//                    'dataProvider' => $dataProvider,
+                    'id' => $id,
+             'id2' => $id2,
+            'quarter'=> $quarter
+            
+        ]);
+    }
+  public function actionIndex_4($id,$id2) {
+      
+      $quarter="";
+    
+                if (Yii::$app->request->post('addQuarter') == 'true') {
+                    // var_dump(Yii::$app->request->post()['User']['user_type']);
+                    $quarter= Yii::$app->request->post()['AwpbInput']['quarter'];
+                }
+    
+        return $this->render('index_4', [
+//                    'searchModel' => $searchModel,
+//                    'dataProvider' => $dataProvider,
+                    'id' => $id,
+             'id2' => $id2,
+            'quarter'=> $quarter
+            
+        ]);
+    }
+
+     public function actionIndex_3($id,$id2,$quarter) {
+
+        // $category = common\models\AwpbDistrict::find()->where(['c_id'=>$category_id])->one
+         $model = new AwpbInput();
+               //  $quarter="";
+               
+//                 if (Yii::$app->request->isAjax) {
+//                    $model->load(Yii::$app->request->post());
+//                    return Json::encode(\yii\widgets\ActiveForm::validate($model));
+//                }
+    
+//                if (Yii::$app->request->post('addQuarter') == 'true') {
+//                    // var_dump(Yii::$app->request->post()['User']['user_type']);
+//                    $quarter= Yii::$app->request->post()['AwpbInput']['quarter'];
+//                }
+    
+         
+         
+       // $user = User::findOne(['id' => Yii::$app->user->id]);
+        
+
+        return $this->render('index_3', [
+//                    'searchModel' => $searchModel,
+//                    'dataProvider' => $dataProvider,
+                    'id' => $id,
+             'id2' => $id2,
+            'quarter'=> $quarter
+            
+        ]);
+    }
+    
+    
     /**
      * Displays a single AwpbIndicator model.
      * @param integer $id
@@ -121,8 +234,9 @@ class AwpbInputController extends Controller {
          $model = $this->findModel($id);
          $model_budget =new  \backend\models\AwpbBudget();
          $_model =  $model_budget::findOne(['id'=>$model->budget_id]);
-        if ($_model->status ==0 && User::userIsAllowedTo('Manage AWPB')) {
-           
+      //  if ($_model->status ==0 && User::userIsAllowedTo('Manage AWPB')) {
+           if ((User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) && $_model->status ==0) {
+   
 
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
@@ -194,28 +308,109 @@ class AwpbInputController extends Controller {
 
                     $model->total_amount = $total_amt;
                     
-                    $model->camp_id = $_model->camp_id;
+                   // $model->camp_id = $_model->camp_id;
                     $model->updated_by = Yii::$app->user->identity->id;
-                    $model->created_by = Yii::$app->user->identity->id;
+                   // $model->created_by = Yii::$app->user->identity->id;
                     $model->district_id = $_model->district_id;
                     $model->province_id = $_model->province_id;
+                    $model->component_id =  $_model->component_id;
+                    $model->output_id =  $_model->output_id;
 
                     if ($model->validate()) {
 
                         if ($model->save()) {
-                                                                             $_model->total_amount = \backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
-                           $_model->quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount ');
+                            
+                             $model = $this->findModel(['input_id'=>$id]);
+                            
+                                                       
+                            $model_actual_input->mo_1 = $total_q_mo1;
+                            $model_actual_input->mo_2 = $total_q_mo2;
+                            $model_actual_input->mo_3 = $total_q_mo3;
+                            $model_actual_input->mo_4 = $total_q_mo4;
+                            $model_actual_input->mo_5 = $total_q_mo5;
+                            $model_actual_input->mo_6 = $total_q_mo6;
+                            $model_actual_input->mo_7 = $total_q_mo7;
+                            $model_actual_input->mo_8 = $total_q_mo8;
+                            $model_actual_input->mo_9 = $total_q_mo9;
+                            $model_actual_input->mo_10 = $total_q_mo10;
+                            $model_actual_input->mo_11 = $total_q_mo11;
+                            $model_actual_input->mo_12 = $total_q_mo12;
+                            $model_actual_input->quarter_one_quantity = $total_q1;
+                            $model_actual_input->quarter_two_quantity = $total_q2;
+                            $model_actual_input->quarter_three_quantity = $total_q3;
+                            $model_actual_input->quarter_four_quantity = $total_q4;
+                            $model_actual_input->total_quantity = $total_q;
+
+                            $model_actual_input->mo_1_amount = $total_q_mo1 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_2_amount = $total_q_mo2 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_3_amount = $total_q_mo3 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_4_amount = $total_q_mo4 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_5_amount = $total_q_mo5 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_6_amount = $total_q_mo6 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_7_amount = $total_q_mo7 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_8_amount = $total_q_mo8 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_9_amount = $total_q_mo9 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_10_amount = $total_q_mo10 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_11_amount = $total_q_mo11 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_12_amount = $total_q_mo12 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_one_amount = $total_q1 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_two_amount = $total_q2 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_three_amount = $total_q3 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_four_amount = $total_q4 *  $model_actual_input->unit_cost;
+                            $model_actual_input->total_amount = $total_amt;
+                            $model_actual_input->status = AwpbInput::STATUS_DRAFT;
+                            //  $model_actual_input->camp_id = $_model->camp_id;
+                            $model_actual_input->updated_by = Yii::$app->user->identity->id;
+                            $model_actual_input->created_by = Yii::$app->user->identity->id;
+                            $model_actual_input->district_id = $_model->district_id;
+                            $model_actual_input->province_id = $_model->province_id;
+                            $model_actual_input->awpb_template_id =  $_model->awpb_template_id;
+                            $model_actual_input->activity_id = $_model->activity_id;
+                            $model_actual_input->indicator_id =$_model->indicator_id;
+                            $model_actual_input->component_id =  $_model->component_id;
+                            $model_actual_input->output_id =  $_model->output_id;
+                            $model_actual_input->save();
+   
+                            
+                            
+                            
+                            $_model->mo_1_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_2_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
+                            $_model->mo_3_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_3_amount');
+                            $_model->mo_4_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_4_amount');
+                            $_model->mo_5_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_5_amount');
+                            $_model->mo_6_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_6_amount');
+                            $_model->mo_7_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_7_amount');
+                            $_model->mo_8_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_8_amount');
+                            $_model->mo_9_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_9_amount');
+                            $_model->mo_10_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_10_amount');
+                            $_model->mo_11_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_11_amount');
+                            $_model->mo_12_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_12_amount');                      
+                            $_model->quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount ');
                             $_model->quarter_two_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount ');
-                           $_model->quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount ');
-                       $_model->quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount ');
+                            $_model->quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount ');
+                            $_model->quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount ');
+                            $_model->total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
                          
-                           
-//                                                 $_model->total_amount = !empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount'))?   $_model->total_amount:0;
-//                           $_model->quarter_one_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount '))? $_model->quarter_one_amount :0;
-//                            $_model->quarter_two_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount '))? $_model->quarter_two_amount :0;
-//                           $_model->quarter_three_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount '))? $_model->quarter_three_amount :0;
-//                       $_model->quarter_four_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount '))? $_model->quarter_four_amount :0;
-//                         
+                       
+                            $_model->mo_1_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_2_actual_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
+                            $_model->mo_3_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_3_amount');
+                            $_model->mo_4_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_4_amount');
+                            $_model->mo_5_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_5_amount');
+                            $_model->mo_6_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_6_amount');
+                            $_model->mo_7_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_7_amount');
+                            $_model->mo_8_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_8_amount');
+                            $_model->mo_9_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_9_amount');
+                            $_model->mo_10_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_10_amount');
+                            $_model->mo_11_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_11_amount');
+                            $_model->mo_12_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_12_amount');                     
+                            $_model->quarter_one_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount');
+                            $_model->quarter_two_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount');
+                            $_model->quarter_three_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount');
+                            $_model->quarter_four_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount');
+                            $_model->total_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
+                            
                            $_model->save();
                             $audit = new AuditTrail();
                             $audit->user = Yii::$app->user->id;
@@ -224,12 +419,24 @@ class AwpbInputController extends Controller {
                             $audit->user_agent = Yii::$app->request->getUserAgent();
                             $audit->save();
                             Yii::$app->session->setFlash('success', 'AWPB input was successfully updated.');
-                              return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                                 if (($_model->province_id == 0 || $model->province_id == '') &&($_model->cost_centre_id != 0 || $model->cost_centre_id != '')) {
+                         
+                            return $this->redirect(['awpb-budget/viewpw', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                            }
+                            else{
+                                 return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                            }
                         } else {
                             Yii::$app->session->setFlash('error', 'Error occured while updating AWPB input.');
                         }
 
-                        return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                          if (($_model->province_id == 0 || $model->province_id == '') &&($_model->cost_centre_id != 0 || $model->cost_centre_id != '')) {
+                         
+                            return $this->redirect(['awpb-budget/viewpw', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                            }
+                            else{
+                                 return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                            }
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'Enter quantity for at least one month.');
@@ -247,7 +454,10 @@ class AwpbInputController extends Controller {
         }
     }
 
-
+    public  function actionFundrequisition(){
+        
+        
+    }
     public function actionCreate($id) {
         if (User::userIsAllowedTo('Manage AWPB')) {
             $model = new AwpbInput();
@@ -328,22 +538,109 @@ class AwpbInputController extends Controller {
                     $model->updated_by = Yii::$app->user->identity->id;
                     $model->created_by = Yii::$app->user->identity->id;
                   
-                    $model->camp_id = $_model->camp_id;
+                   // $model->camp_id = $_model->camp_id;
                     $model->updated_by = Yii::$app->user->identity->id;
                     $model->created_by = Yii::$app->user->identity->id;
                     $model->district_id = $_model->district_id;
                     $model->province_id = $_model->province_id;
+                    $model->awpb_template_id =  $_model->awpb_template_id;
+                    $model->activity_id = $_model->activity_id;
+                  
+                    $model->indicator_id =$_model->indicator_id;
+                    $model->component_id =  $_model->component_id;
+                    $model->output_id =  $_model->output_id;
 
                     if ($model->validate()) {
 
-                        if ($model->save()) {     
-                             $_model->total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
-                           $_model->quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount ');
+                        if ($model->save()) {    
+                            
+                            $model_actual_input = new AwpbActualInput();
+                            $model_actual_input->mo_1 = $total_q_mo1;
+                            $model_actual_input->mo_2 = $total_q_mo2;
+                            $model_actual_input->mo_3 = $total_q_mo3;
+                            $model_actual_input->mo_4 = $total_q_mo4;
+                            $model_actual_input->mo_5 = $total_q_mo5;
+                            $model_actual_input->mo_6 = $total_q_mo6;
+                            $model_actual_input->mo_7 = $total_q_mo7;
+                            $model_actual_input->mo_8 = $total_q_mo8;
+                            $model_actual_input->mo_9 = $total_q_mo9;
+                            $model_actual_input->mo_10 = $total_q_mo10;
+                            $model_actual_input->mo_11 = $total_q_mo11;
+                            $model_actual_input->mo_12 = $total_q_mo12;
+                            $model_actual_input->quarter_one_quantity = $total_q1;
+                            $model_actual_input->quarter_two_quantity = $total_q2;
+                            $model_actual_input->quarter_three_quantity = $total_q3;
+                            $model_actual_input->quarter_four_quantity = $total_q4;
+                            $model_actual_input->total_quantity = $total_q;
+
+                            $model_actual_input->mo_1_amount = $total_q_mo1 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_2_amount = $total_q_mo2 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_3_amount = $total_q_mo3 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_4_amount = $total_q_mo4 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_5_amount = $total_q_mo5 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_6_amount = $total_q_mo6 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_7_amount = $total_q_mo7 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_8_amount = $total_q_mo8 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_9_amount = $total_q_mo9 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_10_amount = $total_q_mo10 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_11_amount = $total_q_mo11 *  $model_actual_input->unit_cost;
+                            $model_actual_input->mo_12_amount = $total_q_mo12 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_one_amount = $total_q1 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_two_amount = $total_q2 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_three_amount = $total_q3 *  $model_actual_input->unit_cost;
+                            $model_actual_input->quarter_four_amount = $total_q4 *  $model_actual_input->unit_cost;
+                            $model_actual_input->total_amount = $total_amt;
+                            $model_actual_input->status = AwpbInput::STATUS_DRAFT;
+                            //  $model_actual_input->camp_id = $_model->camp_id;
+                            $model_actual_input->updated_by = Yii::$app->user->identity->id;
+                            $model_actual_input->created_by = Yii::$app->user->identity->id;
+                            $model_actual_input->district_id = $_model->district_id;
+                            $model_actual_input->province_id = $_model->province_id;
+                            $model_actual_input->awpb_template_id =  $_model->awpb_template_id;
+                            $model_actual_input->activity_id = $_model->activity_id;
+                            $model_actual_input->indicator_id =$_model->indicator_id;
+                            $model_actual_input->component_id =  $_model->component_id;
+                            $model_actual_input->output_id =  $_model->output_id;
+                            $model_actual_input->save();
+                            
+                            
+                            $_model->mo_1_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_2_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
+                            $_model->mo_3_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_3_amount');
+                            $_model->mo_4_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_4_amount');
+                            $_model->mo_5_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_5_amount');
+                            $_model->mo_6_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_6_amount');
+                            $_model->mo_7_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_7_amount');
+                            $_model->mo_8_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_8_amount');
+                            $_model->mo_9_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_9_amount');
+                            $_model->mo_10_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_10_amount');
+                            $_model->mo_11_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_11_amount');
+                            $_model->mo_12_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_12_amount');                      
+                            $_model->quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount ');
                             $_model->quarter_two_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount ');
-                           $_model->quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount ');
-                       $_model->quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount ');
+                            $_model->quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount ');
+                            $_model->quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount ');
+                            $_model->total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
                          
-                           $_model->save();
+                       
+                            $_model->mo_1_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_2_actual_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
+                            $_model->mo_3_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_3_amount');
+                            $_model->mo_4_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_4_amount');
+                            $_model->mo_5_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_5_amount');
+                            $_model->mo_6_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_6_amount');
+                            $_model->mo_7_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_7_amount');
+                            $_model->mo_8_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_8_amount');
+                            $_model->mo_9_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_9_amount');
+                            $_model->mo_10_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_10_amount');
+                            $_model->mo_11_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_11_amount');
+                            $_model->mo_12_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_12_amount');                     
+                            $_model->quarter_one_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount');
+                            $_model->quarter_two_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount');
+                            $_model->quarter_three_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount');
+                            $_model->quarter_four_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount');
+                            $_model->total_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
+                            $_model->save();
                             $audit = new AuditTrail();
                             $audit->user = Yii::$app->user->id;
                             $audit->action = "Added AWPB input : " . $model->name . " # " . $model->id;
@@ -351,7 +648,15 @@ class AwpbInputController extends Controller {
                             $audit->user_agent = Yii::$app->request->getUserAgent();
                             $audit->save();
                             Yii::$app->session->setFlash('success', 'AWPB input was successfully added.');
-                              return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status'=>$_model->status]);
+                             
+                            if (($_model->province_id == 0 || $_model->province_id == '') &&($_model->cost_centre_id != 0 || $_model->cost_centre_id != '')) {
+                         
+                            return $this->redirect(['awpb-budget/viewpw', 'id' => $_model->budget_id, 'status'=>$_model->status]);
+                            }
+                            else{
+                                 return $this->redirect(['awpb-budget/view', 'id' => $_model->budget_id, 'status'=>$_model->status]);
+                            }
+                            
                         } else {
                             $message = "";
                             foreach ($model->getErrors() as $error) {
@@ -361,8 +666,13 @@ class AwpbInputController extends Controller {
                               Yii::$app->session->setFlash('error', 'Error occured while adding AWPB input::' . $message);
                             //  return $this->redirect(['home/home']);
                         }
-
-                        return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status'=>$_model->status]);
+   if (($_model->province_id == 0 || $_model->province_id == '') &&($_model->cost_centre_id != 0 || $_model->cost_centre_id != '')) {
+                         
+                            return $this->redirect(['awpb-budget/viewpw', 'id' => $_model->budget_id, 'status'=>$_model->status]);
+                            }
+                            else{
+                                 return $this->redirect(['awpb-budget/view', 'id' => $_model->budget_id, 'status'=>$_model->status]);
+                            }
                     }
                 }
                 else {
@@ -394,20 +704,66 @@ class AwpbInputController extends Controller {
         if (User::userIsAllowedTo('Manage AWPB')) {
             $budget_id = $this->findModel($id)->budget_id;
             $this->findModel($id)->delete();
+            \backend\models\AwpbActualInput::findModel(['input_id' => $id])->delete();
             $model_budget =new  \backend\models\AwpbBudget();
             $_model =  $model_budget::findOne(['id'=>$budget_id]);
            
-            $total_amount = \backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('total_amount');
-            $quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_one_amount ');
-            $quarter_two_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_two_amount ');
-            $quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_three_amount ');
-            $quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_four_amount ');  
-            $_model->total_amount =!empty($total_amount) ? $total_amount : 0;
-            $_model->quarter_one_amount  =!empty($quarter_one_amount) ? $quarter_one_amount : 0;
-            $_model->quarter_two_amount  =!empty($quarter_two_amount) ? $quarter_two_amount : 0;
-            $_model->quarter_three_amount  =!empty($quarter_three_amount) ? $quarter_three_amount : 0;
-            $_model->quarter_four_amount  =!empty($quarter_four_amount) ? $quarter_four_amount : 0;
-            $_model->save();
+           
+              $_model->mo_1_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_2_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
+                            $_model->mo_3_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_3_amount');
+                            $_model->mo_4_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_4_amount');
+                            $_model->mo_5_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_5_amount');
+                            $_model->mo_6_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_6_amount');
+                            $_model->mo_7_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_7_amount');
+                            $_model->mo_8_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_8_amount');
+                            $_model->mo_9_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_9_amount');
+                            $_model->mo_10_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_10_amount');
+                            $_model->mo_11_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_11_amount');
+                            $_model->mo_12_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_12_amount');                      
+                            $_model->quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount ');
+                            $_model->quarter_two_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount ');
+                            $_model->quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount ');
+                            $_model->quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount ');
+                            $_model->total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
+                         
+                       
+                            $_model->mo_1_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_2_actual_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
+                            $_model->mo_3_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_3_amount');
+                            $_model->mo_4_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_4_amount');
+                            $_model->mo_5_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_5_amount');
+                            $_model->mo_6_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_6_amount');
+                            $_model->mo_7_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_7_amount');
+                            $_model->mo_8_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_8_amount');
+                            $_model->mo_9_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_9_amount');
+                            $_model->mo_10_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_10_amount');
+                            $_model->mo_11_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_11_amount');
+                            $_model->mo_12_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_12_amount');                     
+                            $_model->quarter_one_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_one_amount');
+                            $_model->quarter_two_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_two_amount');
+                            $_model->quarter_three_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_three_amount');
+                            $_model->quarter_four_actual_amount  =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('quarter_four_amount');
+                            $_model->total_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
+                            $_model->save();
+                          
+//            
+//            
+//            
+//            
+//            $total_amount = \backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('total_amount');
+//            $quarter_one_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_one_amount ');
+//            $quarter_two_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_two_amount ');
+//            $quarter_three_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_three_amount ');
+//            $quarter_four_amount  =\backend\models\AwpbInput::find()->where(['budget_id'=> $budget_id])->sum('quarter_four_amount ');  
+//            $_model->total_amount =!empty($total_amount) ? $total_amount : 0;
+//            $_model->quarter_one_amount  =!empty($quarter_one_amount) ? $quarter_one_amount : 0;
+//            $_model->quarter_two_amount  =!empty($quarter_two_amount) ? $quarter_two_amount : 0;
+//            $_model->quarter_three_amount  =!empty($quarter_three_amount) ? $quarter_three_amount : 0;
+//            $_model->quarter_four_amount  =!empty($quarter_four_amount) ? $quarter_four_amount : 0;
+//            
+            
+          //  $_model->save();
          
             return $this->redirect(['awpb-budget/view', 'id' =>  $budget_id,'status'=>$status]);
         } else {
