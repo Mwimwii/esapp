@@ -99,7 +99,7 @@ class AwpbInput extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['component_id', 'output_id', 'budget_id', 'name','unit_of_measure_id', 'unit_cost'], 'required'],
+            [['component_id', 'budget_id', 'name','unit_of_measure_id', 'unit_cost'], 'required'],
             [['activity_id', 'awpb_template_id', 'indicator_id', 'budget_id', 'status','unit_of_measure_id','cost_centre_id', 'camp_id','district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount', 'mo_1_actual', 'mo_2_actual', 'mo_3_actual', 'mo_4_actual', 'mo_5_actual', 'mo_6_actual', 'mo_7_actual', 'mo_8_actual', 'mo_9_actual', 'mo_10_actual', 'mo_11_actual', 'mo_12_actual'], 'number'],
             [['name'], 'string', 'max' => 255],
@@ -166,7 +166,7 @@ class AwpbInput extends \yii\db\ActiveRecord
             'quarter_two_amount' => 'Q2 Budget',
             'quarter_three_amount' => 'Q3 Budget',
             'quarter_four_amount' => 'Q4 Budget',
-            'total_amount' => 'Total Budget',
+            'total_amount' => 'Activity Budget',
       
             'mo_1_actual' => 'Mo 1 Actual',
             'mo_2_actual' => 'Mo 2 Actual',
@@ -190,6 +190,18 @@ class AwpbInput extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
+    }
+    
+    public function beforeDelete() {
+  $this->awpbActualInput->delete();
+
+  // call the parent implementation so that this event is raise properly
+  return parent::beforeDelete();
+}
+    
+    public function getAwpbActualInput()
+    {
+        return $this->hasOne(AwpbActualInput::className(), ['input_id' => 'id']);
     }
 
     /**

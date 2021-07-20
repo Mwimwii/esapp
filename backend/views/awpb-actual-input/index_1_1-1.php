@@ -24,32 +24,86 @@ use backend\models\AwpbDistrict;
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-//$this->title = 'Quarterly Operations Funds Requisition';
+$this->title = 'Quarterly Operations Funds Requisition';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
-//$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $this->title;
 
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
 //$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
 
 $user = User::findOne(['id' => Yii::$app->user->id]);
 //$budget = AwpbBudget::findOne(['id'=>$modid]);
-$model = new backend\models\AwpbActualInput();
+$model = new backend\models\AwpbInput();
 
 
 $funds_requisition =  AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$id2]);
 
   $funds_requisition_status ="";
 $access_level = 1;
-//$_quarter
+$_quarter
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
+        <p>
+
+            <?php
+            if ((User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != ''))||(User::userIsAllowedTo('Approve Funds Requisition') && ( $user->province_id == 0 || $user->province_id == ''))) {
+            
+            ?>
+
+        </p>
+
+        <?php $form = ActiveForm::begin(); ?>
+<div class="row" style="">
+    <div class="col-lg-12">
+        <div class="row" style="">
+    <div class="col-lg-4">
+        <?=
+        $form->field($model, 'quarter', [
+            'addon' => [
+                'append' => [
+                    'content' => Html::submitButton('Filter', ['name' => 'addQuarter', 'value' => 'true', 'class' => 'btn btn-success btn-sm']),
+                    'asButton' => true
+                ]
+            ]
+        ])->dropDownList(
+                [
+            'Q1' => 'Quarter 1',
+                      'Q2' => 'Quarter 2',
+                      'Q3' => 'Quarter 3',
+                      'Q4' => 'Quarter 4',
+           
+                ], [
+            'custom' => true,
+            'prompt' => 'Filter by quarter',
+            'required' => true,
+                ]
+        );
+        ?>
+    </div>
+    <div class="col-lg-2">
+        &nbsp;
+    </div>
+    <div class="col-lg-6">
+        <h4>Instructions</h4>
+        <ol>
+            <li>Select the quarter from the list.</li>
+            <li>Click on filter to view.</li>
+            <li>Click on Submit request button to request for funds or Approve request to approve the request.</li>
+<!--            if (!empty($sub)) {
+                echo '<li>Fields marked with * are required</li>
+           
+            <li>Fill in the fields below to add a <b>' . $sub . '</b></li>';
+            }-->
+            
+        </ol>
+    </div>
+</div>
+
+<?php ActiveForm::end(); ?>
+
 
 <?php
- 
-            if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != '')) {
-            {
-            
  //$gridColumns ="";
 $id2="";
 $id3="";
@@ -279,34 +333,36 @@ $id2 = $funds_requisition->district_id;
 <div class="row" style="">
     <div class="col-lg-12">
         <div class="row" style="">
-   
+    <div class="col-lg-5">
+        <h6><?= $_quarter ." ". $funds_requisition->name ?></h6>
+    </div>
               <div class="col-lg-2">
                    <?php
-//                    if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_CLOSED)
-//                  {
-//                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
-//                            . "Funds requisition window not open</p><br>";                              
-//                  } 
-//                  if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN)
-//                  {
-//                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
-//                            . "Funds not requested</p><br>";                              
-//                  } 
-//                   if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED )
-//                  {
-//                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
-//                            . "Funds requested</p><br>";                              
-//                  } 
-//                     if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED  )
-//                  {
-//                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
-//                            . "Funds request approved</p><br>";                              
-//                  } 
-//                  if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_DISBURSED  )
-//                  {
-//                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
-//                            . "Funds disbursed</p><br>";                              
-//                  } 
+                    if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_CLOSED)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requisition window not open</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds not requested</p><br>";                              
+                  } 
+                   if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requested</p><br>";                              
+                  } 
+                     if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds request approved</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_DISBURSED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds disbursed</p><br>";                              
+                  } 
                   ?>
         <h6><?=  $funds_requisition_status ?></h6>
     </div>
@@ -332,24 +388,24 @@ $id2 = $funds_requisition->district_id;
         ?> </div>
         </div></div></div>
           <?php
-            $searchModel = new AwpbActualInputSearch();
+            $searchModel = new AwpbInputSearch();
 
 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$id2]);
+$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$user->district_id]);
 if ($dataProvider->getCount() > 0) {
 
-//    // echo ' </p>';
-//    echo ExportMenu::widget([
-//        'dataProvider' => $dataProvider,
-//        'columns' => $gridColumns,
-//        'fontAwesome' => true,
-//        'dropdownOptions' => [
-//            'label' => 'Export All',
-//            'class' => 'btn btn-default'
-//        ],
-//        'filename' => 'AWPB Activity Lines' . date("YmdHis")
-//    ]);
+    // echo ' </p>';
+    echo ExportMenu::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => $gridColumns,
+        'fontAwesome' => true,
+        'dropdownOptions' => [
+            'label' => 'Export All',
+            'class' => 'btn btn-default'
+        ],
+        'filename' => 'AWPB Activity Lines' . date("YmdHis")
+    ]);
 }
 
         echo GridView::widget([
@@ -609,13 +665,69 @@ if ($dataProvider->getCount() > 0) {
                     ];
  
  ?>
+<div class="row" style="">
+    <div class="col-lg-12">
+        <div class="row" style="">
+    <div class="col-lg-5">
+        <h6><?= $_quarter ." ". $funds_requisition->name ?></h6>
+    </div>
+              <div class="col-lg-2">
+                   <?php
+                    if ($funds_requisition->status_q_2 == \backend\models\AwpbDistrict::STATUS_QUARTER_CLOSED)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requisition window not open</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_2 == \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds not requested</p><br>";                              
+                  } 
+                   if ($funds_requisition->status_q_2 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requested</p><br>";                              
+                  } 
+                     if ($funds_requisition->status_q_2 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds request approved</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_2 == \backend\models\AwpbDistrict::STATUS_QUARTER_DISBURSED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds disbursed</p><br>";                              
+                  } 
+                  ?>
+        <h6><?=  $funds_requisition_status ?></h6>
+    </div>
+             <div class="col-lg-5">
+        <?php
+        //if ($funds_requisition->funds_request==0) {
+             if ( $funds_requisition->status_q_2==\backend\models\AwpbDistrict::STATUS_QUARTER_OPEN && User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '') )
+             {
+             
+            echo Html::a(
+                        '<span class="float-right btn btn-success btn-sm btn-space">Submit request</span>', ['awpb-district/submit', 'id' => $id, 'id2' => $id2,'id3' => $id3, 'status' => \backend\models\AwpbBudget:: STATUS_SUBMITTED], [
+                    'title' => 'Submit Request',
+                    'data-toggle' => 'tooltip',
+                    'data-placement' => 'top',
+                    // 'target' => '_blank',
+                    'data-pjax' => '0',
+                    // 'style' => "padding:5px;",
+                    'class' => 'bt btn-lg'
+                        ]
+                );
+        }
 
+        ?> </div>
+        </div></div></div>
           <?php
             $searchModel = new AwpbInputSearch();
 
 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$id2]);
+$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$user->district_id]);
 if ($dataProvider->getCount() > 0) {
 
     // echo ' </p>';
@@ -627,7 +739,7 @@ if ($dataProvider->getCount() > 0) {
             'label' => 'Export All',
             'class' => 'btn btn-default'
         ],
-        'filename' => 'AWPB ' . date("YmdHis")
+        'filename' => 'AWPB Activity Lines' . date("YmdHis")
     ]);
 }
 
@@ -886,13 +998,69 @@ if ($dataProvider->getCount() > 0) {
                     ];
  
  ?>
-        
+<div class="row" style="">
+    <div class="col-lg-12">
+        <div class="row" style="">
+    <div class="col-lg-5">
+        <h6><?= $_quarter ." ". $funds_requisition->name ?></h6>
+    </div>
+              <div class="col-lg-2">
+                   <?php
+                    if ($funds_requisition->status_q_3 == \backend\models\AwpbDistrict::STATUS_QUARTER_CLOSED)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requisition window not open</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_3 == \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds not requested</p><br>";                              
+                  } 
+                   if ($funds_requisition->status_q_3 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requested</p><br>";                              
+                  } 
+                     if ($funds_requisition->status_q_3 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds request approved</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_3 == \backend\models\AwpbDistrict::STATUS_QUARTER_DISBURSED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds disbursed</p><br>";                              
+                  } 
+                  ?>
+        <h6><?=  $funds_requisition_status ?></h6>
+    </div>
+             <div class="col-lg-5">
+        <?php
+        //if ($funds_requisition->funds_request==0) {
+             if ( $funds_requisition->status_q_3==\backend\models\AwpbDistrict::STATUS_QUARTER_OPEN && User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '') )
+             {
+             
+            echo Html::a(
+                        '<span class="float-right btn btn-success btn-sm btn-space">Submit request</span>', ['awpb-district/submit', 'id' => $id, 'id2' => $id2,'id3' => $id3, 'status' => \backend\models\AwpbBudget:: STATUS_SUBMITTED], [
+                    'title' => 'Submit Request',
+                    'data-toggle' => 'tooltip',
+                    'data-placement' => 'top',
+                    // 'target' => '_blank',
+                    'data-pjax' => '0',
+                    // 'style' => "padding:5px;",
+                    'class' => 'bt btn-lg'
+                        ]
+                );
+        }
+
+        ?> </div>
+        </div></div></div>         
             <?php
             $searchModel = new AwpbInputSearch();
 
 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$id2]);
+$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$user->district_id]);
 if ($dataProvider->getCount() > 0) {
 
     // echo ' </p>';
@@ -904,7 +1072,7 @@ if ($dataProvider->getCount() > 0) {
             'label' => 'Export All',
             'class' => 'btn btn-default'
         ],
-        'filename' => 'AWPB Lines' . date("YmdHis")
+        'filename' => 'AWPB Activity Lines' . date("YmdHis")
     ]);
 }
 
@@ -1165,13 +1333,69 @@ $_quarter= "Fund Requisition for Quarter Four";
  ?>
 
         
- 
+        <div class="row" style="">
+    <div class="col-lg-12">
+        <div class="row" style="">
+    <div class="col-lg-5">
+        <h6><?= $_quarter ." ". $funds_requisition->name ?></h6>
+    </div>
+              <div class="col-lg-2">
+                   <?php
+                    if ($funds_requisition->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_CLOSED)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requisition window not open</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN)
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds not requested</p><br>";                              
+                  } 
+                   if ($funds_requisition->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds requested</p><br>";                              
+                  } 
+                     if ($funds_requisition->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds request approved</p><br>";                              
+                  } 
+                  if ($funds_requisition->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_DISBURSED  )
+                  {
+                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
+                            . "Funds disbursed</p><br>";                              
+                  } 
+                  ?>
+        <h6><?=  $funds_requisition_status ?></h6>
+    </div>
+             <div class="col-lg-5">
+        <?php
+        //if ($funds_requisition->funds_request==0) {
+             if ( $funds_requisition->status_q_4==\backend\models\AwpbDistrict::STATUS_QUARTER_OPEN && User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '') )
+             {
+             
+            echo Html::a(
+                        '<span class="float-right btn btn-success btn-sm btn-space">Submit request</span>', ['awpb-district/submit', 'id' => $id, 'id2' => $id2,'id3' => $id3, 'status' => \backend\models\AwpbBudget:: STATUS_SUBMITTED], [
+                    'title' => 'Submit Request',
+                    'data-toggle' => 'tooltip',
+                    'data-placement' => 'top',
+                    // 'target' => '_blank',
+                    'data-pjax' => '0',
+                    // 'style' => "padding:5px;",
+                    'class' => 'bt btn-lg'
+                        ]
+                );
+        }
+
+        ?> </div>
+        </div></div></div>
           <?php
             $searchModel = new AwpbInputSearch();
 
 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$id2]);
+$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$user->district_id]);
 if ($dataProvider->getCount() > 0) {
 
     // echo ' </p>';
@@ -1183,7 +1407,7 @@ if ($dataProvider->getCount() > 0) {
             'label' => 'Export All',
             'class' => 'btn btn-default'
         ],
-        'filename' => 'AWPB ' . date("YmdHis")
+        'filename' => 'AWPB Activity Lines' . date("YmdHis")
     ]);
 }
 
@@ -1218,7 +1442,7 @@ if ($dataProvider->getCount() > 0) {
             Yii::$app->session->setFlash('error', 'No budget to request funds from.');
            
             }
-}
+
  } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
  return $this->redirect(['site/home']);

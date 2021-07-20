@@ -34,10 +34,10 @@ class AwpbTemplateController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users'],
+                'only' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users','read'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users','read'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -112,7 +112,6 @@ class AwpbTemplateController extends Controller {
             return $this->redirect(['home/home']);
         }
     }
-
     public function actionActivities($id) {
         if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
@@ -140,34 +139,13 @@ class AwpbTemplateController extends Controller {
                     $model->status_activities = AwpbTemplate::STATUS_PUBLISHED;
                     if ($model->save()) {
                         $awpbTemplateActivity = new AwpbTemplateActivity();
-                      //  $awpbTemplateActivity::deleteAll(['awpb_template_id' => $id]);
-                         $acts = AwpbTemplateActivity::getActivities($id);
-                            foreach ($act as $activity) {
-                      
-                        $count =\backend\models\AwpbBudget::find()
-                       ->where(['awpb_template_id' => $id])
-                       ->andWhere(['activity_id'=> $activity->id])
-                       ->count();
-                        if($count ==0)
-                        {
-                              AwpbTemplateActivity::findModel($id)->delete();
-                        }
-                        
-                        foreach ($model->activities as $activity) 
-                            
-                        $count =\backend\models\AwpbBudget::find()
-                       ->where(['awpb_template_id' => $id])
-                       ->andWhere(['activity_id'=> $activity_id])
-                       ->count();
-                        if($count==0)
-                        {
-
+                        $awpbTemplateActivity::deleteAll(['awpb_template_id' => $id]);
+                        foreach ($model->activities as $activity) {
                             //check if the right was already assigned to this role
-                            
                             $_model = \backend\models\AwpbActivity::findOne($activity);
                             $component_model = \backend\models\AwpbComponent::findOne($_model);
                             $awpbTemplateActivity->component_id = $_model->component_id;
-                          //  $awpbTemplateActivity->output_id = $_model->output_id;
+                            $awpbTemplateActivity->output_id = $_model->output_id;
                             $awpbTemplateActivity->activity_code = $_model->activity_code;
                             //$awpbTemplateActivity->name = $_model->activity_code.' '.$_model->name;
                             $awpbTemplateActivity->name = $_model->name;
@@ -179,10 +157,7 @@ class AwpbTemplateController extends Controller {
                             $awpbTemplateActivity->access_level_province = $component_model->access_level_province;
                             $awpbTemplateActivity->access_level_programme = $component_model->access_level_programme;
                             //$rightAllocation->created_by = Yii::$app->user->id;
-                            $awpbTemplateActivity->created_by = Yii::$app->user->id;
-                            $awpbTemplateActivity->updated_by = Yii::$app->user->id;
-                        $awpbTemplateActivity->save();
-                        }
+                            $awpbTemplateActivity->save();
                         }
 
                         //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
@@ -202,24 +177,17 @@ class AwpbTemplateController extends Controller {
                         Yii::$app->session->setFlash('success', $model->fiscal_year . ' was successfully updated.');
                         return $this->redirect(['view', 'id' => $model->id]);
                     } else {
-                    $message = '';
-                    foreach ($model->getErrors() as $error) {
-                        $message .= $error[0];
-                    }
-                   // Yii::$app->session->setFlash('error', "Error occured while updating component " .$model->code." details Please try again.Error:" . $message);
                         Yii::$app->session->setFlash('error', 'Error occurred while updating template. Please try again.');
 
                         return $this->render('activities', [
-                                    'id' => $model->id,
-                            'fiscal_year' => $model->fiscal_year,
+                                    'id' => $model->id
                         ]);
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'You need to select at least one activity!');
                     return $this->render('activities', [
                                 'model' => $model,
-                                'id' => $model->id,'fiscal_year' => $model->fiscal_year,
-                        ]);
+                                'id' => $model->id,]);
                 }
             }
             return $this->render('activities', [
@@ -231,6 +199,8 @@ class AwpbTemplateController extends Controller {
             return $this->redirect(['home/home']);
         }
     }
+
+  
 
     public function actionTemplateUsers($id) {
         if (User::userIsAllowedTo('Setup AWPB')) {
@@ -568,7 +538,7 @@ class AwpbTemplateController extends Controller {
             return Yii::$app->response->sendFile($storagePath, $model->guideline_file, ['inline' => true]);
         }
         Yii::$app->session->setFlash('error', 'The file does not exists.' . $storagePath);
-        return $this->redirect(['site/home']);
+        return $this->redirect(['home/home']);
     }
 
     public function actionActivity($id) {

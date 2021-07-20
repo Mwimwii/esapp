@@ -15,8 +15,8 @@ use kartik\money\MaskMoney;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use backend\models\AwpbBudget;
-use backend\models\AwpbInput;
-use backend\models\AwpbInputSearch;
+use backend\models\AwpbActualInput;
+use backend\models\AwpbActualInputSearch;
 
 use backend\models\AwpbDistrict;
 
@@ -31,81 +31,97 @@ use backend\models\AwpbDistrict;
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
 //$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
 
-$user = User::findOne(['id' => Yii::$app->user->id]);
-//$budget = AwpbBudget::findOne(['id'=>$modid]);
-$model = new backend\models\AwpbActualInput();
-
-
-$funds_requisition =  AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$id2]);
-
-  $funds_requisition_status ="";
-$access_level = 1;
-//$_quarter
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-
 <?php
- 
-            if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != '')) {
+
+$user = User::findOne(['id' => Yii::$app->user->id]);
+//$budget = AwpbBudget::findOne(['id'=>$modid]);
+//$model = new backend\models\AwpbInput();
+
+     if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != '')) {
             {
             
+$funds_requisition =  AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$id2]);
+$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
+$budget = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
  //$gridColumns ="";
-$id2="";
+//$id2="";
 $id3="";
 if (!empty($funds_requisition)) {
     
     if ($funds_requisition->status==backend\models\AwpbBudget::STATUS_MINISTRY) {
-$id2 = $funds_requisition->district_id;
+//$id2 = $funds_requisition->district_id;
+        
+            if ($budgeted_input<$budget) {
+               echo Html::a('<i class="fa fa-plus"></i> Add AWPB Input', ['create'], ['class' => 'btn btn-success btn-sm']);
+            }
+        
  if ($quarter === "Q1") {
+
+
 
 
         $id3=1;
         $_quarter= "Fund Requisition for Quarter One";
-      $gridColumns = [
-             [
-            'attribute' => 'component',
-            'label' => 'Component', 
-            'vAlign' => 'middle',
-            'width' => '180px',
-            'value' => function ($model) {
-          
-               $name = \backend\models\AwpbComponent::findOne(['id' =>  $model->component_id]);
-              return !empty( $name) ? Html::a( $name->code, ['awpb-component/view', 'id' => $model->component_id], ['class' => 'awbp-output']):"";
-          
-            },
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by component'],
-            'format' => 'raw'
-        ],
-            
-  
-        [
-            'attribute' => 'activity_id',
-            'label' => 'Activity', 
-            'vAlign' => 'middle',
-            'width' => '180px',
+?>
 
-            'value' => function ($model) {
-                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
-                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-            },
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
+<?php
+ 
+          
+            
+
+      $gridColumns = [
+          [
+    'class'=>'kartik\grid\SerialColumn',
+    'contentOptions'=>['class'=>'kartik-sheet-style'],
+    'width'=>'36px',
+    
+],
+//             [
+//            'attribute' => 'component',
+//            'label' => 'Component', 
+//            'vAlign' => 'middle',
+//            'width' => '180px',
+//            'value' => function ($model) {
+//          
+//               $name = \backend\models\AwpbComponent::findOne(['id' =>  $model->component_id]);
+//              return !empty( $name) ? Html::a( $name->code, ['awpb-component/view', 'id' => $model->component_id], ['class' => 'awbp-output']):"";
+//          
+//            },
+//           
+//            'filterType' => GridView::FILTER_SELECT2,
+//            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+//            'filterWidgetOptions' => [
+//                'pluginOptions' => ['allowClear' => true],
+//                'options' => ['multiple' => true]
+//            ],
+//            'filterInputOptions' => ['placeholder' => 'Filter by component'],
+//            'format' => 'raw'
+//        ],
+//            
+//  
+//        [
+//            'attribute' => 'activity_id',
+//            'label' => 'Activity', 
+//            'vAlign' => 'middle',
+//            'width' => '180px',
+//
+//            'value' => function ($model) {
+//                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
+//                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
+//            },
+//           
+//            'filterType' => GridView::FILTER_SELECT2,
+//            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+//            'filterWidgetOptions' => [
+//                'pluginOptions' => ['allowClear' => true],
+//                'options' => ['multiple' => true]
+//            ],
+//            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+//            'format' => 'raw'
+//        ],
 
                         [
                             'class' => 'kartik\grid\EditableColumn',
@@ -274,14 +290,68 @@ $id2 = $funds_requisition->district_id;
                                     
                             
                     
+                    ['class' => 'yii\grid\ActionColumn',
+                    'options' => ['style' => 'width:150px;'],
+                    'template' => '{view}{update}{delete}',
+                    'buttons' => [
+                        'view' => function ($url, $model) {
+                            if ( User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Request Funds') ) {
+                                return Html::a(
+                                                '<span class="fa fa-eye"></span>', ['awpb-actual-input/view', 'id' => $model->id], [
+                                            'title' => 'View input',
+                                            'data-toggle' => 'tooltip',
+                                            'data-placement' => 'top',
+                                            'data-pjax' => '0',
+                                            'style' => "padding:5px;",
+                                            'class' => 'bt btn-lg'
+                                                ]
+                                );
+                            }
+                        },
+                        'update' => function ($url, $model) use ($user, $quarter) {
+ if (User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '')) {  
+                return Html::a(
+                                                '<span class="fas fa-edit"></span>', ['awpb-actual-input/update', 'id' => $model->id,'quarter'=>$quarter], [
+                                            'title' => 'Update input',
+                                            'data-toggle' => 'tooltip',
+                                            'data-placement' => 'top',
+                                            // 'target' => '_blank',)
+                                            'data-pjax' => '0',
+                                            'style' => "padding:5px;",
+                                            'class' => 'bt btn-lg'
+                                                ]
+                                );
+                            }
+                        },
+                        'delete' => function ($url, $model) use ($user) {
+                          if ( User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '')) {
+          return Html::a(
+                                                '<span class="fa fa-trash"></span>', ['awpb-actual-input/delete', 'id' => $model->id], [
+                                            'title' => 'delete input',
+                                            'data-toggle' => 'tooltip',
+                                            'data-placement' => 'top',
+                                            'data' => [
+                                                'confirm' => 'Are you sure you want to delete this input?',
+                                                'method' => 'post',
+                                            ],
+                                            'style' => "padding:5px;",
+                                            'class' => 'bt btn-lg'
+                                                ]
+                                );
+                            }
+                        },
+                    ]
+                ]
                     ];
+
              ?>
 <div class="row" style="">
-    <div class="col-lg-12">
-        <div class="row" style="">
    
-              <div class="col-lg-2">
+              <div class="col-lg-4">
                    <?php
+                   
+                   $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-success'> Total Activity Input Budget "
+                            .Yii::$app->formatter->asDecimal($budget) ."</p><br>";     
 //                    if ($funds_requisition->status_q_1 == \backend\models\AwpbDistrict::STATUS_QUARTER_CLOSED)
 //                  {
 //                      $funds_requisition_status = "<p style='margin:4px; text-align: center;padding:4px;display:inline-block;' class='alert alert-danger'> "
@@ -329,14 +399,14 @@ $id2 = $funds_requisition->district_id;
                 );
         }
 
-        ?> </div>
-        </div></div></div>
+        ?> 
+        </div></div>
           <?php
             $searchModel = new AwpbActualInputSearch();
 
 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$id2]);
+$dataProvider->query->andFilterWhere(['budget_id'=>$id4]);
 if ($dataProvider->getCount() > 0) {
 
 //    // echo ' </p>';
@@ -354,7 +424,7 @@ if ($dataProvider->getCount() > 0) {
 
         echo GridView::widget([
             'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
+           // 'filterModel' => $searchModel,
             'columns' => $gridColumns,
             'pjax' => true,
             //'bordered' => true,

@@ -148,6 +148,7 @@ class Right extends \yii\db\ActiveRecord {
             'Request Funds'=>"Request Funds",
              'Approve Funds Requisition'=>"Approve Funds Requisition",
             'Disburse Funds'=>"Disburse Funds",
+            'Review Funds Request'=>"Review Funds Request",
             //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
             
         ];

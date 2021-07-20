@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * AwpbDistrictController implements the CRUD actions for AwpbDistrict model.
  */
-class AwpbDistrictController extends Controller
+class AwpbProvinceController extends Controller
 {
     /**
      * {@inheritdoc}

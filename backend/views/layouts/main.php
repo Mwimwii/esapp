@@ -371,68 +371,112 @@ $session = Yii::$app->session;
                                         $id2="0";
                                         
                                         if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != '')) {
-                                                $page = "index_1";
+                                                $page = "index_2";
                                                 $status = \backend\models\AwpbBudget::STATUS_DRAFT;   
                                                 $id2=$user->district_id;
                                             }
                                         
-                                            if ( User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-                                                 $page = "index_2";
+                                            if ( User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id != 0 || $user->province_id != '')) {
+                                                 $page = "index_1";
                                                  $status = \backend\models\AwpbBudget::STATUS_SUBMITTED;
                                                  
                                             }
                                              
                                         
-                                        
                                         if (
-                                                 Yii::$app->controller->id == "awpb-input" &&
-                                                (Yii::$app->controller->action->id == "index_1" ||
+                                                 Yii::$app->controller->id == "awpb-budget" &&
+                                                (Yii::$app->controller->action->id == "index_2" ||
                                                
-                                                Yii::$app->controller->action->id == "index_2"
+                                                Yii::$app->controller->action->id == "index_1"
                                                 )
                                         ) {
                                             
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Requisition</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Input Variation</p>', ['awpb-budget/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
                                         } else {
                                            
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Requisition</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Input Variation</p>', ['awpb-budget/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
                                   
-                            
-                                       if (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
+                                  if ((User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != ''))||(User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != ''))||(User::userIsAllowedTo('Approve Funds Requisition') && ( $user->province_id == 0 || $user->province_id == ''))||(User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == ''))) {
       
                                         echo '   <li class="nav-item">';
                                       
                                         $page = "";
                                         $status ="";
                                         $id2="0";
-                                    
                                         
-                                            //if ( User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-                                                 $page = "index_4";
+                                        if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != '')) {
+                                                $page = "qofr";
+                                                $status = \backend\models\AwpbBudget::STATUS_DRAFT;   
+                                                $id2=$user->district_id;
+                                            }
+                                        
+                                            if ( (User::userIsAllowedTo('Review Funds Request') && ($user->province_id != 0 || $user->province_id != ''))||
+                                                    (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == ''))||
+                                                    (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == ''))
+                                                    
+                                                    
+                                                    ) {
+                                                 $page = "qofrd";
                                                  $status = \backend\models\AwpbBudget::STATUS_SUBMITTED;
+                                                 $id2="0";
                                                  
-                                            //}
+                                            }
                                              
                                         
-                                        
+    
                                         if (
-                                                 Yii::$app->controller->id == "awpb-input" &&
-                                                (Yii::$app->controller->action->id == "index_4" 
+                                                 Yii::$app->controller->id == "awpb-actual_input" &&
+                                                (Yii::$app->controller->action->id == "qofr" ||
+                                               
+                                                Yii::$app->controller->action->id == "qofrd"
                                                 )
                                         ) {
                                             
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Disbursement</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Requisition</p>', ['awpb-actual-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
                                         } else {
                                            
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Disbursement</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Requisition</p>', ['awpb-actual-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
                                   
-                          
+                                    
+//                                    
+//                                       if (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
+//      
+//                                        echo '   <li class="nav-item">';
+//                                      
+//                                        $page = "";
+//                                        $status ="";
+//                                        $id2="0";
+//                                    
+//                                        
+//                                            //if ( User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
+//                                                 $page = "index_4";
+//                                                 $status = \backend\models\AwpbBudget::STATUS_SUBMITTED;
+//                                                 
+//                                            //}
+//                                             
+//                                        
+//                                        
+//                                        if (
+//                                                 Yii::$app->controller->id == "awpb-input" &&
+//                                                (Yii::$app->controller->action->id == "index_4" 
+//                                                )
+//                                        ) {
+//                                            
+//                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Disbursement</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
+//                                        } else {
+//                                           
+//                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Disbursement</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
+//                                        }
+//                                        echo '</li>';
+//                                    }
+//                                  
+//                          
 
                                     if (User::userIsAllowedTo("Manage components") || User::userIsAllowedTo("View components")) {
                                         echo '   <li class="nav-item">';

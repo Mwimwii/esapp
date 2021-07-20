@@ -15,16 +15,17 @@ $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
 <div class="card">
 
     <div class="card-body">
-     
-    
+     <?php
+
+           
         
-<?php
+
 echo $form->field($model, 'awpb_template_id')->hiddenInput(['value'=> $template_id])->label(false);
 echo $form->field($model,'component_id')->dropDownList((\backend\models\AwpbComponent::getAwpbSubComponentsListDistrict()),
 [
 'prompt'=>'Select component','id'=>'comp_id']);
 
-echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
+echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_id']);
 
 echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
     'options' => ['id' => 'activity_id1', 'custom' => true, 'required' => TRUE],
@@ -33,7 +34,7 @@ echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
     'initialize' => $model->isNewRecord ? false : true,
     'placeholder' => 'Select a parent activity',
     'url' => Url::to(['/awpb-activity/templateactivities']),
-    'params' => ['comp_id'],
+    'params' => ['selected_id'],
     ]
     ]);
 
@@ -178,7 +179,7 @@ echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
 
             ?>
             <div class="col-sm-3">
-                <?= $form->field($model, 'mo_1', ['enableAjaxValidation' => false])->textInput(['maxlength' => true, 'placeholder' => 'Enter quantity'])  ->label("Jan");
+                <?= $form->field($model, 'mo_1', ['enableAjaxValidation' => false])->textInput(['maxlength' => true, 'placeholder' => 'Enter 4 quantity']) ;
                 //$form->field($model, 'from_date',['showLabels'=>false])->textInput(['placeholder'=>'From Date'])->hint('Enter begin date'); 
                 ?>
 

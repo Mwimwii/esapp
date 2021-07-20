@@ -90,11 +90,11 @@ if (!empty($awpb_district)) {
 <?php
 
 
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index','id'=>$model->awpb_template_id, 'status'=>0], [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
+//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index','id'=>$model->awpb_template_id, 'status'=>0], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
