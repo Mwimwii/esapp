@@ -469,10 +469,7 @@ class AwpbDistrictController extends Controller {
             }
         }
         elseif (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
-            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
-            $model->updated_by = Yii::$app->user->identity->id;
-            //$model->status = $template_model->quarter;
-            if ($model->save()) {
+         
                  $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_SPECIALIST])->all();
                       if (!empty($actual_inputs)) {
                     //  $subject = $template_model->fiscal_year . " AWPB Template Published";
@@ -481,8 +478,30 @@ class AwpbDistrictController extends Controller {
                         $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
                         $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_DISBURSED;
                         $model_actual_input->save();
+                      }
+                      
+                      }
+                 
+                      $disbursed_funds = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id',$template_model->id ])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_DISBURSED])->sum('quarter_amount');
+                     
+                         $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
+            $model->updated_by = Yii::$app->user->identity->id;
+            //$model->status = $template_model->quarter;
+           
+                    if ($template_model->quarter == 1) {
+                        $model->quarter_one_amount= $disbursed_funds;
                     }
-                    $district = \backend\models\Districts::findOne(['id' => $id2])->name;
+                       if ($template_model->quarter == 2) {
+                        $model->quarter_two_amount= $disbursed_funds;
+                    }
+                       if ($template_model->quarter == 3) {
+                        $model->quarter_three_amount= $disbursed_funds;
+                    }
+                       if ($template_model->quarter == 4) {
+                        $model->quarter_four_amount= $disbursed_funds;
+                    }
+                    if($model->save()){
+                           $district = \backend\models\Districts::findOne(['id' => $id2])->name;
                     $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
 
                     if (!empty($role_model)) {
@@ -514,8 +533,8 @@ class AwpbDistrictController extends Controller {
                                 }
                             }
                         }
-                    }
-                }
+                    
+                    
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
@@ -524,14 +543,16 @@ class AwpbDistrictController extends Controller {
                 $audit->save();
                 Yii::$app->session->setFlash('success', " Funds request has been submitted.");
                 //return $this->redirect(['awpb-input/' . $page, 'id' => $id, 'id2' => $id2,]);
-                return $this->redirect(['home/home']);
+                    return $this->redirect(['home/home']);
+                    
+                                
             } else {
                 $message = '';
                 foreach ($model->getErrors() as $error) {
                     $message .= $error[0];
                     Yii::$app->session->setFlash('error', "Error occured : " . $message);
                 }
-            }
+                    }}
         }
         else 
         {

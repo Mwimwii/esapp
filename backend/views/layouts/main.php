@@ -361,6 +361,21 @@ $session = Yii::$app->session;
                                         echo '</li>';
                                     }
                                     
+                                      if (User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-template-activity" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funding Profile</p>', ['/awpb-template-activity/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funding Profile</p>', ['/awpb-template-activity/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     
                                        if ((User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != ''))||(User::userIsAllowedTo('Approve Funds Requisition') && ( $user->province_id == 0 || $user->province_id == ''))) {
       
@@ -443,7 +458,52 @@ $session = Yii::$app->session;
                                         echo '</li>';
                                     }
                                   
+                                      
+                                  if ((User::userIsAllowedTo('View Funds Utilisation') && ( $user->district_id > 0 || $user->district_id != ''))||(User::userIsAllowedTo('View Funds Utilisation') && ( $user->province_id != 0 || $user->province_id != ''))||(User::userIsAllowedTo('View Funds Utilisation') && ( $user->province_id == 0 || $user->province_id == ''))||(User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id == 0 || $user->province_id == ''))) {
+      
+                                        echo '   <li class="nav-item">';
+                                      
+                                        $page = "";
+                                        $status ="";
+                                        $id2="0";
+                                        
+                                        if (User::userIsAllowedTo('View Funds Utilisation') && ( $user->district_id > 0 || $user->district_id != '')) {
+                                                $page = "qofu";
+                                                $status = \backend\models\AwpbBudget::STATUS_DRAFT;   
+                                                $id2=$user->district_id;
+                                            }
+                                        
+                                            if ( (User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id != 0 || $user->province_id != ''))||
+                                                    (User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id == 0 || $user->province_id == ''))
+                                                 
+                                                    
+                                                    ) {
+                                                 $page = "qofud";
+                                                 $status = \backend\models\AwpbBudget::STATUS_SUBMITTED;
+                                                 $id2="0";
+                                                 
+                                            }
+                                             
+                                        
+    
+                                        if (
+                                                 Yii::$app->controller->id == "awpb-actual_input" &&
+                                                (Yii::$app->controller->action->id == "qofu" ||
+                                               
+                                                Yii::$app->controller->action->id == "qofud"
+                                                )
+                                        ) {
+                                            
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Utilisation</p>', ['awpb-actual-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
+                                        } else {
+                                           
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Utilisation</p>', ['awpb-actual-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                  
                                     
+//                           
 //                                    
 //                                       if (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
 //      
@@ -1218,7 +1278,33 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
+                                            if (User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-template" &&
+                                                (Yii::$app->controller->action->id == "cq"
+                                                )
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Change Quarter</p>', ['/awpb-template/cq'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Change Quarter</p>', ['/awpb-template/cq'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     
+                                     if (User::userIsAllowedTo("Setup AWPB")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-template" &&
+                                                (Yii::$app->controller->action->id == "rollover"
+                                                )
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Year End</p>', ['/awpb-template/rollover'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Year End</p>', ['/awpb-template/rollover'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     ?>
 
                                 </ul>

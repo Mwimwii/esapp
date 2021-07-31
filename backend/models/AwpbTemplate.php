@@ -94,7 +94,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             'comment' => 'Comment',
             'guideline_file' => 'Guideline File',
             'status' => 'Status',
-             'quarter' => 'quarter',
+             'quarter' => 'Quarter',
             'status_activities' => 'Status Activities',
             'status_users' => 'Status Users',
             'preparation_deadline_first_draft' => 'Deadline for preparing the AWPB by participating institution',

@@ -19,17 +19,41 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'activity_id') ?>
 
+    <?= $form->field($model, 'activity_code') ?>
+
+    <?= $form->field($model, 'name') ?>
+
     <?= $form->field($model, 'component_id') ?>
 
-    <?= $form->field($model, 'outcome_id') ?>
+    <?php // echo $form->field($model, 'outcome_id') ?>
 
-    <?= $form->field($model, 'output_id') ?>
+    <?php // echo $form->field($model, 'output_id') ?>
 
     <?php // echo $form->field($model, 'awpb_template_id') ?>
 
     <?php // echo $form->field($model, 'funder_id') ?>
 
     <?php // echo $form->field($model, 'expense_category_id') ?>
+
+    <?php // echo $form->field($model, 'ifad') ?>
+
+    <?php // echo $form->field($model, 'ifad_grant') ?>
+
+    <?php // echo $form->field($model, 'grz') ?>
+
+    <?php // echo $form->field($model, 'beneficiaries') ?>
+
+    <?php // echo $form->field($model, 'private_sector') ?>
+
+    <?php // echo $form->field($model, 'iapri') ?>
+
+    <?php // echo $form->field($model, 'parm') ?>
+
+    <?php // echo $form->field($model, 'access_level_district') ?>
+
+    <?php // echo $form->field($model, 'access_level_province') ?>
+
+    <?php // echo $form->field($model, 'access_level_programme') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 

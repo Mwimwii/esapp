@@ -112,6 +112,7 @@ class AwpbTemplateController extends Controller {
             return $this->redirect(['home/home']);
         }
     }
+     
     public function actionActivities($id) {
         if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
@@ -598,24 +599,7 @@ class AwpbTemplateController extends Controller {
 
                         if ($model->save()) {
                             
-                                 $templates = AwpbTemplate::find()->where(['<>', 'fiscal_year', $model->fiscal_year])->andWhere(['<>', 'status', AwpbTemplate::STATUS_OLD_BUDGET])->all();
-
-                    if (isset($templates)) {
-                        if ($templates != null) {
-                            foreach ($templates as $template) {
-                                if ($template->status != AwpbTemplate::STATUS_CURRENT_BUDGET) {
-                                    $template->status = AwpbTemplate::STATUS_OLD_BUDGET;
-                                    if ($template->validate()) {
-                                        $template->save();
-                                    } else {
-                                        Yii::$app->session->setFlash('error', 'An error occurred while disabling current AWPB Template.');
-                                        return $this->render('index');
-                                    }
-                                }
-                            }
-                    }
-                    
-                                    }
+                            
                      $cost_centres = \backend\models\AwpbCostCentre::find()->all();
 
                     if (isset($cost_centres)) {
@@ -1011,6 +995,74 @@ class AwpbTemplateController extends Controller {
         }
     }
 
+     public function actionCq()
+    {
+           $model = AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+          
+      //  $model = $this->findModel($id);
+        $old_quarter = $model->quarter;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+           // return $this->redirect(['view', 'id' => $model->id]);
+             Yii::$app->session->setFlash('success', 'Quarter changed from Q'.$old_quarter . ' to Q'.$model->quarter.' successfully.');
+        }
+
+        return $this->render('cq', [
+            'model' => $model,
+        ]);
+    }
+    
+      public function actionRollover() {
+        if (User::userIsAllowedTo('Setup AWPB')) {
+              $model = AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+              $_model = AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+              
+              if(!empty($_model))
+              {
+                  
+                   if ($model->load(Yii::$app->request->post())) {
+                       $model->status = AwpbTemplate::STATUS_OLD_BUDGET;
+                        $model->updated_by = Yii::$app->user->identity->id;
+                        $model->save();
+                       $_model->status = AwpbTemplate::STATUS_CURRENT_BUDGET;
+                       $_model->quarter= AwpbTemplate::STATUS_PUBLISHED;
+                               $_model->updated_by = Yii::$app->user->identity->id;
+                        $_model->save();
+                       
+                          
+
+                    if (  $model->save() &&  $_model->save()) {
+                        
+                         $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = 'Rollover from ' . $model->fiscal_year . ' to '. $_model->fiscal_year;
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                Yii::$app->session->setFlash('success', "Rollover was completed successfully.");
+                       
+                                    } else {
+                                        Yii::$app->session->setFlash('error', 'An error occurred while performing the year end process.');
+                                        return $this->render('index');
+                                    }
+                
+                    
+                                    
+              }
+            return $this->render('rollover', [
+                        'model' =>$model,
+                '_model'=>$_model,
+            ]);
+              
+                } else {
+            Yii::$app->session->setFlash('error', 'No budget has be set for rolover. Kindly create an AWPB template');
+                                                    return $this->render('index');
+
+        }
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
     /* 	public function actionDelete() {
       $post = Yii::$app->request->post();
       if (Yii::$app->request->isAjax && isset($post['custom_param'])) {
