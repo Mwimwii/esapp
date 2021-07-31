@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "awpb_template_activity".
@@ -79,7 +81,7 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id', 'activity_code', 'name', 'awpb_template_id', 'created_at', 'updated_at','status'], 'required'],
+            [['activity_id', 'activity_code', 'name', 'awpb_template_id'], 'required'],
             [['activity_id',  'status','component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'access_level_district', 'access_level_province', 'access_level_programme', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['ifad', 'ifad_grant', 'grz', 'beneficiaries', 'private_sector', 'iapri', 'parm', 'ifad_amount', 'ifad_grant_amount', 'grz_amount', 'beneficiaries_amount', 'private_sector_amount', 'iapri_amount', 'parm_amount', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'budget_amount'], 'number'],
             [['activity_code'], 'string', 'max' => 10],
@@ -87,6 +89,18 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
+        ];
+    }
+    
+    	public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
         ];
     }
 
@@ -176,5 +190,29 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function getComponent()
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
+    }
+    
+    public static function getTemplateActivity($template_id, $activity_id) {
+                      $query = self::find()
+                    ->where(['awpb_template_id'=>$template_id])
+                              ->where(['activity_id'=>$activity_id])
+                    ->one();
+                    return $query;
+                
+
+    }
+    
+        public static function getActivities($template_id) {
+           $activities = self::find()
+                ->select(['activity_id', 'name'])
+            
+                ->where(['awpb_template_id'=>$template_id])
+               // ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.activity_id'])
+                ->all();
+      // $list = ArrayHelper::map($activties, 'id', 'name');
+        return  $activities;
+
+
+
     }
 }

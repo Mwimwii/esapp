@@ -8,7 +8,7 @@ use kartik\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Storyofchange */
 
-$this->title = "Checklist for " .$model->fiscal_year ."";
+$this->title = "Year end process for " .$model->fiscal_year ."";
 $this->params['breadcrumbs'][] = ['label' => 'Rollover', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -36,8 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'data-toggle' => 'tooltip',
                                     'data-placement' => 'top',
                                     'data' => [
-                                        'confirm' => 'Are you sure you want to rollover to' . $_model->fiscal_year . ' fiscal year?'
-                                        . '<br>Once the rollover process is complete, you will not be able to process anything under '. $model->fiscal_year . ' fiscal year',
+                                        'confirm' => 'Are you sure you want to rollover to ' . $_model->fiscal_year . ' fiscal year?'
+                                        . '<br>Once the rollover process is complete, you will not be able to process anything under '. $model->fiscal_year . ' fiscal year.',
                                         'method' => 'post',
                                     ],
                         ]);

@@ -262,7 +262,7 @@ if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" id="media-tab" data-toggle="pill" href="#media" role="tab" aria-controls="media" aria-selected="false">Budget Guildelines</a>
+                                <a class="nav-link" id="media-tab" data-toggle="pill" href="#media" role="tab" aria-controls="media" aria-selected="false">Budget Guidelines</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="article-tab" data-toggle="pill" href="#article" role="tab" aria-controls="article" aria-selected="false">Users</a>
@@ -306,7 +306,7 @@ if (!empty($model->guideline_file)) {
 
     $_file = $model->guideline_file;
     $div = '<div class="col-6">'
-            . '<iframe src="' . Url::to("@web/uploads/awpb/$_file") . '"width="100%" height="500px" ></iframe>'
+           
             . Html::a('<span class="fa fa-download fa-2x"></span>', ['download-guideline', 'id' => $model->id, 'id1' => $model->id],
                     [
                         'target' => '_blank',

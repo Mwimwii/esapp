@@ -165,7 +165,8 @@ class AwpbTemplateController extends Controller
                                 $awpbTemplateActivity->access_level_district =$component_model->access_level_district;
                                 $awpbTemplateActivity->access_level_province =$component_model->access_level_province;
                                 $awpbTemplateActivity->access_level_programme =$component_model->access_level_programme;
-                                //$rightAllocation->created_by = Yii::$app->user->id;
+                                $awpbTemplateActivity->updated_by = Yii::$app->user->id;
+                                  $awpbTemplateActivity->status = AwpbTemplate::STATUS_DRAFT;
                                 $awpbTemplateActivity->save();
                             }
 

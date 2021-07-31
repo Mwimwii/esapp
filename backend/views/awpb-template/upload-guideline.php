@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php
                 $form = ActiveForm::begin([
-                            'action' => 'up-guideline?id=' . $model->id . '&id1=' . $model->id ,
+                            'action' => 'upload-guideline?id=' . $model->id . '&id1=' . $model->id ,
                             'fieldConfig' => [
                                 'options' => [
                                     'enctype' => 'multipart/form-data'

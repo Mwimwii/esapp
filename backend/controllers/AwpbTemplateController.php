@@ -34,10 +34,10 @@ class AwpbTemplateController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users','read'],
+                'only' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users', 'read', 'rollover'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users','read'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users', 'read', 'rollover'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -112,7 +112,7 @@ class AwpbTemplateController extends Controller {
             return $this->redirect(['home/home']);
         }
     }
-     
+
     public function actionActivities($id) {
         if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
@@ -146,7 +146,7 @@ class AwpbTemplateController extends Controller {
                             $_model = \backend\models\AwpbActivity::findOne($activity);
                             $component_model = \backend\models\AwpbComponent::findOne($_model);
                             $awpbTemplateActivity->component_id = $_model->component_id;
-                            $awpbTemplateActivity->output_id = $_model->output_id;
+                           // $awpbTemplateActivity->output_id = $_model->output_id;
                             $awpbTemplateActivity->activity_code = $_model->activity_code;
                             //$awpbTemplateActivity->name = $_model->activity_code.' '.$_model->name;
                             $awpbTemplateActivity->name = $_model->name;
@@ -158,7 +158,18 @@ class AwpbTemplateController extends Controller {
                             $awpbTemplateActivity->access_level_province = $component_model->access_level_province;
                             $awpbTemplateActivity->access_level_programme = $component_model->access_level_programme;
                             //$rightAllocation->created_by = Yii::$app->user->id;
-                            $awpbTemplateActivity->save();
+                           if( $awpbTemplateActivity->save())
+                           {
+                            
+                            } else {
+                                $message = "";
+                                foreach ($awpbTemplateActivity->getErrors() as $error) {
+                                    $message .= $error[0];
+                                }
+
+                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                                //  return $this->redirect(['home/home']);
+                            }
                         }
 
                         //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
@@ -177,13 +188,16 @@ class AwpbTemplateController extends Controller {
                         $audit->save();
                         Yii::$app->session->setFlash('success', $model->fiscal_year . ' was successfully updated.');
                         return $this->redirect(['view', 'id' => $model->id]);
-                    } else {
-                        Yii::$app->session->setFlash('error', 'Error occurred while updating template. Please try again.');
+                        } else {
+                                $message = "";
+                                foreach ($model->getErrors() as $error) {
+                                    $message .= $error[0];
+                                }
 
-                        return $this->render('activities', [
-                                    'id' => $model->id
-                        ]);
-                    }
+                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                                //  return $this->redirect(['home/home']);
+                            }
+                    
                 } else {
                     Yii::$app->session->setFlash('error', 'You need to select at least one activity!');
                     return $this->render('activities', [
@@ -200,8 +214,6 @@ class AwpbTemplateController extends Controller {
             return $this->redirect(['home/home']);
         }
     }
-
-  
 
     public function actionTemplateUsers($id) {
         if (User::userIsAllowedTo('Setup AWPB')) {
@@ -318,48 +330,47 @@ class AwpbTemplateController extends Controller {
                     $model->status_district = AwpbTemplate::STATUS_PUBLISHED;
                     if ($model->save()) {
                         $awpbTemplateDistrict = new AwpbDistrict();
-                       // $awpbTemplateDistrict::deleteAll(['awpb_template_id' => $id]);
+                        // $awpbTemplateDistrict::deleteAll(['awpb_template_id' => $id]);
                         foreach ($model->districts as $district) {
                             //check if the right was already assigned to this role
                             $district_model = \backend\models\Districts::findOne($district);
-                            $dist = \backend\models\AwpbDistrict::findOne(['district_id'=>$district]);
-                            if(empty($dist->id)){
-                            // var_dump($_model);
-                            $awpbTemplateDistrict->awpb_template_id = $id;
-                            $awpbTemplateDistrict->district_id = $district_model->id;
-                            $awpbTemplateDistrict->province_id = $district_model->province_id;
-                            $awpbTemplateDistrict->name = $district_model->name;
-                            $awpbTemplateDistrict->id = NULL; //primary key(auto increment id) id
-                            $awpbTemplateDistrict->isNewRecord = true;
-                            $awpbTemplateDistrict->updated_by = Yii::$app->user->id;
-                            $awpbTemplateDistrict->created_by = Yii::$app->user->id;
-                            $awpbTemplateDistrict->status = AwpbTemplate::STATUS_DRAFT;
-                            $awpbTemplateDistrict->save();                          
+                            $dist = \backend\models\AwpbDistrict::findOne(['district_id' => $district,'awpb_template_id'=>$id]);
+                            if (empty($dist->id)) {
+                                // var_dump($_model);
+                                $awpbTemplateDistrict->awpb_template_id = $id;
+                                $awpbTemplateDistrict->district_id = $district_model->id;
+                                $awpbTemplateDistrict->province_id = $district_model->province_id;
+                                $awpbTemplateDistrict->name = $district_model->name;
+                                $awpbTemplateDistrict->id = NULL; //primary key(auto increment id) id
+                                $awpbTemplateDistrict->isNewRecord = true;
+                                $awpbTemplateDistrict->updated_by = Yii::$app->user->id;
+                                $awpbTemplateDistrict->created_by = Yii::$app->user->id;
+                                $awpbTemplateDistrict->status = AwpbTemplate::STATUS_DRAFT;
+                                $awpbTemplateDistrict->save();
                             }
                         }
-                        
+
                         $awpbTemplateProvince = new AwpbProvince();
                         //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
-                     $_awpbTemplateProvinces = \backend\models\AwpbDistrict::find()->select('province_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
-                       // var_dump($_awpbTemplateProvinces );
-                       //$_awpbTemplateProvinces = \backend\models\AwpbDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
-
-                      //  $_awpbTemplateProvinces = $awpbTemplateDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
-                        if(!empty($_awpbTemplateProvinces )){
-                        foreach ($_awpbTemplateProvinces as $province) {
-                            //check if the right was already assigned to this role
-                          $prov = \backend\models\AwpbProvince::findOne(['province_id'=>$province->province_id]);
-                            if(empty($prov->id)){
-                            $awpbTemplateProvince->awpb_template_id = $id;
-                            $awpbTemplateProvince->province_id = $province->province_id;
-                            $awpbTemplateProvince->id = NULL; //primary key(auto increment id) id
-                            $awpbTemplateProvince->isNewRecord = true;
-                            $awpbTemplateProvince->updated_by = Yii::$app->user->id;
-                            $awpbTemplateProvince->created_by = Yii::$app->user->id;
-                            $awpbTemplateProvince->status = AwpbTemplate::STATUS_DRAFT;
-                            $awpbTemplateProvince->save();}
-                        }
-
+                        $_awpbTemplateProvinces = \backend\models\AwpbDistrict::find()->select('province_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
+                        // var_dump($_awpbTemplateProvinces );
+                        //$_awpbTemplateProvinces = \backend\models\AwpbDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
+                        //  $_awpbTemplateProvinces = $awpbTemplateDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
+                        if (!empty($_awpbTemplateProvinces)) {
+                            foreach ($_awpbTemplateProvinces as $province) {
+                                //check if the right was already assigned to this role
+                                $prov = \backend\models\AwpbProvince::findOne(['province_id' => $province->province_id]);
+                                if (empty($prov->id)) {
+                                    $awpbTemplateProvince->awpb_template_id = $id;
+                                    $awpbTemplateProvince->province_id = $province->province_id;
+                                    $awpbTemplateProvince->id = NULL; //primary key(auto increment id) id
+                                    $awpbTemplateProvince->isNewRecord = true;
+                                    $awpbTemplateProvince->updated_by = Yii::$app->user->id;
+                                    $awpbTemplateProvince->created_by = Yii::$app->user->id;
+                                    $awpbTemplateProvince->status = AwpbTemplate::STATUS_DRAFT;
+                                    $awpbTemplateProvince->save();
+                                }
+                            }
                         }
                         //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
                         // if (Yii::$app->getUser()->identity->role == $model->id) {
@@ -409,9 +420,9 @@ class AwpbTemplateController extends Controller {
             $model->updated_by = Yii::$app->user->identity->id;
             $model->status = AwpbTemplate::STATUS_PUBLISHED;
             if ($model->save()) {
-                
+
                 $session = Yii::$app->session;
-                $session->set('awpb_template_id',  AwpbTemplate::getId());
+                $session->set('awpb_template_id', AwpbTemplate::getId());
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Published  '" . $model->fiscal_year . ' AWPB Template';
@@ -592,55 +603,51 @@ class AwpbTemplateController extends Controller {
 
                 // $templates = AwpbTemplate::find()->where(['fiscal_year'<>$model->fiscal_year])->andWhere(['status'<>AwpbTemplate::STATUS_OLD])->all();
 
-           
-                    if ($model->validate()) {
-                        
-                
 
-                        if ($model->save()) {
-                            
-                            
-                     $cost_centres = \backend\models\AwpbCostCentre::find()->all();
+                if ($model->validate()) {
 
-                    if (isset($cost_centres)) {
-                        if ( $cost_centres != null) {
-                             $awpbTemplateDistrict = new AwpbDistrict();
-                            foreach ($cost_centres as  $cost_centre) {
-            
-                            $awpbTemplateDistrict->awpb_template_id = $id;
-                            $awpbTemplateDistrict->cost_centre_id = $cost_centre->id;
-                            
-                            $awpbTemplateDistrict->name = $cost_centre->name;
 
-                            $awpbTemplateDistrict->id = NULL; //primary key(auto increment id) id
-                            $awpbTemplateDistrict->isNewRecord = true;
 
-                            $awpbTemplateDistrict->updated_by = Yii::$app->user->id;
-                            $awpbTemplateDistrict->created_by = Yii::$app->user->id;
+                    if ($model->save()) {
 
-                            $awpbTemplateDistrict->status = AwpbTemplate::STATUS_DRAFT;
-                            $awpbTemplateDistrict->save();
+
+                        $cost_centres = \backend\models\AwpbCostCentre::find()->all();
+
+                        if (isset($cost_centres)) {
+                            if ($cost_centres != null) {
+                                $awpbTemplateDistrict = new AwpbDistrict();
+                                foreach ($cost_centres as $cost_centre) {
+
+                                    $awpbTemplateDistrict->awpb_template_id = $id;
+                                    $awpbTemplateDistrict->cost_centre_id = $cost_centre->id;
+
+                                    $awpbTemplateDistrict->name = $cost_centre->name;
+
+                                    $awpbTemplateDistrict->id = NULL; //primary key(auto increment id) id
+                                    $awpbTemplateDistrict->isNewRecord = true;
+
+                                    $awpbTemplateDistrict->updated_by = Yii::$app->user->id;
+                                    $awpbTemplateDistrict->created_by = Yii::$app->user->id;
+
+                                    $awpbTemplateDistrict->status = AwpbTemplate::STATUS_DRAFT;
+                                    $awpbTemplateDistrict->save();
+                                }
+                            }
                         }
-                                    
-                        }
+
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Added template : " . $model->fiscal_year;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success', $model->fiscal_year . ' AWPB template was successfully added.');
+
+                        return $this->redirect(['check-list', 'id' => $model->id]);
+                    } else {
+                        Yii::$app->session->setFlash(' error', 'Error occured while adding ' . $model->fiscal_year . ' AWPB template.');
                     }
-              
-                            $audit = new AuditTrail();
-                            $audit->user = Yii::$app->user->id;
-                            $audit->action = "Added template : " . $model->fiscal_year;
-                            $audit->ip_address = Yii::$app->request->getUserIP();
-                            $audit->user_agent = Yii::$app->request->getUserAgent();
-                            $audit->save();
-                            Yii::$app->session->setFlash('success', $model->fiscal_year . ' AWPB template was successfully added.');
-
-                            return $this->redirect(['check-list', 'id' => $model->id]);
-                        } else {
-                            Yii::$app->session->setFlash(' error', 'Error occured while adding ' . $model->fiscal_year . ' AWPB template.');
-                        }
-                    }
-
-              
-                
+                }
             }
 //             else {
 //                Yii::$app->session->setFlash(' error', 'Attached the ' . $model->fiscal_year . ' AWPB budget guidelines.');
@@ -681,8 +688,8 @@ class AwpbTemplateController extends Controller {
         $model = $this->findModel($id);
         $audit_msg = "";
         $filePath = '/web/uploads/awpb';
-        $completePath = Yii::getAlias('@backend' . $filePath . '/' . $model->file);
-        $completePath = Yii::getAlias($filePath . '/');
+        $completePath = Yii::getAlias('@backend' . $filePath . '/' . $model->guideline_file);
+       // $completePath = Yii::getAlias($filePath . '/');
         $file_name = "";
         //$story_model = Storyofchange::findOne($id1);
 
@@ -757,66 +764,58 @@ class AwpbTemplateController extends Controller {
             }
 
             if ($model->load(Yii::$app->request->post())) {
-                
-                    $model->updated_by = Yii::$app->user->id;
-                    if ($model->save()) {
-                  
-             $cost_centres = \backend\models\AwpbCostCentre::find()->all();
+
+                $model->updated_by = Yii::$app->user->id;
+                if ($model->save()) {
+
+                    $cost_centres = \backend\models\AwpbCostCentre::find()->all();
 
                     if (isset($cost_centres)) {
                         if ($cost_centres != null) {
-                             $awpbTemplateDistrict = new AwpbDistrict();
-                            foreach ($cost_centres as  $cost_centre) {
-                                $_awpb_district = AwpbDistrict::findOne(['awpb_template_id' =>$model->id, 'cost_centre_id'=>$cost_centre->id]);
-                                if (empty($_awpb_district ))
-                                {
-                                        $awpbTemplateDistrict->awpb_template_id = $id;
-                            $awpbTemplateDistrict->cost_centre_id = $cost_centre->id;
-                            
-                            $awpbTemplateDistrict->name = $cost_centre->name;
+                            $awpbTemplateDistrict = new AwpbDistrict();
+                            foreach ($cost_centres as $cost_centre) {
+                                $_awpb_district = AwpbDistrict::findOne(['awpb_template_id' => $model->id, 'cost_centre_id' => $cost_centre->id]);
+                                if (empty($_awpb_district)) {
+                                    $awpbTemplateDistrict->awpb_template_id = $id;
+                                    $awpbTemplateDistrict->cost_centre_id = $cost_centre->id;
 
-                            $awpbTemplateDistrict->id = NULL; //primary key(auto increment id) id
-                            $awpbTemplateDistrict->isNewRecord = true;
+                                    $awpbTemplateDistrict->name = $cost_centre->name;
 
-                            $awpbTemplateDistrict->updated_by = Yii::$app->user->id;
-                            $awpbTemplateDistrict->created_by = Yii::$app->user->id;
+                                    $awpbTemplateDistrict->id = NULL; //primary key(auto increment id) id
+                                    $awpbTemplateDistrict->isNewRecord = true;
 
-                            $awpbTemplateDistrict->status = AwpbTemplate::STATUS_DRAFT;
-                                $awpbTemplateDistrict->save();
-                                
-                                
+                                    $awpbTemplateDistrict->updated_by = Yii::$app->user->id;
+                                    $awpbTemplateDistrict->created_by = Yii::$app->user->id;
+
+                                    $awpbTemplateDistrict->status = AwpbTemplate::STATUS_DRAFT;
+                                    $awpbTemplateDistrict->save();
                                 }
+                            }
                         }
-                                    
-                    }}
-
-                        $audit = new AuditTrail();
-                        $audit->user = Yii::$app->user->id;
-                        $audit->action = "AWPB template '. $model->fiscal_year.' updated";
-                        $audit->ip_address = Yii::$app->request->getUserIP();
-                        $audit->user_agent = Yii::$app->request->getUserAgent();
-                        $audit->save();
-                        Yii::$app->session->setFlash('success', 'Template  was successfully updated.');
-                        return $this->redirect(['view', 'id' => $model->id]);
-                    
-                }
-                else {
-                        Yii::$app->session->setFlash('error', 'Error occurred while updating role.Please try again.');
-                        return $this->render('update', ['id' => $model->id,]);
                     }
-        } 
-          return $this->render('update', [
+
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "AWPB template '. $model->fiscal_year.' updated";
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Template  was successfully updated.');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occurred while updating role.Please try again.');
+                    return $this->render('update', ['id' => $model->id,]);
+                }
+            }
+            return $this->render('update', [
                         'model' => $model
             ]);
-                }else {
+        } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
     }
-    
-    
-    
-   
+
     public function actionUpdate4($id) {
         if (User::userIsAllowedTo('Manage AWPB templates')) {
             $model = $this->findModel($id);
@@ -940,7 +939,7 @@ class AwpbTemplateController extends Controller {
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'You need to select at least one right!');
-                //    Yii::$app->session->setFlash('error', var_dump($model->activities));
+                    //    Yii::$app->session->setFlash('error', var_dump($model->activities));
                     return $this->render('update', ['id' => $model->id,
                                 'model' => $model
                     ]);
@@ -995,74 +994,76 @@ class AwpbTemplateController extends Controller {
         }
     }
 
-     public function actionCq()
-    {
-           $model = AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-          
-      //  $model = $this->findModel($id);
+    public function actionCq() {
+        $model = AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+
+        //  $model = $this->findModel($id);
         $old_quarter = $model->quarter;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-           // return $this->redirect(['view', 'id' => $model->id]);
-             Yii::$app->session->setFlash('success', 'Quarter changed from Q'.$old_quarter . ' to Q'.$model->quarter.' successfully.');
+            // return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', 'Quarter changed from Q' . $old_quarter . ' to Q' . $model->quarter . ' successfully.');
         }
 
         return $this->render('cq', [
-            'model' => $model,
+                    'model' => $model,
         ]);
     }
-    
-      public function actionRollover() {
+
+    public function actionRollover() {
         if (User::userIsAllowedTo('Setup AWPB')) {
-              $model = AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-              $_model = AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-              
-              if(!empty($_model))
-              {
-                  
-                   if ($model->load(Yii::$app->request->post())) {
-                       $model->status = AwpbTemplate::STATUS_OLD_BUDGET;
-                        $model->updated_by = Yii::$app->user->identity->id;
-                        $model->save();
-                       $_model->status = AwpbTemplate::STATUS_CURRENT_BUDGET;
-                       $_model->quarter= AwpbTemplate::STATUS_PUBLISHED;
-                               $_model->updated_by = Yii::$app->user->identity->id;
-                        $_model->save();
-                       
-                          
+            $model = AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+            $_model = AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
 
-                    if (  $model->save() &&  $_model->save()) {
-                        
-                         $audit = new AuditTrail();
-                $audit->user = Yii::$app->user->id;
-                $audit->action = 'Rollover from ' . $model->fiscal_year . ' to '. $_model->fiscal_year;
-                $audit->ip_address = Yii::$app->request->getUserIP();
-                $audit->user_agent = Yii::$app->request->getUserAgent();
-                $audit->save();
-                Yii::$app->session->setFlash('success', "Rollover was completed successfully.");
-                       
-                                    } else {
-                                        Yii::$app->session->setFlash('error', 'An error occurred while performing the year end process.');
-                                        return $this->render('index');
-                                    }
-                
+            if (!empty($_model)) {
+$request = Yii::$app->request;
+if ($request->isPost) { 
+               
+                    $model->status = AwpbTemplate::STATUS_OLD_BUDGET;
+                    $model->updated_by = Yii::$app->user->identity->id;
+                    $model->save();
                     
-                                    
-              }
-            return $this->render('rollover', [
-                        'model' =>$model,
-                '_model'=>$_model,
-            ]);
-              
-                } else {
-            Yii::$app->session->setFlash('error', 'No budget has be set for rolover. Kindly create an AWPB template');
-                                                    return $this->render('index');
+                    $_model->status = AwpbTemplate::STATUS_CURRENT_BUDGET;
+                    $_model->quarter = AwpbTemplate::STATUS_PUBLISHED;
+                    $_model->updated_by = Yii::$app->user->identity->id;
+                    $_model->save();
 
-        }
+                    if ($model->save() && $_model->save()) {
+
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = 'Rollover from ' . $model->fiscal_year . ' to ' . $_model->fiscal_year;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success', "Rollover was completed successfully.");
+                        return $this->redirect('index');
+                       
+                            } else {
+                                $message = "";
+                                foreach ($_model->getErrors() as $error) {
+                                    $message .= $error[0];
+                                }
+
+                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                                   return $this->redirect('index');
+                            }
+                           
+                       
+                }
+                              return $this->render('rollover', [
+                            'model' => $model,
+                            '_model' => $_model,
+                ]);
+            } else {
+                Yii::$app->session->setFlash('error', 'No AWPB template has been published for you to perform this process. Kindly publish an AWPB template');
+                return $this->redirect('index');
+            }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
     }
+
     /* 	public function actionDelete() {
       $post = Yii::$app->request->post();
       if (Yii::$app->request->isAjax && isset($post['custom_param'])) {
