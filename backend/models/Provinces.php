@@ -5,6 +5,8 @@ namespace backend\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use dosamigos\google\maps\LatLng;
+
 /**
  * This is the model class for table "province".
  *
@@ -81,6 +83,7 @@ class Provinces extends \yii\db\ActiveRecord {
         $list = ArrayHelper::map($provinces, 'id', 'name');
         return $list;
     }
+
     public static function getProvinceNames() {
         $provinces = self::find()->orderBy(['name' => SORT_ASC])->all();
         $list = ArrayHelper::map($provinces, 'name', 'name');
@@ -91,9 +94,18 @@ class Provinces extends \yii\db\ActiveRecord {
         $province = self::find()->where(['id' => $id])->one();
         return $province->name;
     }
+
     public static function getName($id) {
         $province = self::find()->where(['id' => $id])->one();
         return ucfirst(strtolower($this->name));
+    }
+
+    public static function getCoordinates($coordinate_array) {
+        $coordinates = [];
+        foreach ($coordinate_array[0][0] as $coordinate) {
+            array_push($coordinates, new LatLng(['lat' => $coordinate[1], 'lng' => $coordinate[0]]));
+        }
+        return $coordinates;
     }
 
 }

@@ -191,8 +191,6 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
-
-
                             <!-------------------------------AWPB MANAGEMENT STARTS----------------------->
                             <?php
                             $user = User::findOne(['id' => Yii::$app->user->id]);
@@ -779,16 +777,20 @@ $session = Yii::$app->session;
                             if (User::userIsAllowedTo("Submit back to office report") ||
                                     User::userIsAllowedTo("View back to office report") ||
                                     User::userIsAllowedTo("Review back to office report") ||
+                                    User::userIsAllowedTo("Submit timesheets") ||
+                                    User::userIsAllowedTo("Review timesheets") ||
                                     User::userIsAllowedTo("Plan quarterly work schedules") ||
                                     User::userIsAllowedTo("View quarterly work schedules") ||
                                     User::userIsAllowedTo("Plan camp monthly activities") ||
-                                    //User::userIsAllowedTo("Add training topics to FaaBS") ||
+                                    User::userIsAllowedTo("Submit project outreach records") ||
                                     //User::userIsAllowedTo("Approve quarterly work schedules - provincial") ||
                                     User::userIsAllowedTo("Remove planned camp monthly activities") ||
                                     User::userIsAllowedTo("View planned camp monthly activities")
                             ) {
                                 if (Yii::$app->controller->id == "back-to-office-report" ||
-                                        Yii::$app->controller->id == "camp-monthly-schedule"
+                                        Yii::$app->controller->id == "camp-monthly-schedule" ||
+                                        Yii::$app->controller->id == "time-sheets" ||
+                                        Yii::$app->controller->id == "project-outreach"
                                 ) {
                                     echo '<li class="nav-item has-treeview menu-open">'
                                     . ' <a href="#" class="nav-link active">';
@@ -805,11 +807,28 @@ $session = Yii::$app->session;
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <?php
+                                    if (User::userIsAllowedTo("Submit timesheets")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "time-sheets" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "media" ||
+                                                Yii::$app->controller->action->id == "update-media" ||
+                                                Yii::$app->controller->action->id == "update" ||
+                                                Yii::$app->controller->action->id == "view")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Activity Time sheets</p>', ['/time-sheets/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Activity Time sheets</p>', ['/time-sheets/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     if (User::userIsAllowedTo("Submit back to office report")) {
                                         echo '<li class="nav-item">';
                                         if (Yii::$app->controller->id == "back-to-office-report" &&
                                                 (Yii::$app->controller->action->id == "index" ||
                                                 Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "media" ||
+                                                Yii::$app->controller->action->id == "update-media" ||
                                                 Yii::$app->controller->action->id == "update" ||
                                                 Yii::$app->controller->action->id == "view")) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Back to office reports</p>', ['/back-to-office-report/index'], ["class" => "nav-link active"]);
@@ -830,21 +849,20 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                    /* if (User::userIsAllowedTo("Set camp/project site objectives for awpb") ||
-                                      User::userIsAllowedTo("View camp/project site objectives for awpb")) {
-                                      echo '<li class="nav-item">';
-                                      if (Yii::$app->controller->id == "camp-subproject-records-awpb-objectives" &&
-                                      (
-                                      Yii::$app->controller->action->id == "index" ||
-                                      Yii::$app->controller->action->id == "view" ||
-                                      Yii::$app->controller->action->id == "create" ||
-                                      Yii::$app->controller->action->id == "update")) {
-                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link active"]);
-                                      } else {
-                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camp/Project awpb objectives</p>', ['/camp-subproject-records-awpb-objectives/index'], ["class" => "nav-link"]);
-                                      }
-                                      echo '</li>';
-                                      } */
+                                    if (User::userIsAllowedTo("Submit project outreach records")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "project-outreach" &&
+                                                (
+                                                Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project outreach records</p>', ['/project-outreach/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project outreach records</p>', ['/project-outreach/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     if (User::userIsAllowedTo("Plan camp monthly activities") ||
                                             User::userIsAllowedTo("View planned camp monthly activities")) {
                                         echo '<li class="nav-item">';
@@ -1131,10 +1149,13 @@ $session = Yii::$app->session;
                                     User::userIsAllowedTo("Manage districts") ||
                                     User::userIsAllowedTo("Manage markets") ||
                                     User::userIsAllowedTo("Manage commodity configs") ||
+                                    User::userIsAllowedTo("View staff hourly rates") ||
+                                    User::userIsAllowedTo("Manage staff hourly rates") ||
                                     User::userIsAllowedTo("Manage camps")) {
                                 if (Yii::$app->controller->id == "provinces" ||
                                         Yii::$app->controller->id == "districts" ||
                                         Yii::$app->controller->id == "markets" ||
+                                        Yii::$app->controller->id == "hourly-rates" ||
                                         Yii::$app->controller->id == "commodity-categories" ||
                                         Yii::$app->controller->id == "commodity-price-levels" ||
                                         Yii::$app->controller->id == "commodity-types" ||
@@ -1178,7 +1199,10 @@ $session = Yii::$app->session;
                                     if (User::userIsAllowedTo("Manage camps")) {
                                         echo '   <li class="nav-item">';
                                         if (Yii::$app->controller->id == "camps" &&
-                                                (Yii::$app->controller->action->id == "index")) {
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camps</p>', ['camps/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Camps</p>', ['camps/index'], ["class" => "nav-link"]);
@@ -1222,6 +1246,17 @@ $session = Yii::$app->session;
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity price levels</p>', ['commodity-price-levels/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Commodity price levels</p>', ['commodity-price-levels/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("View staff hourly rates") ||
+                                            User::userIsAllowedTo("Manage staff hourly rates")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "hourly-rates" &&
+                                                (Yii::$app->controller->action->id == "index")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Staff hourly rates</p>', ['hourly-rates/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Staff hourly rates</p>', ['hourly-rates/index'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
@@ -1274,6 +1309,18 @@ $session = Yii::$app->session;
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training attendance cumulative</p>', ['/reports/training-attendance-cumulatives'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training attendance cumulative</p>', ['/reports/training-attendance-cumulatives'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>
+                                    <?php
+                                    if (User::userIsAllowedTo("View project outreach reports")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "reports" &&
+                                                (Yii::$app->controller->action->id == "project-outreach-report")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project outreach report</p>', ['/reports/project-outreach-report'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project outreach report</p>', ['/reports/project-outreach-report'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }

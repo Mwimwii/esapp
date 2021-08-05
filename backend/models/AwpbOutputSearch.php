@@ -17,8 +17,8 @@ class AwpbOutputSearch extends AwpbOutput
     public function rules()
     {
         return [
-            [['id', 'outcome_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'output_description'], 'safe'],
+            [['id', 'component_id', 'outcome_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['code', 'name', 'description'], 'safe'],
         ];
     }
 
@@ -59,6 +59,7 @@ class AwpbOutputSearch extends AwpbOutput
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'component_id' => $this->component_id,
             'outcome_id' => $this->outcome_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -66,8 +67,9 @@ class AwpbOutputSearch extends AwpbOutput
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'output_description', $this->output_description]);
+        $query->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
     }

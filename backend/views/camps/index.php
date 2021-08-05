@@ -24,8 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
         if (User::userIsAllowedTo('Manage camps')) {
-            echo '<button class="btn btn-success btn-sm" href="#" onclick="$(\'#addNewModal\').modal(); 
-                    return false;"><i class="fa fa-plus"></i> Add Camp</button>';
+            echo Html::a('<i class="fa fa-plus"></i> <span class="text-xs">Add Camp</span>', ['create'], ['class' => 'btn btn-success btn-xs']);
             echo '<hr class="dotted short">';
         }
         $gridColumns = [
@@ -47,37 +46,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
-                'class' => EditableColumn::className(),
+               // 'class' => EditableColumn::className(),
                 'attribute' => 'district_id',
                 //'readonly' => false,
-                'refreshGrid' => true,
+                //'refreshGrid' => true,
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],
                 ],
                 'filter' => \backend\models\Districts::getList(),
                 'filterInputOptions' => ['prompt' => 'Filter by District', 'class' => 'form-control', 'id' => null],
-                'editableOptions' => [
+               /* 'editableOptions' => [
                     'asPopover' => true,
                     'type' => 'success',
                     'size' => PopoverX::SIZE_MEDIUM,
                     'options' => ['data' => \backend\models\Districts::getList()],
                     'inputType' => Editable::INPUT_SELECT2,
-                ],
+                ],*/
                 'value' => function ($model) {
                     $name = backend\models\Districts::findOne($model->district_id)->name;
                     return $name;
                 },
             ],
             [
-                'class' => EditableColumn::className(),
+                //'class' => EditableColumn::className(),
                 'enableSorting' => true,
                 'attribute' => 'name',
-                'editableOptions' => [
+                /*'editableOptions' => [
                     'type' => 'success',
                     'asPopover' => true,
                     'size' => PopoverX::SIZE_MEDIUM,
-                ],
+                ],*/
                 'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'pluginOptions' => ['allowClear' => true],
@@ -85,28 +84,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => \backend\models\Camps::getNames(),
                 'filterInputOptions' => ['prompt' => 'Filter by camp name', 'class' => 'form-control',],
                 'format' => 'raw',
-                'refreshGrid' => true,
+               // 'refreshGrid' => true,
             ],
             [
-                'class' => EditableColumn::className(),
+                // 'class' => EditableColumn::className(),
                 'enableSorting' => true,
                 'attribute' => 'description',
-                'editableOptions' => [
-                    'asPopover' => true,
-                    'type' => 'success',
-                    'inputType' => Editable::INPUT_TEXTAREA,
-                    'submitOnEnter' => false,
-                    'placement' => \kartik\popover\PopoverX::ALIGN_LEFT,
-                    'size' => PopoverX::SIZE_LARGE,
-                    'options' => [
-                        'class' => 'form-control',
-                        'rows' => 6,
-                        'placeholder' => 'Enter camp description...'
-                    ]
-                ],
+                /* 'editableOptions' => [
+                  'asPopover' => true,
+                  'type' => 'success',
+                  'inputType' => Editable::INPUT_TEXTAREA,
+                  'submitOnEnter' => false,
+                  'placement' => \kartik\popover\PopoverX::ALIGN_LEFT,
+                  'size' => PopoverX::SIZE_LARGE,
+                  'options' => [
+                  'class' => 'form-control',
+                  'rows' => 6,
+                  'placeholder' => 'Enter camp description...'
+                  ]
+                  ], */
                 'filter' => false,
                 'format' => 'raw',
-                'refreshGrid' => true,
+            //   'refreshGrid' => true,
+            ],
+            [
+                'label' => 'Latitude/Longitude',
+                'value' => function ($model) {
+                    return $model->longitude . "/" . $model->latitude;
+                },
             ],
             // 'description:ntext',
             // 'latitude',
@@ -117,8 +122,34 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_by',
             ['class' => ActionColumn::className(),
                 'options' => ['style' => 'width:130px;'],
-                'template' => '{delete}',
+                'template' => '{view}{update}{delete}',
                 'buttons' => [
+                    'view' => function ($url, $model) {
+                        return Html::a(
+                                        '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
+                                    'title' => 'View camp',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    'data-pjax' => '0',
+                                    'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );
+                    },
+                    'update' => function ($url, $model) {
+                        if (User::userIsAllowedTo('Manage camps')) {
+                            return Html::a(
+                                            '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id], [
+                                        'title' => 'Update camp',
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                        'data-pjax' => '0',
+                                        'style' => "padding:5px;",
+                                        'class' => 'bt btn-lg'
+                                            ]
+                            );
+                        }
+                    },
                     'delete' => function ($url, $model) {
                         if (User::userIsAllowedTo('Remove camps')) {
                             return Html::a(

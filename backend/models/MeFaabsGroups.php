@@ -28,6 +28,7 @@ class MeFaabsGroups extends \yii\db\ActiveRecord {
 
     public $province_id;
     public $district_id;
+    public $coordinates;
 
     /**
      * {@inheritdoc}
@@ -52,7 +53,7 @@ class MeFaabsGroups extends \yii\db\ActiveRecord {
                     return $model->isAttributeChanged('name') && !empty(self::findOne(['name' => $model->name, "camp_id" => $model->camp_id])) ? TRUE : FALSE;
                 }, 'message' => 'FaaBS already exist for this camp!'],
             [['code'], 'string', 'max' => 20],
-            [['province_id', 'district_id'], 'safe'],
+            [['province_id', 'district_id','coordinates'], 'safe'],
             ['code', 'unique', 'message' => 'FaaBS code already exist!'],
             [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
         ];

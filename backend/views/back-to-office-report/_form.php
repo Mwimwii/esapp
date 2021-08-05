@@ -131,13 +131,13 @@ use kartik\select2\Select2;
             ?>
         </div>
         <div class="col-lg-6 form-group">
-            <?=
-            $form->field($model, 'annexes')->widget(\yii\redactor\widgets\Redactor::className(),
+            <?php
+            /*$form->field($model, 'annexes')->widget(\yii\redactor\widgets\Redactor::className(),
                     [
                         'clientOptions' => [
                             'plugins' => ['clips', 'fontcolor', 'imagemanager']
                         ]
-            ])->label("Annexes");
+            ])->label("Annexes");*/
             ?>
         </div>
 

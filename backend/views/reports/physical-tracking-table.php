@@ -13,9 +13,9 @@ use backend\models\User;
 $this->title = 'Physical tracking table';
 $this->params['breadcrumbs'][] = "Reports";
 $this->params['breadcrumbs'][] = $this->title;
-$year = "";
-if (isset($_GET['AwbpActivitySearch'])) {
-    $year = $_GET['AwbpActivitySearch']['year'];
+
+if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year'])) {
+    $year = $_GET['AwpbBudgetSearch']['year'];
 } else {
     $year = date('Y');
 }
@@ -25,7 +25,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
         <h4>Instructions</h4>
         <ol>
             <li>Below is the Physical tracking table for the year <?= $year ?></li>
-            <li>Apply a filter below to view 'The Physical tracking table' for the other years and/or province/district</li>
+            <li>Apply a filter below to view 'The Physical tracking table' for the previous years and/or province/district</li>
         </ol>
         <?php
         echo $this->render('_search_physical_tracking_table', ['model' => $searchModel]);
@@ -36,11 +36,10 @@ if (isset($_GET['AwbpActivitySearch'])) {
             <?php
             $province_id = "";
             $district_id = "";
-            $year = "";
-            if (isset($_GET['AwbpActivitySearch'])) {
-                $province_id = !empty($_GET['AwbpActivitySearch']['province_id']) ? $_GET['AwbpActivitySearch']['province_id'] : "";
-                $district_id = !empty($_GET['AwbpActivitySearch']['district_id']) ? $_GET['AwbpActivitySearch']['district_id'] : "";
-                $year = !empty($_GET['AwbpActivitySearch']['year']) ? $_GET['AwbpActivitySearch']['year'] : "";
+            if (isset($_GET['AwpbBudgetSearch'])) {
+                $province_id = !empty($_GET['AwpbBudgetSearch']['province_id']) ? $_GET['AwpbBudgetSearch']['province_id'] : "";
+                $district_id = !empty($_GET['AwpbBudgetSearch']['district_id']) ? $_GET['AwpbBudgetSearch']['district_id'] : "";
+                //  $year = !empty($_GET['AwpbBudgetSearch']['year']) ? $_GET['AwpbBudgetSearch']['year'] : "";
             }
             if ($dataProvider->getCount() > 0) {
                 echo Html::a('<span class="fas fa-file-excel"></span> Export to Excel',
@@ -50,7 +49,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'province_id' => $province_id,
                         'district_id' => $district_id,
                         'year' => $year,
-                        //'data' => json_encode($dataProvider->getModels())
+                    //'data' => json_encode($dataProvider->getModels())
                     ],
                     'title' => 'Download report in excel',
                     'data-toggle' => 'tooltip',
@@ -61,6 +60,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
             ?>
         </p>
         <?php
+      //  var_dump($dataProvider->getModels());
         if ($dataProvider->getCount() > 0) {
             echo GridView::widget([
                 'dataProvider' => $dataProvider,
@@ -122,6 +122,10 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'attribute' => 'name',
                         'filter' => false,
                         'label' => 'Activity Description',
+                        'value' => function ($model) {
+                            $awpb_activity = \backend\models\AwpbActivity::findOne($model->activity_id);
+                            return !empty($awpb_activity) ? $awpb_activity->description : "";
+                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -129,6 +133,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Indicator',
                         'attribute' => 'indicator_id',
                         'enableSorting' => true,
+                        'filter' => false,
                         'value' => function ($model) {
                             $awpb_indicator = \backend\models\AwpbIndicator::findOne($model->indicator_id);
                             return !empty($awpb_indicator) ? $awpb_indicator->name : "";
@@ -140,7 +145,9 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Unity',
                         'enableSorting' => true,
                         'value' => function ($model) {
-                            return !empty($model->unit_of_measure_id) ? backend\models\AwpbUnitOfMeasure::findOne($model->unit_of_measure_id)->name : "";
+                            $awpb_activity = \backend\models\AwpbActivity::findOne($model->activity_id);
+                            $unity_model = !empty($awpb_activity) ? backend\models\AwpbUnitOfMeasure::findOne($awpb_activity->unit_of_measure_id) : "";
+                            return !empty($unity_model) ? $unity_model->name : "";
                         }
                     ],
                     [
@@ -149,33 +156,12 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'enableSorting' => true,
                         'filter' => false,
                         'attribute' => 'total_quantity',
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
+                        'value' => function ($model) {
                             $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_1'];
-                                        $q_total += $_line['mo_2'];
-                                        $q_total += $_line['mo_3'];
-                                        $q_total += $_line['mo_4'];
-                                        $q_total += $_line['mo_5'];
-                                        $q_total += $_line['mo_6'];
-                                        $q_total += $_line['mo_7'];
-                                        $q_total += $_line['mo_8'];
-                                        $q_total += $_line['mo_9'];
-                                        $q_total += $_line['mo_10'];
-                                        $q_total += $_line['mo_11'];
-                                        $q_total += $_line['mo_12'];
-                                    }
-                                }
-                            }
-
+                            $q_total += $model->quarter_one_quantity;
+                            $q_total += $model->quarter_two_quantity;
+                            $q_total += $model->quarter_three_quantity;
+                            $q_total += $model->quarter_four_quantity;
                             return $q_total;
                         }
                     ],
@@ -184,81 +170,24 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'contentOptions' => ['class' => 'text-left', 'style' => 'font-size:13px;font-weight:normal'],
                         'label' => 'Q1',
                         'enableSorting' => true,
+                        'attribute' => 'quarter_one_quantity',
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_1'];
-                                        $q_total += $_line['mo_2'];
-                                        $q_total += $_line['mo_3'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                         'contentOptions' => ['class' => 'text-left', 'style' => 'font-size:13px;font-weight:normal'],
                         'label' => 'Q2',
                         'enableSorting' => true,
+                        'attribute' => 'quarter_two_quantity',
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_4'];
-                                        $q_total += $_line['mo_5'];
-                                        $q_total += $_line['mo_6'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
                         'contentOptions' => ['class' => 'text-left', 'style' => 'font-size:13px;font-weight:normal'],
                         'label' => 'Q3',
                         'enableSorting' => true,
+                        'attribute' => 'quarter_three_quantity',
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_7'];
-                                        $q_total += $_line['mo_8'];
-                                        $q_total += $_line['mo_9'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -266,26 +195,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Q4',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_10'];
-                                        $q_total += $_line['mo_11'];
-                                        $q_total += $_line['mo_12'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
+                        'attribute' => 'quarter_four_quantity',
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -293,33 +203,12 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Total',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
+                        'value' => function ($model) {
                             $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_1'];
-                                        $q_total += $_line['mo_2'];
-                                        $q_total += $_line['mo_3'];
-                                        $q_total += $_line['mo_4'];
-                                        $q_total += $_line['mo_5'];
-                                        $q_total += $_line['mo_6'];
-                                        $q_total += $_line['mo_7'];
-                                        $q_total += $_line['mo_8'];
-                                        $q_total += $_line['mo_9'];
-                                        $q_total += $_line['mo_10'];
-                                        $q_total += $_line['mo_11'];
-                                        $q_total += $_line['mo_12'];
-                                    }
-                                }
-                            }
-
+                            $q_total += $model->quarter_one_quantity;
+                            $q_total += $model->quarter_two_quantity;
+                            $q_total += $model->quarter_three_quantity;
+                            $q_total += $model->quarter_four_quantity;
                             return $q_total;
                         }
                     ],
@@ -330,26 +219,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Q1',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_1_actual'];
-                                        $q_total += $_line['mo_2_actual'];
-                                        $q_total += $_line['mo_3_actual'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
+                        'attribute' => 'quarter_one_actual',
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -358,26 +228,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Q2',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_4_actual'];
-                                        $q_total += $_line['mo_5_actual'];
-                                        $q_total += $_line['mo_6_actual'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
+                        'attribute' => 'quarter_two_actual',
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -386,26 +237,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Q3',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_7_actual'];
-                                        $q_total += $_line['mo_8_actual'];
-                                        $q_total += $_line['mo_9_actual'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
+                        'attribute' => 'quarter_three_actual',
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -414,26 +246,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Q4',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_10_actual'];
-                                        $q_total += $_line['mo_11_actual'];
-                                        $q_total += $_line['mo_12_actual'];
-                                    }
-                                }
-                            }
-
-                            return $q_total;
-                        }
+                        'attribute' => 'quarter_four_actual',
                     ],
                     [
                         'headerOptions' => ['class' => 'text-center', 'style' => 'font-size:14px;font-weight:normal'],
@@ -442,33 +255,12 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Total',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
+                        'value' => function ($model) {
                             $q_total = 0;
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_1_actual'];
-                                        $q_total += $_line['mo_2_actual'];
-                                        $q_total += $_line['mo_3_actual'];
-                                        $q_total += $_line['mo_4_actual'];
-                                        $q_total += $_line['mo_5_actual'];
-                                        $q_total += $_line['mo_6_actual'];
-                                        $q_total += $_line['mo_7_actual'];
-                                        $q_total += $_line['mo_8_actual'];
-                                        $q_total += $_line['mo_9_actual'];
-                                        $q_total += $_line['mo_10_actual'];
-                                        $q_total += $_line['mo_11_actual'];
-                                        $q_total += $_line['mo_12_actual'];
-                                    }
-                                }
-                            }
-
+                            $q_total += $model->quarter_one_actual;
+                            $q_total += $model->quarter_two_actual;
+                            $q_total += $model->quarter_three_actual;
+                            $q_total += $model->quarter_four_actual;
                             return $q_total;
                         }
                     ],
@@ -479,47 +271,19 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => '% AWPB Achieved',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
+                        'value' => function ($model) {
                             $q_total = 0;
                             $q_total1 = 0;
                             $result = 0;
-                            $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
-                            if (!empty($awpb_template)) {
-                                //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
-                                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                                        ->all();
-                                if (!empty($activity_lines)) {
-                                    foreach ($activity_lines as $_line) {
-                                        $q_total += $_line['mo_1'];
-                                        $q_total += $_line['mo_2'];
-                                        $q_total += $_line['mo_3'];
-                                        $q_total += $_line['mo_4'];
-                                        $q_total += $_line['mo_5'];
-                                        $q_total += $_line['mo_6'];
-                                        $q_total += $_line['mo_7'];
-                                        $q_total += $_line['mo_8'];
-                                        $q_total += $_line['mo_9'];
-                                        $q_total += $_line['mo_10'];
-                                        $q_total += $_line['mo_11'];
-                                        $q_total += $_line['mo_12'];
 
-                                        $q_total1 += $_line['mo_1_actual'];
-                                        $q_total1 += $_line['mo_2_actual'];
-                                        $q_total1 += $_line['mo_3_actual'];
-                                        $q_total1 += $_line['mo_4_actual'];
-                                        $q_total1 += $_line['mo_5_actual'];
-                                        $q_total1 += $_line['mo_6_actual'];
-                                        $q_total1 += $_line['mo_7_actual'];
-                                        $q_total1 += $_line['mo_8_actual'];
-                                        $q_total1 += $_line['mo_9_actual'];
-                                        $q_total1 += $_line['mo_10_actual'];
-                                        $q_total1 += $_line['mo_11_actual'];
-                                        $q_total1 += $_line['mo_12_actual'];
-                                    }
-                                }
-                            }
+                            $q_total += $model->quarter_one_quantity;
+                            $q_total += $model->quarter_two_quantity;
+                            $q_total += $model->quarter_three_quantity;
+                            $q_total += $model->quarter_four_quantity;
+                            $q_total1 += $model->quarter_one_actual;
+                            $q_total1 += $model->quarter_two_actual;
+                            $q_total1 += $model->quarter_three_actual;
+                            $q_total1 += $model->quarter_four_actual;
                             if ($q_total > 0) {
                                 $result = round(($q_total1 / $q_total) * 100, 1);
                             }
@@ -533,8 +297,9 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'label' => 'Cum Actual',
                         'enableSorting' => true,
                         'filter' => false,
-                        'value' => function ($model) use($fiscal_year) {
-                            return !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
+                        'value' => function ($model) {
+                            $activity_model = \backend\models\AwpbActivity::findOne($model->activity_id);
+                            return !empty($activity_model) ? $activity_model->cumulative_actual : 0;
                         }
                     ],
                     [
@@ -545,7 +310,8 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'enableSorting' => true,
                         'filter' => false,
                         'value' => function ($model) {
-                            return !empty($model->programme_target) ? $model->programme_target : 0;
+                            $activity_model = \backend\models\AwpbActivity::findOne($model->activity_id);
+                            return !empty($activity_model) ? $activity_model->programme_target : 0;
                         }
                     ],
                     [
@@ -556,11 +322,14 @@ if (isset($_GET['AwbpActivitySearch'])) {
                         'enableSorting' => true,
                         'filter' => false,
                         'value' => function ($model) {
+                            $activity_model = \backend\models\AwpbActivity::findOne($model->activity_id);
                             $appr_percentage = 0;
-                            $appr = !empty($model->programme_target) ? $model->programme_target : 0;
-                            $cum_actual = !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
-                            if ($appr > 0) {
-                                $appr_percentage = round(($cum_actual / $appr) * 100, 2);
+                            if (!empty($activity_model)) {
+                                $appr = !empty($activity_model->programme_target) ? $activity_model->programme_target : 0;
+                                $cum_actual = !empty($activity_model->cumulative_actual) ? $activity_model->cumulative_actual : 0;
+                                if ($appr > 0) {
+                                    $appr_percentage = round(($cum_actual / $appr) * 100, 2);
+                                }
                             }
                             return $appr_percentage;
                         }

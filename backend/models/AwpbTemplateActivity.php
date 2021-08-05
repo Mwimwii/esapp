@@ -31,9 +31,11 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public $activities;
-    public $icons;
-    
+    //public $activities;
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+    const TYPE_MAIN = 0;
+    const TYPE_SUB = 1;
     public static function tableName()
     {
         return 'awpb_template_activity';
@@ -45,7 +47,9 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id', 'awpb_template_id'], 'required'],
+            [['activity_id','component_id',  'output_id', 'awpb_template_id'], 'required'],
+            [['activity_code'], 'string', 'max' => 10],
+            [['name'], 'string', 'max' => 40],
             [['activity_id', 'component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
@@ -71,6 +75,8 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'activity_id' => 'Activity ID',
+            'activity_code' => 'Activity Code',    
+            'name' => 'Name',
             'component_id' => 'Component ID',
             'outcome_id' => 'Outcome ID',
             'output_id' => 'Output ID',
@@ -94,7 +100,10 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbActivity::className(), ['id' => 'activity_id']);
     }
-
+    public function getOutput()
+    {
+        return $this->hasOne(AwpbOutput::className(), ['id' => 'output_id']);
+    }
     /**
      * Gets query for [[AwpbTemplate]].
      *
@@ -114,15 +123,69 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
     }
-    public static function getActivities($id) {
-        $data = self::find()
-        ->where(['id'=>$id])
-        ->all();
-        $list = ArrayHelper::map($data, 'id','name');
+    // public static function getActivities($id) {
+    //     $data = self::find()
+    //     ->where(['awpb_template_id'=>$id])
+ 
+    //     ->all();
+    //     $list = ArrayHelper::map($data, 'id','name');
+    //     return $list;
+    // }
+    // public static function getAllRights() {
+    //     $query = self::find()->all();
+    //     return $query;
+    // }
+ 
+    
+    public static function getActivities($template_id) {
+    
+
+
+        $activties = self::find()
+                ->select(['activity_id', 'name'])
+            
+                ->where(['awpb_template_id'=>$template_id])
+               // ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.activity_id'])
+                ->all();
+      // $list = ArrayHelper::map($activties, 'id', 'name');
+        return  $activties;
+
+
+
+    }
+    public static function getAwpbActivitiesList() {
+
+        $activties = self::find()
+                ->select(['activity_id as id', "CONCAT(.awpb_activity.activity_code,' ',awpb_activity.name) as name"])
+                ->joinWith('activity')
+                //->joinWith('component')
+               ->where(['access_level_district' => self::STATUS_ACTIVE])
+               // ->andWhere(['awpb_activity.type' => self::TYPE_SUB])
+                ->all();
+        $list = ArrayHelper::map($activties, 'id', 'name');
         return $list;
     }
-    public static function getAllRights() {
-        $query = self::find()->all();
-        return $query;
+
+
+    public static function getActivities1($template_id) {
+
+        
+        // $activties = self::find()
+        //         ->select(['awpb_template_activity.activity_id', "CONCAT(awpb_activity.activity_code,' ',awpb_activity.name) as name"])
+        //         ->joinWith('activity')  
+        //         ->where(['awpb_template_activity.awpb_template_id'=>$template_id])
+        //         ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.id'])
+        //         ->all();
+
+
+                
+              
+                    $query = self::find()
+                    ->where(['awpb_template_id'=>$template_id])
+                    ->all();
+                    return $query;
+                
+
     }
+
 }

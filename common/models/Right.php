@@ -142,11 +142,17 @@ class Right extends \yii\db\ActiveRecord {
             'View MGF Approvals' => "",
             'View MGF Proposals' => "",
             'View MGF Evaluations' => "",
+            'Remove project outreach records' => "Remove project outreach records",
+            'Submit project outreach records' => "Can submit project outreach quarterly records",
+            'Add staff hourly rates' => "Add staff hourly rates",
+            'View staff hourly rates' => "View staff hourly rates",
+            'Review timesheets' => "Review timesheets",
+            'Submit timesheets' => "Submit timesheets",
         ];
 
         $count = 0;
         foreach ($rights as $right => $definition) {
-            if (empty(Right::findOne(["right" => $right]))) {
+           // if (empty(Right::findOne(["right" => $right]))) {
                 $model = new Right();
                 $model->right = $right;
                 $model->definition = $definition;
@@ -154,7 +160,7 @@ class Right extends \yii\db\ActiveRecord {
                 if ($model->save()) {
                     $count++;
                 }
-            }
+            //}
         }
         echo "Inserted $count rights into permissions table";
     }

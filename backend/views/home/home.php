@@ -7,9 +7,57 @@ use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
 use kartik\form\ActiveForm;
 use kartik\depdrop\DepDrop;
+use dosamigos\google\maps\LatLng;
+use dosamigos\google\maps\overlays\InfoWindow;
+use dosamigos\google\maps\overlays\Marker;
+use dosamigos\google\maps\Map;
+use dosamigos\google\maps\overlays\Polygon;
 
 $this->title = 'Home';
 $this->params['breadcrumbs'][] = $this->title;
+
+
+$provinces_model = \backend\models\Provinces::find()
+        ->cache(Yii::$app->params['cache_duration'])
+        ->select(['id', 'name', 'ST_AsGeoJSON(polygon) as polygon'])
+        ->all();
+$counter = 0;
+$colors = ["#ed5151", "#149ece", "#a7c636", "#9e559c", "#fc921f", "purple", "#006D2C", ' #2a4858', '#fafa6e', 'lime'];
+
+//Default map settings
+$coord = new LatLng([
+    'lat' => -13.445529118205,
+    'lng' => 28.983639375
+        ]);
+
+$map = new Map(
+        [
+    'center' => $coord,
+    'zoom' => Yii::$app->params['polygon_zoom'],
+    'width' => '100%',
+    'height' => 500,
+    'scrollwheel' => false,
+    'draggable' => true,
+    'draggingCursor' => true,
+    'streetViewControl' => false,
+    'mapTypeControl' => false,
+    'styles' => new \yii\web\JsExpression("[{ featureType: 'poi',  elementType: 'labels', stylers: [{ visibility: 'off' }] } ]")
+        ]
+);
+$map2 = new Map(
+        [
+    'center' => $coord,
+    'zoom' => Yii::$app->params['polygon_zoom'],
+    'width' => '100%',
+    'height' => 500,
+    'scrollwheel' => false,
+    'draggable' => true,
+    'draggingCursor' => true,
+    'streetViewControl' => false,
+    'mapTypeControl' => false,
+    'styles' => new \yii\web\JsExpression("[{ featureType: 'poi',  elementType: 'labels', stylers: [{ visibility: 'off' }] } ]")
+        ]
+);
 ?>
 <!-- Info boxes -->
 <?php
@@ -94,26 +142,13 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
         </div>
         <?php
     } else {
-        $provinces = backend\models\Provinces::find()->count();
+        $provinces = backend\models\MeFaabsGroups::find()->count();
         $Districts = backend\models\Districts::find()->count();
         $Camps = backend\models\Camps::find()->count();
         $markets = \backend\models\Markets::find()->count();
         ?>
         <div class="row">
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="info-box">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-location-arrow"></i></span>
 
-                    <div class="info-box-content">
-                        <span class="info-box-text">Provinces</span>
-                        <span class="info-box-number">
-                            <?= $provinces ?>
-                        </span>
-                    </div>
-                    <!-- /.info-box-content -->
-                </div>
-                <!-- /.info-box -->
-            </div>
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
@@ -128,7 +163,20 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                 <!-- /.info-box -->
             </div>
             <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-location-arrow"></i></span>
 
+                    <div class="info-box-content">
+                        <span class="info-box-text">FaaBS Groups</span>
+                        <span class="info-box-number">
+                            <?= $provinces ?>
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
             <!-- fix for small devices only -->
             <div class="clearfix hidden-md-up"></div>
 
@@ -309,7 +357,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     <li>
                         <?php
                         $awpb_template = \backend\models\AwpbTemplate::findOne([
-                                    'status' => \backend\models\AwpbTemplate::STATUS_ACTIVE,
+                                    'status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED,
                         ]);
                         $fiscal_y = !empty($awpb_template->fiscal_year) ? $awpb_template->fiscal_year : "";
                         echo Html::a(
@@ -578,15 +626,367 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             <hr class="dotted short">
             <?php
         }
-
-
         if ($count === 0) {
             echo "<p>You have no tasks!</p>";
         }
         ?>
     </div>
 </div>
+<div class="card card-success card-outline card-tabs">
+    <div class="card-header">
+        <h3 class="card-title">
+            Camp/FaaBS locations
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="card-header p-0 pt-1 border-bottom-0">
+            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill" href="#custom-tabs-three-home" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">
+                        Camps
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-three-profile-tab" data-toggle="pill" href="#custom-tabs-three-profile" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">
+                        Farming as a Business Schools
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content" id="custom-tabs-three-tabContent">
+            <div class="tab-pane fade show active" id="custom-tabs-three-home" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+                <?php
+                if (!empty(Yii::$app->user->identity->district_id)) {
+                    $dataProviderCamps = \backend\models\Camps::find()
+                            ->cache(Yii::$app->params['cache_duration'])
+                            ->where(['district_id' => Yii::$app->user->identity->district_id])
+                            ->all();
+                    $district_model = \backend\models\Districts::findOne(Yii::$app->user->identity->district_id);
+                    $province_id = !empty($district_model) ? $district_model->province_id : "";
 
+                    $prov_model = \backend\models\Provinces::find()->cache(Yii::$app->params['cache_duration'])
+                                    ->select(['id', 'name', 'ST_AsGeoJSON(polygon) as polygon'])
+                                    ->where(["id" => $province_id])->one();
+                    if (!empty($prov_model)) {
+                        $coords = \backend\models\Provinces::getCoordinates(json_decode($prov_model->polygon, true)['coordinates']);
+                        $coord = json_decode($prov_model->polygon, true)['coordinates'][0][0];
+                        $center = round(count($coord) / 2);
+                        $center_coords = $coord[$center];
+                        if (!empty($center_coords)) {
+                            $coord = new LatLng([
+                                'lat' => $center_coords[1],
+                                'lng' => $center_coords[0]
+                            ]);
+                        } else {
+                            $coord = new LatLng([
+                                'lat' => Yii::$app->params['center_lat'],
+                                'lng' => Yii::$app->params['center_lng']
+                            ]);
+                        }
+                        $map = new Map([
+                            'center' => $coord,
+                            'scrollwheel' => false,
+                            'draggable' => true,
+                            'draggingCursor' => true,
+                            'streetViewControl' => false,
+                            'mapTypeControl' => false,
+                            'zoom' => 8,
+                            'width' => '100%',
+                            'height' => 500,
+                            'styles' => new \yii\web\JsExpression("[{ featureType: 'poi',  elementType: 'labels', stylers: [{ visibility: 'off' }] } ]")
+                        ]);
+
+                        foreach ($provinces_model as $model) {
+                            if (!empty($model->polygon)) {
+                                //We pick a color for each province polygon
+                                $stroke_color = $colors[$counter];
+                                $counter++;
+
+                                $coords = \backend\models\Provinces::getCoordinates(json_decode($model->polygon, true)['coordinates']);
+
+                                $polygon = new Polygon([
+                                    'paths' => $coords,
+                                    'strokeColor' => $stroke_color,
+                                    'strokeOpacity' => 0.8,
+                                    'strokeWeight' => 2,
+                                    'fillColor' => $stroke_color,
+                                    'fillOpacity' => 0.35,
+                                ]);
+
+                                $map->addOverlay($polygon);
+
+                                foreach ($dataProviderCamps as $_model) {
+                                    //var_dump($_model);
+                                    // var_dump($_model->name);
+                                    $faabs = backend\models\MeFaabsGroups::find()->where(['camp_id' => $_model->id])->count();
+                                    if (!empty($_model->latitude) && !empty($_model->longitude)) {
+                                        $coord = new LatLng(['lat' => $_model->latitude, 'lng' => $_model->longitude]);
+                                        $marker = new Marker([
+                                            'position' => $coord,
+                                            'title' => $_model->name,
+                                                //'icon' => \yii\helpers\Url::to('@web/img/map_icon.png')
+                                        ]);
+
+                                        $type_str = "";
+                                        $type_str .= "<b>Province: </b>" . \backend\models\Provinces::findOne(backend\models\Districts::findOne($_model->district_id)->province_id)->name . "<br>";
+                                        $type_str .= "<b>District: </b>" . backend\models\Districts::findOne($_model->district_id)->name . "<br>";
+                                        $type_str .= "<b>Number of FaaBS: </b>" . $faabs . "<br>";
+                                        //$type_str .= Html::a('View more details', ['/camps/view', 'id' => $_model->id], ["class" => "text-sm"]);
+                                        $marker->attachInfoWindow(
+                                                new InfoWindow([
+                                                    'content' => '<p><strong><span class="text-center">' . $_model->name . '</span></strong><hr>'
+                                                    . $type_str . '</p>'])
+                                        );
+
+                                        $map->addOverlay($marker);
+                                    }
+                                }
+                            }
+                        }
+                        echo $map->display();
+                    }
+                } else {
+                    if (!empty($provinces_model)) {
+                        foreach ($provinces_model as $model) {
+                            if (!empty($model->polygon)) {
+                                //We pick a color for each province polygon
+                                $stroke_color = $colors[$counter];
+                                $counter++;
+
+                                $coords = \backend\models\Provinces::getCoordinates(json_decode($model->polygon, true)['coordinates']);
+
+                                $polygon = new Polygon([
+                                    'paths' => $coords,
+                                    'strokeColor' => $stroke_color,
+                                    'strokeOpacity' => 0.8,
+                                    'strokeWeight' => 2,
+                                    'fillColor' => $stroke_color,
+                                    'fillOpacity' => 0.35,
+                                ]);
+                                $map->addOverlay($polygon);
+                                $dataProviderCamps = \backend\models\Camps::find()
+                                        ->cache(Yii::$app->params['cache_duration'])
+                                        // ->where(['district_id' => Yii::$app->user->identity->district_id])
+                                        ->all();
+
+                                foreach ($dataProviderCamps as $_model) {
+                                    //var_dump($_model);
+                                    // var_dump($_model->name);
+                                    $faabs = backend\models\MeFaabsGroups::find()->where(['camp_id' => $_model->id])->count();
+                                    if (!empty($_model->latitude) && !empty($_model->longitude)) {
+                                        $coord = new LatLng(['lat' => $_model->latitude, 'lng' => $_model->longitude]);
+                                        $marker = new Marker([
+                                            'position' => $coord,
+                                            'title' => $_model->name,
+                                                //'icon' => \yii\helpers\Url::to('@web/img/map_icon.png')
+                                        ]);
+
+                                        $type_str = "";
+                                        $type_str .= "<b>Province: </b>" . \backend\models\Provinces::findOne(backend\models\Districts::findOne($_model->district_id)->province_id)->name . "<br>";
+                                        $type_str .= "<b>District: </b>" . backend\models\Districts::findOne($_model->district_id)->name . "<br>";
+                                        $type_str .= "<b>Number of FaaBS: </b>" . $faabs . "<br>";
+                                        $type_str .= Html::a('View more details', ['/camps/view', 'id' => $_model->id], ["class" => "text-sm"]);
+                                        $marker->attachInfoWindow(
+                                                new InfoWindow([
+                                                    'content' => '<p><strong><span class="text-center">' . $_model->name . '</span></strong><hr>'
+                                                    . $type_str . '</p>'])
+                                        );
+
+                                        $map->addOverlay($marker);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    echo $map->display();
+                }
+                ?>
+            </div>
+            <div class="tab-pane fade" id="custom-tabs-three-profile" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
+                <?php
+                $counter1 = 0;
+                if (!empty(Yii::$app->user->identity->district_id)) {
+                    $dataProviderCamps = \backend\models\Camps::find()
+                            ->cache(Yii::$app->params['cache_duration'])
+                            ->where(['district_id' => Yii::$app->user->identity->district_id])
+                            ->all();
+                    $district_model = \backend\models\Districts::findOne(Yii::$app->user->identity->district_id);
+                    $province_id = !empty($district_model) ? $district_model->province_id : "";
+
+                    $prov_model = \backend\models\Provinces::find()->cache(Yii::$app->params['cache_duration'])
+                                    ->select(['id', 'name', 'ST_AsGeoJSON(polygon) as polygon'])
+                                    ->where(["id" => $province_id])->one();
+                    if (!empty($prov_model)) {
+                        $coords = \backend\models\Provinces::getCoordinates(json_decode($prov_model->polygon, true)['coordinates']);
+                        $coord = json_decode($prov_model->polygon, true)['coordinates'][0][0];
+                        $center = round(count($coord) / 2);
+                        $center_coords = $coord[$center];
+                        if (!empty($center_coords)) {
+                            $coord = new LatLng([
+                                'lat' => $center_coords[1],
+                                'lng' => $center_coords[0]
+                            ]);
+                        } else {
+                            $coord = new LatLng([
+                                'lat' => Yii::$app->params['center_lat'],
+                                'lng' => Yii::$app->params['center_lng']
+                            ]);
+                        }
+                        $map2 = new Map([
+                            'center' => $coord,
+                            'scrollwheel' => false,
+                            'draggable' => true,
+                            'draggingCursor' => true,
+                            'streetViewControl' => false,
+                            'mapTypeControl' => false,
+                            'zoom' => 8,
+                            'width' => '100%',
+                            'height' => 500,
+                            'styles' => new \yii\web\JsExpression("[{ featureType: 'poi',  elementType: 'labels', stylers: [{ visibility: 'off' }] } ]")
+                        ]);
+
+                        $counter = 0;
+                        foreach ($provinces_model as $model) {
+                            if (!empty($model->polygon)) {
+                                //We pick a color for each province polygon
+                                $stroke_color = $colors[$counter];
+                                $counter++;
+
+                                $coords = \backend\models\Provinces::getCoordinates(json_decode($model->polygon, true)['coordinates']);
+
+                                $polygon = new Polygon([
+                                    'paths' => $coords,
+                                    'strokeColor' => $stroke_color,
+                                    'strokeOpacity' => 0.8,
+                                    'strokeWeight' => 2,
+                                    'fillColor' => $stroke_color,
+                                    'fillOpacity' => 0.35,
+                                ]);
+
+                                $map2->addOverlay($polygon);
+                                //We create an array to be used to get the faabs in the province
+                                $camp_ids = [];
+                                if (!empty($dataProviderCamps)) {
+                                    foreach ($dataProviderCamps as $id) {
+                                        array_push($camp_ids, $id['id']);
+                                    }
+                                }
+                                //We now get the faabs in the province
+                                $faabs_model = backend\models\MeFaabsGroups::find()
+                                        ->cache(Yii::$app->params['cache_duration'])
+                                        ->where(['IN', 'camp_id', $camp_ids])
+                                        ->all();
+
+                                if (!empty($faabs_model)) {
+                                    foreach ($faabs_model as $_model) {
+                                        //var_dump($_model);
+                                        // var_dump($_model->name);
+                                        $faabs_farmers = backend\models\MeFaabsCategoryAFarmers::find()
+                                                ->where(['faabs_group_id' => $_model->id])
+                                                ->count();
+                                        if (!empty($_model->latitude) && !empty($_model->longitude)) {
+                                            $coord = new LatLng(['lat' => $_model->latitude, 'lng' => $_model->longitude]);
+                                            $marker = new Marker([
+                                                'position' => $coord,
+                                                'title' => $_model->name,
+                                                    //'icon' => \yii\helpers\Url::to('@web/img/map_icon.png')
+                                            ]);
+
+                                            $type_str = "";
+                                            $type_str .= "<b>Province: </b>" . \backend\models\Provinces::findOne(backend\models\Districts::findOne(Yii::$app->user->identity->district_id)->province_id)->name . "<br>";
+                                            $type_str .= "<b>District: </b>" . backend\models\Districts::findOne(Yii::$app->user->identity->district_id)->name . "<br>";
+                                            $type_str .= "<b>Camp: </b>" . backend\models\Camps::findOne($_model->camp_id)->name . "<br>";
+                                            $type_str .= "<b>Total farmers: </b>" . $faabs_farmers . "<br>";
+                                            //$type_str .= Html::a('View more details', ['/camps/view', 'id' => $_model->id], ["class" => "text-sm"]);
+                                            $marker->attachInfoWindow(
+                                                    new InfoWindow([
+                                                        'content' => '<p><strong><span class="text-center">' . $_model->name . '</span></strong><hr>'
+                                                        . $type_str . '</p>'])
+                                            );
+
+                                            $map2->addOverlay($marker);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        echo $map2->display();
+                    }
+                } else {
+                    if (!empty($provinces_model)) {
+                        foreach ($provinces_model as $model) {
+                            if (!empty($model->polygon)) {
+                                //We pick a color for each province polygon
+                                $stroke_color = $colors[$counter1];
+                                $counter1++;
+
+                                $coords = \backend\models\Provinces::getCoordinates(json_decode($model->polygon, true)['coordinates']);
+
+                                $polygon = new Polygon([
+                                    'paths' => $coords,
+                                    'strokeColor' => $stroke_color,
+                                    'strokeOpacity' => 0.8,
+                                    'strokeWeight' => 2,
+                                    'fillColor' => $stroke_color,
+                                    'fillOpacity' => 0.35,
+                                ]);
+                                $map2->addOverlay($polygon);
+                                $faabs_model = backend\models\MeFaabsGroups::find()
+                                        ->cache(Yii::$app->params['cache_duration'])
+                                        // ->where(['IN', 'camp_id', $camp_ids])
+                                        ->all();
+
+                                if (!empty($faabs_model)) {
+                                    foreach ($faabs_model as $_model) {
+                                        //var_dump($_model);
+                                        // var_dump($_model->name);
+                                        $faabs_farmers = backend\models\MeFaabsCategoryAFarmers::find()
+                                                ->where(['faabs_group_id' => $_model->id])
+                                                ->count();
+                                        $camp_model = backend\models\Camps::findOne($_model->camp_id);
+                                        $district_model = !empty($camp_model) ? \backend\models\Districts::findOne($camp_model->district_id) : "";
+                                        $province_model = !empty($district_model) ? \backend\models\Provinces::findOne($district_model->province_id) : "";
+
+                                        $district = !empty($district_model) ? $district_model->name : "";
+                                        $camp_name = !empty($camp_model) ? $camp_model->name : "";
+                                        $_province = !empty($province_model) ? $province_model->name : "";
+
+                                        if (!empty($_model->latitude) && !empty($_model->longitude)) {
+                                            $coord = new LatLng(['lat' => $_model->latitude, 'lng' => $_model->longitude]);
+                                            $marker = new Marker([
+                                                'position' => $coord,
+                                                'title' => $_model->name,
+                                                    //'icon' => \yii\helpers\Url::to('@web/img/map_icon.png')
+                                            ]);
+
+                                            $type_str = "";
+                                            $type_str .= "<b>Province: </b>" . $_province . "<br>";
+                                            $type_str .= "<b>District: </b>" . $district . "<br>";
+                                            $type_str .= "<b>Camp: </b>" . $camp_name . "<br>";
+                                            $type_str .= "<b>Total farmers: </b>" . $faabs_farmers . "<br>";
+                                            $type_str .= Html::a('View more details', ['/faabs-groups/view', 'id' => $_model->id], ["class" => "text-sm"]);
+                                            $marker->attachInfoWindow(
+                                                    new InfoWindow([
+                                                        'content' => '<p><strong><span class="text-center">' . $_model->name . '</span></strong><hr>'
+                                                        . $type_str . '</p>'])
+                                            );
+
+                                            $map2->addOverlay($marker);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    echo $map2->display();
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="faabsModal">
     <div class="modal-dialog modal-lg">
@@ -603,7 +1003,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             <?php
             $form = ActiveForm::begin([
                         'action' => 'faabs-attendance-sheet',
-                             // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
+                            // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
                     ])
             ?>
             <div class="modal-body">
@@ -639,7 +1039,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                 ]);
 
 
-                //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
+//echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
 
                 echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
                 ?>

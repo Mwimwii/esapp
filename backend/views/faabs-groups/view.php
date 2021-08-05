@@ -6,6 +6,10 @@ use backend\models\User;
 use kartik\grid\GridView;
 use kartik\form\ActiveForm;
 use ivankff\yii2ModalAjax\ModalAjax;
+use dosamigos\google\maps\LatLng;
+use dosamigos\google\maps\overlays\InfoWindow;
+use dosamigos\google\maps\overlays\Marker;
+use dosamigos\google\maps\Map;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\MeFaabsTrainingTopics */
@@ -30,6 +34,7 @@ $district_id = \backend\models\Camps::findOne($model->camp_id)->district_id;
 $province_id = backend\models\Districts::findOne($district_id)->province_id;
 $province = backend\models\Provinces::findOne($province_id)->name;
 $district = backend\models\Districts::findOne($district_id)->name;
+$faabs = backend\models\MeFaabsGroups::find()->where(['camp_id' => $model->id])->count();
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
@@ -37,6 +42,11 @@ $district = backend\models\Districts::findOne($district_id)->name;
         <p>
             <?php
             if (User::userIsAllowedTo('Manage faabs groups')) {
+                echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
+                    'title' => 'Update FaaBS group',
+                    'data-toggle' => 'tooltip',
+                    'data-placement' => 'top',
+                ]);
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 echo Html::a('<i class="fas fa-trash fa-2x"></i>', ['delete', 'id' => $model->id], [
                     'title' => 'Remove FaaBS group',
@@ -149,6 +159,11 @@ $district = backend\models\Districts::findOne($district_id)->name;
                         <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill" href="#custom-tabs-three-home" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">
+                                    FaaBS location
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-tabs-three-topics-tab" data-toggle="pill" href="#custom-tabs-three-topics" role="tab" aria-controls="custom-tabs-three-topics" aria-selected="false">
                                     FaaBS training topics
                                 </a>
                             </li>
@@ -162,6 +177,50 @@ $district = backend\models\Districts::findOne($district_id)->name;
                     <div class="card-body">
                         <div class="tab-content" id="custom-tabs-three-tabContent">
                             <div class="tab-pane fade show active" id="custom-tabs-three-home" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+
+                                <?php
+                                $coords = [];
+                                $center_coords = [];
+                                if (empty($model->latitude) && empty($model->longitude)) {
+                                    echo "<div class='alert alert-warning'>There are no location coordinates for camp:" . $model->name . "</div>";
+                                } else {
+                                    $coord = new LatLng(['lat' => $model->latitude, 'lng' => $model->longitude]);
+                                    //$center = round(count($coord) / 2);
+                                    $center_coords = $coord;
+                                }
+                                if (empty($coord)) {
+                                    $coord = new LatLng([
+                                        'lat' => Yii::$app->params['center_lat'],
+                                        'lng' => Yii::$app->params['center_lng']
+                                    ]);
+                                }
+                                $map = new Map([
+                                    'center' => $coord,
+                                    'streetViewControl' => false,
+                                    'mapTypeControl' => true,
+                                    'zoom' => 10,
+                                    'width' => '100%',
+                                    'height' => 500,
+                                ]);
+                                if (!empty($model->latitude) && !empty($model->longitude)) {
+                                    $marker = new Marker([
+                                        'position' => $coord,
+                                        'title' => $model->name,
+                                            // 'icon' => \yii\helpers\Url::to('@web/img/map_icon.png')
+                                    ]);
+                                    $type_str = "<b>Total number of farmers: </b>" . $faabs_farmers . "<br>";
+                                    $marker->attachInfoWindow(
+                                            new InfoWindow([
+                                                'content' => '<p><b><span class="text-center">' . $model->name . '</span></b><hr>'
+                                                . $type_str . '</p>'])
+                                    );
+
+                                    $map->addOverlay($marker);
+                                }
+                                echo $map->display();
+                                ?>
+                            </div>
+                            <div class="tab-pane fade show" id="custom-tabs-three-topics" role="tabpanel" aria-labelledby="custom-tabs-three-topics-tab">
                                 <h5>Instructions</h5>
                                 <ol>
                                     <li>Below are the topics a farmer in this group will have to attend to graduate</li>
@@ -419,7 +478,7 @@ $district = backend\models\Districts::findOne($district_id)->name;
             </div>
             <div class="modal-footer justify-content-between">
                 <?= Html::submitButton('Save topics', ['class' => 'btn btn-success btn-xs']) ?>
-                <?php ActiveForm::end() ?>
+<?php ActiveForm::end() ?>
             </div>
         </div>
         <!-- /.modal-content -->

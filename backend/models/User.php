@@ -367,7 +367,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      */
     public static function seedUser() {
         //We check if seed has run already
-        if (empty(Role::findOne(["role" => "Admin"]))) {
+       // if (empty(Role::findOne(["role" => "Admin"]))) {
             //First we create a role
             $role = new Role();
             $role->role = "Admin";
@@ -399,9 +399,9 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
                 }
                 echo "Error occured while running user seeder. Error:" . $message;
             }
-        } else {
+       /* } else {
             echo "User seed has already been run!";
-        }
+	}*/
     }
 
     public static function createTempAdminUser($id, $count) {

@@ -25,10 +25,10 @@ class CampsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete','camp','district'],
+                'only' => ['index', 'create', 'delete', 'camp', 'district', 'update','view'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete','camp','district'],
+                        'actions' => ['index', 'create', 'delete', 'camp', 'district','update','view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -116,6 +116,16 @@ class CampsController extends Controller {
             return $this->redirect(['home/home']);
         }
     }
+    public function actionView($id) {
+        if (User::userIsAllowedTo('Manage camps')) {
+            return $this->render('view', [
+                        'model' => $this->findModel($id),
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
 
     /**
      * Creates a new Province model.
@@ -131,6 +141,12 @@ class CampsController extends Controller {
             }
 
             if ($model->load(Yii::$app->request->post())) {
+                //get latitude and longitude and create a geom array
+                if (!empty($model->coordinates)) {
+                    $arr = explode(",", $model->coordinates);
+                    $model->latitude = $arr[0];
+                    $model->longitude = $arr[1];
+                }
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
                 if ($model->save()) {
@@ -144,8 +160,50 @@ class CampsController extends Controller {
                 } else {
                     Yii::$app->session->setFlash('error', 'Error occured while adding camp ' . $model->name);
                 }
-                return $this->redirect(['index']);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
+            return $this->render('create', [
+                        'model' => $model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionUpdate($id) {
+        if (User::userIsAllowedTo('Manage camps')) {
+            $model = $this->findModel($id);
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                //get latitude and longitude and create a geom array
+                if (!empty($model->coordinates)) {
+                    $arr = explode(",", $model->coordinates);
+                    $model->latitude = $arr[0];
+                    $model->longitude = $arr[1];
+                }
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Updated camp " . $model->name;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Camp ' . $model->name . ' was successfully updated.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occured while updating camp ' . $model->name);
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            return $this->render('update', [
+                        'model' => $model,
+            ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);

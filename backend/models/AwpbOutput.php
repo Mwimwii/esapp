@@ -2,16 +2,16 @@
 
 namespace backend\models;
 
-use Yii;
-use yii\helpers\ArrayHelper;
-
+use Yii;use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "awpb_output".
  *
  * @property int $id
- * @property int $outcome_id
+ * @property string $code
+ * @property int $component_id
+ * @property int|null $outcome_id
  * @property string $name
- * @property string $output_description
+ * @property string $description
  * @property int $created_at
  * @property int $updated_at
  * @property int|null $created_by
@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property AwpbActivity[] $awpbActivities
  * @property AwpbOutcome $outcome
+ * @property AwpbComponent $component
  */
 class AwpbOutput extends \yii\db\ActiveRecord
 {
@@ -36,11 +37,14 @@ class AwpbOutput extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['outcome_id', 'name', 'output_description', 'created_at', 'updated_at'], 'required'],
-            [['component_id','outcome_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['code', 'component_id', 'name', 'description'], 'required'],
+            [['component_id', 'outcome_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['code'], 'string', 'max' => 10],
             [['name'], 'string', 'max' => 40],
-            [['output_description'], 'string', 'max' => 255],
+            [['description'], 'string', 'max' => 255],
+            [['code'], 'unique'],
             [['outcome_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutcome::className(), 'targetAttribute' => ['outcome_id' => 'id']],
+            [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
         ];
     }
 
@@ -51,10 +55,11 @@ class AwpbOutput extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'component_id'=>'Component',
-            'outcome_id'=>'Outcome',
+            'code' => 'Code',
+            'component_id' => 'Component',
+            'outcome_id' => 'Outcome',
             'name' => 'Name',
-            'output_description' => 'Output Description',
+            'description' => 'Description',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -81,6 +86,16 @@ class AwpbOutput extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbOutcome::className(), ['id' => 'outcome_id']);
     }
+
+    /**
+     * Gets query for [[Component]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComponent()
+    {
+        return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
+    }
     public static function getOutputs() {
         $data = self::find()->orderBy(['name' => SORT_ASC])
         //->where(['id'=>$id])
@@ -88,4 +103,5 @@ class AwpbOutput extends \yii\db\ActiveRecord
         $list = ArrayHelper::map($data, 'id','name');
         return $list;
     }
+
 }

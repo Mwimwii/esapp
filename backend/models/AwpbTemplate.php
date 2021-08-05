@@ -3,13 +3,8 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use backend\models\AwpbComponent;
-use kartik\helpers\Html;
-use yii\web\IdentityInterface;
-use common\models\Role;
 
 /**
  * This is the model class for table "awpb_template".
@@ -19,69 +14,62 @@ use common\models\Role;
  * @property string $budget_theme
  * @property string $comment
  * @property string|null $guideline_file
- * @property int $status 0 Closed, 1 open, 2 Blockedsed
+ * @property int $status 0 Closed, 1 open, 2 Blocked, 4 current
+ * @property int|null $status_activities
+ * @property int|null $status_users
+ * @property string $preparation_deadline_first_draft
+ * @property string $submission_dealine
+ * @property string $consolidation_deadline
+ * @property string $review_deadline
+ * @property string $preparation_deadline_second_draft
+ * @property string $review_deadline_pco
+ * @property string $finalisation_deadline_pco
+ * @property string $submission_deadline_moa_mfl
+ * @property string $approval_deadline_jpsc
+ * @property string $incorpation_deadline_pco_moa_mfl
+ * @property string $submission_dealine_ifad
  * @property int $created_at
  * @property int $updated_at
  * @property int|null $created_by
  * @property int|null $updated_by
+ *
+ * @property AwpbActivity[] $awpbActivities
+ * @property AwpbActivityLine[] $awpbActivityLines
+ * @property AwpbTemplateActivity[] $awpbTemplateActivities
  */
-class AwpbTemplate extends \yii\db\ActiveRecord {
-
-    const STATUS_INACTIVE = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_DISTRICT = 0;
-    const STATUS_PROVINCIAL = 1;
-    const STATUS_PROGRAMME = 2;
-    const STATUS_MINISTRY = 3;
-    const STATUS_APROVED = 4;
-    const STATUS_OLD = 5;
-
+class AwpbTemplate extends \yii\db\ActiveRecord
+{
+   
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_CURRENT_BUDGET = 2;
+    const STATUS_OLD_BUDGET = 3;
     public $activities;
-    public $icons;
-
+    public $users;
     /**
      * {@inheritdoc}
      */
-    //public $guideline_doc;
-    public static function tableName() {
+    public static function tableName()
+    {
         return 'awpb_template';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['fiscal_year', 'budget_theme', 'comment', 'status'], 'required'],
-            [['fiscal_year', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['fiscal_year', 'budget_theme', 'comment', 'status', 'preparation_deadline_first_draft', 'submission_deadline', 'consolidation_deadline', 'review_deadline', 'preparation_deadline_second_draft', 'review_deadline_pco', 'finalisation_deadline_pco', 'submission_deadline_moa_mfl', 'approval_deadline_jpsc', 'incorpation_deadline_pco_moa_mfl', 'submission_deadline_ifad','comment_deadline_ifad','distribution_deadline'], 'required'],
+            [['fiscal_year', 'status', 'status_activities', 'status_users', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['budget_theme', 'comment'], 'string'],
-            // [['guideline_file'], 'string', 'max' => 255],
-            [['guideline_file'], 'file', 'extensions' => 'pdf'],
+            [['preparation_deadline_first_draft', 'submission_deadline', 'consolidation_deadline', 'review_deadline', 'preparation_deadline_second_draft', 'review_deadline_pco', 'finalisation_deadline_pco', 'submission_deadline_moa_mfl', 'approval_deadline_jpsc', 'incorpation_deadline_pco_moa_mfl', 'submission_deadline_ifad','comment_deadline_ifad','distribution_deadline'], 'safe'],
+            [['guideline_file'], 'string', 'max' => 255],
             [['fiscal_year'], 'unique'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels() {
-        return [
-            'id' => 'ID',
-            'fiscal_year' => 'Fiscal Year',
-            'budget_theme' => 'Budget Theme',
-            'comment' => 'Comment',
-            'guideline_file' => 'Guidelines',
-            'activities' => 'Activities',
-            //'guideline_doc' => 'Guideline File',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'created_by' => 'Created By',
-            'updated_by' => 'Updated By',
-        ];
-    }
-
-    public function behaviors() {
+	public function behaviors() {
         return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
@@ -93,27 +81,84 @@ class AwpbTemplate extends \yii\db\ActiveRecord {
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'fiscal_year' => 'Fiscal Year',
+            'budget_theme' => 'Budget Theme',
+            'comment' => 'Comment',
+            'guideline_file' => 'Guideline File',
+            'status' => 'Status',
+            'status_activities' => 'Status Activities',
+            'status_users' => 'Status Users',
+            'preparation_deadline_first_draft' => 'Deadline for preparing the AWPB by participating institution',
+            'submission_deadline' => 'Deadline for submitting the AWPB proposals to PCO',
+            'consolidation_deadline' => 'Deadline for consolidating AWPB',
+            'review_deadline' => 'Deadline for reviewing the draft AWPB by participating institution',
+            'preparation_deadline_second_draft' => 'Deadline for preparing the second AWPB Draft by participating institution',
+            'review_deadline_pco' => 'Deadline for review the AWPB by PCO',
+            'finalisation_deadline_pco' => 'Deadline for AWPB finalisation by PCO',
+            'submission_deadline_moa_mfl' => 'Deadline for submitting AWPB to MoA/MFL',
+            'approval_deadline_jpsc' => 'Deadline for approving AWPB by JPSC',
+            'incorpation_deadline_pco_moa_mfl' => 'Deadline for incorpating PCO Budget into MoA/MFL budget',
+            'submission_deadline_ifad' => 'Deadline for submitting AWPB to IFAD',
+            'comment_deadline_ifad'=>'Deadline for receiving AWPB comments from IFAD',
+            'distribution_deadline'=>'Deadline for distributing the AWPB to institutions',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+            'created_by' => 'Created By',
+            'updated_by' => 'Updated By',
+        ];
+    }
+
+    /**
+     * Gets query for [[AwpbActivities]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbActivities()
+    {
+        return $this->hasMany(AwpbActivity::className(), ['awpb_template_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbActivityLines]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbActivityLines()
+    {
+        return $this->hasMany(AwpbActivityLine::className(), ['awpb_template_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbTemplateActivities]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbTemplateActivities()
+    {
+        return $this->hasMany(AwpbTemplateActivity::className(), ['awpb_template_id' => 'id']);
+    }
+    public function getAwpbTemplateUsers()
+    {
+        return $this->hasMany(AwpbTemplateUsers::className(), ['awpb_template_id' => 'id']);
+    }
+    public static function getId() {
+        //$template = self::find()->where(['<>','status',AwpbTemplate::STATUS_OLD_BUDGET])->one();
+        $template = self::find()->where(['status'=>self::STATUS_PUBLISHED])->one();
+             
+        return  $template->id;
+    }
     public static function getAwpbTemplates() {
         $data = self::find()->orderBy(['fiscal_year' => SORT_ASC])
-                ->where(['status' => self::STATUS_ACTIVE])
-                ->all();
+        ->where(['status'=>self::STATUS_PUBLISHED])
+        ->one();
         $list = ArrayHelper::map($data, 'id', 'fiscal_year');
         return $list;
     }
-
-    public static function getId() {
-        $template = self::find()->where(['<>', 'status', AwpbTemplate::STATUS_OLD])->one();
-
-        return !empty($template->id) ? $template->id : "";
-    }
-
-    /* public function upload()
-      {
-      if ($this->validate()) {
-      $this->guideline_doc->saveAs('uploads/' . $this->guideline_doc->baseName . '.' . $this->guideline_doc->extension);
-      return true;
-      } else {
-      return false;
-      }
-      } */
 }

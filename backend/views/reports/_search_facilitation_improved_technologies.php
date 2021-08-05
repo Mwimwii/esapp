@@ -40,7 +40,7 @@ $form = ActiveForm::begin([
                 $form->field($model, 'province_id')
                 ->dropDownList(
                         \backend\models\Provinces::getProvinceList(), 
-                        ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select a province', 
+                        ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Select a province', 
                             'required' => true]
                 )->label("Province");
         ?>

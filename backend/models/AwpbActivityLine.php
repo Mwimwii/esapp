@@ -67,13 +67,15 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
  public function rules()
     {
         return [
-            [['activity_id','awpb_template_id', 'name', 'unit_cost', 'total_quantity', 'total_amount', 'status'], 'required'],
-            [['activity_id','awpb_template_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['component_id','output_id','activity_id','indicator_id', 'awpb_template_id', 'name', 'unit_cost', 'total_quantity', 'total_amount', 'status'], 'required'],
+            [['component_id','output_id','activity_id','indicator_id','awpb_template_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity','mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount'], 'number'],
             [['name'], 'string', 'max' => 255],
             ['unit_cost', 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number'],
             ['total_amount', 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number'],
-       
+            [['output_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutput::className(), 'targetAttribute' => ['output_id' => 'id']],
+            [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
+            [['indicator_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbIndicator::className(), 'targetAttribute' => ['indicator_id' => 'id']],   
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
         ];
@@ -89,7 +91,7 @@ class AwpbActivityLine extends \yii\db\ActiveRecord
             'id' => 'ID',
             'activity_id' => 'Activity ID',
             'awpb_template_id' => 'AWPB Template',
-            'name' => 'Commodity description',
+            'name' => 'Input description',
             'unit_cost' => 'Unit Cost',
             'mo_1' => 'Jan',
             'mo_2' => 'Feb',
