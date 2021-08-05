@@ -3,6 +3,10 @@
 namespace backend\models;
 
 use Yii;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "awpb_input".
@@ -94,7 +98,18 @@ class AwpbActualInput extends \yii\db\ActiveRecord {
     public static function tableName() {
         return 'awpb_actual_input';
     }
-
+    
+//    public function behaviors() {
+//        return [
+//            'timestamp' => [
+//                'class' => 'yii\behaviors\TimestampBehavior',
+//                'attributes' => [
+//                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+//                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+//                ],
+//            ],
+//        ];
+//    }
     /**
      * {@inheritdoc}
      */

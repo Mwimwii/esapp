@@ -282,7 +282,7 @@ $gridColumns = [
                         },
             
 'decline' => function ($url, $model) use($user,$template_model){
-                             if ((User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->district_id != ''))||
+                             if ((User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id != ''))||
                                      (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == ''))||
                                      (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')))
                              {

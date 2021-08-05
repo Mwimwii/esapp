@@ -22,7 +22,7 @@ use backend\models\AwpbTemplate;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplate */
 
-$this->title = 'AWPB : ' . $model->name;
+$this->title = 'AWPB Activity : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->id;
 \yii\web\YiiAsset::register($this);
@@ -89,12 +89,12 @@ if (!empty($awpb_province)) {
 
 <?php
 
-
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa','status'=>$status,'district_id' =>  $model->district_id,'province_id'=>$model->province_id,'awpb_template_id'=>$model->awpb_template_id,'output_id' => $model->output_id,'activity_id' => $model->activity_id], [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
+//
+//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa','status'=>$status,'district_id' =>  $model->district_id,'province_id'=>$model->province_id,'awpb_template_id'=>$model->awpb_template_id,'output_id' => $model->output_id,'activity_id' => $model->activity_id], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";

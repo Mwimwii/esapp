@@ -62,7 +62,7 @@ class AwpbTemplateController extends Controller {
 
             $searchModel = new AwpbTemplateSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $dataProvider->sort->defaultOrder = ['status' => SORT_ASC];
+            $dataProvider->sort->defaultOrder = ['status' => SORT_ASC,'fiscal_year'=>SORT_DESC];
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,

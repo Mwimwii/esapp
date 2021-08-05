@@ -19,7 +19,6 @@ use kartik\export\ExportMenu;
 use backend\models\AwpbActivityLine;
 use backend\models\AwpbActivityLineSearch;
 //use yii\web\Controller;
-
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use kartik\grid\GridView;
@@ -32,6 +31,8 @@ use kartik\grid\EditableColumn;
 use yii\grid\ActionColumn;
 use kartik\touchspin\TouchSpin;
 use ivankff\yii2ModalAjax\ModalAjax;
+use yii\helpers\ArrayHelper;
+use backend\models\AwpbBudget;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
@@ -46,391 +47,420 @@ $this->params['breadcrumbs'][] = $this->title;
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 //$district_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 //$this->params['breadcrumbs'][] = $this->title;
-
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
 //$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
 //$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
 $user = User::findOne(['id' => Yii::$app->user->id]);
 $role = \common\models\Role::findOne(['id' => $user->role])->role;
 
-$access_level=1;
-        
+$access_level = 1;
+
 $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
-$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-$awpb_province =  \backend\models\AwpbProvince::findOne(['awpb_template_id' =>$awpb_template_id, 'province_id'=>$province_id]);
-$status=100;
+$template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+$awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $template_model->id, 'province_id' => $id2]);
+$status = 100;
 if (!empty($awpb_province)) {
-  $status= $awpb_province->status;
-   
+    $status = $awpb_province->status;
 }
 ?>
 <div class="card card-success card-outline">
-   
+
     <div class="card-body" style="overflow: auto;">
-   <p>
-           
-            <?php
-   echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpc', 'id' => $awpb_template_id,'id2'=>$province_id,'status'=> $status], [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
-  
+        <p>
+
+<?php
+//   echo Html::a('<span class="fas fa-arrow-left fa-2x float-left"></span>', ['mpc', 'id' => $awpb_template_id,'id2'=>$province_id,'status'=> $status], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
+//  
+//
+//   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+//    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 
-
-    if (User::userIsAllowedTo('Approve AWPB - Provincial')  && ($user->province_id>0 ||$user->province_id!='')) {
+if (User::userIsAllowedTo('Approve AWPB - Provincial') && $status == AwpbBudget::STATUS_SUBMITTED  && ($user->province_id > 0 || $user->province_id != '')) {
     //  $status= \backend\models\AwpbBudget::STATUS_SUBMITTED;
-        if(strtotime($template_model->consolidation_deadline) >= strtotime($today)&& $status == \backend\models\AwpbBudget::STATUS_SUBMITTED){
- 
-      
-              echo Html::a(
-                        '<span class="fas fa-check"></span>', ['submit', 'id' => $awpb_template_id, 'id2' => $province_id, 'status' => \backend\models\AwpbBudget:: STATUS_REVIEWED], [
-                    'title' => 'Submit Provincial AWPB',
-                    'data-toggle' => 'tooltip',
-                    'data-placement' => 'top',
-                    // 'target' => '_blank',
-                    'data-pjax' => '0',
-                    // 'style' => "padding:5px;",
-                    'class' => 'bt btn-lg'
-                        ]
-                );
+    if (strtotime($template_model->consolidation_deadline) >= strtotime($today)) {
 
-        echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
-                            return false;"></i> Decline District AWPB </button>';
-        }
+
+            echo Html::a(
+                '<span class="btn btn-success float-left">Approve Budget</span>', ['submit', 'id' => $id, 'id2' => $id2, 'status' => \backend\models\AwpbBudget:: STATUS_REVIEWED], [
+            'title' => 'Approve Provincial AWPB',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            // 'target' => '_blank',
+            'data-pjax' => '0',
+            // 'style' => "padding:5px;",
+            'class' => 'bt btn-lg'
+                ]
+        );
+
+
+                    echo Html::a(
+                                        '<span class="btn btn-success float-right">Decline Budget</span>', ['awpb-comment/declinep', 'id' => $id], [
+                                'title' => 'Decline Provincial AWPB',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                // 'target' => '_blank',
+                                'data-pjax' => '0',
+                                // 'style' => "padding:5px;",
+                                'class' => 'bt btn-lg'
+                                    ]
+                    );
+    }
 }
-if (User::userIsAllowedTo('Approve AWPB - PCO') &&  $status == \backend\models\AwpbBudget::STATUS_REVIEWED && (($user->province_id==0 ||$user->province_id==''))) {
-     
-     echo Html::a(
-                                        '<span class="fas fa-check"></span>',['submit','id'=>$awpb_template_id,'id2'=>$province_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
-                                    'title' => 'Approve Provincial AWPB',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
+
+if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && (($user->province_id == 0 || $user->province_id == ''))) {
+
+    echo Html::a(
+            '<span class="fas fa-check"></span>', ['submit', 'id' => $awpb_template_id, 'id2' => $province_id, 'status' => \backend\models\AwpbBudget:: STATUS_APPROVED], [
+        'title' => 'Approve Provincial AWPB',
+        'data-toggle' => 'tooltip',
+        'data-placement' => 'top',
+        // 'target' => '_blank',
+        'data-pjax' => '0',
+        // 'style' => "padding:5px;",
+        'class' => 'bt btn-lg'
+            ]
+    );
     echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-  
-      echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
-     return false;"></i> Decline Provincial AWPB </button>';
 
-      
+    echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
+     return false;"></i> Decline Provincial AWPB </button>';
 }
 
 
-if (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id==0 ||$user->province_id=='')) {
-       
-        echo Html::a(
-                                        '<span class="fas fa-check"></span>',['submit','id'=>$awpb_template_id,'id2'=>$province_id,'status'=> \backend\models\AwpbBudget:: STATUS_MINISTRY], [ 
-                                    'title' => 'Approve Provincial AWPB',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
-        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-  
-     echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
+if (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id == 0 || $user->province_id == '')) {
+
+    echo Html::a(
+            '<span class="fas fa-check"></span>', ['submit', 'id' => $awpb_template_id, 'id2' => $province_id, 'status' => \backend\models\AwpbBudget:: STATUS_MINISTRY], [
+        'title' => 'Approve Provincial AWPB',
+        'data-toggle' => 'tooltip',
+        'data-placement' => 'top',
+        // 'target' => '_blank',
+        'data-pjax' => '0',
+        // 'style' => "padding:5px;",
+        'class' => 'bt btn-lg'
+            ]
+    );
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
+    echo '<button class="float-right btn btn-success btn-sm btn-space" href="#" onclick="$(\'#addNewModal\').modal(); 
      return false;"></i> Decline Provincial AWPB </button>';
-    
 }
 
-    
-    
-    
-    
-    
-    
-    
-            ?>
+
+
+
+?>
 
 
         </p>
 
 
 
-        <?php
+            <?php
+            $gridColumns = [
+                [
+                    'class' => 'kartik\grid\SerialColumn',
+                    'contentOptions' => ['class' => 'kartik-sheet-style'],
+                    'width' => '36px',
+                    'pageSummary' => 'Total',
+                    'pageSummaryOptions' => ['colspan' => 3],
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style']
+                ],
+                [
+                    'attribute' => 'component_id',
+                    'label' => 'Component',
+                    'vAlign' => 'middle',
+                    'width' => '7%',
+                    'value' => function ($model, $key, $index, $widget) {
+                        $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
 
-
-       $gridColumns = [
-        [
-            'class'=>'kartik\grid\SerialColumn',
-            'contentOptions'=>['class'=>'kartik-sheet-style'],
-            'width'=>'36px',
-            'pageSummary'=>'Total',
-            'pageSummaryOptions' => ['colspan' => 2],
-            'header'=>'',
-            'headerOptions'=>['class'=>'kartik-sheet-style']
-        ],
-       // [
-        //     'attribute' => 'district_id',
-        //     'format' => 'raw',
-        //     'label' => 'District',
-        //     'value' => function ($model) {
-        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
-        //     },
-        //     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
-        // ],
-     
-        // [
-        //     'attribute' => 'awpb_template_id',
-        //     'label' => 'Fiscal Year', 
-        //     'vAlign' => 'middle',
-        //     'width' => '180px',
-
-        //     'value' => function ($model) {
-        //         $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
-        //         return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
-        //     },
-           
-        //     'filterType' => GridView::FILTER_SELECT2,
-        //     'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-        //     'filterWidgetOptions' => [
-        //         'pluginOptions' => ['allowClear' => true],
-        //         'options' => ['multiple' => true]
-        //     ],
-        //     'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-        //     'format' => 'raw'
-        // ],
-        
- 
-         [
-            'attribute' => 'output_id',
-            'label' => 'Output Name', 
-            'vAlign' => 'middle',
-            'width' => '180px',
-
-            'value' => function ($model) use ($status) {
+                        return !empty($component) ? $component->code : "";
+                    },
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'),
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                        'options' => ['multiple' => true]
+                    ],
+                    'filterInputOptions' => ['placeholder' => 'Filter by component'],
+                    'format' => 'raw'
+                ],
+                [
+                    'attribute' => 'activity_id',
+                    'label' => 'Activity',
+                    'vAlign' => 'middle',
+                    //'width' => '180px',
+                    'value' => function ($model) {
+//                        $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id]);
+//
+//                        return $name->activity_code . ' ' . $name->name;
+                        
+                           return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a(backend\models\AwpbActivity::findOne($model->activity_id)->name, ['viewp', 'id' => $model->id,'status' => $model->id ], ['class' => 'mpcd']) : "";
+                 
+                    },
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                        'options' => ['multiple' => true]
+                    ],
+                    'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+                    'format' => 'raw'
+                ],
+                [
+                    'class' => 'kartik\grid\EditableColumn',
+                    'attribute' => 'quarter_one_amount',
+                    'readonly' => true,
+                    //='readonly' => function($model, $key, $index, $widget) {
+                    //    return (!$model->status); // do not allow editing of inactive records
+                    // },
+                    'filterType' => false,
+                    'refreshGrid' => true,
+                    'editableOptions' => [
+                        'header' => 'Q1 Budget',
+                        'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+                        'options' => [
+                            'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
+                        ]
+                    ],
+                    'hAlign' => 'right',
+                    'vAlign' => 'middle',
+                    'width' => '7%',
+                    'format' => ['decimal', 2],
+                    'pageSummary' => true
+                ],
+                [
+                    'class' => 'kartik\grid\EditableColumn',
+                    'attribute' => 'quarter_two_amount',
+                    'readonly' => true,
+                    //'readonly' => function($model, $key, $index, $widget) {
+                    //    return (!$model->status); // do not allow editing of inactive records
+                    // },
+                    'refreshGrid' => true,
+                    'editableOptions' => [
+                        'header' => 'Q2 Budget',
+                        'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+                        'options' => [
+                            'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
+                        ]
+                    ],
+                    'hAlign' => 'right',
+                    'vAlign' => 'middle',
+                    'width' => '7%',
+                    'format' => ['decimal', 2],
+                    'pageSummary' => true
+                ],
+                [
+                    'class' => 'kartik\grid\EditableColumn',
+                    'attribute' => 'quarter_three_amount',
+                    'readonly' => true,
+                    //'readonly' => function($model, $key, $index, $widget) {
+                    //    return (!$model->status); // do not allow editing of inactive records
+                    // },
+                    'refreshGrid' => true,
+                    'editableOptions' => [
+                        'header' => 'Q3 Budget',
+                        'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+                        'options' => [
+                            'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
+                        ]
+                    ],
+                    'hAlign' => 'right',
+                    'vAlign' => 'middle',
+                    'width' => '7%',
+                    'format' => ['decimal', 2],
+                    'pageSummary' => true
+                ],
+                [
+                    'class' => 'kartik\grid\EditableColumn',
+                    'attribute' => 'quarter_four_amount',
+                    'readonly' => true,
+                    //'readonly' => function($model, $key, $index, $widget) {
+                    //    return (!$model->status); // do not allow editing of inactive records
+                    // },
+                    'refreshGrid' => true,
+                    'editableOptions' => [
+                        'header' => 'Q4 Budget',
+                        'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+                        'options' => [
+                            'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
+                        ]
+                    ],
+                    'hAlign' => 'right',
+                    'vAlign' => 'middle',
+                    'width' => '7%',
+                    'format' => ['decimal', 2],
+                    'pageSummary' => true
+                ],
+                // [
+                //     'class' => 'kartik\grid\FormulaColumn', 
+                //     'attribute' => 'total_quantity', 
+                //     'header' => 'Total <br> Quantity', 
+                //    // 'refreshGrid' => true,
+                //     'vAlign' => 'middle',
+                //     'value' => function ($model, $key, $index, $widget) { 
+                //         $p = compact('model', 'key', 'index');
+                //         return $widget->col(6, $p)+$widget->col(7, $p)+$widget->col(8, $p) + $widget->col(9, $p);
+                //     },
+                //     'headerOptions' => ['class' => 'kartik-sheet-style'],
+                //     'hAlign' => 'right', 
+                //     'width' => '7%',
+                //     'format' => ['decimal', 2],
+                //     'mergeHeader' => true,
+                //     'pageSummary' => true,
+                //     'footer' => true
+                // ],
+                // [
+                //     'class' => 'kartik\grid\FormulaColumn', 
+                //     'attribute' => 'total_amount', 
+                //     'header' => 'Total <br> Amount', 
+                //     'vAlign' => 'middle',
+                //     'hAlign' => 'right', 
+                //     'width' => '7%',
+                //     'value' => function ($model, $key, $index, $widget) { 
+                //         $p = compact('model', 'key', 'index');
+                //         return $widget->col(10, $p) != 0 ? $widget->col(5, $p) * $widget->col(10, $p) : 0;
+                //     },
+                //     'format' => ['decimal', 2],
+                //     'headerOptions' => ['class' => 'kartik-sheet-style'],
+                //     'mergeHeader' => true,
+                //     'pageSummary' => true,
+                //     'pageSummaryFunc' => GridView::F_SUM,
+                //     'footer' => true
+                // ],
+//                         [
+//            'attribute' => 'total_amount',
+//            'label' => 'Budget', 
+//            'vAlign' => 'middle',
+//            'width' => '180px',
+//
+//            'value' => function ($model) {
+//               //  \backend\models\AwpbInput::findOne(['id' =>  $model->indicator_id])->name;
+//               $total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('total_amount');
+//                return $total_amount; // Html::a($name, ['awpb-ind/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
+//            },
 //           
-//           $_role = \common\models\Role::findOne(['id' => Yii::$app->getUser()->identity->role])->role;
-//           //Yii::$app->getUser()->identity->role])->role
-//           $status=0;
-//           if($_role=="Provincial")
-//           {
-//               $status= \backend\models\AwpbBudget::STATUS_SUBMITTED;
-//           }
-//            if($_role=="PCO")
-//           {
-//               $status= \backend\models\AwpbBudget::STATUS_REVIEWED;
-//           }
-//            if($_role=="Ministry")
-//           {
-//               $status= \backend\models\AwpbBudget::STATUS_APPROVED;
-//           }
-                  return !empty($model->output_id) && $model->output_id > 0 ?  Html::a(backend\models\AwpbOutput::findOne(['id' =>  $model->output_id])->name,['mpcdo','status'=>$status,'district_id' =>  $model->district_id,'province_id'=> $model->province_id,'awpb_template_id'=>$model->awpb_template_id,'output_id' => $model->output_id], ['class' => 'mpcd']):"";
-                ;
-            },
-               
-           
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-                'options' => ['multiple' => true]
-            ],
-            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-            'format' => 'raw'
-        ],
-          [
-            'label' => 'Output Description',
-                  'value' =>  function ($model) {
-                    $name =  \backend\models\AwpbOutput::findOne(['id' =>  $model->output_id])->description;
-                   return $name;//Html::a($name, ['awpb-activity-line/mpcd', 'id' => $model->activity_id], ['class' => 'awbp-activity-line']);
-  
-                      
-                  }
-              ],
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_one_amount', 
-                'readonly' =>true,
-                //='readonly' => function($model, $key, $index, $widget) {
-                //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
-                'editableOptions' => [
-                    'header' => 'Q1 Qty', 
-                    'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-                    'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
+//          
+//        ],
+                [
+                    'class' => 'kartik\grid\EditableColumn',
+                    'attribute' => 'total_amount',
+                    'label' => 'Budget',
+                    'readonly' => true,
+                    //'readonly' => function($model, $key, $index, $widget) {
+                    //    return (!$model->status); // do not allow editing of inactive records
+                    // },
+//                    'value' => function ($model) {
+//                        //  \backend\models\AwpbInput::findOne(['id' =>  $model->indicator_id])->name;
+//                        $total_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('total_amount');
+//                        return $total_amount; // Html::a($name, ['awpb-ind/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
+//                    },
+                    'refreshGrid' => true,
+                    'editableOptions' => [
+                        'header' => 'Budget',
+                        'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+                        'options' => [
+                            'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
+                        ]
+                    ],
+                    'hAlign' => 'right',
+                    'vAlign' => 'middle',
+                    'width' => '7%',
+                    'format' => ['decimal', 2],
+                    'pageSummary' => true
+                ],
+                // // //'id',
+                // [
+                //     'class' => 'kartik\grid\CheckboxColumn',
+                //     'headerOptions' => ['class' => 'kartik-sheet-style'],
+                //     'pageSummary' => '<small>(amounts in $)</small>',
+                //     'pageSummaryOptions' => ['colspan' => 3, 'data-colspan-dir' => 'rtl']
+                // ],
+                ['class' => 'yii\grid\ActionColumn',
+                    'options' => ['style' => 'width:50px;'],
+                    'header' => 'Action',
+                    'template' => '{view}{update}{delete}',
+                    'buttons' => [
+                        'view' => function ($url, $model) use ($status) {
+                            if (User::userIsAllowedTo('View AWPB') || User::userIsAllowedTo('Manage AWPB')) {
+                                return Html::a(
+                                                '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id, 'status' => $status], [
+                                            'title' => 'View AWPB',
+                                            'data-toggle' => 'tooltip',
+                                            'data-placement' => 'top',
+                                            'data-pjax' => '0',
+                                            'style' => "padding:5px;",
+                                            'class' => 'bt btn-lg'
+                                                ]
+                                );
+                            }
+                        },
+                        'update' => function ($url, $model) use ($editable, $user, $template_model, $today, $status) {
+                            if ($editable == 1 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id != 0 || $user->district_id != '')) {
+                                if (strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT) {
+
+                                    return Html::a(
+                                                    '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id, 'status' => $status], [
+                                                'title' => 'Update AWPB',
+                                                'data-toggle' => 'tooltip',
+                                                'data-placement' => 'top',
+                                                // 'target' => '_blank',
+                                                'data-pjax' => '0',
+                                                'style' => "padding:5px;",
+                                                'class' => 'bt btn-lg'
+                                                    ]
+                                    );
+                                }
+                            }
+                        },
+                        'delete' => function ($url, $model) use ($editable, $user, $template_model, $today, $status) {
+                            if ($editable == 1 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id != 0 || $user->district_id != '')) {
+                                if (strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT) {
+
+
+                                    if ($model->total_amount <= 0) {
+                                        return Html::a(
+                                                        '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id, 'id2' => $model->awpb_template_id, 'status' => $status], [
+                                                    'title' => 'delete AWPB',
+                                                    'data-toggle' => 'tooltip',
+                                                    'data-placement' => 'top',
+                                                    'data' => [
+                                                        'confirm' => 'Are you sure you want to delete this AWPB?',
+                                                        'method' => 'post',
+                                                    ],
+                                                    'style' => "padding:5px;",
+                                                    'class' => 'bt btn-lg'
+                                                        ]
+                                        );
+                                    }
+                                }
+                            }
+                        },
                     ]
                 ],
-                'hAlign' => 'right', 
-                'vAlign' => 'middle',
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'pageSummary' => true
-            ],
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_two_amount', 
-                'readonly' =>true,
-                //'readonly' => function($model, $key, $index, $widget) {
-                //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
-                'editableOptions' => [
-                    'header' => 'Q2 Qty', 
-                    'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-                    'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
-                    ]
-                ],
-                'hAlign' => 'right', 
-                'vAlign' => 'middle',
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'pageSummary' => true
-            ],
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_three_amount', 
-                'readonly' =>true,
-                //'readonly' => function($model, $key, $index, $widget) {
-                //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
-                'editableOptions' => [
-                    'header' => 'Q3 Qty', 
-                    'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-                    'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
-                    ]
-                ],
-                'hAlign' => 'right', 
-                'vAlign' => 'middle',
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'pageSummary' => true
-            ],
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'quarter_four_amount', 
-                'readonly' =>true,
-                //'readonly' => function($model, $key, $index, $widget) {
-                //    return (!$model->status); // do not allow editing of inactive records
-               // },
-               'refreshGrid' => true,
-                'editableOptions' => [
-                    'header' => 'Q4 Qty', 
-                    'inputType' => \kartik\editable\Editable::INPUT_SPIN,
-                    'options' => [
-                        'pluginOptions' => ['min' => 0, 'max'=>999999999999999999999]
-                    ]
-                ],
-                'hAlign' => 'right', 
-                'vAlign' => 'middle',
-                'width' => '7%',
-                'format' => ['decimal', 2],
-                'pageSummary' => true
-            ],
-           
-            
-
-
-            // [
-            //     'class' => 'kartik\grid\FormulaColumn', 
-            //     'attribute' => 'total_quantity', 
-            //     'header' => 'Total <br> Quantity', 
-            //    // 'refreshGrid' => true,
-            //     'vAlign' => 'middle',
-             
-            //     'headerOptions' => ['class' => 'kartik-sheet-style'],
-            //     'hAlign' => 'right', 
-            //     'width' => '7%',
-            //     'format' => ['decimal', 2],
-            //     'mergeHeader' => true,
-            //     'pageSummary' => true,
-            //     'footer' => true
-            // ],
-            [
-                'class' => 'kartik\grid\FormulaColumn', 
-                'attribute' => 'total_amount', 
-                'header' => 'Total <br> Amount', 
-                'vAlign' => 'middle',
-                'hAlign' => 'right', 
-                'width' => '7%',
-             
-                'format' => ['decimal', 2],
-                'headerOptions' => ['class' => 'kartik-sheet-style'],
-                'mergeHeader' => true,
-                'pageSummary' => true,
-                'pageSummaryFunc' => GridView::F_SUM,
-                'footer' => true
-            ],
-            // //'id',
-            // [
-            //     'class' => 'kartik\grid\CheckboxColumn',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style'],
-            //     'pageSummary' => '<small>(amounts in $)</small>',
-            //     'pageSummaryOptions' => ['colspan' => 3, 'data-colspan-dir' => 'rtl']
-            // ],
-
-            // [
-            //     'class' => 'kartik\grid\ActionColumn',
-            //     'dropdown' => false,
-            //     'vAlign'=>'middle',
-            //     'template' => '{delete} {view}',
-            //     'urlCreator' => function($action, $model, $key, $index) { 
-            //             return Url::to([$action,'id'=>$key]);
-            //     },
-                  
-              
-            // ],
-
-
-
             ];
 
+            if ($dataProvider->getCount() > 0) {
 
-
-    //     //if ($dataProvider->getCount() > 0) {
-   
-    //       // echo ' </p>';
-    //       $user = User::findOne(['id' => Yii::$app->user->id]);
-    //       $query = $searchModel::find();
-    //       $query->select(['district_id','activity_id','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
-          
-    // //      $query->where('district_id = :field1', [':field1' =>$id]);
-    //       $query->where(['district_id'=> '49', 'status' => \backend\models\AwpbActivityLine::STATUS_SUBMITTED]);
-
-    //       $query->groupBy('activity_id');
-    //       $query->all();
-          
-    //       $dataProvider = new ActiveDataProvider([
-    //               'query' => $query,
-    //               ]);
-
-
-    //             //   $query = User::find()->where(['id' => '-2']);
-    //             //   $dataProvider = new \yii\data\ActiveDataProvider([
-    //             //       'query' => $query,
-    //             //   ]);
-    //             //   GridView::widget([
-    //             //       'dataProvider' => $dataProvider,
-    //             //   ]);
-                  
-
-
-            echo ExportMenu::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumns,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Export All',
-                    'class' => 'btn btn-default'
-                ],
-                'filename' => 'AWPB Activity Lines' . date("YmdHis")
-            ]);
-                 //   echo '<p>';
+                // echo ' </p>';
+                echo ExportMenu::widget([
+                    'dataProvider' => $dataProvider,
+                    'columns' => $gridColumns,
+                    'fontAwesome' => true,
+                    'dropdownOptions' => [
+                        'label' => 'Export All',
+                        'class' => 'btn btn-default'
+                    ],
+                    'filename' => 'AWPB' . date("YmdHis")
+                ]);
+                //   echo '<p>';
                 //  if (User::userIsAllowedTo('Submit District AWPB')&& $user->district_id>0 ||$user->district_id!='') {
                 //     //   echo Html::a('&nbsp;');
                 //      // btn btn-outline-primary btn-space
@@ -441,123 +471,37 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\mode
                 //      // btn btn-outline-primary btn-space
                 //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
                 //    }
-    //    }
+            }
+            ?>
+
+
+        <?=
+        GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
         ?>
-      
-
-    <?=  GridView::widget([
-        'dataProvider' => $dataProvider,
-      //  'filterModel' => $searchModel,
-        'columns' => $gridColumns,
-      
-        //'pjax' => true,
-        //'bordered' => true,
-       // 'striped' => false,
-      // 'condensed' => false,
-       'responsive' => true,
-      //  'hover' => true,
-       // 'floatHeader' => true,
-       // 'floatHeaderOptions' => ['top' => $scrollingTop],
-        'showPageSummary' => true,
-        // 'panel' => [
-        //     'type' => GridView::TYPE_PRIMARY
-        // ],
 
 
-
-
-]);
-        
- ?>
-
-        
     </div>
 </div>
 
 
 
-<div class="modal fade" id="addNewModal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content card-success card-outline">
-            <div class="modal-header">
-                <h5 class="modal-title">Add AWPB Comments</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <?php
-                 $_model = new backend\models\AwpbComment();
-                 $controller = Yii::$app->controller;
-                 $arrayParams = ['p1' => 'v1' , 'p2' => 'v2'];
-                 
-                 $params = array_merge(["{$controller->id}/{$controller->action->id}"], $arrayParams);
-                 
-                 Yii::$app->urlManager->createUrl($params);
-if (User::userIsAllowedTo('Approve AWPB - Provincial') &&   $status == \backend\models\AwpbBudget::STATUS_SUBMITTED && (($user->province_id!=0 ||$user->province_id!=''))) {
-     
-            $form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-budget/decline','status' => $status]),]);
-               
-           echo $form->field($_model, 'awpb_template_id')->hiddenInput(['value'=>$awpb_template_id ])->label(false);
-          
-          echo $form->field($_model, 'district_id')->hiddenInput(['value'=> $district_id])->label(false);
-            echo $form->field($_model, 'province_id')->hiddenInput(['value'=> $province_id])->label(false);
-           }
-            else 
-             {
-                   
-            $form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-budget/declinep','$status' => $status]),]);
-               
-           echo $form->field($_model, 'awpb_template_id')->hiddenInput(['value'=>$awpb_template_id ])->label(false);
-           
-           echo $form->field($_model, 'province_id')->hiddenInput(['value'=> $province_id])->label(false);
-             
-           }
-               
-               // echo $form->field($_model, 'awpb_template_id')->textInput(['maxlength' => true,'value'=>$fiscal, 'class' => "form-control"]);
-              //  echo $form->field($_model, 'district_id')->textInput(['maxlength' => true,'value'=>$distr,'class' => "form-control"]);
-                //echo $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Item description'])->label("Item description");
-     
-                           ?>
-                
-                <div class="row">
-                    <div class="col-md-8">
-        
-                      
-                        <?= $form->field($_model, 'description')->textarea(['rows' => 11, 'placeholder' =>$district_id])->label("Comment");?>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <h4>Instructions</h4>
-                        <ol>
-                            <?php
-                            echo '<li>Fields marked with * are required</li>';
-                            
-                            ?>
-                        </ol>
-                    </div>    	   
-                
-                </div>
-                
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-                    </div>
-                </div>
-            </div>
-        
-                <?php ActiveForm::end(); ?>   
-        </div>
-
-              
-
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
 
         <?php
-$this->registerCss('.popover-x {display:none}');
-?>
+        $this->registerCss('.popover-x {display:none}');
+        ?>

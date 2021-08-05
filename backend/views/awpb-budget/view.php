@@ -22,7 +22,7 @@ use backend\models\AwpbTemplate;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplate */
 
-$this->title = 'AWPB : ' . $model->id;
+$this->title = 'AWPB Activity: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->id;
 \yii\web\YiiAsset::register($this);

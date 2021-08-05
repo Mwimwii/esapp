@@ -3,7 +3,10 @@
 namespace backend\models;
 
 use Yii;
-
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
 /**
  * This is the model class for table "awpb_input".
  *
@@ -192,12 +195,12 @@ class AwpbInput extends \yii\db\ActiveRecord
         ];
     }
     
-    public function beforeDelete() {
-  $this->awpbActualInput->delete();
-
-  // call the parent implementation so that this event is raise properly
-  return parent::beforeDelete();
-}
+//    public function beforeDelete() {
+//  //$this->awpbActualInput->delete();
+//
+//  // call the parent implementation so that this event is raise properly
+//  //return parent::beforeDelete();
+//}
     
     public function getAwpbActualInput()
     {

@@ -17,7 +17,7 @@ use backend\models\User;
 
 //$this->title = $model->id;
 $this->title = 'AWPB Input : '. $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'AWPB Inputy Lines', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'AWPB Input', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
@@ -97,19 +97,19 @@ $model_budget =new  \backend\models\AwpbBudget();
        if (User::userIsAllowedTo('Approve AWPB - Provincial') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
 
       
-echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/viewp', 'id' => $model->budget_id,'status'=>$_model->status], [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
+//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/viewp', 'id' => $model->budget_id,'status'=>$_model->status], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
        }
        else
        {
-           echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/view', 'id' => $model->budget_id,'status'=>$_model->status], [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
+//           echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/view', 'id' => $model->budget_id,'status'=>$_model->status], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
            
        }
 
@@ -130,7 +130,7 @@ if ($status ==0 && \backend\models\User::userIsAllowedTo('Manage AWPB')) {
         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
         echo Html::a(
-                '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
+                '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [
             'title' => 'Delete input ',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
