@@ -224,6 +224,15 @@ class AwpbInputController extends Controller {
                     'status' => $_model->status
         ]);
     }
+        public function actionViewpw($id) {
+        $model = $this->findModel($id);
+        $model_budget = new \backend\models\AwpbBudget();
+        $_model = $model_budget::findOne(['id' => $model->budget_id]);
+        return $this->render('viewpw', [
+                    'model' => $model,
+                    'status' => $_model->status
+        ]);
+    }
 
     public function actionComponentindicators() {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -243,10 +252,23 @@ class AwpbInputController extends Controller {
 
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-        $model_budget = new \backend\models\AwpbBudget();
-        $_model = $model_budget::findOne(['id' => $model->budget_id]);
+        // $_model="";
+         $user = \backend\models\User::findOne(['id' => Yii::$app->user->id]);
+        if ($user->province_id == 0 || $user->province_id == ''){
+
+            // $model_budget = new \backend\models\AwpbBudget_1();
+             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $model->budget_id]);
+            
+        } else {
+                $_model = \backend\models\AwpbBudget::findOne(['id' => $model->budget_id]);
+        }
+
+        
+      
 //  if ($_model->status ==0 && User::userIsAllowedTo('Manage AWPB')) {
-        if (User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+        
+        
+        if (User::userIsAllowedTo('Manage AWPB') ||User::userIsAllowedTo('Manage PW AWPB') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
 
 
             if (Yii::$app->request->isAjax) {
@@ -255,6 +277,8 @@ class AwpbInputController extends Controller {
             }
 
             if ($model->load(Yii::$app->request->post())) {
+                
+              
 
                 $total_q = 0;
                 $total_amt = 0.0;
@@ -434,9 +458,9 @@ class AwpbInputController extends Controller {
                                     }
                                     if ($x == 2) {
                                         $model_actual_input->quarter_number = \backend\models\AwpbBudget::STATUS_REVIEWED;
-                                        $model_actual_input->mo_4 = $total_q_mo4;
-                                        $model_actual_input->mo_5 = $total_q_mo5;
-                                        $model_actual_input->mo_6 = $total_q_mo6;
+                                        $model_actual_input->mo_1 = $total_q_mo4;
+                                        $model_actual_input->mo_2 = $total_q_mo5;
+                                        $model_actual_input->mo_3 = $total_q_mo6;
                                         $model_actual_input->quarter_quantity = $total_q2;
 
                                         $model_actual_input->mo_1_amount = $total_q_mo4 * $model->unit_cost;
@@ -556,7 +580,7 @@ class AwpbInputController extends Controller {
             return $this->render('update', [
                         'model' => $model,
                         'id' => $model->budget_id,
-                        'status' => $_model->status
+                        'status' => 0
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
@@ -569,19 +593,25 @@ class AwpbInputController extends Controller {
     }
 
     public function actionCreate($id) {
-        if (User::userIsAllowedTo('Manage AWPB')) {
+         $user = \backend\models\User::findOne(['id' => Yii::$app->user->id]);
+        if (User::userIsAllowedTo('Manage AWPB')||User::userIsAllowedTo('Manage PW AWPB')) {
             $model = new AwpbInput();
-            $model_budget = new \backend\models\AwpbBudget();
-            $_model = $model_budget::findOne(['id' => $id]);
+    if ($user->province_id == 0 || $user->province_id == ''){
 
+            // $model_budget = new \backend\models\AwpbBudget_1();
+             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $id]);
+            
+        } else {
+                $_model = \backend\models\AwpbBudget::findOne(['id' => $id]);
+        }
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
             }
 
             if ($model->load(Yii::$app->request->post())) {
-                $model_budget = new \backend\models\AwpbBudget();
-                $_model = $model_budget::findOne(['id' => $model->budget_id]);
+                //$model_budget = new \backend\models\AwpbBudget();
+               //$_model = $model_budget::findOne(['id' => $id]);
 
                 $total_q = 0;
                 $total_amt = 0.0;
@@ -748,7 +778,7 @@ class AwpbInputController extends Controller {
                                 $x++;
                             }
 
-                            $_model->mo_1_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_1_amount');
+                            $_model->mo_1_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('mo_1_amount');
                             $_model->mo_2_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_2_amount');
                             $_model->mo_3_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_3_amount');
                             $_model->mo_4_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_4_amount');
@@ -765,8 +795,16 @@ class AwpbInputController extends Controller {
                             $_model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('quarter_three_amount ');
                             $_model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('quarter_four_amount ');
                             $_model->total_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('total_amount');
-                            $_model->save();
+                         if(   $_model->save()){
+ } else {
+                                $message = "";
+                                foreach ($_model->getErrors() as $error) {
+                                    $message .= $error[0];
+                                }
 
+                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                                //  return $this->redirect(['home/home']);
+                            }
 //                       
 //                            $_model->mo_1_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_1_amount');
 //                            $_model->mo_2_actual_amount =\backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('mo_2_amount');
@@ -842,13 +880,20 @@ class AwpbInputController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id, $id2, $status) {
-        if (User::userIsAllowedTo('Manage AWPB')) {
-            
+        if (User::userIsAllowedTo('Manage AWPB')||User::userIsAllowedTo('Manage PW AWPB')) {
+             $user = \backend\models\User::findOne(['id' => Yii::$app->user->id]);
             $model = $this->findModel($id);
             $name = $model->name;
        
-             $model_budget = new \backend\models\AwpbBudget();
-            $_model = $model_budget::findOne(['id' => $model->budget_id]);
+            if ($user->province_id == 0 || $user->province_id == ''){
+
+            // $model_budget = new \backend\models\AwpbBudget_1();
+             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $model->budget_id]);
+            
+        } else {
+                $_model = \backend\models\AwpbBudget::findOne(['id' => $model->budget_id]);
+        }
+
             
            if ($model->delete()) {
                 $audit = new AuditTrail();
@@ -857,7 +902,7 @@ class AwpbInputController extends Controller {
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
-                Yii::$app->session->setFlash('success', "Input $name was successfully removed.");
+                Yii::$app->session->setFlash('success', "Input $model->budget_id was successfully deleted.");
 
             $_model->mo_1_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_1_amount');
             $_model->mo_2_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_2_amount');
@@ -894,10 +939,23 @@ class AwpbInputController extends Controller {
 //$_model->quarter_three_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('quarter_three_amount');
 //$_model->quarter_four_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('quarter_four_amount');
 //$_model->total_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('total_amount');
-            $_model->save();
-
-            $awpbActualInput = new AwpbActualInput();
+          if(  $_model->save())
+          {
+                $awpbActualInput = new AwpbActualInput();
             $awpbActualInput::deleteAll(['budget_id' => $model->budget_id]);
+          } else {
+                                Yii::$app->session->setFlash('error', 'Error occured while adding AWPB.');
+
+                                $message = '';
+                                foreach ($_model->getErrors() as $error) {
+                                    $message .= $error[0];
+                                }
+                                Yii::$app->session->setFlash('error', "Error occured while adding an AWPB  details Please try again.Error:" . $message);
+
+
+            
+          }
+          
 
 //            
 //            
@@ -915,9 +973,16 @@ class AwpbInputController extends Controller {
 //            $_model->quarter_four_amount  =!empty($quarter_four_amount) ? $quarter_four_amount : 0;
 //            
 //  $_model->save();
-
-            return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status' => $status]);
-             } else {
+  if ($user->province_id == 0 || $user->province_id == ''){
+            return $this->redirect(['awpb-budget/viewpw', 'id' => $model->budget_id, 'status' => $status]);
+            
+  }
+  else
+  {
+       return $this->redirect(['awpb-budget/view', 'id' => $model->budget_id, 'status' => $status]);
+  }
+            
+           } else {
                 Yii::$app->session->setFlash('error', "Input $name could not be . Please try again!");
             }
         } else {

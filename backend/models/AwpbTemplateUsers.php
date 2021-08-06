@@ -32,6 +32,12 @@ class AwpbTemplateUsers extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    const STATUS_DRAFT = 0;
+    const STATUS_SUBMITTED = 1;
+    const STATUS_REVIEWED = 2;
+    const STATUS_APPROVED = 3;
+    const STATUS_MINISTRY = 4;
+    
     public static function tableName()
     {
         return 'awpb_template_users';
@@ -44,7 +50,7 @@ class AwpbTemplateUsers extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'awpb_template_id', 'first_name', 'last_name'], 'required'],
-            [['user_id', 'awpb_template_id', 'updated_by', 'created_by', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'awpb_template_id','status_budget', 'updated_by', 'created_by', 'created_at', 'updated_at'], 'integer'],
             [['first_name', 'last_name', 'other_name'], 'string', 'max' => 255],
             [['title'], 'string'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -61,6 +67,7 @@ class AwpbTemplateUsers extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'awpb_template_id' => 'Awpb Template ID',
+            'status_budget'=>'Budget Status',
             'title' => 'Title',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',

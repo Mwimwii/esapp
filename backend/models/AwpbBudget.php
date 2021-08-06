@@ -108,7 +108,7 @@ class AwpbBudget extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-	const STATUS_DRAFT = 0;
+    const STATUS_DRAFT = 0;
     const STATUS_SUBMITTED = 1;
     const STATUS_REVIEWED = 2;
     const STATUS_APPROVED = 3;

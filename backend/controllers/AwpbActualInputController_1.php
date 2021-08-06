@@ -306,34 +306,34 @@ class AwpbActualInputController extends Controller {
                         }
                         if ($awpb_district->status_q_2 == \backend\models\AwpbBudget::STATUS_SUBMITTED) {
 
-                            $model->mo_4 = $total_q_mo4;
-                            $model->mo_5 = $total_q_mo5;
-                            $model->mo_6 = $total_q_mo6;
+                            $model->mo_1 = $total_q_mo4;
+                            $model->mo_2 = $total_q_mo5;
+                            $model->mo_3 = $total_q_mo6;
                             $model->quarter_two_quantity = $total_q2;
-                            $model->mo_4_amount = $total_q_mo4 * $model->unit_cost;
-                            $model->mo_5_amount = $total_q_mo5 * $model->unit_cost;
-                            $model->mo_6_amount = $total_q_mo6 * $model->unit_cost;
+                            $model->mo_1_amount = $total_q_mo4 * $model->unit_cost;
+                            $model->mo_2_amount = $total_q_mo5 * $model->unit_cost;
+                            $model->mo_3_amount = $total_q_mo6 * $model->unit_cost;
                             $model->quarter_two_amount = $total_q2 * $model->unit_cost;
                         }
                         if ($awpb_district->status_q_3 == \backend\models\AwpbBudget::STATUS_SUBMITTED) {
 
-                            $model->mo_7 = $total_q_mo7;
-                            $model->mo_8 = $total_q_mo8;
-                            $model->mo_9 = $total_q_mo9;
+                            $model->mo_1 = $total_q_mo7;
+                            $model->mo_2 = $total_q_mo8;
+                            $model->mo_3 = $total_q_mo9;
                             $model->quarter_three_quantity = $total_q3;
-                            $model->mo_7_amount = $total_q_mo7 * $model->unit_cost;
-                            $model->mo_8_amount = $total_q_mo8 * $model->unit_cost;
-                            $model->mo_9_amount = $total_q_mo9 * $model->unit_cost;
+                            $model->mo_1_amount = $total_q_mo7 * $model->unit_cost;
+                            $model->mo_2_amount = $total_q_mo8 * $model->unit_cost;
+                            $model->mo_3_amount = $total_q_mo9 * $model->unit_cost;
                             $model->quarter_three_amount = $total_q3 * $model->unit_cost;
                         }
                         if ($awpb_district->status_q_4 == \backend\models\AwpbBudget::STATUS_SUBMITTED) {
 
-                            $model->mo_10 = $total_q_mo10;
-                            $model->mo_11 = $total_q_mo11;
-                            $model->mo_12 = $total_q_mo12;
-                            $model->mo_10_amount = $total_q_mo10 * $model->unit_cost;
-                            $model->mo_11_amount = $total_q_mo11 * $model->unit_cost;
-                            $model->mo_12_amount = $total_q_mo12 * $model->unit_cost;
+                            $model->mo_1 = $total_q_mo10;
+                            $model->mo_2 = $total_q_mo11;
+                            $model->mo_3 = $total_q_mo12;
+                            $model->mo_1_amount = $total_q_mo10 * $model->unit_cost;
+                            $model->mo_2_amount = $total_q_mo11 * $model->unit_cost;
+                            $model->mo_3_amount = $total_q_mo12 * $model->unit_cost;
                             $model->quarter_four_amount = $total_q4 * $model->unit_cost;
                         }
 
@@ -362,9 +362,9 @@ class AwpbActualInputController extends Controller {
                                     $_model->quarter_one_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('quarter_one_amount');
                                 }
                                 if ($awpb_district->status_q_2 == \backend\models\AwpbBudget::STATUS_SUBMITTED) {
-                                    $_model->mo_4_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_4_amount');
-                                    $_model->mo_5_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_5_amount');
-                                    $_model->mo_6_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_6_amount');
+                                    $_model->mo_1_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_4_amount');
+                                    $_model->mo_2_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_5_amount');
+                                    $_model->mo_3_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_6_amount');
                                     $_model->quarter_two_actual_amount = \backend\models\AwpbActualInput::find()->where(['budget_id' => $model->budget_id])->sum('quarter_two_amount');
                                 }
                                 if ($awpb_district->status_q_3 == \backend\models\AwpbBudget::STATUS_SUBMITTED) {

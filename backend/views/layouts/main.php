@@ -348,7 +348,7 @@ $session = Yii::$app->session;
                                                 Yii::$app->controller->action->id == "updatepw" ||          
                                                 Yii::$app->controller->action->id == "pwc" ||
                                                 Yii::$app->controller->action->id == "pwco" ||
-                                                Yii::$app->controller->action->id == "pwcoa" ||
+                                                Yii::$app->controller->action->id == "pwca" ||
                                                 Yii::$app->controller->action->id == "pwcoai"
                                                 )
                                         ) {
@@ -501,42 +501,6 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                  
-                                    
-//                           
-//                                    
-//                                       if (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
-//      
-//                                        echo '   <li class="nav-item">';
-//                                      
-//                                        $page = "";
-//                                        $status ="";
-//                                        $id2="0";
-//                                    
-//                                        
-//                                            //if ( User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-//                                                 $page = "index_4";
-//                                                 $status = \backend\models\AwpbBudget::STATUS_SUBMITTED;
-//                                                 
-//                                            //}
-//                                             
-//                                        
-//                                        
-//                                        if (
-//                                                 Yii::$app->controller->id == "awpb-input" &&
-//                                                (Yii::$app->controller->action->id == "index_4" 
-//                                                )
-//                                        ) {
-//                                            
-//                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Disbursement</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link active"]);
-//                                        } else {
-//                                           
-//                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funds Disbursement</p>', ['awpb-input/' . $page, 'id' => $session['awpb_template_id'],'id2'=>$id2,'status'=>$status], ["class" => "nav-link"]);
-//                                        }
-//                                        echo '</li>';
-//                                    }
-//                                  
-//                          
 
                                     if (User::userIsAllowedTo("Manage components") || User::userIsAllowedTo("View components")) {
                                         echo '   <li class="nav-item">';

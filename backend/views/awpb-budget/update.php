@@ -14,10 +14,21 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', [
+    <?php
+    if (($model->cost_centre_id != 0 || $model->cost_centre_id != '') && ($model->province_id == 0 || $model->province_id == '')) {
+   echo $this->render('_form_1', [
         'model' => $model,
          'template_id'=>$model->awpb_template_id,
         'status'=>$status
-    ]) ?>
+    ]) ;
+    }
+ else {
+        echo  $this->render('_form', [
+        'model' => $model,
+         'template_id'=>$model->awpb_template_id,
+        'status'=>$status
+    ]) ;
+    }
+            ?>
 
 </div>

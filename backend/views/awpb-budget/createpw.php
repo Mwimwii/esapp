@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbBudget */
 
-$this->title = 'Add AWPB';
+$this->title = 'Add AWPB Activity';
 $this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;

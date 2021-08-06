@@ -4,12 +4,12 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AwpbTemplateUsers;
+use backend\models\AwpbDistrict;
 
 /**
- * AwpbTemplateUsersSearch represents the model behind the search form of `backend\models\AwpbTemplateUsers`.
+ * AwpbDistrictSearch represents the model behind the search form of `backend\models\AwpbDistrict`.
  */
-class AwpbTemplateUsersSearch extends AwpbTemplateUsers
+class AwpbDistrictSearch extends AwpbDistrict
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class AwpbTemplateUsersSearch extends AwpbTemplateUsers
     public function rules()
     {
         return [
-            [['id', 'user_id', 'awpb_template_id','status_budget', 'updated_by', 'created_by', 'created_at', 'updated_at'], 'integer'],
-            [['first_name', 'last_name', 'other_name'], 'safe'],
+            [['id', 'awpb_template_id',  'cost_centre_id', 'province_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class AwpbTemplateUsersSearch extends AwpbTemplateUsers
      */
     public function search($params)
     {
-        $query = AwpbTemplateUsers::find();
+        $query = AwpbDistrict::find();
 
         // add conditions that should always apply here
 
@@ -59,18 +59,18 @@ class AwpbTemplateUsersSearch extends AwpbTemplateUsers
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'status_budget'=>$status_budget,
             'awpb_template_id' => $this->awpb_template_id,
-            'updated_by' => $this->updated_by,
-            'created_by' => $this->created_by,
+            
+            'cost_centre_id' => $this->cost_centre_id,
+            'province_id' => $this->province_id,
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'first_name', $this->first_name])
-            ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'other_name', $this->other_name]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

@@ -32,7 +32,7 @@ $access_level = 1;
 $act = "";
 $fis = "";
 $activity = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id]);
-$status = $model->status;
+//$status = $model->status;
 if (!empty($activity)) {
     $act = $activity->name;
     $fis = $activity->awpb_template_id;

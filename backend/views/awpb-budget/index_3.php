@@ -48,10 +48,6 @@ if (!empty($awpb_district)) {
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-        <div class="row">
-            <div class="col-md-12">
-                
-            </div></div>
    <p>
            
             <?php
@@ -350,11 +346,11 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
                // },
-//                                'value' => function ($model) {
-//               //  \backend\models\AwpbInput::findOne(['id' =>  $model->indicator_id])->name;
-//               $total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('total_amount');
-//                return $total_amount; // Html::a($name, ['awpb-ind/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
-          //  },
+                                'value' => function ($model) {
+               //  \backend\models\AwpbInput::findOne(['id' =>  $model->indicator_id])->name;
+               $total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('total_amount');
+                return $total_amount; // Html::a($name, ['awpb-ind/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
+            },
                'refreshGrid' => true,
                 'editableOptions' => [
                     'header' => 'Budget', 
@@ -452,7 +448,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
 
 
 
-       // if ($dataProvider->getCount() > 0) {
+        if ($dataProvider->getCount() > 0) {
    
           // echo ' </p>';
             echo ExportMenu::widget([
@@ -476,7 +472,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 //      // btn btn-outline-primary btn-space
                 //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
                 //    }
-        //}
+        }
         ?>
       
 
