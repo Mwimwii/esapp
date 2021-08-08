@@ -22,8 +22,13 @@ use yii\data\ActiveDataProvider;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'AWPB Programme Wide Activities';
+$activity = \backend\models\AwpbActivity::findOne(['id' => $id]);
+ $activity_name="";
+if (!empty($activity)) {
+    $activity_name = $activity->activity_code.' '.$activity->name;
+    $fis = $activity->awpb_template_id;
+}
+ $this->title = 'AWPB  PW Activity : '.   $activity_name .' by Cost Centre';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -77,90 +82,72 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
              'filterInputOptions' => ['placeholder' => 'Filter by activity'],
              'format' => 'raw'
          ],
-[
-                    'attribute' => 'component_id',
-                    'label' => 'Component',
-                    'vAlign' => 'middle',
-                    'width' => '7%',
-                    'value' => function ($model, $key, $index, $widget) {
-                        $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
-
-                       return !empty($component) ? $component->code : "";
-                        //return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwca', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
-                 
-                    },
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'),
-                    'filterWidgetOptions' => [
-                        'pluginOptions' => ['allowClear' => true],
-                        'options' => ['multiple' => true]
-                    ],
-                    'filterInputOptions' => ['placeholder' => 'Filter by component'],
-                    'format' => 'raw'
-                ],
-                                 [
-                    'attribute' => 'activity_id',
-                    'label' => 'Activity',
-                    'vAlign' => 'middle',
-                    //'width' => '180px',
-                    'value' => function ($model) {
-//                        $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id]);
+//[
+//                    'attribute' => 'component_id',
+//                    'label' => 'Component',
+//                    'vAlign' => 'middle',
+//                    'width' => '7%',
+//                    'value' => function ($model, $key, $index, $widget) {
+//                        $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
 //
-//                        return $name->activity_code . ' ' . $name->name;
-                        
-                           return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a(backend\models\AwpbActivity::findOne($model->activity_id)->name, ['viewpw_1', 'id' => $model->id,'status' => $model->id ], ['class' => 'mpcd']) : "";
-                 
-                    },
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
-                    'filterWidgetOptions' => [
-                        'pluginOptions' => ['allowClear' => true],
-                        'options' => ['multiple' => true]
-                    ],
-                    'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-                    'format' => 'raw'
-                ],
+//                       return !empty($component) ? $component->code : "";
+//                        //return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwca', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
+//                 
+//                    },
+//                    'filterType' => GridView::FILTER_SELECT2,
+//                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'),
+//                    'filterWidgetOptions' => [
+//                        'pluginOptions' => ['allowClear' => true],
+//                        'options' => ['multiple' => true]
+//                    ],
+//                    'filterInputOptions' => ['placeholder' => 'Filter by component'],
+//                    'format' => 'raw'
+//                ],
+//                                 [
+//                    'attribute' => 'activity_id',
+//                    'label' => 'Activity',
+//                    'vAlign' => 'middle',
+//                    //'width' => '180px',
+//                    'value' => function ($model) {
+//                        $activity = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id]);
+////
+////                        return $name->activity_code . ' ' . $name->name;
+//                        
+//                           return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a($activity->activity_code.' '.$activity->name, ['viewpw_1', 'id' => $model->id,'status' => $model->id ], ['class' => 'mpcd']) : "";
+//                 
+//                    },
+//                    'filterType' => GridView::FILTER_SELECT2,
+//                    'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
+//                    'filterWidgetOptions' => [
+//                        'pluginOptions' => ['allowClear' => true],
+//                        'options' => ['multiple' => true]
+//                    ],
+//                    'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+//                    'format' => 'raw'
+//                ],
         
-            [
-                    'attribute' => 'created_by',
-                    'label' => 'Names',
-                    'format' => 'raw',
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filterWidgetOptions' => [
-                        'pluginOptions' => ['allowClear' => true],
-                    ],
-                    'filter' => \backend\models\User::getFullNames(),
-                    'filterInputOptions' => ['prompt' => 'Filter by names', 'class' => 'form-control', 'id' => null],
-                    "value" => function ($model) {
-                        $name = "";
-                        $user_model = \backend\models\User::findOne(["id" => $model->created_by]);
-                        if (!empty($user_model)) {
-                            $name = $user_model->title . "" . $user_model->first_name . " " . $user_model->other_name . " " . $user_model->last_name;
-                        }
-                        return $name;
-                    }
-                ],
 
-        // [
-        //     'attribute' => 'district_id',
-        //     'label' => 'District', 
-        //     'vAlign' => 'middle',
-        //     'width' => '180px',
 
-        //     'value' => function ($model) {
-        //         $name =  \backend\models\Districts::findOne(['id' =>  $model->district_id])->name;
-        //         return !empty($model->district_id) && $model->district_id > 0 ? Html::a($name, ['awpb-activity-line/index', 'id' => $model->district_id], ['class' => 'awbp-activity-line']): "";
-        //           },
+         [
+             'attribute' => 'cost_centre_id',
+             'label' => 'Cost Cntre', 
+             'vAlign' => 'middle',
+           //  'width' => '180px',
+
+             'value' => function ($model) {
+                 $name = \backend\models\AwpbCostCentre::findOne(['id' =>  $model->cost_centre_id])->name;
+                 return !empty($model->cost_centre_id) && $model->cost_centre_id > 0 ? Html::a($name, ['awpb-budget/viewpw_1', 'id' => $model->id], ['class' => 'awbp-activity-line']): "";
+                   },
            
-        //     // 'filterType' => GridView::FILTER_SELECT2,
-        //     // 'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-        //     // 'filterWidgetOptions' => [
-        //     //     'pluginOptions' => ['allowClear' => true],
-        //     //     'options' => ['multiple' => true]
-        //     // ],
-        //     // 'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-        //     // 'format' => 'raw'
-        // ],
+              'filterType' => GridView::FILTER_SELECT2,
+              'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+//              'filterWidgetOptions' => [
+//                  'pluginOptions' => ['allowClear' => true],
+//                  'options' => ['multiple' => true]
+//              ],
+              'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+              'format' => 'raw'
+        ],
 
         // [
         //     'label' => 'Activity Name',

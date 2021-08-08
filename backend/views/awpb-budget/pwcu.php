@@ -23,7 +23,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'AWPB Programme Wide Activities';
+$this->title = 'AWPB Programme Wide Activities By User';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -65,7 +65,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 
              'value' => function ($model) {
                  $name =  \backend\models\AwpbTemplate::findOne(['id' =>  $model->awpb_template_id])->fiscal_year;
-                 return !empty($name) ? $name : "";      
+                 return $name ;//Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
              },
            
              'filterType' => GridView::FILTER_SELECT2,
@@ -77,60 +77,67 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
              'filterInputOptions' => ['placeholder' => 'Filter by activity'],
              'format' => 'raw'
          ],
-[
-                    'attribute' => 'component_id',
-                    'label' => 'Component',
-                    'vAlign' => 'middle',
-                    'width' => '7%',
-                    'value' => function ($model, $key, $index, $widget) {
-                        $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
-
-                       return !empty($component) ? $component->code : "";
-                        //return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwca', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
-                 
-                    },
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'),
-                    'filterWidgetOptions' => [
-                        'pluginOptions' => ['allowClear' => true],
-                        'options' => ['multiple' => true]
-                    ],
-                    'filterInputOptions' => ['placeholder' => 'Filter by component'],
-                    'format' => 'raw'
-                ],
                                  [
-                    'attribute' => 'activity_id',
-                    'label' => 'Activity',
-                    'vAlign' => 'middle',
-                    //'width' => '180px',
-                    'value' => function ($model) use ($user) {
-                        $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id]);
-
-                        ;
-                        
-                         
-                             if (User::userIsAllowedTo('Approve AWPB - PCO') && ($user->province_id == 0 || $user->province_id == '')) {
-
-                         return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a( $name->activity_code . ' ' . $name->name, ['viewpw_1', 'id' => $model->id,'status' => $model->id ], ['class' => 'mpcd']) : "";
-                 
-                          }
-                            if (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
-
-                        return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a( $name->activity_code . ' ' . $name->name, ['pwcau', 'id' => $model->activity_id,'status' => $model->id ], ['class' => 'mpcd']) : "";
-                 
-                          }
-                           
-                           
-                    },
+                    'attribute' => 'created_by',
+                    'label' => "Officer's Names",
+                                     'vAlign' => 'middle',
+                    'format' => 'raw',
                     'filterType' => GridView::FILTER_SELECT2,
-                    'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
                     'filterWidgetOptions' => [
                         'pluginOptions' => ['allowClear' => true],
-                        'options' => ['multiple' => true]
                     ],
-                    'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-                    'format' => 'raw'
+                    'filter' => \backend\models\User::getFullNames(),
+                    'filterInputOptions' => ['prompt' => 'Filter by names', 'class' => 'form-control', 'id' => null],
+                    "value" => function ($model) {
+                        $name = "";
+                        $user_model = \backend\models\User::findOne(["id" => $model->created_by]);
+                        
+                 return !empty($user_model) ? Html::a($user_model->title . "" . $user_model->first_name . " " . $user_model->other_name . " " . $user_model->last_name, ['pwca', 'id' => $model->created_by ], ['class' => 'mpcd']) : "";
+                    }
                 ],
+//[
+//                    'attribute' => 'component_id',
+//                    'label' => 'Component',
+//                    'vAlign' => 'middle',
+//                    'width' => '7%',
+//                    'value' => function ($model, $key, $index, $widget) {
+//                        $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
+//
+//                       return !empty($component) ? $component->code : "";
+//                        //return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwca', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
+//                 
+//                    },
+//                    'filterType' => GridView::FILTER_SELECT2,
+//                    'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'),
+//                    'filterWidgetOptions' => [
+//                        'pluginOptions' => ['allowClear' => true],
+//                        'options' => ['multiple' => true]
+//                    ],
+//                    'filterInputOptions' => ['placeholder' => 'Filter by component'],
+//                    'format' => 'raw'
+//                ],
+//                                 [
+//                    'attribute' => 'activity_id',
+//                    'label' => 'Activity',
+//                    'vAlign' => 'middle',
+//                    //'width' => '180px',
+//                    'value' => function ($model) {
+////                        $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id]);
+////
+////                        return $name->activity_code . ' ' . $name->name;
+//                        
+//                           return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a(backend\models\AwpbActivity::findOne($model->activity_id)->name, ['pwcau', 'id' => $model->activity_id,'status' => $model->id ], ['class' => 'mpcd']) : "";
+//                 
+//                    },
+//                    'filterType' => GridView::FILTER_SELECT2,
+//                    'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
+//                    'filterWidgetOptions' => [
+//                        'pluginOptions' => ['allowClear' => true],
+//                        'options' => ['multiple' => true]
+//                    ],
+//                    'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+//                    'format' => 'raw'
+//                ],
 //        
 //        [
 //            'attribute' => 'id',
@@ -330,12 +337,12 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                 'pageSummaryFunc' => GridView::F_SUM,
                 'footer' => true
             ],
-//                                 [
-//                'class' => 'kartik\grid\ActionColumn',
-//                'vAlign'=>'middle',
-//                                     'width' => '10%',
-//            'template' => '{view}{update} {declinep}',
-//            'buttons' => [
+                                 [
+                'class' => 'kartik\grid\ActionColumn',
+                'vAlign'=>'middle',
+                                     'width' => '10%',
+            'template' => '{delete}',
+            'buttons' => [
 //                
 //                         
 //                'view' => function ($url, $model) use ($user,$status){
@@ -362,7 +369,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 //                              $status= $awpb_province->status;
 //
 //                            }
-//                   if ((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
+//                   if ((User::userIsAllowedTo('Approve AWPB - PCO') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
 //
 //                              
 //                        return Html::a(
@@ -379,36 +386,28 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 //                        
 //                  }
 //                },
-//                           'declinep' => function ($url, $model) use ($user, $pro,$status) {
-//                            $awpb_province =  \backend\models\AwpbProvince::findOne(['awpb_template_id' =>$model->awpb_template_id,'province_id'=>$model->province_id]);
-//                            $status=100;
-//                            if (!empty($awpb_province)) {
-//                              $status= $awpb_province->status;
-//
-//                            }
-//                  if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
-//
-//                        $pro =  $awpb_province->id;
-//                        $province_id =$awpb_province->id;
-//                
-//
-//                         return Html::a(
-//                                        '<span class="fas fa-times-circle"></span>',['awpb-comment/declinep','id'=>$model->province_id], [ 
-//                                    'title' => 'Decline Provincial AWPB',
-//                                    'data-toggle' => 'tooltip',
-//                                    'data-placement' => 'top',
-//                                    // 'target' => '_blank',
-//                                    'data-pjax' => '0',
-//                                   // 'style' => "padding:5px;",
-//                                    'class' => 'bt btn-lg'
-//                                        ]
-//                        );
-//
-//
-//                    }
-//                },
-//               
-//            ]]
+                           'delete' => function ($url, $model) use ($user, $pro,$status) {
+                         
+                    if ((User::userIsAllowedTo('Approve AWPB - PCO') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
+                       
+
+                         return Html::a(
+                                        '<span class="fas fa-times-circle"></span>',['awpb-comment/declinepw','id'=>$model->created_by], [ 
+                                    'title' => 'Decline PW AWPB',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                   // 'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );
+
+
+                    }
+                },
+               
+            ]]
 
             // //'id',
             // [

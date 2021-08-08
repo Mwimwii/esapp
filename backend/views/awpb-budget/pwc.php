@@ -45,6 +45,41 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
          
 
         <?php
+        
+         if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status1 == \backend\models\AwpbBudget::STATUS_DRAFT) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
+  
+         echo Html::a(
+                                        '<span class="btn btn-success float-left">Approve PW AWPB</span>',['awpb-budget/submitpw','id'=>0], [ 
+                                    'title' => 'Approve PW AWPB',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                   // 'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );    
+         }
+         if (((User::userIsAllowedTo('Approve AWPB - Ministry') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) 
+         {
+
+                
+echo Html::a(
+                                        '<span class="btn btn-success float-right">Decline PW AWPB</span>',['awpb-comment/declinepw','id'=>0], [ 
+                                    'title' => 'Decline PW AWPB',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                   // 'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );
+
+                    }
+                
+        
+        
        $gridColumns = [
         [
             'class'=>'kartik\grid\SerialColumn',
@@ -82,12 +117,19 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                     'label' => 'Component',
                     'vAlign' => 'middle',
                     //'width' => '7%',
-                    'value' => function ($model, $key, $index, $widget) {
+                    'value' => function ($model, $key, $index, $widget) use($user){
                         $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
 
                        // return !empty($component) ? $component->code .' '.$component->name : "";
+                          if (User::userIsAllowedTo('Approve AWPB - PCO') && ($user->province_id == 0 || $user->province_id == '')) {
+
+                        return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwcu', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
+                          }
+                            if (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
+
                         return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwca', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
-                 
+                          }
+                          
                     },
                     'filterType' => GridView::FILTER_SELECT2,
                     'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'),
@@ -297,97 +339,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                 'pageSummaryFunc' => GridView::F_SUM,
                 'footer' => true
             ],
-                                 [
-                'class' => 'kartik\grid\ActionColumn',
-                'vAlign'=>'middle',
-                                     'width' => '10%',
-            'template' => '{update} {declinep}',
-            'buttons' => [
-                
-                'update' => function ($url, $model) use ($user,$status){
-                  $awpb_province =  \backend\models\AwpbProvince::findOne(['awpb_template_id' =>$model->awpb_template_id, 'province_id'=>$model->province_id]);
-                            //$status=100;
-                            if (!empty($awpb_province)) {
-                              $status= $awpb_province->status;
-
-                            }
-                   if ((User::userIsAllowedTo('Approve AWPB - PCO') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
-
                               
-                        return Html::a(
-                                        '<span class="fas fa-check"></span>',['submit','id'=>$model->component_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
-                                    'title' => 'Approve Provincial AWPB',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
-                        
-                  }
-                },
-                           'declinep' => function ($url, $model) use ($user, $pro,$status) {
-                           
-                  if (((User::userIsAllowedTo('Approve AWPB - PCO') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED)|| (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
-
-                     
-                         return Html::a(
-                                        '<span class="fas fa-times-circle"></span>',['awpb-comment/declinep','id'=>$model->component_id], [ 
-                                    'title' => 'Decline Provincial AWPB',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
-
-
-                    }
-                },
-               
-            ]]
-
-            // //'id',
-            // [
-            //     'class' => 'kartik\grid\CheckboxColumn',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style'],
-            //     'pageSummary' => '<small>(amounts in $)</small>',
-            //     'pageSummaryOptions' => ['colspan' => 3, 'data-colspan-dir' => 'rtl']
-            // ],
-
-            // [
-            //     'class' => 'kartik\grid\ActionColumn',
-            //     'dropdown' => false,
-            //     'vAlign'=>'middle',
-            //     'template' => '{delete} {view}',
-            //     'urlCreator' => function($action, $model, $key, $index) { 
-            //             return Url::to([$action,'id'=>$key]);
-            //     },
-                  
-              
-            // ],
-
-
-            // [
-            //     'attribute' => 'status', 'format' => 'raw',
-            //     'value' => function($model) {
-            //         $str = "";
-            //         $id = 1;
-            //         //if ($model->status == AwpbActivityLine::STATUS_SUBMITTED) {
-            //             if ($id== 1) {
-            //             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-success'> "
-            //                     . "<i class='fa fa-check'></i> Accepted</p><br>";
-            //         } else {
-            //             $str = "<p style='margin:2px;padding:2px;display:inline-block;' class='badge badge-info'> "
-            //                     . "<i class='fa fa-hourglass-half'></i> Pending IKMO review</p><br>";
-            //         }
-            //         return $str;
-            //     },
-            // ],
 
             ];
 
