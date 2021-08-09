@@ -2569,33 +2569,9 @@ class ReportsController extends Controller {
         $writer->save('php://output');
         exit;
     }
-
-    public function actionDownloadBudget($id) {
-
-// 	$user = User::findOne(['id' => Yii::$app->user->id]);
-//     $searchModel = new AwpbActivityLine();
-//     $query = $searchModel::find();
-//     $query->select(['SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
-//    // $query->where('Awpb_Template.fiscal_year= :field1', [':field1' =>$id]);
-//    // $query->groupBy('Awpb_Activity.gl_account_code');
-//    // $query->select(['Awpb_Template.fiscal_year as year','Awpb_Activity.gl_account_code as code','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
-//     //$query->leftJoin('Awpb_Activity', 'Awpb_Activity.id = AwpbActivityLine.activity_id');
-//     //$query->where('Awpb_Template.fiscal_year= :field1', [':field1' =>$id]);
-//     //$query->groupBy('Awpb_Activity.gl_account_code');
-//     $query->asArray();
-//     $query->all();
-//     if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch'])) {
-//         $faabs_ids = [];
-//         $budget_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
-//                 ->all();
-//         if (!empty($faabs_model)) {
-//             foreach ($faabs_model as $id) {
-//                 array_push($faabs_ids, $id['id']);
-//             }
-//         }
-
-        $budget_model = \backend\models\AwpbActivityLine::find()
-                ->select(['awpb_template.fiscal_year as year', 'awpb_activity.gl_account_code as code',
+public function actionDownloadBudget($id) {
+    $budget_model = \backend\models\AwpbGeneralLedger::find()
+                ->select(['awpb_template.fiscal_year as year', 'awpb_general_ledger.general_ledger_account as code',
                     'SUM(mo_1_amount) as m1',
                     'SUM(mo_2_amount) as m2',
                     'SUM(mo_3_amount) as m3',
@@ -2609,14 +2585,14 @@ class ReportsController extends Controller {
                     'SUM(mo_11_amount) as m11',
                     'SUM(mo_12_amount) as m12',
                 ])
-                ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
-                ->leftJoin('awpb_template', 'awpb_template.id = awpb_activity_line.awpb_template_id')
-                ->where(['awpb_activity_line.awpb_template_id' => $id])
+               // ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_general_ledger.awpb_template_id')
+                ->where(['awpb_general_ledger.awpb_template_id' => $id])
                 // ->andWhere(['quarter' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['quarter']])
                 //  ->andWhere(['IN', 'faabs_group_id', $faabs_ids])
                 // ->andWhere(['youth_non_youth' => 'Youth'])
                 // ->andWhere(['YEAR(training_date)' => date("Y", strtotime(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['year']))])
-                ->groupBy(['code'])
+                ->groupBy(['funder_id'])
                 ->asArray()
                 ->all();
 
@@ -2640,7 +2616,7 @@ class ReportsController extends Controller {
                 ->setDescription('Facilitation of Improved Technologies/Best Practices report for Office 2007 XLSX, generated using PHP classes.')
                 ->setKeywords('office 2007 openxml php')
                 ->setCategory('Report');
-
+//$year="";
         if (!empty($budget_model)) {
             $row = 0;
             foreach ($budget_model as $_model) {
@@ -2708,13 +2684,13 @@ class ReportsController extends Controller {
         }
 
 
-        $spreadsheet->getActiveSheet()->setTitle('2020 Budget');
+        $spreadsheet->getActiveSheet()->setTitle( $year.' Budget');
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $spreadsheet->setActiveSheetIndex(0);
 
         // Redirect output to a client's web browser (Xlsx)
-        $file = '_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
+        $file = $year.'_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
         header('Cache-Control: max-age=0');
@@ -2733,3 +2709,5 @@ class ReportsController extends Controller {
     }
 
 }
+
+

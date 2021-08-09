@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplateActivity */
 
-$this->title = $model->id;
+$this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Awpb Template Activities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -31,12 +31,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'activity_id',
+            'activity_code',
+            'name',
             'component_id',
             'outcome_id',
             'output_id',
             'awpb_template_id',
             'funder_id',
             'expense_category_id',
+            'ifad',
+            'ifad_grant',
+            'grz',
+            'beneficiaries',
+            'private_sector',
+            'iapri',
+            'parm',
+            'access_level_district',
+            'access_level_province',
+            'access_level_programme',
             'created_at',
             'updated_at',
             'created_by',

@@ -361,6 +361,29 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         return ArrayHelper::map($query, 'name', 'name');
     }
 
+    public static function getAwpbTemplateUsers() {
+
+        $query = static::find()
+                ->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                ->where(['status' => self::STATUS_ACTIVE])            
+                ->orderBy(['last_name' => SORT_ASC])
+                ->asArray()
+                ->all();
+        return ArrayHelper::map($query, 'id', 'name');
+    
+
+
+    //    $users = self::find()
+    //     //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+    //     ->select(["CONCAT(first_name,' ',last_name) as name", 'id'])
+    //     ->where(['status' => self::STATUS_ACTIVE])
+    //         //->asArray()
+    //     ->orderBy(['name' => SORT_ASC])
+    //         ->all();
+    //     return $users;
+    }
+
+   
     /**
      * Function for seeding default system user
      * NOTE:: USER should be removed after an admin user is created

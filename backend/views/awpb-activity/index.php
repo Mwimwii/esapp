@@ -50,7 +50,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
 
-
+  [
+                'attribute' => 'id',
+      ],
 
             [
                 'attribute' => 'activity_code', 

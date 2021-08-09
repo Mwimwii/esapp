@@ -9,17 +9,18 @@ use backend\models\AwpbBudget;
 /**
  * AwpbBudgetSearch represents the model behind the search form of `backend\models\AwpbBudget`.
  */
-class AwpbBudgetSearch extends AwpbBudget {
 
-    public $year;
-
+class AwpbBudgetSearch extends AwpbBudget
+{
     /**
      * {@inheritdoc}
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['id', 'component_id', 'output_id', 'activity_id', 'awpb_template_id', 'indicator_id', 'status', 'number_of_females', 'number_of_males', 'number_of_young_people', 'number_of_not_young_people', 'number_of_women_headed_households', 'number_of_non_women_headed_households', 'number_of_household_members', 'camp_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'year'], 'safe'],
+            [['name'], 'safe'],
+
             [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount', 'mo_1_actual', 'mo_2_actual', 'mo_3_actual', 'mo_4_actual', 'mo_5_actual', 'mo_6_actual', 'mo_7_actual', 'mo_8_actual', 'mo_9_actual', 'mo_10_actual', 'mo_11_actual', 'mo_12_actual', 'quarter_one_actual', 'quarter_two_actual', 'quarter_three_actual', 'quarter_four_actual', 'number_of_females_actual', 'number_of_males_actual', 'number_of_young_people_actual', 'number_of_not_young_people_actual', 'number_of_women_headed_households_actual', 'number_of_non_women_headed_households_actual', 'number_of_household_members_actual'], 'number'],
         ];
     }
@@ -27,7 +28,10 @@ class AwpbBudgetSearch extends AwpbBudget {
     /**
      * {@inheritdoc}
      */
-    public function scenarios() {
+
+    public function scenarios()
+    {
+
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,7 +43,42 @@ class AwpbBudgetSearch extends AwpbBudget {
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+
+    
+    public function searchByYearProvinceDistrict($year, $province_id, $district_id) {
+
+        //Needed for a search filter
+        if (!empty($district_id) ||
+                !empty($province_id) ||
+                !empty($year)) {
+
+            if ((!empty($province_id) && empty($district_id)) || !empty($year)) {
+                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+                $query = AwpbBudget::find()
+                        ->where(["awpb_template_id" => $awpb_template->id])
+                        ->andWhere(['province_id' => $province_id])
+                        ->andWhere(['district_id' => $district_id]);
+            }
+            if (!empty($district_id)) {
+                $query = AwpbBudget::find()
+                        ->Where(['province_id' => $province_id])
+                        ->andWhere(['district_id' => $district_id]);
+            }
+        }
+
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        return $dataProvider;
+    }
+    
+    
+    public function search($params)
+    {
+
         $query = AwpbBudget::find();
 
         // add conditions that should always apply here
@@ -144,6 +183,7 @@ class AwpbBudgetSearch extends AwpbBudget {
         return $dataProvider;
     }
 
+
     public function searchByYearProvinceDistrict($year, $province_id, $district_id) {
 
         //Needed for a search filter
@@ -178,5 +218,6 @@ class AwpbBudgetSearch extends AwpbBudget {
 
         return $dataProvider;
     }
+
 
 }

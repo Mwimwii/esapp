@@ -1,3 +1,4 @@
+
 <?php
 
 namespace backend\models;
@@ -126,3 +127,4 @@ class AwpbOutcome extends \yii\db\ActiveRecord
         return $list;
     }
 }
+

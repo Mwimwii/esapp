@@ -28,6 +28,7 @@ return [
                 ],
             ]
         ],
+
         'cache' => [
             'class' => 'yii\caching\MemCache',
             'servers' => [
@@ -39,6 +40,21 @@ return [
             ],
             'useMemcached' => true,
         ],
+
+
+        // 'cache' => [
+        //     'class' => 'yii\caching\MemCache',
+        //     'servers' => [
+        //         [
+        //             'host' => '127.0.0.1',
+        //             'port' => 11211,
+        //             'weight' => 100,
+        //         ],
+        //     ],
+        //     'useMemcached' => false,
+        // ],
+
+
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,

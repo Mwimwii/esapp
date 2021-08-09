@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbIndicator */
 
-$this->title = 'Create AWPB Indicator';
-$this->params['breadcrumbs'][] = ['label' => 'AWPB Indicators', 'url' => ['index']];
+$this->title = 'Create Programme Indicator';
+$this->params['breadcrumbs'][] = ['label' => 'Programme Indicators', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="card card-success card-outline">

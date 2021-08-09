@@ -16,9 +16,8 @@ use backend\models\AwpbIndicator;
 /* @var $model backend\models\AwpbOutcome */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="card">
-
-<div class="card-body">
+<div class="card card-success card-outline">
+    <div class="card-body">
 <div class="row">
 		<div class="col-md-12">
 

@@ -1056,4 +1056,3 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
 </div>
 <!-- /.modal-dialog -->
 </div>
-

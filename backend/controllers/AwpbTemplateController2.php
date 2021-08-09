@@ -140,7 +140,20 @@ class AwpbTemplateController extends Controller
             'model' => $model,
         ]);
     }
+ public function actionCq()
+    {
+           $model=AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+      //  $model = $this->findModel($id);
+        $old_quarter = $model->quarter;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+           // return $this->redirect(['view', 'id' => $model->id]);
+             Yii::$app->session->setFlash('success', 'Quarter changed from Q'.$old_quarter . ' to Q'.$model->quarter.' successfully.');
+        }
 
+        return $this->render('cq', [
+            'model' => $model,
+        ]);
+    }
     /**
      * Deletes an existing AwpbTemplate model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

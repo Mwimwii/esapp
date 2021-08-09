@@ -141,6 +141,7 @@ if (!empty($expense_cat)) {
                 'format' => 'raw',
                 'label' => 'Component',
                 'value' => $comp
+                
             ],
             // [
             //     'attribute'=>'indicator_id',

@@ -17,7 +17,9 @@ class AwpbTemplateSearch extends AwpbTemplate
     public function rules()
     {
         return [
-            [['id', 'fiscal_year', 'status', 'status_activities', 'status_users', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+
+            [['id', 'fiscal_year', 'status', 'quarter','status_activities', 'status_users', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+
             [['budget_theme', 'comment', 'guideline_file', 'preparation_deadline_first_draft', 'submission_deadline', 'consolidation_deadline', 'review_deadline', 'preparation_deadline_second_draft', 'review_deadline_pco', 'finalisation_deadline_pco', 'submission_deadline_moa_mfl', 'approval_deadline_jpsc', 'incorpation_deadline_pco_moa_mfl', 'submission_deadline_ifad','comment_deadline_ifad','distribution_deadline'], 'safe'],
         ];
     }
@@ -61,6 +63,9 @@ class AwpbTemplateSearch extends AwpbTemplate
             'id' => $this->id,
             'fiscal_year' => $this->fiscal_year,
             'status' => $this->status,
+
+             'quarter' => $this->quarter,
+
             'status_activities' => $this->status_activities,
             'status_users' => $this->status_users,
             'preparation_deadline_first_draft' => $this->preparation_deadline_first_draft,

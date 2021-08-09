@@ -25,13 +25,24 @@ class AwpbIndicatorController extends Controller
      * {@inheritdoc}
      */
     public function behaviors() {
-        return [
+    
+             return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view'],
+                'only' => [
+                    'delete', 'view',   'viewo', 'viewp', 'viewpwpco', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcop', 'mpcod', 'mpcoa',
+                    'index', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
+                    'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'decline', 'submitpw', 'submit', 'mpwpcoa'
+                ],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                        'actions' => [
+                            'delete', 'view',   'viewo', 'viewp', 'viewpwpco', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcop', 'mpcod', 'mpcoa',
+                            'index', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
+                            'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'decline', 'submitpw', 'submit', 'mpwpcoa'
+                        ],
+                        //'story/create/<id:\d+>/<usr:\d+>' => 'story/create',
+                        //'awpb-activity-line/mpca/<id:\d+>/<distr:\d+>',
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -45,6 +56,7 @@ class AwpbIndicatorController extends Controller
             ],
         ];
     }
+
 
     /**
      * Lists all AwpbIndicator models.
@@ -170,4 +182,6 @@ class AwpbIndicatorController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+   
 }

@@ -11,12 +11,48 @@ use yii\helpers\ArrayHelper;
  *
  * @property int $id
  * @property int $activity_id
- * @property int $component_id
- * @property int $outcome_id
- * @property int $output_id
- * @property int|null $awpb_template_id
+ * @property string $activity_code
+ * @property string $name
+ * @property int|null $component_id
+ * @property int|null $outcome_id
+ * @property int|null $output_id
+ * @property int $awpb_template_id
  * @property int|null $funder_id
  * @property int|null $expense_category_id
+ * @property float|null $ifad
+ * @property float|null $ifad_grant
+ * @property float|null $grz
+ * @property float|null $beneficiaries
+ * @property float|null $private_sector
+ * @property float|null $iapri
+ * @property float|null $parm
+ * @property float|null $ifad_amount
+ * @property float|null $ifad_grant_amount
+ * @property float|null $grz_amount
+ * @property float|null $beneficiaries_amount
+ * @property float|null $private_sector_amount
+ * @property float|null $iapri_amount
+ * @property float|null $parm_amount
+ * @property float|null $mo_1_amount
+ * @property float|null $mo_2_amount
+ * @property float|null $mo_3_amount
+ * @property float|null $mo_4_amount
+ * @property float|null $mo_5_amount
+ * @property float|null $mo_6_amount
+ * @property float|null $mo_7_amount
+ * @property float|null $mo_8_amount
+ * @property float|null $mo_9_amount
+ * @property float|null $mo_10_amount
+ * @property float|null $mo_11_amount
+ * @property float|null $mo_12_amount
+ * @property float|null $quarter_one_amount
+ * @property float|null $quarter_two_amount
+ * @property float|null $quarter_three_amount
+ * @property float|null $quarter_four_amount
+ * @property float|null $budget_amount
+ * @property int|null $access_level_district
+ * @property int|null $access_level_province
+ * @property int|null $access_level_programme
  * @property int $created_at
  * @property int $updated_at
  * @property int|null $created_by
@@ -36,6 +72,8 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 1;
     const TYPE_MAIN = 0;
     const TYPE_SUB = 1;
+    const STATUS_OPEN = 0;
+    const STATUS_LOCKED = 1;
     public static function tableName()
     {
         return 'awpb_template_activity';
@@ -47,16 +85,19 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['activity_id','component_id',  'output_id', 'awpb_template_id'], 'required'],
+
+            [['activity_id', 'activity_code', 'name', 'awpb_template_id'], 'required'],
+            [['activity_id',  'status','component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'access_level_district', 'access_level_province', 'access_level_programme', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['ifad', 'ifad_grant', 'grz', 'beneficiaries', 'private_sector', 'iapri', 'parm', 'ifad_amount', 'ifad_grant_amount', 'grz_amount', 'beneficiaries_amount', 'private_sector_amount', 'iapri_amount', 'parm_amount', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'budget_amount'], 'number'],
             [['activity_code'], 'string', 'max' => 10],
-            [['name'], 'string', 'max' => 40],
-            [['activity_id', 'component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['name'], 'string', 'max' => 100],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
         ];
     }
-    public function behaviors() {
+    
+    	public function behaviors() {
         return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
@@ -67,6 +108,7 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
@@ -74,16 +116,52 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'activity_id' => 'Activity ID',
-            'activity_code' => 'Activity Code',    
+
+            'activity_id' => 'Activity',
+            'activity_code' => 'Activity Code',
             'name' => 'Name',
-            'component_id' => 'Component ID',
+            'component_id' => 'Component',
+
             'outcome_id' => 'Outcome ID',
             'output_id' => 'Output ID',
-            'awpb_template_id' => 'Awpb Template ID',
-            'funder_id' => 'Funder ID',
+            'awpb_template_id' => 'Awpb Template',
+            'funder_id' => 'Funder',
             'expense_category_id' => 'Expense Category ID',
-            'activities' => 'Activities',
+            'status'=>'Status',
+            'ifad' => 'Ifad',
+            'ifad_grant' => 'Ifad Grant',
+            'grz' => 'Grz',
+            'beneficiaries' => 'Beneficiaries',
+            'private_sector' => 'Private Sector',
+            'iapri' => 'Iapri',
+            'parm' => 'Parm',
+            'ifad_amount' => 'Ifad Amount',
+            'ifad_grant_amount' => 'Ifad Grant Amount',
+            'grz_amount' => 'Grz Amount',
+            'beneficiaries_amount' => 'Beneficiaries Amount',
+            'private_sector_amount' => 'Private Sector Amount',
+            'iapri_amount' => 'Iapri Amount',
+            'parm_amount' => 'Parm Amount',
+            'mo_1_amount' => 'Mo 1 Amount',
+            'mo_2_amount' => 'Mo 2 Amount',
+            'mo_3_amount' => 'Mo 3 Amount',
+            'mo_4_amount' => 'Mo 4 Amount',
+            'mo_5_amount' => 'Mo 5 Amount',
+            'mo_6_amount' => 'Mo 6 Amount',
+            'mo_7_amount' => 'Mo 7 Amount',
+            'mo_8_amount' => 'Mo 8 Amount',
+            'mo_9_amount' => 'Mo 9 Amount',
+            'mo_10_amount' => 'Mo 10 Amount',
+            'mo_11_amount' => 'Mo 11 Amount',
+            'mo_12_amount' => 'Mo 12 Amount',
+            'quarter_one_amount' => 'Quarter One Amount',
+            'quarter_two_amount' => 'Quarter Two Amount',
+            'quarter_three_amount' => 'Quarter Three Amount',
+            'quarter_four_amount' => 'Quarter Four Amount',
+            'budget_amount' => 'Budget Amount',
+            'access_level_district' => 'Access Level District',
+            'access_level_province' => 'Access Level Province',
+            'access_level_programme' => 'Access Level Programme',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -123,36 +201,8 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
     }
-    // public static function getActivities($id) {
-    //     $data = self::find()
-    //     ->where(['awpb_template_id'=>$id])
- 
-    //     ->all();
-    //     $list = ArrayHelper::map($data, 'id','name');
-    //     return $list;
-    // }
-    // public static function getAllRights() {
-    //     $query = self::find()->all();
-    //     return $query;
-    // }
- 
-    
-    public static function getActivities($template_id) {
-    
 
 
-        $activties = self::find()
-                ->select(['activity_id', 'name'])
-            
-                ->where(['awpb_template_id'=>$template_id])
-               // ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.activity_id'])
-                ->all();
-      // $list = ArrayHelper::map($activties, 'id', 'name');
-        return  $activties;
-
-
-
-    }
     public static function getAwpbActivitiesList() {
 
         $activties = self::find()
@@ -185,6 +235,27 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
                     ->all();
                     return $query;
                 
+}
+    
+    public static function getTemplateActivity($template_id, $activity_id) {
+                      $query = self::find()
+                    ->where(['awpb_template_id'=>$template_id])
+                              ->where(['activity_id'=>$activity_id])
+                    ->one();
+                    return $query;
+                
+
+    }
+    
+        public static function getActivities($template_id) {
+           $activities = self::find()
+                ->select(['activity_id', 'name'])
+            
+                ->where(['awpb_template_id'=>$template_id])
+               // ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.activity_id'])
+                ->all();
+      // $list = ArrayHelper::map($activties, 'id', 'name');
+        return  $activities;
 
     }
 

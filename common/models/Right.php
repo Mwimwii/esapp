@@ -71,7 +71,8 @@ class Right extends \yii\db\ActiveRecord {
             'Manage AWPB templates' => "",
             'View AWPB templates' => "",
             'View AWPB activity lines' => "",
-            'Manage AWPB activity lines' => "",
+            'Manage AWPB' => "Manage AWPB",
+             'Manage PW AWPB' => "Manage PW AWPB",
             'Manage AWPB activity lines' => 'View AWPB activity lines',
             'Submit District AWPB' => "",
             'Approve AWPB - Provincial' => 'Approve AWPB - Provincial',
@@ -142,17 +143,26 @@ class Right extends \yii\db\ActiveRecord {
             'View MGF Approvals' => "",
             'View MGF Proposals' => "",
             'View MGF Evaluations' => "",
-            'Remove project outreach records' => "Remove project outreach records",
+            'Remove cost centre' => "Remove cost centre",
+            'Manage cost centre' => "Manage cost centre",
+            'Request Funds'=>"Request Funds",
+             'Approve Funds Requisition'=>"Approve Funds Requisition",
+            'Disburse Funds'=>"Disburse Funds",
+            'Review Funds Request'=>"Review Funds Request",
+            'View Funds Utilisation'=>"View Funds Utilisation",
+             'Remove project outreach records' => "Remove project outreach records",
             'Submit project outreach records' => "Can submit project outreach quarterly records",
             'Add staff hourly rates' => "Add staff hourly rates",
             'View staff hourly rates' => "View staff hourly rates",
             'Review timesheets' => "Review timesheets",
             'Submit timesheets' => "Submit timesheets",
+            //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
+            
         ];
 
         $count = 0;
         foreach ($rights as $right => $definition) {
-           // if (empty(Right::findOne(["right" => $right]))) {
+            if (empty(Right::findOne(["right" => $right]))) {
                 $model = new Right();
                 $model->right = $right;
                 $model->definition = $definition;
@@ -160,9 +170,10 @@ class Right extends \yii\db\ActiveRecord {
                 if ($model->save()) {
                     $count++;
                 }
-            //}
+            }
         }
         echo "Inserted $count rights into permissions table";
     }
 
 }
+
