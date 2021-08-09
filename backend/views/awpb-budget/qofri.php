@@ -66,7 +66,7 @@ $status=1;
                             'hAlign' => 'left',
                             'vAlign' => 'left',
                         // 'width' => '7%',
-                        ],
+                        
                         [
                             'class' => 'kartik\grid\EditableColumn',
                             'attribute' => 'unit_cost',
