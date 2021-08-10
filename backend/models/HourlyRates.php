@@ -96,22 +96,32 @@ class HourlyRates extends \yii\db\ActiveRecord {
         return $this->hasMany(ActivityTimeSheetsDistrictStaff::className(), ['rate_id' => 'id']);
     }
 
-     public static function getDesignations() {
-      $names = self::find()->orderBy(['designation' => SORT_ASC])->all();
-      return ArrayHelper::map($names, 'designation', 'designation');
-      }
-     public static function getSalaryScales() {
-      $names = self::find()->orderBy(['salary_scale' => SORT_ASC])->all();
-      return ArrayHelper::map($names, 'salary_scale', 'salary_scale');
-      }
+    public static function getDesignations() {
+        $names = self::find()
+                ->select(["CONCAT(designation,'-',salary_scale) as name", 'id'])
+                ->orderBy(['id' => SORT_ASC])
+                ->asArray()
+                ->all();
+        return ArrayHelper::map($names, 'id', 'name');
+    }
 
-      public static function getList() {
-      $list = self::find()->orderBy(['name' => SORT_ASC])->all();
-      return ArrayHelper::map($list, 'id', 'name');
-      }
+    public static function getRateDetails($id) {
+        return self::findOne($id);
+    }
 
-      public static function getById($id) {
-      $data = self::find()->where(['id' => $id])->one();
-      return $data->name;
-      } 
+    public static function getSalaryScales() {
+        $names = self::find()->orderBy(['salary_scale' => SORT_ASC])->all();
+        return ArrayHelper::map($names, 'salary_scale', 'salary_scale');
+    }
+
+    public static function getList() {
+        $list = self::find()->orderBy(['name' => SORT_ASC])->all();
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    public static function getById($id) {
+        $data = self::find()->where(['id' => $id])->one();
+        return $data->name;
+    }
+
 }

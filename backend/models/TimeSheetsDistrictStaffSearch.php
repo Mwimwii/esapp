@@ -17,8 +17,8 @@ class TimeSheetsDistrictStaffSearch extends TimeSheetsDistrictStaff
     public function rules()
     {
         return [
-            [['id', 'rate_id', 'hours_field_esapp_activities', 'hours_office_esapp_activities', 'total_hours_worked', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['month','year', 'designation', 'activity_description', 'reviewer_comments'], 'safe'],
+            [['id', 'rate_id', 'hours_field_esapp_activities', 'hours_office_esapp_activities', 'total_hours_worked', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by','approved_at','district','province'], 'integer'],
+            [['month','year', 'designation', 'activity_description', 'reviewer_comments','approved_at'], 'safe'],
             [['contribution'], 'number'],
         ];
     }
@@ -69,12 +69,15 @@ class TimeSheetsDistrictStaffSearch extends TimeSheetsDistrictStaff
             'year' => $this->year,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'district' => $this->district,
+            'province' => $this->province,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
 
         $query->andFilterWhere(['like', 'month', $this->month])
             ->andFilterWhere(['like', 'designation', $this->designation])
+            ->andFilterWhere(['like', 'approved_at', $this->approved_at])
             ->andFilterWhere(['like', 'activity_description', $this->activity_description])
             ->andFilterWhere(['like', 'reviewer_comments', $this->reviewer_comments]);
 

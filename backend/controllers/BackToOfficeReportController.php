@@ -364,7 +364,8 @@ class BackToOfficeReportController extends Controller {
                                     $msg .= "<p>Dear " . $_model->first_name . " " . $_model->other_name . " " . $_model->last_name . ",<br/>";
                                     $msg .= $model->name_of_officer . " has submitted a 'Back to office report' below is the summary of the assignment outcome<br/>";
                                     $msg .= $model->summary_of_assignment_outcomes . "</b></p>";
-                                    $msg .= '<p>You can login <i style="color: blue;">' . Html::a('(Click Here to Login)', $resetLink) . '</i> to see more details and review the submitted BtOR</p>';
+                                     $msg .= '<p>You can login <i style="color: blue;">' . Html::a('(Click Here to Login)', $resetLink) . '</i> to see more details and review the submitted BtOR if you are suppose to review Back To Office reports.'
+                                            . ' Please ignore the email if you are not suppose to review Back to Office reports</p>';
                                     \backend\models\Storyofchange::sendEmail($msg, $subject, $_model->email);
                                 }
                             }

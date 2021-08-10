@@ -29,6 +29,10 @@ use yii\helpers\ArrayHelper;
  */
 class TimeSheetsDistrictStaff extends \yii\db\ActiveRecord {
 
+    const _status_pending_approval = 0;
+    const _accepted = 1;
+    const _resent_back = 2;
+
     /**
      * {@inheritdoc}
      */
@@ -41,11 +45,24 @@ class TimeSheetsDistrictStaff extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['rate_id', 'month', 'designation', 'activity_description', 'year'], 'required'],
-            [['rate_id', 'hours_field_esapp_activities', 'hours_office_esapp_activities', 'total_hours_worked', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['rate_id',  'status','month', 'designation', 'activity_description', 'year', 'hours_field_esapp_activities'], 'required'],
+            [['rate_id', 'hours_field_esapp_activities', 'hours_office_esapp_activities', 'total_hours_worked', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by','district','province'], 'integer'],
             [['activity_description', 'reviewer_comments'], 'string'],
             [['contribution'], 'number'],
+            [['approved_at'], 'safe'],
             [['month', 'designation'], 'string', 'max' => 45],
+            ['hours_field_esapp_activities', 'checkTotalHours'],
+            ['hours_office_esapp_activities', 'checkTotalHours1'],
+            ['month', 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('month') &&
+                            !empty(self::findOne(['month' => $model->month,
+                                        "year" => $model->year])) ? TRUE : FALSE;
+                }, 'message' => 'You have already added a time sheet for this month and year'],
+            ['year', 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('year') &&
+                            !empty(self::findOne(['month' => $model->month,
+                                        "year" => $model->year])) ? TRUE : FALSE;
+                }, 'message' => 'You have already added a time sheet for this month and year'],
             [['rate_id'], 'exist', 'skipOnError' => true, 'targetClass' => HourlyRates::className(), 'targetAttribute' => ['rate_id' => 'id']],
         ];
     }
@@ -56,7 +73,6 @@ class TimeSheetsDistrictStaff extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => 'ID',
-            
             'month' => 'Month',
             'year' => 'Year',
             'designation' => 'Designation',
@@ -67,12 +83,34 @@ class TimeSheetsDistrictStaff extends \yii\db\ActiveRecord {
             'rate_id' => 'Rate(ZMW/hr)',
             'contribution' => 'Contribution(ZMW)',
             'status' => 'Status',
-            'reviewer_comments' => 'Reviewer comments',
+            'reviewer_comments' => 'Approval comments',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    public function checkTotalHours() {
+        $total_hours = 24;
+        $hours_office = !empty($this->hours_field_esapp_activities) ? $this->hours_field_esapp_activities : 0;
+        $hours_field = !empty($this->hours_office_esapp_activities) ? $this->hours_office_esapp_activities : 0;
+
+        $total_worked_hours = $hours_field + $hours_office;
+        if ($total_worked_hours > $total_hours) {
+            $this->addError('hours_field_esapp_activities', "Total hours(Office + Field) cannot be more than 24hours");
+        }
+    }
+
+    public function checkTotalHours1() {
+        $total_hours = 24;
+        $hours_office = !empty($this->hours_field_esapp_activities) ? $this->hours_field_esapp_activities : 0;
+        $hours_field = !empty($this->hours_office_esapp_activities) ? $this->hours_office_esapp_activities : 0;
+
+        $total_worked_hours = $hours_field + $hours_office;
+        if ($total_worked_hours > $total_hours) {
+            $this->addError('hours_office_esapp_activities', "Total hours(Office + Field) cannot be more than 24hours");
+        }
     }
 
     public function behaviors() {

@@ -954,7 +954,19 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                    if (User::userIsAllowedTo("Submit back to office report")) {
+                                    if (User::userIsAllowedTo("Review timesheets")||
+                                            User::userIsAllowedTo("View time sheets")) {
+                                        echo '<li class="nav-item">';
+                                        if (Yii::$app->controller->id == "time-sheets" &&
+                                                (Yii::$app->controller->action->id == "time-sheets" ||
+                                                Yii::$app->controller->action->id == "time-sheet-view")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>District time sheets</p>', ['/time-sheets/time-sheets'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>District time sheets</p>', ['/time-sheets/time-sheets'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Submit back to office report") && Yii::$app->user->getIdentity()->district_id>0) {
                                         echo '<li class="nav-item">';
                                         if (Yii::$app->controller->id == "back-to-office-report" &&
                                                 (Yii::$app->controller->action->id == "index" ||
