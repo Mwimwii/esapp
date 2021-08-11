@@ -7,6 +7,7 @@ use backend\assets\AppAsset;
 use yii\bootstrap4\Breadcrumbs;
 use yii\helpers\Url;
 use backend\models\User;
+use backend\models\AwpbTemplate;
 
 AppAsset::register($this);
 $session = Yii::$app->session;
@@ -14,6 +15,7 @@ $session = Yii::$app->session;
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
+
     <head>
         <meta charset="<?= Yii::$app->charset ?>">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,24 +25,25 @@ $session = Yii::$app->session;
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
+
     <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed  sidebar-collapse text-sm">
         <?php $this->beginBody() ?>
         <div class="wrapper">
             <!-- Navbar -->
-            <nav class="main-header navbar navbar-expand navbar-green navbar-light" >
+            <nav class="main-header navbar navbar-expand navbar-green navbar-light">
                 <ul class="navbar-nav">
                     <li class="nav-item ">
                         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars text-white"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a  href="https://www.agriculture.gov.zm/" target="blank" class="nav-link text-white">Ministry of Agriculture Home</a>
+                        <a href="https://www.agriculture.gov.zm/" target="blank" class="nav-link text-white">Ministry of Agriculture Home</a>
                     </li>
                 </ul>
                 <!-- Right navbar links -->
                 <ul class="navbar-nav ml-auto">
 
                     <!-- User Account: style can be found in dropdown.less -->
-                    <li class="dropdown user user-menu" >
+                    <li class="dropdown user user-menu">
 
                         <a href="#" class="dropdown-toggle text-white" data-toggle="dropdown">
                             <img src="<?= Url::to('@web/img/icon.png') ?>" class="user-image" alt="User Image">
@@ -79,12 +82,13 @@ $session = Yii::$app->session;
                 <!-- Brand Logo -->
                 <a style="background-color: #28a745" class="brand-link" href="https://www.agriculture.gov.zm/" target="blank">
                     <?=
-                    Html::img('@web/img/coa.png', ["class" => "brand-image",
-                        'style' => 'opacity: .9']);
+                    Html::img('@web/img/coa.png', [
+                        "class" => "brand-image",
+                        'style' => 'opacity: .9'
+                    ]);
                     ?>
                     <span class="brand-text text-white font-weight-light">E-SAPP MIS</span>
                 </a>
-
 
                 <!-- Sidebar -->
                 <div class="sidebar">
@@ -98,7 +102,7 @@ $session = Yii::$app->session;
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <!-- Add icons to the links using the .nav-icon class
-                                 with font-awesome or any other icon font library -->
+                                     with font-awesome or any other icon font library -->
                             <?php
                             echo ' <li class="nav-item">';
                             if (Yii::$app->controller->id == "home") {
@@ -113,11 +117,15 @@ $session = Yii::$app->session;
 
                             <!-------------------------------USER MANAGEMENT STARTS----------------------->
                             <?php
-                            if (User::userIsAllowedTo("Manage Users") || User::userIsAllowedTo("View Users") ||
+                            if (
+                                    User::userIsAllowedTo("Manage Users") || User::userIsAllowedTo("View Users") ||
                                     User::userIsAllowedTo("View profile") ||
-                                    User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
-                                if (Yii::$app->controller->id == "users" ||
-                                        Yii::$app->controller->id == "role") {
+                                    User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")
+                            ) {
+                                if (
+                                        Yii::$app->controller->id == "users" ||
+                                        Yii::$app->controller->id == "role"
+                                ) {
                                     echo '<li class="nav-item has-treeview menu-open">'
                                     . ' <a href="#" class="nav-link active">';
                                 } else {
@@ -135,8 +143,10 @@ $session = Yii::$app->session;
                                     <?php
                                     if (User::userIsAllowedTo("View profile")) {
                                         echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "users" &&
-                                                (Yii::$app->controller->action->id == "profile")) {
+                                        if (
+                                                Yii::$app->controller->id == "users" &&
+                                                (Yii::$app->controller->action->id == "profile")
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Profile</p>', ['/users/profile', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Profile</p>', ['/users/profile', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link"]);
@@ -146,11 +156,13 @@ $session = Yii::$app->session;
 
                                     if (User::userIsAllowedTo("Manage Roles") || User::userIsAllowedTo("View Roles")) {
                                         echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "role" &&
+                                        if (
+                                                Yii::$app->controller->id == "role" &&
                                                 (Yii::$app->controller->action->id == "index" ||
                                                 Yii::$app->controller->action->id == "view" ||
                                                 Yii::$app->controller->action->id == "create" ||
-                                                Yii::$app->controller->action->id == "update")) {
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Roles</p>', ['/role/index'], ["class" => "nav-link"]);
@@ -159,11 +171,13 @@ $session = Yii::$app->session;
                                     }
                                     if (User::userIsAllowedTo("Manage Users") || User::userIsAllowedTo("View Users")) {
                                         echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "users" &&
+                                        if (
+                                                Yii::$app->controller->id == "users" &&
                                                 (Yii::$app->controller->action->id == "index" ||
                                                 Yii::$app->controller->action->id == "view" ||
                                                 Yii::$app->controller->action->id == "create" ||
-                                                Yii::$app->controller->action->id == "update")) {
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Users</p>', ['users/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Users</p>', ['users/index'], ["class" => "nav-link"]);
@@ -176,15 +190,511 @@ $session = Yii::$app->session;
                                 </li>
                             <?php } ?>
                             <!-------------------------------USER MANAGEMENT ENDS------------------------->
+
+
+                            <!-------------------------------AWPB MANAGEMENT STARTS----------------------->
+                            <?php
+                            $user = User::findOne(['id' => Yii::$app->user->id]);
+
+                            if (
+                                    User::userIsAllowedTo("Manage components") || User::userIsAllowedTo("View components") ||
+                                    User::userIsAllowedTo("Manage AWPB templates") ||
+                                    User::userIsAllowedTo("View AWPB templates") ||
+                                    User::userIsAllowedTo("Manage programmes") ||
+                                    User::userIsAllowedTo("View programmes") ||
+                                    User::userIsAllowedTo("Manage AWPB activities") ||
+                                    User::userIsAllowedTo("View AWPB activities") ||
+                                    User::userIsAllowedTo("Setup AWPB") ||
+                                    User::userIsAllowedTo("View AWPB") ||
+                                    User::userIsAllowedTo("Manage AWPB activity lines") ||
+                                    User::userIsAllowedTo("Manage programme-wide AWPB") ||
+                                    User::userIsAllowedTo("View AWPB activity lines")
+                            ) {
+
+                                if (
+                                        Yii::$app->controller->id == "awpb-component" ||
+                                        Yii::$app->controller->id == "awpb-template" ||
+                                        Yii::$app->controller->id == "awpb-programme" ||
+                                        Yii::$app->controller->id == "awpb-activity" ||
+                                        Yii::$app->controller->id == "awpb-activity-line" ||
+                                        Yii::$app->controller->id == "awpb-funder" ||
+                                        Yii::$app->controller->id == "awpb-expense-category" ||
+                                        Yii::$app->controller->id == "awpb-unit-of-measure"
+                                ) {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+
+
+
+                                <i class="nav-icon fas fa-money-check"></i>
+                                <p>
+                                    AWPB management
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+                                    if (
+                                            User::userIsAllowedTo("Manage AWPB activity lines") && ($user->district_id > 0 || $user->district_id != '')
+                                    ) {
+
+
+                                        echo '<li class="nav-item has-treeview menu-open">'
+                                        . ' <a href="#" class="nav-link active">';
+                                    } else {
+                                        echo '<li class="nav-item has-treeview">'
+                                        . '<a href="#" class="nav-link">';
+                                    }
+                                    ?>
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Comm.-Specific AWPB
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <?php
+                                        if (
+                                                User::userIsAllowedTo("Manage AWPB activity lines") && ($user->district_id > 0 || $user->district_id != '')
+                                        ) {
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "index" ||
+                                                    Yii::$app->controller->action->id == "view" ||
+                                                    Yii::$app->controller->action->id == "create" ||
+                                                    Yii::$app->controller->action->id == "update")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>District</p>', ['awpb-activity-line/index', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>District</p>', ['awpb-activity-line/index', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+
+                                        if (User::userIsAllowedTo("Approve AWPB - Provincial") && ($user->province_id > 0 || $user->province_id != '')) {
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "mpc" ||
+                                                    Yii::$app->controller->action->id == "mcpd" ||
+                                                    Yii::$app->controller->action->id == "mcpa")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Provincial Approval</p>', ['awpb-activity-line/mpc', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Provincal Approval</p>', ['awpb-activity-line/mpc', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+
+                                        if (User::userIsAllowedTo('Approve AWPB - PCO') && ($user->province_id == 0 || $user->province_id == '')) {
+
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "mpco" ||
+                                                    Yii::$app->controller->action->id == "mpcop" ||
+                                                    Yii::$app->controller->action->id == "mpcod" ||
+                                                    Yii::$app->controller->action->id == "mpcoa")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+
+                                        if (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "mpcm" ||
+                                                    Yii::$app->controller->action->id == "mpcmd" ||
+                                                    Yii::$app->controller->action->id == "mpcma")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpcm', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpcm', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+                                        ?>
+
+                                    </ul>
+                                    <?php
+                                    if (
+                                            User::userIsAllowedTo("Manage programme-wide AWPB") && ( $user->province_id == 0 || $user->province_id == '')
+                                    ) {
+
+
+                                        echo '<li class="nav-item has-treeview menu-open">'
+                                        . ' <a href="#" class="nav-link active">';
+                                    } else {
+                                        echo '<li class="nav-item has-treeview">'
+                                        . '<a href="#" class="nav-link">';
+                                    }
+                                    ?>
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Programme-wide AWPB
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <?php
+                                        if (User::userIsAllowedTo('Manage programme-wide AWPB activity lines') && ( $user->district_id == 0 || $user->district_id == '')) {
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "indexpw" ||
+                                                    Yii::$app->controller->action->id == "viewpw" ||
+                                                    Yii::$app->controller->action->id == "createpw" ||
+                                                    Yii::$app->controller->action->id == "updatepw")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Activity Line</p>', ['awpb-activity-line/indexpw', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Activity Line</p>', ['awpb-activity-line/indexpw', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+
+
+                                        if (User::userIsAllowedTo('Approve AWPB - PCO') && ( $user->province_id == 0 || $user->province_id == '')) {
+
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "mpwpco" ||
+                                                    Yii::$app->controller->action->id == "mpwpcoa")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpwpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>PCO Approval</p>', ['awpb-activity-line/mpwpco', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+
+                                        if (User::userIsAllowedTo('Approve AWPB - Ministry') && ( $user->province_id == 0 || $user->province_id == '')) {
+                                            echo '   <li class="nav-item">';
+                                            if (
+                                                    Yii::$app->controller->id == "awpb-activity-line" &&
+                                                    (Yii::$app->controller->action->id == "mpwm" ||
+                                                    Yii::$app->controller->action->id == "mpwma")
+                                            ) {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpwm', 'id' => $session['awpb_template_id']], ["class" => "nav-link active"]);
+                                            } else {
+                                                echo Html::a('<i class="far fa-dot-circle nav-icon"></i> <p>Ministry Approval</p>', ['awpb-activity-line/mpwm', 'id' => $session['awpb_template_id']], ["class" => "nav-link"]);
+                                            }
+                                            echo '</li>';
+                                        }
+                                        ?>
+
+                                    </ul>
+
+
+                                    <?php
+                                    // if (User::userIsAllowedTo("Manage programme-wide AWPB")) {
+                                    //     echo '   <li class="nav-item">';
+                                    //     if (
+                                    //         Yii::$app->controller->id == "awpb-activity-line" &&
+                                    //         Yii::$app->controller->action->id == "mpw"
+                                    //     ) {
+                                    //         echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link active"]);
+                                    //     } else {
+                                    //         echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Programme-wide AWPB</p>', ['awpb-activity-line/mpw'], ["class" => "nav-link"]);
+                                    //     }
+                                    //     echo '</li>';
+                                    // }
+                                    if (
+                                            User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")
+                                    ) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-funder" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funder</p>', ['/awpb-funder/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Funder</p>', ['/awpb-funder/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+
+                                    if (
+                                            User::userIsAllowedTo("Setup AWPB") ||
+                                            User::userIsAllowedTo("View AWPB")
+                                    ) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-expense-category" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Expense Category</p>', ['/awpb-expense-category/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Expense Category</p>', ['/awpb-expense-category/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Setup AWPB") || User::userIsAllowedTo("View AWPB")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-unit-of-measure" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Unit of Measure</p>', ['/awpb-unit-of-measure/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Unit of Measure</p>', ['/awpb-unit-of-measure/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("Manage components") || User::userIsAllowedTo("View components")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-component" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Component</p>', ['/awpb-component/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Component</p>', ['/awpb-component/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage AWPB templates") || User::userIsAllowedTo("View AWPB templates")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-template" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Template</p>', ['awpb-template/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Template</p>', ['awpb-template/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    if (User::userIsAllowedTo("Manage AWPB activities") || User::userIsAllowedTo("View AWPB activities")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-activity" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Activity</p>', ['awpb-activity/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Activity</p>', ['awpb-activity/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    if (User::userIsAllowedTo("Manage AWPB activities") || User::userIsAllowedTo("View AWPB activities")) {
+                                        echo '   <li class="nav-item">';
+                                        if (
+                                                Yii::$app->controller->id == "awpb-indicator" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "create" ||
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>AWPB Indicator</p>', ['awpb-indicator/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>AWPB Indicator</p>', ['awpb-indicator/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>
+
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------AWPB MANAGEMENT ENDS------------------------->
+
+
+                            <!-------------------------------MATCHING GRANT FACILITY----------------------->
+                            <?php
+                            if (User::userIsAllowedTo("View MGF module")) {
+                                if (Yii::$app->controller->id == "mgf-applicant" ||
+                                        Yii::$app->controller->id == "mgf-applicant") {
+                                    echo '<li class="nav-item has-treeview menu-open">'
+                                    . ' <a href="#" class="nav-link active">';
+                                } else {
+                                    echo '<li class="nav-item has-treeview">'
+                                    . '<a href="#" class="nav-link">';
+                                }
+                                ?>
+                                <i class="nav-icon fas fa-money-check-alt"></i>
+                                <p>
+                                    Matching Grant Facility<i class="fas fa-angle-left right"></i>
+                                </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php
+
+
+                                    if (User::userIsAllowedTo("DACO Screen Eligibility")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-application" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "applications" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "manage")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>District Eligibility Screening</p>', ['mgf-organisation/applications', 'status' => 0], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>District Eligibility Screening</p>', ['mgf-organisation/applications', 'status' => 0], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("PACO Screen Eligibility")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-application" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "applications" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "manage")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Province Eligibility Screening</p>', ['mgf-organisation/applications2', 'status' => 0], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Province Eligibility Screening</p>', ['mgf-organisation/applications2', 'status' => 0], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    if (User::userIsAllowedTo("PCO Screen Eligibility")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-application" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "applications" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "manage")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>PCO Eligibility Screening</p>', ['mgf-organisation/applications3', 'status' => 0], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>PCO Eligibility Screening</p>', ['mgf-organisation/applications3', 'status' => 0], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("Screen Concept Note")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-concept-note" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Concept Note Screening</p>', ['mgf-concept-note/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Concept Note Screening</p>', ['mgf-concept-note/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                                    if (User::userIsAllowedTo("Allocate Projects")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-approval" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "review" ||
+                                                Yii::$app->controller->action->id == "accept" ||
+                                                Yii::$app->controller->action->id == "certify" ||
+                                                Yii::$app->controller->action->id == "approve")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>MGF Project Allocation</p>', ['mgf-proposal/proposals'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>MGF Project Allocation</p>', ['mgf-proposal/proposals'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+                                    
+                                    if (User::userIsAllowedTo("Screen Project Proposals")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-approval" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "review" ||
+                                                Yii::$app->controller->action->id == "accept" ||
+                                                Yii::$app->controller->action->id == "certify" ||
+                                                Yii::$app->controller->action->id == "approve")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Proposal Screening</p>', ['mgf-project-evaluation/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Proposal Screening</p>', ['mgf-project-evaluation/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
+
+                            
+                                
+                                  if (User::userIsAllowedTo("View MGF Evaluations")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-final-evaluation" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||
+                                                Yii::$app->controller->action->id == "evaluations")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Evaluations</p>', ['mgf-final-evaluation/index', 'status' => 0], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Evaluations</p>', ['mgf-final-evaluation/index', 'status' => 0], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                               
+
+                                    if (User::userIsAllowedTo("View MGF Reviewers")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "mgf-reviewer" &&
+                                                (Yii::$app->controller->action->id == "index" ||
+                                                Yii::$app->controller->action->id == "view" ||                                        
+                                                Yii::$app->controller->action->id == "update" ||
+                                                Yii::$app->controller->action->id == "reate")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Reviewers</p>', ['mgf-reviewer/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Reviewers</p>', ['mgf-reviewer/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+                                    ?>                           
+                                </ul>
+                                </li>
+                            <?php } ?>
+                            <!-------------------------------MATCHING GRANT FACILITY ENDS------------------------->
+
+
+
                             <!-------------------------------LKM DATA STARTS------------------------------>
                             <?php
-                            if (User::userIsAllowedTo("Manage interview guide template questions") ||
+                            if (
+                                    User::userIsAllowedTo("Manage interview guide template questions") ||
                                     User::userIsAllowedTo("View interview guide template") ||
                                     User::userIsAllowedTo("Submit story of change") ||
                                     User::userIsAllowedTo("Review Story of change") ||
                                     User::userIsAllowedTo("Attach case study articles") ||
-                                    User::userIsAllowedTo("View Story of change")) {
-                                if (Yii::$app->controller->id == "interview-guide-template" ||
+                                    User::userIsAllowedTo("View Story of change")
+                            ) {
+                                if (
+                                        Yii::$app->controller->id == "interview-guide-template" ||
                                         Yii::$app->controller->id == "storyofchange-category" ||
                                         Yii::$app->controller->id == "storyofchange"
                                 ) {
@@ -203,14 +713,18 @@ $session = Yii::$app->session;
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <?php
-                                    if (User::userIsAllowedTo("Manage interview guide template questions") ||
-                                            User::userIsAllowedTo("View interview guide template")) {
+                                    if (
+                                            User::userIsAllowedTo("Manage interview guide template questions") ||
+                                            User::userIsAllowedTo("View interview guide template")
+                                    ) {
                                         echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "interview-guide-template" &&
+                                        if (
+                                                Yii::$app->controller->id == "interview-guide-template" &&
                                                 (Yii::$app->controller->action->id == "index" ||
                                                 Yii::$app->controller->action->id == "view" ||
                                                 Yii::$app->controller->action->id == "create" ||
-                                                Yii::$app->controller->action->id == "update")) {
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Interview guide</p>', ['/interview-guide-template/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Interview guide</p>', ['/interview-guide-template/index', 'id' => Yii::$app->user->identity->id], ["class" => "nav-link"]);
@@ -219,8 +733,10 @@ $session = Yii::$app->session;
                                     }
                                     if (User::userIsAllowedTo("Manage story of change categories")) {
                                         echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "storyofchange-category" &&
-                                                (Yii::$app->controller->action->id == "index")) {
+                                        if (
+                                                Yii::$app->controller->id == "storyofchange-category" &&
+                                                (Yii::$app->controller->action->id == "index")
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Story of change categories</p>', ['storyofchange-category/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Story of change categories</p>', ['storyofchange-category/index'], ["class" => "nav-link"]);
@@ -229,7 +745,8 @@ $session = Yii::$app->session;
                                     }
                                     if (User::userIsAllowedTo("Submit story of change")) {
                                         echo '<li class="nav-item">';
-                                        if (Yii::$app->controller->id == "storyofchange" &&
+                                        if (
+                                                Yii::$app->controller->id == "storyofchange" &&
                                                 (Yii::$app->controller->action->id == "index" ||
                                                 Yii::$app->controller->action->id == "view" ||
                                                 Yii::$app->controller->action->id == "create" ||
@@ -240,17 +757,21 @@ $session = Yii::$app->session;
                                                 Yii::$app->controller->action->id == "challenges" ||
                                                 Yii::$app->controller->action->id == "introduction" ||
                                                 Yii::$app->controller->action->id == "check-list" ||
-                                                Yii::$app->controller->action->id == "update")) {
+                                                Yii::$app->controller->action->id == "update")
+                                        ) {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Stories of change</p>', ['/storyofchange/index'], ["class" => "nav-link active"]);
                                         } else {
                                             echo Html::a('<i class="far fa-circle nav-icon"></i> <p>My Stories of change</p>', ['/storyofchange/index'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
-                                    if (User::userIsAllowedTo("Review Story of change") ||
-                                            User::userIsAllowedTo("View Story of change")) {
+                                    if (
+                                            User::userIsAllowedTo("Review Story of change") ||
+                                            User::userIsAllowedTo("View Story of change")
+                                    ) {
                                         echo '<li class="nav-item">';
-                                        if (Yii::$app->controller->id == "storyofchange" &&
+                                        if (
+                                                Yii::$app->controller->id == "storyofchange" &&
                                                 (Yii::$app->controller->action->id == "stories") ||
                                                 (Yii::$app->controller->action->id == "attach-article") ||
                                                 (Yii::$app->controller->action->id == "update-article") ||
@@ -267,6 +788,7 @@ $session = Yii::$app->session;
                                 </ul>
                                 </li>
                             <?php } ?>
+         
                             <!-------------------------------LKM ENDS------------------------------------->
                             <!-------------------------------M&E DATA STARTS------------------------------>
                             <?php
@@ -433,23 +955,23 @@ $session = Yii::$app->session;
                                         }
                                         echo '</li>';
                                     }
-                                   /* if (User::userIsAllowedTo("Plan quarterly work schedules") ||
-                                            User::userIsAllowedTo("Approve quarterly work schedules - provincial") ||
-                                            User::userIsAllowedTo("Approve quarterly work schedules - hq") ||
-                                            User::userIsAllowedTo("View quarterly work schedules")) {
-                                        echo '<li class="nav-item">';
-                                        if (Yii::$app->controller->id == "quarterly-work-plan" &&
-                                                (
-                                                Yii::$app->controller->action->id == "index" ||
-                                                Yii::$app->controller->action->id == "view" ||
-                                                Yii::$app->controller->action->id == "create" ||
-                                                Yii::$app->controller->action->id == "update")) {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Quarterly work schedules</p>', ['/quarterly-work-plan/index'], ["class" => "nav-link active"]);
-                                        } else {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Quarterly work schedules</p>', ['/quarterly-work-plan/index'], ["class" => "nav-link"]);
-                                        }
-                                        echo '</li>';
-                                    }*/
+                                    /* if (User::userIsAllowedTo("Plan quarterly work schedules") ||
+                                      User::userIsAllowedTo("Approve quarterly work schedules - provincial") ||
+                                      User::userIsAllowedTo("Approve quarterly work schedules - hq") ||
+                                      User::userIsAllowedTo("View quarterly work schedules")) {
+                                      echo '<li class="nav-item">';
+                                      if (Yii::$app->controller->id == "quarterly-work-plan" &&
+                                      (
+                                      Yii::$app->controller->action->id == "index" ||
+                                      Yii::$app->controller->action->id == "view" ||
+                                      Yii::$app->controller->action->id == "create" ||
+                                      Yii::$app->controller->action->id == "update")) {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Quarterly work schedules</p>', ['/quarterly-work-plan/index'], ["class" => "nav-link active"]);
+                                      } else {
+                                      echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Quarterly work schedules</p>', ['/quarterly-work-plan/index'], ["class" => "nav-link"]);
+                                      }
+                                      echo '</li>';
+                                      } */
                                     ?>
 
                                 </ul>
@@ -718,8 +1240,10 @@ $session = Yii::$app->session;
                                 <ol class="breadcrumb float-sm-right">
                                     <?=
                                     Breadcrumbs::widget([
-                                        'homeLink' => ['label' => 'Home',
-                                            'url' => Yii::$app->getHomeUrl() . 'home/home'],
+                                        'homeLink' => [
+                                            'label' => 'Home',
+                                            'url' => Yii::$app->getHomeUrl() . 'home/home'
+                                        ],
                                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                                     ])
                                     ?>
@@ -735,7 +1259,8 @@ $session = Yii::$app->session;
                     <div class="container-fluid">
                         <?= $content ?>
                         <!-- /.row -->
-                    </div><!--/. container-fluid -->
+                    </div>
+                    <!--/. container-fluid -->
                 </section>
                 <!-- /.content -->
             </div>
@@ -756,8 +1281,10 @@ $session = Yii::$app->session;
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-danger btn-xs" data-dismiss="modal"><span class="text-xs">Cancel</span></button>
                             <?=
-                            Html::a('<span class="text-xs">Logout</span>', ['site/logout'], ['data' => ['method' => 'POST'], 'id' => 'logout',
-                                'class' => 'btn btn-success btn-xs'])
+                            Html::a('<span class="text-xs">Logout</span>', ['site/logout'], [
+                                'data' => ['method' => 'POST'], 'id' => 'logout',
+                                'class' => 'btn btn-success btn-xs'
+                            ])
                             ?>
                         </div>
                     </div>
@@ -782,7 +1309,10 @@ $session = Yii::$app->session;
                     allow_dismiss: true,
                     newest_on_top: true,
                     timer: 5000,
-                    placement: {from: 'top', align: 'right'}
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
                 });
             }
             var myArrError = [<?php
@@ -798,10 +1328,14 @@ $session = Yii::$app->session;
                     allow_dismiss: true,
                     newest_on_top: true,
                     timer: 5000,
-                    placement: {from: 'top', align: 'right'}
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
                 });
             }
         </script>
     </body>
+
 </html>
 <?php $this->endPage() ?>

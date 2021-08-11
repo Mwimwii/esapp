@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = ['label' => 'FaaBS Groups', 'url' => ['index']]
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 $id = $model->id;
+$max_topics = $model->max_farmer_graduation_training_topics;
 $camp_name = backend\models\Camps::findOne($model->camp_id)->name;
 $faabs_topic_model = new backend\models\MeFaabsTrainingTopicEnrolment();
 $topic_count = backend\models\MeFaabsTrainingTopicEnrolment::find()
@@ -238,8 +239,8 @@ $district = backend\models\Districts::findOne($district_id)->name;
                             <div class="tab-pane fade" id="custom-tabs-three-profile" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
                                 <h5>Instructions</h5>
                                 <ol>
+                                    <li>A farmer in this FaaBS needs to attend <span class="badge badge-dark text-sm"><?= $model->max_farmer_graduation_training_topics ?> topic(s)</span> to graduate</li>
                                     <li>The icon <span class="fa fa-graduation-cap" style="color:green;"></span> under "Graduation status" shows that the farmer has been trained in all the FaaBS training topics</li>
-
                                 </ol>                               
                                 <?php
                                 if ($faabs_farmers > 0) {
@@ -293,26 +294,49 @@ $district = backend\models\Districts::findOne($district_id)->name;
                                                 'enableSorting' => false,
                                                 'contentOptions' => ['class' => 'text-left'],
                                                 'label' => 'Topics trained',
+                                                'format' => 'raw',
                                                 'value' => function($model) use ($id) {
-                                                    return backend\models\MeFaabsTrainingAttendanceSheet::find()
-                                                                    ->where(['faabs_group_id' => $id])
-                                                                    ->andWhere(['farmer_id' => $model->id])
-                                                                    ->count();
+                                                    $name = $model->title . " " . $model->first_name . " " . $model->other_names . " " . $model->last_name;
+                                                    $trained_topics = backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                                            ->where(['faabs_group_id' => $id])
+                                                            ->andWhere(['farmer_id' => $model->id])
+                                                            ->count();
+                                                    return ModalAjax::widget([
+                                                                'header' => "Topics $name has undergone so far",
+                                                                'bootstrapVersion' => ModalAjax::BOOTSTRAP_VERSION_4,
+                                                                'toggleButton' => [
+                                                                    'label' => $trained_topics . " topics",
+                                                                    //'class' => 'bt btn-lg',
+                                                                    'class' => "btn btn-success btn-xs",
+                                                                    'title' => 'Topics ' . $name . ' has undergone so far',
+                                                                ],
+                                                                'id' => "topic_view_modal" . $model->id,
+                                                                'size' => 'modal-lg',
+                                                                'options' => ['class' => 'header-success'],
+                                                                'url' => \yii\helpers\Url::to(['/faabs-groups/view-trained-topics', 'id' => $model->id, "faabs" => $id]),
+                                                                'ajaxSubmit' => true, // Submit the contained form as ajax, true by default
+                                                                'autoClose' => true,
+                                                    ]);
+
+                                                    /* return backend\models\MeFaabsTrainingAttendanceSheet::find()
+                                                      ->where(['faabs_group_id' => $id])
+                                                      ->andWhere(['farmer_id' => $model->id])
+                                                      ->count(); */
                                                 }
                                             ],
                                             [
                                                 'enableSorting' => false,
                                                 'contentOptions' => ['class' => 'text-left'],
                                                 'label' => 'Remaining topics',
-                                                'value' => function($model) use ($id) {
+                                                'value' => function($model) use ($id, $max_topics) {
                                                     $trained = backend\models\MeFaabsTrainingAttendanceSheet::find()
                                                             ->where(['faabs_group_id' => $id])
                                                             ->andWhere(['farmer_id' => $model->id])
                                                             ->count();
-                                                    $total = \backend\models\MeFaabsTrainingTopicEnrolment::find()
-                                                            ->where(['faabs_id' => $id])
-                                                            ->count();
-                                                    return $total - $trained;
+                                                    /* $total = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                                                      ->where(['faabs_id' => $id])
+                                                      ->count(); */
+                                                    return $max_topics - $trained;
                                                 }
                                             ],
                                             [
@@ -320,19 +344,19 @@ $district = backend\models\Districts::findOne($district_id)->name;
                                                 'contentOptions' => ['class' => 'text-left'],
                                                 'label' => 'Graduationn status',
                                                 'format' => 'raw',
-                                                'value' => function($model) use ($id) {
+                                                'value' => function($model) use ($id, $max_topics) {
                                                     $str = "";
                                                     $trained = backend\models\MeFaabsTrainingAttendanceSheet::find()
                                                             ->where(['faabs_group_id' => $id])
                                                             ->andWhere(['farmer_id' => $model->id])
                                                             ->count();
-                                                    $total = \backend\models\MeFaabsTrainingTopicEnrolment::find()
-                                                            ->where(['faabs_id' => $id])
-                                                            ->count();
-                                                    if ($total === $trained) {
+                                                    /* $total = \backend\models\MeFaabsTrainingTopicEnrolment::find()
+                                                      ->where(['faabs_id' => $id])
+                                                      ->count(); */
+                                                    if ($max_topics == $trained) {
                                                         $str = "<span class='fa fa-graduation-cap fa-2x' style='color:green'></span>";
                                                     } else {
-                                                        $str = "Remaining with " . ($total - $trained) . " topic(s) to graduate";
+                                                        $str = "Remaining with " . ($max_topics - $trained) . " topic(s) to graduate";
                                                     }
 
                                                     return $str;

@@ -26,7 +26,9 @@ $session = Yii::$app->session;
                 <p class="text-muted text-center"><?= $session['role'] ?> </p>
                 <p class="text-muted text-center"><?= $model->type_of_user ?> type</p>
 
-                <span class="name"><strong>Status:</strong> <?php echo $model->status == 1 ? '<i class="fa fa-check success fa-2x" style="color:green;"></i>' : '<i style="color:red;" class="fa fa-times danger fa-2x"></i>'; ?></span>    
+                <span class="name"><strong>Status:</strong> 
+                    <?php echo $model->status == 1 ? "<span class='badge badge-success'> Active</span>" : "<span class='badge badge-danger'> Blocked</span>"; ?>
+                </span>    
 
 
             </div>
@@ -62,12 +64,12 @@ $session = Yii::$app->session;
                                 <?=
                                 $form->field($model, 'title')->dropDownList(
                                         [
-                                    'Mr.' => 'Mr',
-                                    'Mrs.' => 'Mrs',
-                                    'Miss.' => 'Miss',
-                                    'Ms.' => 'Ms',
-                                    'Dr.' => 'Dr',
-                                    'Prof.' => 'Prof'
+                                            'Mr.' => 'Mr',
+                                            'Mrs.' => 'Mrs',
+                                            'Miss.' => 'Miss',
+                                            'Ms.' => 'Ms',
+                                            'Dr.' => 'Dr',
+                                            'Prof.' => 'Prof'
                                         ], ['prompt' => 'Select title', 'required' => false]
                                 );
                                 ?>

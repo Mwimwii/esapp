@@ -79,7 +79,9 @@ class CommodityCategories extends \yii\db\ActiveRecord {
     public function getCommodityTypes() {
         return $this->hasMany(CommodityType::className(), ['category_id' => 'id']);
     }
-
+    public function getAwpbCommodityTypes() {
+        return $this->hasMany(AwpbCommodityTypes::className(), ['category_id' => 'id']);
+    }
     public static function getNames() {
         $names = self::find()->orderBy(['name' => SORT_ASC])->all();
         return ArrayHelper::map($names, 'name', 'name');
