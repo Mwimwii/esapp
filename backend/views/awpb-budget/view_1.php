@@ -183,77 +183,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                         ],
                     ],
                 ],
-                
-//                  [
-//                    'columns' => [
-//                        [
-//                            'attribute' => 'number_of_females',
-//                            'label' => 'Females',
-//                            'displayOnly' => true,
-//                           // 'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:5%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                        [
-//                            'attribute' => 'number_of_males',
-//                            'label' => 'Males',
-//                            'displayOnly' => true,
-//                          //  'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:5%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                        [
-//                          'attribute' => 'number_of_young_people',
-//                            'displayOnly' => true,
-//                            'label' => 'Young',
-//                            //'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:5%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                        [
-//                            'attribute' => 'number_of_not_young_people',
-//                            'label' => 'Not young',
-//                            'displayOnly' => true,
-//                           // 'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:8%'],
-//                            'valueColOptions' => ['style' => 'width:15%'],
-//                        ],
-//                       
-//                    ],
-//                ],
-            
-                
-//                                    [
-//                    'columns' => [
-//                        [
-//                            'attribute' => 'number_of_women_headed_households',
-//                              'label' => 'Women headed households',
-//                            'displayOnly' => true,
-//                           // 'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:10%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                        [
-//                          'attribute' => 'number_of_non_women_headed_households',
-//                               'label' => 'Non-women headed households',
-//                             'displayOnly' => true,
-//                          //  'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:10%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                        [
-//                            'attribute' => 'number_of_household_members',
-//                            'label' => 'Household members',
-//                            'displayOnly' => true,
-//                           // 'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:10%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                       
-//                       
-//                    ],
-//                ],
-                
+                      
        
                 [
                     'columns' => [
@@ -322,13 +252,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                             'labelColOptions' => ['style' => 'width:5%'],
                             'valueColOptions' => ['style' => 'width:10%'],
                         ],
-//                        [
-//                            'attribute' => 'quarter_two_quantity',
-//                            'label' => 'Q2 Qty',
-//                            'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:8%'],
-//                            'valueColOptions' => ['style' => 'width:15%'],
-//                        ],
+
                         [
                              'attribute' => 'quarter_two_amount',
                             'label' => 'Q2 Budget',
@@ -407,14 +331,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                             'labelColOptions' => ['style' => 'width:5%'],
                             'valueColOptions' => ['style' => 'width:10%'],
                         ],
-//                        [
-//                            'attribute' => 'quarter_four_quantity',
-//                            'label' => 'Q4 Qty',
-//                            'displayOnly' => true,
-//                            'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:8%'],
-//                            'valueColOptions' => ['style' => 'width:15%'],
-//                        ],
+
                         [
                              'attribute' => 'quarter_four_amount',
                             'label' => 'Q4 Budget',
@@ -430,22 +347,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     
                          [
                     'columns' => [
-//                        [
-//                            'attribute' => 'unit_cost',
-//                            'label' => 'Unit Cost',
-//                            'displayOnly' => true,
-//                            'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:10%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
-//                        [
-//                            'attribute' => 'total_quantity',
-//                            'label' => 'Total Quantity',
-//                            'displayOnly' => true,
-//                            'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:15%'],
-//                            'valueColOptions' => ['style' => 'width:20%'],
-//                        ],
+
                         [
                             'attribute' => 'total_amount',
                             'label' => 'Total Budget',
@@ -519,49 +421,7 @@ $unsubmitted_input = \backend\models\AwpbActualInput::find()->where(['budget_id'
     'width'=>'36px',
     
 ],
-//             [
-//            'attribute' => 'component',
-//            'label' => 'Component', 
-//            'vAlign' => 'middle',
-//            'width' => '180px',
-//            'value' => function ($model) {
-//          
-//               $name = \backend\models\AwpbComponent::findOne(['id' =>  $model->component_id]);
-//              return !empty( $name) ? Html::a( $name->code, ['awpb-component/view', 'id' => $model->component_id], ['class' => 'awbp-output']):"";
-//          
-//            },
-//           
-//            'filterType' => GridView::FILTER_SELECT2,
-//            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-//            'filterWidgetOptions' => [
-//                'pluginOptions' => ['allowClear' => true],
-//                'options' => ['multiple' => true]
-//            ],
-//            'filterInputOptions' => ['placeholder' => 'Filter by component'],
-//            'format' => 'raw'
-//        ],
-//            
-//  
-//        [
-//            'attribute' => 'activity_id',
-//            'label' => 'Activity', 
-//            'vAlign' => 'middle',
-//            'width' => '180px',
-//
-//            'value' => function ($model) {
-//                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
-//                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-//            },
-//           
-//            'filterType' => GridView::FILTER_SELECT2,
-//            'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
-//            'filterWidgetOptions' => [
-//                'pluginOptions' => ['allowClear' => true],
-//                'options' => ['multiple' => true]
-//            ],
-//            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-//            'format' => 'raw'
-//        ],
+
       [
                             'class' => 'kartik\grid\EditableColumn',
                             'label' => 'Quarter',
@@ -737,23 +597,7 @@ $unsubmitted_input = \backend\models\AwpbActualInput::find()->where(['budget_id'
                                 );
                             }
                         },
-//                        'delete' => function ($url, $model) use ($user) {
-//                          if ( User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '')) {
-//          return Html::a(
-//                                                '<span class="fa fa-trash"></span>', ['awpb-actual-input/delete', 'id' => $model->id], [
-//                                            'title' => 'delete input',
-//                                            'data-toggle' => 'tooltip',
-//                                            'data-placement' => 'top',
-//                                            'data' => [
-//                                                'confirm' => 'Are you sure you want to delete this input?',
-//                                                'method' => 'post',
-//                                            ],
-//                                            'style' => "padding:5px;",
-//                                            'class' => 'bt btn-lg'
-//                                                ]
-//                                );
-//                            }
-//                        },
+
                     ]
                 ]
                     ];
@@ -763,92 +607,7 @@ $dataProvider="";
 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 $dataProvider->query->andFilterWhere(['=','budget_id',$model->id])->andFilterWhere(['=','status',0]);
-//    if(
-//                   $awpb_district->status_q_1== backend\models\AwpbBudget::STATUS_DRAFT &&
-//                   $awpb_district->status_q_2==backend\models\AwpbBudget::STATUS_DRAFT&&
-//                    $awpb_district->status_q_3==backend\models\AwpbBudget::STATUS_DRAFT&&
-//            $awpb_district->status_q_4==backend\models\AwpbBudget::STATUS_DRAFT
-//  ){
-////              // $model->name=="Diesel Fuel"
-//                    
-//           //$searchModel = new \backend\models\AwpbActualInputSearch();
-//
-//$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//
-//$dataProvider->query->andFilterWhere(['budget_id'=>$model->id]);
-//  }
-//      if(
-//                   $awpb_district->status_q_1== backend\models\AwpbBudget::STATUS_SUBMITTED &&
-//                   $awpb_district->status_q_2==backend\models\AwpbBudget::STATUS_DRAFT&&
-//                    $awpb_district->status_q_3==backend\models\AwpbBudget::STATUS_DRAFT&&
-//            $awpb_district->status_q_4==backend\models\AwpbBudget::STATUS_DRAFT
-//  ){
-////              // $model->name=="Diesel Fuel"
-//                    
-//           //$searchModel = new \backend\models\AwpbActualInputSearch();
-//
-//$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//
-//$dataProvider->query->andFilterWhere(['=','budget_id',$model->id])->andFilterWhere(['>','quarter_number',1]);
-//
-//
-//
-//
-//  }
-//   if(
-//                   $awpb_district->status_q_1== backend\models\AwpbBudget::STATUS_SUBMITTED &&
-//                   $awpb_district->status_q_2==backend\models\AwpbBudget::STATUS_SUBMITTED&&
-//                    $awpb_district->status_q_3==backend\models\AwpbBudget::STATUS_DRAFT&&
-//            $awpb_district->status_q_4==backend\models\AwpbBudget::STATUS_DRAFT
-//  ){
-////              // $model->name=="Diesel Fuel"
-//                    
-//           //$searchModel = new \backend\models\AwpbActualInputSearch();
-//
-//$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//
-//$dataProvider->query->andFilterWhere(['=','budget_id',$model->id])->andFilterWhere(['>','quarter_number',2]);
-//
-//
-//
-//
-//  }
-//   if(
-//                   $awpb_district->status_q_1== backend\models\AwpbBudget::STATUS_SUBMITTED &&
-//                   $awpb_district->status_q_2==backend\models\AwpbBudget::STATUS_SUBMITTED&&
-//                    $awpb_district->status_q_3==backend\models\AwpbBudget::STATUS_SUBMITTED &&
-//            $awpb_district->status_q_4==backend\models\AwpbBudget::STATUS_DRAFT
-//  ){
-////              // $model->name=="Diesel Fuel"
-//                    
-//           //$searchModel = new \backend\models\AwpbActualInputSearch();
-//
-//$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//
-//$dataProvider->query->andFilterWhere(['=','budget_id',$model->id])->andFilterWhere(['>','quarter_number',3]);
-//
-//
-//
-//
-//  }
-//     if(
-//                   $awpb_district->status_q_1== backend\models\AwpbBudget::STATUS_SUBMITTED &&
-//                   $awpb_district->status_q_2==backend\models\AwpbBudget::STATUS_SUBMITTED&&
-//                    $awpb_district->status_q_3==backend\models\AwpbBudget::STATUS_SUBMITTED &&
-//            $awpb_district->status_q_4==backend\models\AwpbBudget::STATUS_SUBMITTED 
-//  ){
-////              // $model->name=="Diesel Fuel"
-//                    
-//           //$searchModel = new \backend\models\AwpbActualInputSearch();
-//
-//$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//
-//$dataProvider->query->andFilterWhere(['<','budget_id',0])->andFilterWhere(['<','quarter_number',0]);
-//
-////
-//
-//
-//  }
+
  
   
   

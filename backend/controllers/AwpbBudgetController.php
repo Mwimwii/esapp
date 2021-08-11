@@ -27,7 +27,7 @@ use backend\models\AwpbActivity;
 use backend\models\AwpbDistrict;
 
 /**
- * AwpbBudgetController implements the CRUD actions for AwpbBudget model.
+ * AwpbBudgetController implements the- CRUD actions for AwpbBudget model.
  */
 class AwpbBudgetController extends Controller {
 
@@ -36,16 +36,19 @@ class AwpbBudgetController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'delete', 'view', 'view_1', 'viewo', 'viewp', 'viewpwpco', 'mp', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcd', 'mpcdo', 'mpcdoa', 'mpcop', 'mpcod', 'mpcoa',
-                    'index', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
-                    'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'decline', 'submitpw', 'submit', 'mpwpcoa'
+                    'delete', 'view', 'view_1', 'viewo','viewpw','viewpw_1', 'viewp', 'viewpwpco', 'mp', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcd', 'mpcdo', 'mpcdoa', 'mpcop', 'mpcod', 'mpcoa',
+                    'index',    'index_2',  'index_2pw',   'index_3','indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
+                    'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepw',  'declinepwm', 'declinem', 'declinep', 'declinepwpco',  'submitpw', 'submit',
+                    'mpwpcoa','pwc','pwca','pwcau','pwcu'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'delete', 'view', 'view_1', 'viewo', 'viewp', 'viewpwpco', 'mp', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcd', 'mpcdo', 'mpcdoa', 'mpcop', 'mpcod', 'mpcoa',
-                            'index', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
-                            'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'decline', 'submitpw', 'submit', 'mpwpcoa'
+                           'delete', 'view', 'view_1', 'viewo','viewpw', 'viewp', 'viewpwpco', 'mp', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcd', 'mpcdo', 'mpcdoa', 'mpcop', 'mpcod', 'mpcoa',
+                    'index','index_2',  'index_2pw',   'index_3', 'indexpw', 'create', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
+                    'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepw',  'declinepwm', 'declinem', 'declinep', 'declinepwpco',  'submitpw', 'submit',
+                    'mpwpcoa','pwc','pwca','pwcau','pwcu'
+                            
                         ],
                         //'story/create/<id:\d+>/<usr:\d+>' => 'story/create',
                         //'awpb-activity-line/mpca/<id:\d+>/<distr:\d+>',
@@ -198,6 +201,83 @@ class AwpbBudgetController extends Controller {
             }
         } else {
             Yii::$app->session->setFlash('error', 'This district has no activities.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+     public function actionIndex_2pw($id, $status) {
+  $user = User::findOne(['id' => Yii::$app->user->id]);
+        if (User::userIsAllowedTo("Request Funds")&& ($user->province_id == 0 || $user->province_id == '')) {
+
+          
+           // $awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'created_by' => $user->created_by]);
+
+            // $awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$id2]);
+           // $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $id, 'province_id' => $awpb_district->province_id]);
+              $awpb_template_user = \backend\models\AwpbTemplateUsers::findOne(['awpb_template_id' => $awpb_template->id, 'user_id' => $user->id]);
+              
+//$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
+//$budget = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
+
+
+            if ($awpb_template_user->status_budget == \backend\models\AwpbBudget::STATUS_MINISTRY ) {
+
+
+//        //  $searchModel = new AwpbBudgetSearch();
+//        $searchModel = new AwpbBudget();
+//        $model = new AwpbBudget();
+//        $query = $searchModel::find();
+//        $query->select(['component_id','awpb_template_id', 'province_id', 'district_id',  'activity_id', 'id', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_amount']);
+//        $query->where(['=', 'awpb_template_id', $id]);
+//        // $query->andWhere(['=', 'status',$status]);
+//        $query->andWhere(['=', 'district_id', $user->district_id]);
+//        // $query->andWhere(['=', 'created_by', $user->id]);
+//        //  $query->groupBy('indicator_id');
+//        $query->all();
+//
+//        $dataProvider = new ActiveDataProvider([
+//            'query' => $query,
+//        ]);
+//
+////        if ($dataProvider->getCount() <= 0 || $dataProvider->count <= 0) {
+////            $editable = 0;
+////            $_searchModel = new AwpbBudget();
+////            $_query = $searchModel::find();
+////         $_query->select(['awpb_template_id', 'province_id', 'district_id', 'output_id', 'province_id', 'district_id', 'activity_id', 'indicator_id', 'id', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_amount']);
+////            $_query->where(['=','awpb_template_id', $id]);
+////            $_query->andWhere(['>=', 'status',$status]);
+////            $_query->andWhere(['=', 'district_id', $user->district_id]);
+////            //$_query->andWhere(['=', 'created_by', $user->id]);
+////            // $_query->groupBy('indicator_id');
+////            $_query->all();
+////
+////            $_dataProvider = new ActiveDataProvider([
+////                'query' => $_query,
+////            ]);
+////
+////            return $this->render('index', [
+////                        'searchModel' => $_searchModel,
+////                        'model' => $model,
+////                        'dataProvider' => $_dataProvider,
+////                      'id' => $id,
+////                'status'=>$status,
+//                        'editable' => 0
+//            ]);
+//        } else {
+                return $this->render('index_2pw', [
+                            //'searchModel' => $searchModel,
+                            //'model' => $model,
+                            // 'dataProvider' => $dataProvider,
+                            'id' => $id,
+//                    'status' => $status,
+//                    'editable' => 1
+                ]);
+            } else {
+                Yii::$app->session->setFlash('error', 'No inputs to vary.');
+                return $this->redirect(['home/home']);
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'No Programme wide activities.');
             return $this->redirect(['home/home']);
         }
     }
