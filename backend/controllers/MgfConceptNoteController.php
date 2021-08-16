@@ -11,7 +11,6 @@ use yii\filters\VerbFilter;
 use backend\models\MgfApplicant;
 use backend\models\MgfApplication;
 use backend\models\MgfApproval;
-use backend\models\MgfOrganisation;
 use backend\models\MgfApprovalStatus;
 use backend\models\MgfOrganisation;
 use backend\models\MgfScreening;

@@ -99,10 +99,6 @@ class Provinces extends \yii\db\ActiveRecord {
         return ucfirst(strtolower($this->name));
     }
 
-    public static function getName($id) {
-        $province = self::find()->where(['id' => $id])->one();
-        return ucfirst(strtolower($province->name));
-    }
 
     public static function getCoordinates($coordinate_array) {
         $coordinates = [];

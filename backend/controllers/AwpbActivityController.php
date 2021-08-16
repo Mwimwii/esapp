@@ -50,7 +50,7 @@ class AwpbActivityController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AwbpActivitySearch();
+        $searchModel = new \backend\models\AwpbActivitySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
