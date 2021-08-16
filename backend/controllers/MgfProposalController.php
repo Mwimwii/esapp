@@ -14,10 +14,11 @@ use backend\models\MgfProposal;
 use backend\models\MgfApplicant;
 use backend\models\MgfOffer;
 use backend\models\MgfSelectionCategory;
-use backend\models\MgfProposalEvaluation;
+
 use backend\models\MgfProjectEvaluation;
 use backend\models\MgfReviewer;
-use backend\models\MgfSelectionCriteria;
+use backend\models\MgfApplication;
+use backend\models\MgfEligibilityApproval;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -261,11 +262,25 @@ class MgfProposalController extends Controller
         if ($model->proposal_status=="Prepared" || $model->proposal_status=="Cancelled") {
             $model->proposal_status="Submitted";
             $model->date_submitted=date('Y-m-d H:i:s');
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Submiited successfully.');
-            } else {
-                Yii::$app->session->setFlash('error', 'Action Fail');
-            } 
+
+            if (MgfApplication::find()->where(['organisation_id'=>$model->organisation_id,'status'=>1])->exists()) {
+                if ($model->save()) {
+                    $application=MgfApplication::find()->where(['organisation_id'=>$model->organisation_id,'status'=>1])->one();
+                    $application->date_submitted=$model->date_submitted;
+                    $application->application_status=$model->proposal_status;
+                    if($application->save()){
+                        $eligilbility=new MgfEligibilityApproval();
+                        $eligilbility->application_id=$application->id;
+                        $eligilbility->is_active=1;
+                        $eligilbility->save();
+                    }
+                    Yii::$app->session->setFlash('success', 'Submiited successfully.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Action Fail');
+                }
+            }else{
+                Yii::$app->session->setFlash('error', 'This Proposal Cannot be Submitted now');
+            }return $this->redirect(['/mgf-applicant/profile']);  
         }else{
             Yii::$app->session->setFlash('error', 'This Proposal Cannot be Submitted now');
         }return $this->redirect(['/mgf-applicant/profile']);  

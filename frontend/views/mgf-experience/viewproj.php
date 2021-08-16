@@ -23,8 +23,8 @@ $pastprojects=MgfPastproject::find()->where(['experience_id'=>$model->id])->all(
             'collaboration_ready',
         ],
     ]),
-    Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']),
-    Html::a('<i class="glyphicon glyphicon-edit"></i>Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
+    Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']),
+    Html::a('<i class="fa fa-edit"></i>Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
      ?>
 <?php include('exptab.php'); ?>
 <?php if(count($pastprojects)>0): ?>

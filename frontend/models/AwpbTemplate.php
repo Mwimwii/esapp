@@ -1,10 +1,13 @@
 <?php
 
+
 namespace backend\models;
 
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+
+
 
 /**
  * This is the model class for table "awpb_template".
@@ -12,22 +15,22 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property int $fiscal_year
  * @property string $budget_theme
+ * @property string $deadline_preparation_first_draft
+ * @property string $deadline_submission_pco
+ * @property string $deadline_consolidation
+ * @property string $deadline_review_draft_paricipants
+ * @property string $deadline_preparation_second_draft
+ * @property string $deadline_review_pco
+ * @property string $deadline_finalisation_pco
+ * @property string $deadline_submission_ministry
+ * @property string $deadline_approval_jpsc
+ * @property string $deadline_incorporation_ministry
+ * @property string $deadline_submission_ifad
+ * @property string $deadline_comment_ifad
+ * @property string $deadline_finalisation
  * @property string $comment
- * @property string|null $guideline_file
- * @property int $status 0 Closed, 1 open, 2 Blocked, 4 current
- * @property int|null $status_activities
- * @property int|null $status_users
- * @property string $preparation_deadline_first_draft
- * @property string $submission_dealine
- * @property string $consolidation_deadline
- * @property string $review_deadline
- * @property string $preparation_deadline_second_draft
- * @property string $review_deadline_pco
- * @property string $finalisation_deadline_pco
- * @property string $submission_deadline_moa_mfl
- * @property string $approval_deadline_jpsc
- * @property string $incorpation_deadline_pco_moa_mfl
- * @property string $submission_dealine_ifad
+ * @property string $url_guideline
+ * @property int $status 0 Closed, 1 open, 2 Blockedsed
  * @property int $created_at
  * @property int $updated_at
  * @property int|null $created_by
@@ -46,6 +49,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     const STATUS_OLD_BUDGET = 3;
     public $activities;
     public $users;
+
     /**
      * {@inheritdoc}
      */
@@ -60,11 +64,13 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
             [['fiscal_year', 'budget_theme', 'comment', 'status', 'preparation_deadline_first_draft', 'submission_deadline', 'consolidation_deadline', 'review_deadline', 'preparation_deadline_second_draft', 'review_deadline_pco', 'finalisation_deadline_pco', 'submission_deadline_moa_mfl', 'approval_deadline_jpsc', 'incorpation_deadline_pco_moa_mfl', 'submission_deadline_ifad','comment_deadline_ifad','distribution_deadline'], 'required'],
             [['fiscal_year', 'status', 'status_activities', 'status_users', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['budget_theme', 'comment'], 'string'],
             [['preparation_deadline_first_draft', 'submission_deadline', 'consolidation_deadline', 'review_deadline', 'preparation_deadline_second_draft', 'review_deadline_pco', 'finalisation_deadline_pco', 'submission_deadline_moa_mfl', 'approval_deadline_jpsc', 'incorpation_deadline_pco_moa_mfl', 'submission_deadline_ifad','comment_deadline_ifad','distribution_deadline'], 'safe'],
             [['guideline_file'], 'string', 'max' => 255],
+
             [['fiscal_year'], 'unique'],
         ];
     }
@@ -90,6 +96,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             'id' => 'ID',
             'fiscal_year' => 'Fiscal Year',
             'budget_theme' => 'Budget Theme',
+
             'comment' => 'Comment',
             'guideline_file' => 'Guideline File',
             'status' => 'Status',
@@ -108,12 +115,14 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             'submission_deadline_ifad' => 'Deadline for submitting AWPB to IFAD',
             'comment_deadline_ifad'=>'Deadline for receiving AWPB comments from IFAD',
             'distribution_deadline'=>'Deadline for distributing the AWPB to institutions',
+
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
     }
+
 
     /**
      * Gets query for [[AwpbActivities]].
@@ -161,4 +170,5 @@ class AwpbTemplate extends \yii\db\ActiveRecord
         $list = ArrayHelper::map($data, 'id', 'fiscal_year');
         return $list;
     }
+
 }

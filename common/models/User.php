@@ -36,6 +36,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
 
+
         return '{{%users}}';
 
     }
@@ -169,7 +170,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
 
+
+
         return Yii::$app->security->validatePassword($password, $this->password);
+
 
     }
 

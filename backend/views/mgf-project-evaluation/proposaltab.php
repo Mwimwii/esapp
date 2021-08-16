@@ -11,6 +11,8 @@ use yii\bootstrap\Tabs;
     <li class="active">
         <?= Html::a('U N M A R K E D', ['open','id'=>$_GET['id']]) ?>
     </li>
+
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <li>
         <?= Html::a('M A R K E D', ['marked','id'=>$_GET['id']]) ?>
     </li>
@@ -18,6 +20,8 @@ use yii\bootstrap\Tabs;
     <li>
         <?= Html::a('U N M A R K E D', ['open','id'=>$_GET['id']]) ?>
     </li>
+
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <li class="active">
         <?= Html::a('M A R K E D', ['marked','id'=>$_GET['id']]) ?>
     </li>
@@ -26,6 +30,4 @@ use yii\bootstrap\Tabs;
 </div>
 </div>
 </div>
-
-
 

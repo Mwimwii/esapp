@@ -8,7 +8,9 @@ return [
     'senderEmail' => 'esappmis@noreply.gov.zm',
     'bsVersion' => '4.x',
     'user.passwordResetTokenExpire' => 3600,
+
     'user.passwordMinLength' => 7,
+
     'maskMoneyOptions' => [
         'prefix' => 'ZMW ',
         'suffix' => '',
@@ -28,4 +30,5 @@ return [
     'polygon_strokeColor' => '#FF0000',
     'polygon_strokeColor' => '#FF0000',
       'cache_duration' => 60,
+
 ];

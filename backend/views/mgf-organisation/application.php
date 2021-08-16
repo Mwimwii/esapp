@@ -1,12 +1,10 @@
 <?php
+
 use backend\models\Districts;
 use backend\models\Provinces;
-use backend\models\MgfApproval;
-use backend\models\MgfOrganisation;
-//use yii\bootstrap4\ActiveForm;
-//use kartik\detail\DetailView;
+use frontend\models\MgfApproval;
+use frontend\models\MgfOrganisation;
 use yii\helpers\Html;
-
 use yii\widgets\DetailView;
 use kartik\form\ActiveForm;
 /* @var $this yii\web\View */
@@ -30,14 +28,14 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 <div class="panel-body">
 <h3>Project Title: <?=$concept->project_title; ?></h3>
 <?php if ($status==0){ ?>
-  <?=Html::a('<i class="fa fa-backward"></i>Back', ['applications','status'=>0], ['class' => 'btn btn-default']);?>
+  <?=Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['applications','status'=>0], ['class' => 'btn btn-default']);?>
 <table class="table table-bordered border-primary">
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Criterion</th>
       <th scope="col"><p>Satisfactory</p></th>
-      <th scope="col">Action</th>
+      <th scope="col">Mark</th>
     </tr>
   </thead>
   <tbody>
@@ -50,19 +48,19 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
       <td>
           <?php if($post->satisfactory == NULL) {?>
           <?php }else if($post->satisfactory == 'YES') {?>
-            <i class="fa fa-thumbs-up" style="color:green"></i>
+            <i class="glyphicon glyphicon-ok" style="color:green"></i>
           <?php }else{ ?>
-            <i class="fa fa-thumbs-down" style="color:red"></i>
+            <i class="glyphicon glyphicon-remove" style="color:red"></i>
           <?php } ?>
       </td>
       <td>
       <?php if($post->satisfactory == NULL) {?>
-        <span><?=Html::a('<i class="fa fa-check"></i>Yes', ['mgf-screening/approve','id'=>$post->id,'orgid'=>$_GET['id'],'conceptid'=>$post->conceptnote_id], ['class'=>'btn btn-success btn-sm'])?></span>
-        <span><?=Html::a('<i class="fa fa-times"></i>No', ['mgf-screening/disapprove','id'=>$post->id,'orgid'=>$_GET['id'],'conceptid'=>$post->conceptnote_id], ['class'=>'btn btn-danger btn-sm'])?></span>
+        <span><?=Html::a('Yes', ['mgf-screening/approve','id'=>$post->id], ['class'=>'label label-success'])?></span>
+        <span><?=Html::a('No', ['mgf-screening/disapprove','id'=>$post->id], ['class'=>'label label-danger'])?></span> 
       <?php }else if($post->satisfactory == 'YES') {?>
-        <span><?=Html::a('<i class="fa fa-times"></i>No', ['mgf-screening/disapprove','id'=>$post->id,'orgid'=>$_GET['id'],'conceptid'=>$post->conceptnote_id], ['class'=>'btn btn-danger btn-sm'])?></span>
+        <span><?=Html::a('No', ['mgf-screening/disapprove','id'=>$post->id], ['class'=>'label label-danger'])?></span> 
       <?php }else{ ?>
-        <span><?=Html::a('<i class="fa fa-check"></i>Yes', ['mgf-screening/approve','id'=>$post->id,'orgid'=>$_GET['id'],'conceptid'=>$post->conceptnote_id], ['class'=>'btn btn-success btn-sm'])?></span>
+        <span><?=Html::a('Yes', ['mgf-screening/approve','id'=>$post->id], ['class'=>'label label-success'])?></span>
       <?php } ?>
     </td>
     </tr>
@@ -91,9 +89,9 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
           
         <td>
           <?php if($application_status=="Accepted") {?>
-              <?= Html::button('<i class="fa fa-plus"></i>Accept Application', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#acceptProject\').modal();']);?>
+              <?= Html::button('<i class="glyphicon glyphicon-plus"></i>Accept Application', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#acceptProject\').modal();']);?>
           <?php }else{ ?>
-              <?= Html::button('<i class="fa fa-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#acceptProject\').modal();']);?>
+              <?= Html::button('<i class="glyphicon glyphicon-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#addFinalComment\').modal();']);?>
           <?php } ?>
         </td>
     </tr>
@@ -107,7 +105,7 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 </table>
 
 <?php }elseif($status==1){ ?>
-  <?=Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['applications','status'=>1], ['class' => 'btn btn-default']);?>
+  <?=Html::a('<i class="fa fa-backward"></i>Back', ['applications','status'=>1], ['class' => 'btn btn-default']);?>
 
   <table class="table table-bordered border-primary">
   <thead>
@@ -127,7 +125,7 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
       <td>
           <?php if($post->satisfactory == NULL) {?>
           <?php }else if($post->satisfactory == 'YES') {?>
-            <i class="fa f-ok" style="color:green"></i>
+            <i class="fa fa-check" style="color:green"></i>
           <?php }else{ ?>
             <i class="fa fa-times" style="color:red"></i>
           <?php } ?>
@@ -156,9 +154,9 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
           </div>
         
           <?php if($application_status=="Accepted") {?>
-              <?= Html::button('<i class="fa fa-plus"></i>Province Verification', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#acceptProject\').modal();']);?>
+              <?= Html::button('<i class="glyphicon glyphicon-plus"></i>Province Verification', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#certifyProject\').modal();']);?>
           <?php }else{ ?>
-              <?= Html::button('<i class="fa fa-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#acceptProject\').modal();']);?>
+              <?= Html::button('<i class="glyphicon glyphicon-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#addFinalComment\').modal();']);?>
           <?php } ?>
         </td>
     </tr>
@@ -192,9 +190,9 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
       <td>
           <?php if($post->satisfactory == NULL) {?>
           <?php }else if($post->satisfactory == 'YES') {?>
-            <i class="fa fa-check" style="color:green"></i>
+            <i class="glyphicon glyphicon-ok" style="color:green"></i>
           <?php }else{ ?>
-            <i class="fa fa-remove" style="color:red"></i>
+            <i class="glyphicon glyphicon-remove" style="color:red"></i>
           <?php } ?>
       </td>
     </tr>
@@ -220,9 +218,9 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
           </div>
         
           <?php if($application_status=="Certified") {?>
-              <?= Html::button('<i class="fa fa-plus"></i>PCO Verification', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#acceptProject\').modal();']);?>
+              <?= Html::button('<i class="glyphicon glyphicon-plus"></i>PCO Verification', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#approveProject\').modal();']);?>
           <?php }else{ ?>
-              <?= Html::button('<i class="fa fa-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#addFinalComment\').modal();']);?>
+              <?= Html::button('<i class="glyphicon glyphicon-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#addFinalComment\').modal();']);?>
           <?php } ?>
         </td>
     </tr>
@@ -257,9 +255,9 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
     <td>
         <?php if($post->satisfactory == NULL) {?>
         <?php }else if($post->satisfactory == 'YES') {?>
-          <i class="fa fa-check" style="color:green"></i>
+          <i class="glyphicon glyphicon-ok" style="color:green"></i>
         <?php }else{ ?>
-          <i class="fa fa-times" style="color:red"></i>
+          <i class="glyphicon glyphicon-remove" style="color:red"></i>
         <?php } ?>
     </td>
   </tr>
@@ -285,7 +283,7 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
         </div>
       
         <?php if($application_status=="Certified") {?>
-            <?= Html::button('<i class="glyphicon glyphicon-plus"></i>PCO Verification', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#acceptProject\').modal();']);?>
+            <?= Html::button('<i class="glyphicon glyphicon-plus"></i>PCO Verification', [ 'class' => 'btn btn-success', 'onclick' => '$(\'#approveProject\').modal();']);?>
         <?php }else{ ?>
             <?= Html::button('<i class="glyphicon glyphicon-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#addFinalComment\').modal();']);?>
         <?php } ?>
@@ -300,7 +298,6 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 </tbody>
 </table>
 <?php }?>
-
 
 <div class="card">
     <div class="card-header" id="headingTwo">
@@ -328,17 +325,16 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 <?php include('extension.php')?>
 
 
-<div class="modal fade" id="acceptProject1">
+<div class="modal fade" id="acceptProject">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Recommend Project Concept Note (<?=$application_status?>) </h3>
+                <h3 class="modal-title">Approve Project Concept Note (<?=$application_status?>) </h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-
                 <?php $form = ActiveForm::begin(['action' => 'index.php?r=mgf-approval/accept&id='.$approval->id]) ?>
                 <?php $model = MgfApproval::findOne($approval->id);?>
                 <?= $form->field($model, 'review_remark')->textarea(['maxlength' => true,'rows' => 4,'value'=>'Certified as meeting eligibility criteria and conditions for participation']) ?>
@@ -351,67 +347,8 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
     </div>
 </div>
 
-<div class="modal fade" id="acceptProject">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Recommend Project Concept Note (<?=$application_status?>) </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-              <?php if($application_status=="Accepted"){?>
-                Certified as meeting eligibility criteria and conditions for participation
-              <?php } ?>
-              <?php if($application_status=="Certified"){?>
-                Approved for participation
-              <?php } ?>
-            <div class="modal-footer">
-                <span><?=Html::a('<i class="fa fa-check"></i>Yes', ['mgf-approval/accept','id'=>$approval->id,], ['class'=>'btn btn-success btn-sm'])?></span>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="certifyProject">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Recommend Project Concept Note (<?=$application_status?>) </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            Certified as meeting eligibility criteria and conditions for participation
-            <div class="modal-footer">
-                <span><?=Html::a('<i class="fa fa-check"></i>Yes', ['mgf-approval/accept','id'=>$approval->id,], ['class'=>'btn btn-success btn-sm'])?></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="certifyProject3">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Add Final Comment (<?=$application_status?>) </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            Checked and confirmed
-            <div class="modal-footer">
-                <span><?=Html::a('<i class="fa fa-check"></i>Yes', ['mgf-approval/certify','id'=>$approval->id,], ['class'=>'btn btn-success btn-sm'])?></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="certifyProject1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -503,6 +440,7 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 </div>
 
 
+
 <div class="modal fade" id="nationalFinalComment">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -524,4 +462,3 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
         </div>
     </div>
 </div>
-

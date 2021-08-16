@@ -12,6 +12,9 @@ use backend\models\MgfApplicant;
 use backend\models\MgfApplication;
 use backend\models\MgfApproval;
 use backend\models\MgfOrganisation;
+use backend\models\MgfApprovalStatus;
+use backend\models\MgfOrganisation;
+use backend\models\MgfScreening;
 
 //include("findid.php");
 /**
@@ -54,13 +57,47 @@ class MgfConceptNoteController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id){
+
+    public function actionView1($id){
         //$orgid=getOrganisationID();
         $concept=MgfConceptNote::find()->where(['organisation_id'=>$id]);
         //$concept
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
+    }
+
+
+    public function actionView($id){
+        $model = $this->findModel($id);
+        $application=MgfApplication::find()->where(['organisation_id'=>$model->organisation_id,'application_status'=>'Submitted','is_active'=>1])->orWhere(['organisation_id'=>$model->organisation_id,'application_status'=>'Under_Review','is_active'=>1])->one();
+        $applicationid=$application->id;
+        $application->application_status='Under_Review';
+        if($application->save()){
+        $concept=MgfConceptNote::findOne(['application_id'=>$applicationid]);
+        $conceptid=$concept->id;
+        $screening=MgfScreening::find()->where(['conceptnote_id'=>$id])->all();
+        $unmarked=MgfScreening::find()->where(['organisation_id'=>$model->organisation_id,'conceptnote_id'=>$conceptid,'satisfactory'=>null])->count();
+        $approval=MgfApproval::find()->where(['conceptnote_id'=>$conceptid,'application_id'=>$applicationid])->one();        
+        $accepted=MgfApprovalStatus::findOne(['approval_status'=>'Accepted']);
+        $rejected=MgfApprovalStatus::findOne(['approval_status'=>'Rejected']);
+        $application_status=$application->application_status;
+        if (boolval($unmarked)==false) {
+            if ($approval->scores>=$accepted->lowerlimit) {
+                $application_status="Accepted";
+            } elseif ($approval->scores<=$rejected->upperlimit) {
+                $application_status="Rejected";
+            } else {
+                $application_status="On-Hold";
+            }
+        }
+
+        return $this->render('view', ['model' => $this->findModel($id),'criteria'=>$screening,'concept'=>$concept,
+        'unmarked'=>$unmarked,'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
+    }else{
+        Yii::$app->session->setFlash('error', 'This Application cannot be Reviewed');
+        return $this->redirect(['index',]);
+    }
     }
 
     /**
@@ -170,6 +207,7 @@ class MgfConceptNoteController extends Controller
             return $this->redirect(['/mgf-applicant/profile']);
         }
     }
+
 
     /**
      * Deletes an existing MgfConceptNote model.

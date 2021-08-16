@@ -71,8 +71,10 @@ class Right extends \yii\db\ActiveRecord {
             'Manage AWPB templates' => "",
             'View AWPB templates' => "",
             'View AWPB activity lines' => "",
+
             'Manage AWPB' => "Manage AWPB",
             'Manage PW AWPB' => "Manage PW AWPB",
+
             'Manage AWPB activity lines' => 'View AWPB activity lines',
             'Submit District AWPB' => "",
             'Approve AWPB - Provincial' => 'Approve AWPB - Provincial',
@@ -143,6 +145,7 @@ class Right extends \yii\db\ActiveRecord {
             'View MGF Approvals' => "",
             'View MGF Proposals' => "",
             'View MGF Evaluations' => "",
+
             'Remove cost centre' => "Remove cost centre",
             'Manage cost centre' => "Manage cost centre",
             'Request Funds' => "Request Funds",
@@ -159,6 +162,7 @@ class Right extends \yii\db\ActiveRecord {
             'View time sheets' => "View time sheets",
 
                 //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
+
         ];
 
         $count = 0;
@@ -175,6 +179,5 @@ class Right extends \yii\db\ActiveRecord {
         }
         echo "Inserted $count rights into permissions table";
     }
-
 
 }

@@ -137,6 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h5>Instructions</h5>
                 <ol>
                     <?php
+                    
                     if (!empty(\backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month))) {
                         echo '<li>Click the button <span class="badge badge-success">Add Planned ' . DateTime::createFromFormat('!m', $model->month)->format('F') . ' activity</span> to add a planned activity for the month
                               </li>';

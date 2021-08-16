@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use backend\models\AuditTrail;
+use backend\models\MgfReviewer;
+use common\models\Role;
 
 /**
  * UsersController implements the CRUD actions for User model.
@@ -136,8 +138,8 @@ class UsersController extends Controller {
                 $model->username = $model->email;
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
-                $model->created_at = new \yii\db\Expression('NOW()');
-                $model->updated_at = new \yii\db\Expression('NOW()');
+                //$model->created_at = new \yii\db\Expression('NOW()');
+               // $model->updated_at = new \yii\db\Expression('NOW()');
 
 
 
@@ -150,8 +152,29 @@ class UsersController extends Controller {
                         $audit->ip_address = Yii::$app->request->getUserIP();
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
+                        $role=Role::findOne($model->role);
+                        if($role->role=="Reviewer"){
+                            $reviewer=new MgfReviewer();
+                            $reviewer->first_name=$model->title;
+                            $reviewer->first_name=$model->first_name;
+                            $reviewer->last_name=$model->last_name;
+                            $reviewer->email=$model->email;
+                            $reviewer->login_code=$model->phone;
+                            $reviewer->mobile=$model->phone;
+                            $reviewer->user_id=$model->id;
+                            $reviewer->createdBy=Yii::$app->user->id;
+                            if ($reviewer->save()) {
+                                Yii::$app->session->setFlash('success', 'Reviwer account with email:' . $model->email . ' was successfully created.');
+                                return $this->redirect(['mgf-reviewer/index']);
+                            }else{
+                                Yii::$app->session->setFlash('error', "Reviewer NOT created!");
+                                $model->delete();
+                                return $this->render('create', ['model' => $model,"user_type" => $user_type]);
+                            }
+                        }else{
                         Yii::$app->session->setFlash('success', 'User account with email:' . $model->email . ' was successfully created.');
                         return $this->redirect(['view', 'id' => $model->id]);
+                        }
                     } else {
                         Yii::$app->session->setFlash('error', "User account created but email not sent!");
                         return $this->redirect(['view', 'id' => $model->id]);
@@ -165,7 +188,6 @@ class UsersController extends Controller {
                     return $this->render('create', ['model' => $model, "user_type" => $user_type]);
                 }
             }
-
 
             return $this->render('create', [
                         'model' => $model,

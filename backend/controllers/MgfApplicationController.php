@@ -9,6 +9,7 @@ use frontend\models\MgfAttachements;
 use frontend\models\MgfScreening;
 use frontend\models\MgfApplicationSearch;
 use frontend\models\MgfConceptNote;
+
 use frontend\models\MgfOrganisation;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -18,13 +19,12 @@ use yii\filters\AccessControl;
 /**
  * MgfApplicationController implements the CRUD actions for MgfApplication model.
  */
-class MgfApplicationController extends Controller
-{
+
+class MgfApplicationController extends Controller{
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+    public function behaviors(){
         return [
             'access'=>[
                 'class'=>AccessControl::className(),

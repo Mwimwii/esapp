@@ -105,7 +105,7 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 </table>
 
 <?php }elseif($status==1){ ?>
-  <?=Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['applications','status'=>1], ['class' => 'btn btn-default']);?>
+  <?=Html::a('<i class="fa fa-backward"></i>Back', ['applications','status'=>1], ['class' => 'btn btn-default']);?>
 
   <table class="table table-bordered border-primary">
   <thead>
@@ -125,9 +125,10 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
       <td>
           <?php if($post->satisfactory == NULL) {?>
           <?php }else if($post->satisfactory == 'YES') {?>
-            <i class="glyphicon glyphicon-ok" style="color:green"></i>
+
+            <i class="fa fa-check" style="color:green"></i>
           <?php }else{ ?>
-            <i class="glyphicon glyphicon-remove" style="color:red"></i>
+            <i class="fa fa-times" style="color:red"></i>
           <?php } ?>
       </td>
     </tr>
@@ -298,7 +299,6 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
 </tbody>
 </table>
 <?php }?>
-
 
 <div class="card">
     <div class="card-header" id="headingTwo">

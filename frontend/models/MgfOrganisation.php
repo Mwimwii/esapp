@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace frontend\models;
 use backend\models\Districts;
 use backend\models\Provinces;
 
@@ -19,7 +19,9 @@ use Yii;
  * @property string|null $business_objective
  * @property string $email_address
  * @property string $physical_address
+ * @property int $organisational_branches
  * @property string|null $tel_no
+ * @property string|null $fax_no
  * @property int|null $province_id
  * @property int|null $district_id
  * @property int $applicant_id
@@ -46,18 +48,16 @@ class MgfOrganisation extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules(){
         return [
-            [['cooperative', 'acronym', 'registration_type', 'registration_no', 'trade_license_no', 'registration_date', 'email_address', 'physical_address', 'applicant_id'], 'required'],
-            [['registration_date', 'date_created'], 'safe'],
-            [['business_objective'], 'string'],
-            [['province_id', 'district_id', 'applicant_id','is_active'], 'integer'],
+            [['cooperative', 'registration_type', 'registration_no', 'registration_date', 'email_address', 'physical_address', 'applicant_id','business_objective','organisational_branches'], 'required'],
+            [['registration_date', 'date_created','acronym','trade_license_no'], 'safe'],
+            [['province_id', 'district_id', 'applicant_id','is_active','organisational_branches'], 'integer'],
             [['cooperative', 'physical_address'], 'string', 'max' => 50],
             [['acronym'], 'string', 'max' => 10],
             [['registration_type', 'registration_no', 'trade_license_no'], 'string', 'max' => 30],
             [['email_address'], 'string', 'max' => 40],
-            [['tel_no'], 'string', 'max' => 15],
+            [['tel_no','fax_no'], 'string', 'max' => 15],
             [['registration_no'], 'unique'],
             [['trade_license_no'], 'unique'],
             [['email_address'], 'unique'],
@@ -78,15 +78,17 @@ class MgfOrganisation extends \yii\db\ActiveRecord
             'acronym' => 'Acronym of Organisation:',
             'registration_type' => 'Type of Legal Registration',
             'registration_no' => 'Registration No',
-            'trade_license_no' => 'Trade License No',
+            'trade_license_no' => 'Trade Licence No',
             'registration_date' => 'Registration Date',
             'business_objective' => 'Central Business Objective',
             'email_address' => 'Email Address',
             'physical_address' => 'Headquarters Physical Address',
             'tel_no' => 'Tel No',
-            'province_id' => 'Province ID',
-            'district_id' => 'District ID',
-            'applicant_id' => 'Applicant ID',
+            'fax_no' => 'Fax No',
+            'organisational_branches' => 'Does Your Organisation have Any Branch?',
+            'province_id' => 'Province',
+            'district_id' => 'District',
+            'applicant_id' => 'Applicant',
             'date_created' => 'Date Created',
         ];
     }
@@ -151,3 +153,4 @@ class MgfOrganisation extends \yii\db\ActiveRecord
         return $this->hasOne(MgfApplicant::className(), ['id' => 'applicant_id']);
     }
 }
+

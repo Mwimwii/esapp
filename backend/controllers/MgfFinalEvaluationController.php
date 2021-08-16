@@ -39,7 +39,8 @@ class MgfFinalEvaluationController extends Controller
      * @return mixed
      */
     public function actionIndex($status){
-        $searchModel = new MgfFinalEvaluationSearch();
+
+        $searchModel = new MgfFinalEvaluationSearch(['status'=>0]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -55,8 +56,11 @@ class MgfFinalEvaluationController extends Controller
             $searchModel = new MgfFinalEvaluationSearch(['status'=>2]);
         } elseif ($status==3) {
             $searchModel = new MgfFinalEvaluationSearch(['status'=>3]);
-        }else {
+
+        } elseif ($status==4) {
             $searchModel = new MgfFinalEvaluationSearch(['status'=>4]);
+        }else{
+            $searchModel = new MgfFinalEvaluationSearch(['status'=>0]);
         }
         
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

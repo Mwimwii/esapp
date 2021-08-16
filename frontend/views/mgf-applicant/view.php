@@ -6,7 +6,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfApplicant */
 
-$this->title = "Profile Details";
+
+$this->title = "Contact Person Details";
 \yii\web\YiiAsset::register($this);
 ?>
 
@@ -28,6 +29,7 @@ $this->title = "Profile Details";
             'organisation_id',
             'date_created',
         ],
-    ]) , Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['index'], ['class' => 'btn btn-default']);?>
+
+    ]) , Html::a('<i class="fa fa-home"></i>Back', ['index'], ['class' => 'btn btn-default']);?>
 
 </div>

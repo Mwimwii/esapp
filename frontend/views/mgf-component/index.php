@@ -30,9 +30,23 @@ $this->title = "Project's Components";
                 'class' => 'yii\grid\ActionColumn','template' => '{view}{update}{manage} {delete}',
                 'visibleButtons' => [
                     'update' => function ($model) {
-                        return $model->activities==0;;
+                        return $model->activities==0;
                     },
                     'manage' => function ($model) {
+                        if($model->proposal->proposal_status == 'Updated' || 
+                                $model->proposal->proposal_status == 'Created' || 
+                                $model->proposal->proposal_status == 'Cancelled' || 
+                                $model->proposal->proposal_status == 'Prepared'){
+                            return Html::a('<span class="fa fa-cog"></span>',['manage', 'id' => $model->id],
+                                [
+                                'title' => 'Manage Component',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                'class' => 'bt btn-lg'
+                                ]);
+                            }
                         return $model->proposal->proposal_status == 'Updated' || $model->proposal->proposal_status == 'Created' || $model->proposal->proposal_status == 'Prepared';
                     },
 
@@ -40,7 +54,7 @@ $this->title = "Project's Components";
                          return $model->activities==0;
                      },
                 ]
-            ] 
+            ]
         ],
     ]); ?>
 
@@ -60,7 +74,7 @@ $this->title = "Project's Components";
                 <?= $form->field($model, 'component_name')->textInput() ?>
             </div>
             <div class="modal-footer">
-                <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>Save ', ['class' => 'btn btn-success btn-sm']) ?>
+                <?= Html::submitButton('<i class="fa fa-check"></i>Save ', ['class' => 'btn btn-success btn-sm']) ?>
                 <?php ActiveForm::end() ?>
             </div>
         </div>
@@ -68,8 +82,3 @@ $this->title = "Project's Components";
     </div>
     <!-- /.modal-dialog -->
 </div>
-
-
-
-
-

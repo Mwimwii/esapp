@@ -9,10 +9,10 @@ use yii\grid\GridView;
 
 $this->title = 'Assigned Proposals';
 ?>
- 
+
+ <h3><?= Html::encode($this->title) ?></h3> 
 <div class="card card-success card-outline">
     <div class="card-body">
-    <?php include('tab.php');?>
     <hr class="dotted short">   
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

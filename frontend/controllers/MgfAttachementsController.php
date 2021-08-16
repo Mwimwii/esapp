@@ -4,6 +4,7 @@ use Yii;
 use frontend\models\MgfAttachements;
 use frontend\models\MgfApplicant;
 use frontend\models\MgfAttachementsSearch;
+use frontend\models\MgfChecklist;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -86,45 +87,64 @@ class MgfAttachementsController extends Controller{
      */
     public function actionUpdate($id){
         $model = $this->findModel($id);
-
+        $userid=Yii::$app->user->identity->id;
+        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
         if ($model->load(Yii::$app->request->post())) {
-            $userid=Yii::$app->user->identity->id;
-            $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
-
-            $model->registration_certificate=UploadedFile::getInstance($model,'registration_certificate');
-            $model->articles_of_assoc=UploadedFile::getInstance($model,'articles_of_assoc');    
-            $model->mou_contract=UploadedFile::getInstance($model,'mou_contract');
-            $model->board_resolution=UploadedFile::getInstance($model,'board_resolution');
-        
-
-            $image_certificate=$model->registration_certificate;
-            $certificate_path='uploads/attachements/'.$model->id.'_Certificate'.rand(1,4000).'_'.$image_certificate;
-            $model->registration_certificate->saveAs($certificate_path);
-            $model->registration_certificate=$certificate_path;
-
-            $image_articles_of_assoc=$model->articles_of_assoc;
-            $articles_path='uploads/attachements/'.$model->id.'_Article'.rand(1,4000).'_'.$image_articles_of_assoc;
-            $model->articles_of_assoc->saveAs($articles_path);
-            $model->articles_of_assoc=$articles_path;
-
-           
-
-            $image_mou_contract=$model->mou_contract;
-            $contract_path='uploads/attachements/'.$model->id.'_Contract'.rand(1,4000).'_'.$image_mou_contract;
-            $model->mou_contract->saveAs($contract_path);
-            $model->mou_contract=$contract_path;
-
-            $image_board_resolution=$model->board_resolution;
-            $resolution_path='uploads/attachements/'.$model->id.'_Resolution'.rand(1,4000).'_'.$image_board_resolution;
-            $model->board_resolution->saveAs($resolution_path);
-            $model->board_resolution=$resolution_path;
-
             
+            if($applicant->applicant_type=="Category-A"){
+                $model->registration_certificate=UploadedFile::getInstance($model,'registration_certificate');
+                $model->articles_of_assoc=UploadedFile::getInstance($model,'articles_of_assoc');    
+                $model->mou_contract=UploadedFile::getInstance($model,'mou_contract');
+                $model->board_resolution=UploadedFile::getInstance($model,'board_resolution');
+            
+                $image_certificate=$model->registration_certificate;
+                $certificate_path='uploads/attachements/'.$model->id.'_Certificate'.rand(1,4000).'_'.$image_certificate;
+                $model->registration_certificate->saveAs($certificate_path);
+                $model->registration_certificate=$certificate_path;
 
-            if($applicant->applicant_type=="Category-B"){
+                $image_articles_of_assoc=$model->articles_of_assoc;
+                $articles_path='uploads/attachements/'.$model->id.'_Article'.rand(1,4000).'_'.$image_articles_of_assoc;
+                $model->articles_of_assoc->saveAs($articles_path);
+                $model->articles_of_assoc=$articles_path;
+
+                $image_mou_contract=$model->mou_contract;
+                $contract_path='uploads/attachements/'.$model->id.'_Contract'.rand(1,4000).'_'.$image_mou_contract;
+                $model->mou_contract->saveAs($contract_path);
+                $model->mou_contract=$contract_path;
+
+                $image_board_resolution=$model->board_resolution;
+                $resolution_path='uploads/attachements/'.$model->id.'_Resolution'.rand(1,4000).'_'.$image_board_resolution;
+                $model->board_resolution->saveAs($resolution_path);
+                $model->board_resolution=$resolution_path;
+     
+            }else{
 
                 $model->audit_reports=UploadedFile::getInstance($model,'audit_reports');
                 $model->application_attachement=UploadedFile::getInstance($model,'application_attachement');
+                $model->registration_certificate=UploadedFile::getInstance($model,'registration_certificate');
+                $model->articles_of_assoc=UploadedFile::getInstance($model,'articles_of_assoc');    
+                $model->mou_contract=UploadedFile::getInstance($model,'mou_contract');
+                $model->board_resolution=UploadedFile::getInstance($model,'board_resolution');
+            
+                $image_certificate=$model->registration_certificate;
+                $certificate_path='uploads/attachements/'.$model->id.'_Certificate'.rand(1,4000).'_'.$image_certificate;
+                $model->registration_certificate->saveAs($certificate_path);
+                $model->registration_certificate=$certificate_path;
+
+                $image_articles_of_assoc=$model->articles_of_assoc;
+                $articles_path='uploads/attachements/'.$model->id.'_Article'.rand(1,4000).'_'.$image_articles_of_assoc;
+                $model->articles_of_assoc->saveAs($articles_path);
+                $model->articles_of_assoc=$articles_path;
+
+                $image_mou_contract=$model->mou_contract;
+                $contract_path='uploads/attachements/'.$model->id.'_Contract'.rand(1,4000).'_'.$image_mou_contract;
+                $model->mou_contract->saveAs($contract_path);
+                $model->mou_contract=$contract_path;
+
+                $image_board_resolution=$model->board_resolution;
+                $resolution_path='uploads/attachements/'.$model->id.'_Resolution'.rand(1,4000).'_'.$image_board_resolution;
+                $model->board_resolution->saveAs($resolution_path);
+                $model->board_resolution=$resolution_path;
 
                 $image_audit_reports=$model->audit_reports;
                 $audit_path='uploads/attachements/'.$model->id.'_Audit'.rand(1,4000).'_'.$image_audit_reports;
@@ -137,15 +157,22 @@ class MgfAttachementsController extends Controller{
                 $model->application_attachement=$application_path;
             }
             
-
-            $model->save();
-            Yii::$app->session->setFlash('success', 'Saved successfully.');
-            return $this->redirect(['mgf-attachements/view', 'id' =>$model->id]);
+            if ($model->save()) {
+                MgfChecklist::updateAll(['attachements_uploaded'=>1], 'applicant_id='.$applicant->id);
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+                return $this->redirect(['mgf-attachements/view', 'id' =>$model->id]);
+            }
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        if ($applicant->applicant_type=="Category-A") {
+            return $this->render('updatea', [
+                'model' => $model,
+            ]);
+        }else{
+            return $this->render('updateb', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**
