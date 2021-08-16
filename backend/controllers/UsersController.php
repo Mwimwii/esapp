@@ -24,12 +24,12 @@ class UsersController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 
-                    'image', 'change-password', 'profile','block'],
+                'only' => ['index', 'create', 'update', 'delete', 'view',
+                    'image', 'change-password', 'profile', 'block'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 
-                            'view', 'image', 'change-password', 'profile','block'],
+                        'actions' => ['index', 'create', 'update', 'delete',
+                            'view', 'image', 'change-password', 'profile', 'block'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -49,7 +49,7 @@ class UsersController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        if (User::userIsAllowedTo('View Users')) {
+        if (User::userIsAllowedTo('View Users') || User::userIsAllowedTo('Manage Users')) {
             $searchModel = new UserSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $dataProvider->query->andFilterWhere(['NOT IN', 'status', [User::STATUS_DELETED]]);
@@ -97,9 +97,14 @@ class UsersController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        return $this->render('view', [
-                    'model' => $this->findModel($id),
-        ]);
+        if (User::userIsAllowedTo('View Users') || User::userIsAllowedTo('Manage Users')) {
+            return $this->render('view', [
+                        'model' => $this->findModel($id),
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
     }
 
     /**
@@ -131,8 +136,10 @@ class UsersController extends Controller {
                 $model->username = $model->email;
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
-                //$model->created_at = new \yii\db\Expression('NOW()');
-               // $model->updated_at = new \yii\db\Expression('NOW()');
+                $model->created_at = new \yii\db\Expression('NOW()');
+                $model->updated_at = new \yii\db\Expression('NOW()');
+
+
 
                 if ($model->save() && $model->validate()) {
                     $resetPasswordModel = new \backend\models\PasswordResetRequestForm();

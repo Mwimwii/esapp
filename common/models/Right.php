@@ -156,6 +156,8 @@ class Right extends \yii\db\ActiveRecord {
             'View staff hourly rates' => "View staff hourly rates",
             'Review timesheets' => "Review timesheets",
             'Submit timesheets' => "Submit timesheets",
+            'View time sheets' => "View time sheets",
+
                 //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
         ];
 
@@ -173,5 +175,6 @@ class Right extends \yii\db\ActiveRecord {
         }
         echo "Inserted $count rights into permissions table";
     }
+
 
 }
