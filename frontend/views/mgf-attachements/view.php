@@ -24,7 +24,9 @@ $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
                 'board_resolution:ntext',
                 'date_submitted',
             ],
-            ]) ,Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+
+            ]) ,Html::a('<i class="fa fa-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+
         ?>
 
         <table class="table table-hover">
@@ -56,7 +58,9 @@ $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
             <?php endif; ?>
               <?php if($post->application->application_status=="Initialized"): ?>
               <td>
-                <?=Html::a('<i class="glyphicon glyphicon-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+
+                <?=Html::a('<i class="fa fa-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+
               </td>
               <?php endif; ?>
             </tr>
@@ -83,7 +87,9 @@ $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
                 'application_attachement:ntext',
                 'date_submitted',
             ],
-            ]) ,Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+
+            ]) ,Html::a('<i class="fa fa-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+
         ?>
 
         <table class="table table-hover">
@@ -121,7 +127,9 @@ $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
             <?php endif; ?>
               <?php if($post->application->application_status=="Initialized"): ?>
               <td>
-                <?=Html::a('<i class="glyphicon glyphicon-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+
+                <?=Html::a('<i class="fa fa-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+
               </td>
               <?php endif; ?>
             </tr>

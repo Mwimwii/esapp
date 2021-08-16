@@ -19,7 +19,8 @@ $this->title = $model->component_name;
           <tr>
             <th scope="col">#</th>
             <th scope="col">Activity Name</th>
-            <th scope="col"><span><?=Html::a('<i class="glyphicon glyphicon-plus"></i>New Activity',['mgf-activity/create','id'=>$model->id],['class'=>'btn btn-success btn-sm'])?></th>
+
+            <th scope="col"><span><?=Html::a('<i class="fa fa-plus"></i>New Activity',['mgf-activity/create','id'=>$model->id],['class'=>'btn btn-success btn-sm'])?></th>
         </tr>
         </thead>
         <tbody>
@@ -40,7 +41,8 @@ $this->title = $model->component_name;
                         <th scope="col">Year 3</th>
                         <th scope="col">Year 4</th>
                         <th scope="col">Unit Cost(ZMK)</th>
-                        <th scope="col"><span><?=Html::a('<i class="glyphicon glyphicon-plus"></i>New Item',['mgf-input-item/create','id'=>$act->id],['class'=>'btn btn-success btn-sm'])?></th>
+
+                        <th scope="col"><span><?=Html::a('<i class="fa fa-plus"></i>New Item',['mgf-input-item/create','id'=>$act->id],['class'=>'btn btn-success btn-sm'])?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -59,8 +61,10 @@ $this->title = $model->component_name;
                         <td><?=$post->project_year_4; ?></td>
                         <td><?=$post->unit_cost; ?></td>
                         <td>
-                        <span><?=Html::a('<i class="glyphicon glyphicon-edit"></i>Edit',['mgf-input-item/update','id'=>$post->id],['class'=>'label label-primary'])?></span> 
-                        <?= Html::a('<i class="glyphicon glyphicon-trash"></i>Delete', ['mgf-input-item/delete', 'id' => $post->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+
+                        <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-input-item/update','id'=>$post->id],['class'=>'label label-primary'])?></span> 
+                        <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-input-item/delete', 'id' => $post->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+
                         </td>
                     </tr>
                     <?php  $ii=$ii+1; ?>
@@ -108,9 +112,11 @@ $this->title = $model->component_name;
             </td>
             
             <td>
-              <span><?=Html::a('<i class="glyphicon glyphicon-edit"></i>Edit',['mgf-activity/update','id'=>$act->id],['class'=>'label label-primary'])?></span> 
+
+              <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-activity/update','id'=>$act->id],['class'=>'label label-primary'])?></span> 
               <?php if(count($items)==0): ?>
-                <?= Html::a('<i class="glyphicon glyphicon-trash"></i>Delete', ['mgf-activity/delete', 'id' => $act->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+                <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-activity/delete', 'id' => $act->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+
               <?php endif; ?>
             </td>
           </tr>

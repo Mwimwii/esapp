@@ -161,5 +161,3 @@ use yii\helpers\Html;
         ?>
     </table>
 </div>
-
-

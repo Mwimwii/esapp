@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         );
                     }
                 },
+
                 'update' => function ($url, $model) {
                     if (User::userIsAllowedTo('Update MGF Organisation')) {
                         return Html::a(
@@ -65,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         );
                     }
                 },
+
             ]
         ]
         ],

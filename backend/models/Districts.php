@@ -59,7 +59,7 @@ class Districts extends \yii\db\ActiveRecord {
         return [
             'id' => 'ID',
             'province_id' => 'Province',
-            'name' => 'District name',
+            'name' => 'District Name',
             'lat' => 'Lat',
             'long' => 'Long',
             'created_at' => 'Created At',

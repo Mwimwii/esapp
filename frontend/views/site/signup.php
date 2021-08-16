@@ -6,6 +6,7 @@
 
 use kartik\form\ActiveForm;
 use yii\helpers\Html;
+use borales\extensions\phoneInput\PhoneInput;
 
 $this->title = 'APPLICATION FOR PARTICIPATION IN:';
 $this->params['breadcrumbs'][] = $this->title;
@@ -22,8 +23,8 @@ function login_code(){
     <p class="login-box-msg text-sm breadcrumb-item active">
         <strong><h3><?= Html::encode($this->title) ?></h3></strong>
 
-        <h3><?= 'ENHANCED SMALLHOLDER AGRIBUSINESS PROMOTION PROGRAMME (E-SAPP)' ?></h3>
-        <h4><?= 'MATCHING GRANT FACILITY (MGF) WINDOW 1 or 2' ?></h4>
+        <h5><?= 'ENHANCED SMALLHOLDER AGRIBUSINESS PROMOTION PROGRAMME (E-SAPP)' ?></h5>
+        <h6><?= 'MATCHING GRANT FACILITY (MGF) WINDOW 1 or 2' ?></h6>
     </p>
 </div>
 
@@ -36,7 +37,9 @@ function login_code(){
     <div class="col-md-5">
             <?= $form->field($model, 'username')->textInput(['value'=>login_code(),'autofocus' => true,'readonly'=>true]) ?>
             <?= $form->field($model, 'first_name')->textInput(['autofocus' => true]) ?>
-            <?= $form->field($model, 'phone')->textInput(['autofocus' => true]) ?>
+            <?= $form->field($model, 'phone')->textInput(['autofocus' => true])->widget(PhoneInput::className(), [
+            'jsOptions' => ['allowExtensions' => true,'preferredCountries' => ['ZM'],]],
+            ['maxlength' => true, 'id' => "phone"]); ?>
             <?= $form->field($model, 'password')->passwordInput() ?>
     </div>
 

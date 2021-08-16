@@ -1,0 +1,3 @@
+-restrict adding two contact people only
+-activity creation -> relate to year and quater
+-reviewers controller

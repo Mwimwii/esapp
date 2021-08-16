@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use frontend\models\MgfApplicant;
 use frontend\models\MgfApplication;
 use frontend\models\MgfApproval;
+use frontend\models\MgfChecklist;
 use frontend\models\MgfOrganisation;
 
 include("findid.php");
@@ -41,7 +42,6 @@ class MgfConceptNoteController extends Controller
     public function actionIndex(){
         $searchModel = new MgfConceptNoteSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -70,7 +70,10 @@ class MgfConceptNoteController extends Controller
      */
     public function actionCreate(){
         $model = new MgfConceptNote();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {       
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {  
+            $userid=Yii::$app->user->identity->id;
+            $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+            MgfChecklist::updateAll(['concept_created'=>1], 'applicant_id='.$applicant->id);     
             Yii::$app->session->setFlash('success', 'Saved successfully.');
             return $this->redirect(['view', 'id' => $model->id]);
         }else{
@@ -98,8 +101,12 @@ class MgfConceptNoteController extends Controller
             $application->is_active=1;
             $application->date_submitted=NULL;
             if ($application->save()) {
+                $userid=Yii::$app->user->identity->id;
+                $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+                MgfChecklist::updateAll(['concept_submitted'=>1], 'applicant_id='.$applicant->id);   
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
                 MgfApplication::updateAll(['is_active' => 0], 'id!='.$applicationid);
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
                 return $this->redirect(['view', 'id' => $model->id]);
             }else{
                 Yii::$app->session->setFlash('error', 'NOT Saved.');
@@ -113,43 +120,37 @@ class MgfConceptNoteController extends Controller
     
     public function actionSubmit($id){
         $model = $this->findModel($id);
-        if($model==null){
-            throw new NotFoundHttpException();
-        }else{
-            //$userid=Yii::$app->user->identity->username;
-            $applicationid=$model->application_id;
-            $application = MgfApplication::findOne($applicationid);
-            $application->application_status='Submitted';
-            $application->date_submitted=date('Y-m-d H:i:s');
-            $application->save();
-            
+        $applicationid=$model->application_id;
+        $application = MgfApplication::findOne($applicationid);
+        $application->application_status='Submitted';
+        $application->date_submitted=date('Y-m-d H:i:s');
+        if ($application->save()) {
             $model->date_submitted=$application->date_submitted;
             $model->save();
-
             $approval=new MgfApproval();
             $approval->application_id=$applicationid;
             $approval->conceptnote_id=$id;
 
             if ($approval->save()) {
+                MgfChecklist::updateAll(['concept_submitted'=>1,'application_id'=>$applicationid], 'applicant_id='.$application->applicant->id);
                 Yii::$app->session->setFlash('success', 'Submitted successfully.');
                 return $this->redirect(['/mgf-applicant/profile']);
             }
         }
     }
 
+
     public function actionCancel($id){
-        //$userid=Yii::$app->user->identity->username;
         $model = $this->findModel($id);
         $applicationid=$model->application_id;
         $application = MgfApplication::find()->where(['id'=>$applicationid,'application_status'=>'Submitted'])->one();
         $application->application_status='Cancelled';
-        //$application->is_active=0;
         $application->date_submitted=NULL;
         if(MgfApplication::find()->where(['id'=>$applicationid,'application_status'=>'Submitted'])->exists()){
             $application->save();
             $model->date_submitted=$application->date_submitted;
-
             if($model->save()){
+                MgfChecklist::updateAll(['concept_submitted'=>0,'application_id'=>$applicationid], 'applicant_id='.$application->applicant->id);
                 $approval = MgfApproval::find()->where(['application_id'=>$applicationid,'conceptnote_id'=>$id])->one();
                 $approval->delete();
                 Yii::$app->session->setFlash('success', 'Cancelled successfully.');
@@ -168,10 +169,8 @@ class MgfConceptNoteController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id){
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
@@ -182,12 +181,10 @@ class MgfConceptNoteController extends Controller
      * @return MgfConceptNote the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id){
         if (($model = MgfConceptNote::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

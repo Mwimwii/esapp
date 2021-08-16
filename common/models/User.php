@@ -12,6 +12,7 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $username
+ * @property string $password_hash
  * @property string $password
  * @property string $password_reset_token
  * @property string $verification_token
@@ -34,7 +35,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
+
+
         return '{{%users}}';
+
     }
 
     /**
@@ -165,7 +169,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
+
+
         return Yii::$app->security->validatePassword($password, $this->password);
+
+
     }
 
     /**
@@ -175,7 +183,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
+
+
         $this->password = Yii::$app->security->generatePasswordHash($password);
+
     }
 
     /**

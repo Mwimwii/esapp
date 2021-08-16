@@ -6,6 +6,11 @@ use yii\base\Model;
 use common\models\User;
 use common\models\Role;
 
+//use backend\models\User;
+
+use common\models\Role;
+
+
 /**
  * Signup form
  */
@@ -60,7 +65,8 @@ class SignupForm extends Model
         }
         
         $user = new User();
-        $role=Role::find()->where(['role'=>'Applicant'])->one();
+
+        $role=Role::findOne(['role'=>'Applicant']);
         $user->username = $this->username;
         $user->first_name = $this->first_name;
         $user->last_name = $this->last_name;

@@ -23,6 +23,7 @@ use yii\bootstrap\Tabs;
                 <?= Html::a('Reviewers', ['mgf-proposal/reviewers']) ?>
             </li>
             <li>
+
                 <?= Html::a('Assigned', ['index']) ?>
             </li>
         </div>

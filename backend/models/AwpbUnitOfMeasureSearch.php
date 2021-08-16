@@ -17,7 +17,8 @@ class AwpbUnitOfMeasureSearch extends AwpbUnitOfMeasure
     public function rules()
     {
         return [
-            [['id', 'status', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
+
+            [['id'], 'integer'],
             [['name'], 'safe'],
         ];
     }

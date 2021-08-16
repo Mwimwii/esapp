@@ -15,6 +15,7 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
+
     <?php include('tab.php');?>
     <hr class="dotted short"> 
     <?= GridView::widget([

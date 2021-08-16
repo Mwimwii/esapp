@@ -3,7 +3,8 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use frontend\models\MgfApplicant;
-use dosamigos\datepicker\DatePicker;
+#use dosamigos\datepicker\DatePicker;
+use kartik\widgets\DatePicker;
 use frontend\models\MgfOperation;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Operations;
 
@@ -39,8 +40,9 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
         <?= $form->field($model, 'province_id')->textInput(['value'=>$applicant->province->name,'disabled'=>true]);?>
         <?= $form->field($model, 'district_id')->textInput(['value'=>$applicant->district->name,'disabled'=>true]);?>
          
+
         <?= $form->field($model, 'starting_date')->widget(DatePicker::className(),
-            ['pluginOptions' => ['autoclose'=>true,'format' => 'yyyy-mm-dd']]);?>
+        ['pluginOptions' => ['autoclose'=>true,'format' => 'yyyy-mm-dd']]);?>
 
         <?= $form->field($model, 'project_length')->dropDownList([ '1' => '1 Year', '2' => '2 Years','3' => '3 Years', '4' => '4 Years','5' => '5 Years', '6' => '6 Years','7' => '7 Years', '8' => '8 Years' ], ['prompt' => 'SELECT','required'=>true]) ?>
 
@@ -71,8 +73,3 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
 </div>
 </div>
 </div>
-
-
-
-
-

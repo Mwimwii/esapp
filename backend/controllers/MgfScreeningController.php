@@ -1,6 +1,9 @@
 <?php
 
 namespace backend\controllers;
+
+
+use backend\models\MgfEligibilityApproval;
 use Yii;
 use frontend\models\MgfProposalSearch;
 use yii\web\Controller;
@@ -10,6 +13,7 @@ use frontend\models\MgfComponent;
 use frontend\models\MgfProposal;
 use frontend\models\MgfApplicant;
 use frontend\models\MgfApproval;
+use frontend\models\MgfEligibility;
 use frontend\models\MgfOffer;
 use frontend\models\MgfSelectionCategory;
 use frontend\models\MgfProposalEvaluation;
@@ -123,14 +127,22 @@ class MgfScreeningController extends Controller{
             }
             Yii::$app->session->setFlash('success', 'Saved successfully.');
             MgfApproval::updateAll(['scores' => $total], 'conceptnote_id='.$conceptid);
-            return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
+
+            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
         }else{
             $scores=MgfScreening::find()->where(['organisation_id'=>$orgid,'conceptnote_id'=>$conceptid,'satisfactory'=>'YES'])->count();
-
-            Yii::$app->session->setFlash('error', 'NOT Saved!'.$id.'-'.$orgid.'-'.$conceptid.'-'.$scores);
-            return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
+            $message = '';
+            foreach ($model->getErrors() as $error) {
+                $message .= $error[0];
+            }
+            Yii::$app->session->setFlash('error', "Error::" . $message);
+            #Yii::$app->session->setFlash('error', 'NOT Saved!'.$id.'-'.$orgid.'-'.$conceptid.'-'.$scores);
+            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
         }
     }
+
+
+
 
     public function actionDisapprove($id,$orgid,$conceptid){
         $userid=Yii::$app->user->identity->username;
@@ -144,9 +156,72 @@ class MgfScreeningController extends Controller{
                 $total=0;
             }
             MgfApproval::updateAll(['scores' => $total], 'conceptnote_id='.$conceptid);
+
+            Yii::$app->session->setFlash('success', 'Saved successfully.');
+
+            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
+        }else{
+            $message = '';
+            foreach ($model->getErrors() as $error) {
+                $message .= $error[0];
+            }
+            Yii::$app->session->setFlash('error', "Error:" . $message);
+            //Yii::$app->session->setFlash('error', 'NOT Saved!');
+            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
+        }
+    }
+    
+
+
+    public function actionAccept($id,$orgid,$applicationid){
+        $userid=Yii::$app->user->identity->username;
+        $model = MgfEligibility::findOne($id);
+        if(MgfEligibility::updateAll(['satisfactory' => 'YES','verified_by'=>$userid], 'id='.$id)){
+            $scores=MgfEligibility::find()->where(['organisation_id'=>$orgid,'application_id'=>$applicationid,'satisfactory'=>'YES'])->count();
+            $total_marks=MgfEligibility::find()->where(['organisation_id'=>$orgid,'application_id'=>$applicationid])->count();
+            if ($scores>0) {
+                $total=100*($scores/$total_marks);
+            }else{
+                $total=0;
+            }
+            Yii::$app->session->setFlash('success', 'Saved successfully.');
+            MgfEligibilityApproval::updateAll(['scores' => $total], 'application_id='.$applicationid);
             return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
         }else{
-            Yii::$app->session->setFlash('error', 'NOT Saved!');
+            $scores=MgfScreening::find()->where(['organisation_id'=>$orgid,'application_id'=>$applicationid,'satisfactory'=>'YES'])->count();
+            $message = '';
+            foreach ($model->getErrors() as $error) {
+                $message .= $error[0];
+            }
+            Yii::$app->session->setFlash('error', "Error::" . $message);
+            #Yii::$app->session->setFlash('error', 'NOT Saved!'.$id.'-'.$orgid.'-'.$conceptid.'-'.$scores);
+            return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
+        }
+    }
+
+
+    public function actionDeny($id,$orgid,$applicationid){
+        $userid=Yii::$app->user->identity->username;
+        $model = MgfEligibility::findOne($id);
+        if(MgfEligibility::updateAll(['satisfactory' => 'NO','verified_by'=>$userid], 'id='.$id)){
+            $scores=MgfEligibility::find()->where(['organisation_id'=>$orgid,'application_id'=>$applicationid,'satisfactory'=>'YES'])->count();
+            $total_marks=MgfEligibility::find()->where(['organisation_id'=>$orgid,'application_id'=>$applicationid])->count();
+            if ($scores>0) {
+                $total=100*($scores/$total_marks);
+            } else {
+                $total=0;
+            }
+            MgfEligibilityApproval::updateAll(['scores' => $total], 'application_id='.$applicationid);
+            Yii::$app->session->setFlash('success', 'Saved successfully.');
+
+            return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
+        }else{
+            $message = '';
+            foreach ($model->getErrors() as $error) {
+                $message .= $error[0];
+            }
+            Yii::$app->session->setFlash('error', "Error:" . $message);
+            //Yii::$app->session->setFlash('error', 'NOT Saved!');
             return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
         }
     }
