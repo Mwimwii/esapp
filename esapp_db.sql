@@ -2049,17 +2049,17 @@ DROP TABLE IF EXISTS `mgf_activity`;
 CREATE TABLE `mgf_activity` (
   `id` int NOT NULL AUTO_INCREMENT,
   `activity_no` int NOT NULL,
-  `activity_name` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `activity_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `subtotal` decimal(12,2) NOT NULL DEFAULT '0.00',
   `componet_id` int NOT NULL,
   `inputs` int NOT NULL DEFAULT '0',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `componet_id` (`componet_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_activity_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_activity_ibfk_2` FOREIGN KEY (`componet_id`) REFERENCES `mgf_component` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `componet_id` (`componet_id`),
+  CONSTRAINT `mgf_activity_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_activity_ibfk_2` FOREIGN KEY (`componet_id`) REFERENCES `mgf_component` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2072,27 +2072,24 @@ DROP TABLE IF EXISTS `mgf_applicant`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_applicant` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` enum('Mr.','Mrs.','Ms.','Miss.','Dr.','Prof.','Rev.') DEFAULT NULL,
   `province_id` int unsigned DEFAULT NULL,
   `district_id` int unsigned DEFAULT NULL,
-  `first_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mobile` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nationalid` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `mobile` varchar(15) NOT NULL,
+  `nationalid` varchar(15) DEFAULT NULL,
+  `address` text,
   `confirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `applicant_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `applicant_type` enum('Category-A','Category-B') DEFAULT NULL,
   `user_id` int NOT NULL,
   `organisation_id` int DEFAULT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `fk_applicant_district` (`district_id`),
-  KEY `fk_mgf_applicant_1_idx` (`province_id`),
-  CONSTRAINT `fk_applicant_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_mgf_applicant_1` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
-  CONSTRAINT `mgf_applicant_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `fk_applicant_province` (`province_id`),
+  KEY `fk_applicant_district` (`district_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2107,15 +2104,15 @@ CREATE TABLE `mgf_application` (
   `attachements` int DEFAULT NULL,
   `applicant_id` int NOT NULL,
   `organisation_id` int NOT NULL,
-  `application_status` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Initialized',
+  `application_status` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Initialized',
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_submitted` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `organisation_id` (`organisation_id`),
   KEY `applicant_id` (`applicant_id`),
-  CONSTRAINT `mgf_application_ibfk_1` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_application_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `mgf_application_ibfk_1` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`),
+  CONSTRAINT `mgf_application_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2130,24 +2127,24 @@ CREATE TABLE `mgf_approval` (
   `id` int NOT NULL AUTO_INCREMENT,
   `application_id` int NOT NULL,
   `conceptnote_id` int NOT NULL,
-  `scores` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT '0',
-  `review_remark` text COLLATE utf8mb4_unicode_ci,
+  `scores` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `review_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `review_submission` timestamp NULL DEFAULT NULL,
-  `reviewed_by` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `certify_remark` text COLLATE utf8mb4_unicode_ci,
+  `reviewed_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `certify_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `certify_submission` timestamp NULL DEFAULT NULL,
-  `certified_by` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `review2_remark` text COLLATE utf8mb4_unicode_ci,
+  `certified_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `review2_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `review2_submission` timestamp NULL DEFAULT NULL,
-  `reviewed2_by` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `approval_remark` text COLLATE utf8mb4_unicode_ci,
+  `reviewed2_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `approval_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `approve_submittion` timestamp NULL DEFAULT NULL,
-  `approved_by` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `approved_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `application_id` (`application_id`),
   KEY `conceptnote_id` (`conceptnote_id`),
-  CONSTRAINT `mgf_approval_ibfk_1` FOREIGN KEY (`conceptnote_id`) REFERENCES `mgf_concept_note` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_approval_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `application_id` (`application_id`),
+  CONSTRAINT `mgf_approval_ibfk_1` FOREIGN KEY (`conceptnote_id`) REFERENCES `mgf_concept_note` (`id`),
+  CONSTRAINT `mgf_approval_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2160,14 +2157,14 @@ DROP TABLE IF EXISTS `mgf_approval_status`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_approval_status` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `approval_status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `lowerlimit` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `upperlimit` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `approval_status` enum('Accepted','On-Hold','Rejected','Not Recommended','Recommended','Strongly Recommended','Deferred') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lowerlimit` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `upperlimit` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `mgf_approval_status_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `mgf_approval_status_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2180,21 +2177,131 @@ DROP TABLE IF EXISTS `mgf_attachements`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_attachements` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `registration_certificate` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `articles_of_assoc` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `audit_reports` text COLLATE utf8mb4_unicode_ci,
-  `mou_contract` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `board_resolution` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `application_attachement` text COLLATE utf8mb4_unicode_ci,
+  `registration_certificate` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `articles_of_assoc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `audit_reports` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `mou_contract` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `board_resolution` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `application_attachement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `organisation_id` int NOT NULL,
   `application_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `application_id` (`application_id`),
   KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_attachements_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_attachements_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `application_id` (`application_id`),
+  CONSTRAINT `mgf_attachements_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
+  CONSTRAINT `mgf_attachements_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_bpi_categories`
+--
+
+DROP TABLE IF EXISTS `mgf_bpi_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_bpi_categories` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` int DEFAULT NULL,
+  `category_description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_bpi_categories_indicators`
+--
+
+DROP TABLE IF EXISTS `mgf_bpi_categories_indicators`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_bpi_categories_indicators` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` int DEFAULT NULL,
+  `indicator_id` int DEFAULT NULL,
+  `indicator_description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_branch`
+--
+
+DROP TABLE IF EXISTS `mgf_branch`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_branch` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `address` varchar(100) NOT NULL,
+  `employess` int NOT NULL,
+  `province_id` int unsigned DEFAULT NULL,
+  `district_id` int unsigned DEFAULT NULL,
+  `organisation_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `organisation_id` (`organisation_id`),
+  KEY `fk_branch_province` (`province_id`),
+  KEY `fk_branch_district` (`district_id`),
+  CONSTRAINT `fk_branch_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
+  CONSTRAINT `fk_branch_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `mgf_branch_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_business_perfomance_indicator`
+--
+
+DROP TABLE IF EXISTS `mgf_business_perfomance_indicator`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_business_perfomance_indicator` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` int DEFAULT NULL,
+  `indicator_id` int DEFAULT NULL,
+  `agribusiness_indicators` varchar(50) NOT NULL,
+  `status_at_application` varchar(100) DEFAULT NULL,
+  `status_after_1yr` varchar(100) DEFAULT NULL,
+  `status_after_2yr` varchar(100) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_checklist`
+--
+
+DROP TABLE IF EXISTS `mgf_checklist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_checklist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `applicant_id` int NOT NULL,
+  `application_id` int NOT NULL DEFAULT '0',
+  `proposal_id` int NOT NULL DEFAULT '0',
+  `organisation_created` int NOT NULL DEFAULT '0',
+  `contacts_added` int NOT NULL DEFAULT '0',
+  `management_updated` int NOT NULL DEFAULT '0',
+  `experience_updated` int NOT NULL DEFAULT '0',
+  `attachements_uploaded` int NOT NULL DEFAULT '0',
+  `profile_confirmed` int NOT NULL DEFAULT '0',
+  `concept_created` int NOT NULL DEFAULT '0',
+  `concept_submitted` int NOT NULL DEFAULT '0',
+  `proposal_created` int NOT NULL DEFAULT '0',
+  `components_created` int NOT NULL DEFAULT '0',
+  `activities_created` int NOT NULL DEFAULT '0',
+  `items_created` int NOT NULL DEFAULT '0',
+  `project_submitted` int NOT NULL DEFAULT '0',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2207,18 +2314,18 @@ DROP TABLE IF EXISTS `mgf_component`;
 CREATE TABLE `mgf_component` (
   `id` int NOT NULL AUTO_INCREMENT,
   `component_no` int NOT NULL,
-  `component_name` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `component_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `subtotal` decimal(12,2) NOT NULL DEFAULT '0.00',
   `proposal_id` int NOT NULL,
   `activities` int NOT NULL DEFAULT '0',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `proposal_id` (`proposal_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_component_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_component_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `proposal_id` (`proposal_id`),
+  CONSTRAINT `mgf_component_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_component_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2230,23 +2337,23 @@ DROP TABLE IF EXISTS `mgf_concept_note`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_concept_note` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `project_title` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `project_title` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `estimated_cost` decimal(12,2) NOT NULL,
   `starting_date` date NOT NULL,
   `operation_id` int NOT NULL,
-  `implimentation_period` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `other_operation_type` text COLLATE utf8mb4_unicode_ci,
+  `implimentation_period` enum('1','2','3','4','5','6','7','8') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `other_operation_type` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `application_id` int NOT NULL,
   `organisation_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_submitted` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `operation_id` (`operation_id`),
-  KEY `organisation_id` (`organisation_id`),
   KEY `application_id` (`application_id`),
-  CONSTRAINT `mgf_concept_note_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_concept_note_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_concept_note_ibfk_3` FOREIGN KEY (`operation_id`) REFERENCES `mgf_operation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `organisation_id` (`organisation_id`),
+  KEY `operation_id` (`operation_id`),
+  CONSTRAINT `mgf_concept_note_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`),
+  CONSTRAINT `mgf_concept_note_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
+  CONSTRAINT `mgf_concept_note_ibfk_3` FOREIGN KEY (`operation_id`) REFERENCES `mgf_operation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2259,23 +2366,280 @@ DROP TABLE IF EXISTS `mgf_contact`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_contact` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mobile` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tel_no` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `physical_address` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `first_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mobile` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tel_no` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `physical_address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `organisation_id` int NOT NULL,
   `position_id` int NOT NULL,
   `applicant_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `applicant_id` (`applicant_id`),
-  KEY `position_id` (`position_id`),
   KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_contact_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_contact_ibfk_2` FOREIGN KEY (`position_id`) REFERENCES `mgf_position` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_contact_ibfk_3` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `position_id` (`position_id`),
+  KEY `applicant_id` (`applicant_id`),
+  CONSTRAINT `mgf_contact_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
+  CONSTRAINT `mgf_contact_ibfk_2` FOREIGN KEY (`position_id`) REFERENCES `mgf_position` (`id`),
+  CONSTRAINT `mgf_contact_ibfk_3` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_costs_financing_plan`
+--
+
+DROP TABLE IF EXISTS `mgf_costs_financing_plan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_costs_financing_plan` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `componentid` int DEFAULT NULL,
+  `activityid` int NOT NULL,
+  `item_no` int NOT NULL,
+  `input_name` varchar(50) NOT NULL,
+  `total_Project_cost` decimal(9,2) NOT NULL,
+  `Applicant_in_kind` decimal(9,2) DEFAULT '0.00',
+  `Applicant_in_cash` decimal(9,2) NOT NULL DEFAULT '0.00',
+  `total_contribution` decimal(9,2) NOT NULL DEFAULT '0.00',
+  `mgf_grant` decimal(9,2) NOT NULL DEFAULT '0.00',
+  `other_sources` decimal(9,2) DEFAULT '0.00',
+  `total` decimal(9,2) DEFAULT '0.00',
+  `mgf_as_percent` decimal(9,2) DEFAULT '0.00',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `componentid` (`componentid`),
+  KEY `activityid` (`activityid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_costs_financing_plan_other_sources`
+--
+
+DROP TABLE IF EXISTS `mgf_costs_financing_plan_other_sources`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_costs_financing_plan_other_sources` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `item_id` int NOT NULL,
+  `other_sources_name` varchar(40) NOT NULL,
+  `other_sources_amount` decimal(9,2) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_cumulative_profit`
+--
+
+DROP TABLE IF EXISTS `mgf_cumulative_profit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_cumulative_profit` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `cumulative_profit_yr1_value` double(9,2) DEFAULT '0.00',
+  `cumulative_profit_yr2_value` double(9,2) DEFAULT '0.00',
+  `cumulative_profit_yr3_value` double(9,2) DEFAULT '0.00',
+  `cumulative_profit_yr4_value` double(9,2) DEFAULT '0.00',
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_district_eligibility`
+--
+
+DROP TABLE IF EXISTS `mgf_district_eligibility`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_district_eligibility` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `minutes` text NOT NULL,
+  `province_id` int unsigned DEFAULT NULL,
+  `district_id` int unsigned DEFAULT NULL,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_de_province` (`province_id`),
+  KEY `fk_de_district` (`district_id`),
+  KEY `fk_de_y` (`year_id`),
+  CONSTRAINT `fk_de_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
+  CONSTRAINT `fk_de_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `fk_de_y` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_eligibility`
+--
+
+DROP TABLE IF EXISTS `mgf_eligibility`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_eligibility` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `application_id` int NOT NULL,
+  `organisation_id` int NOT NULL,
+  `criterion` text,
+  `satisfactory` varchar(4) DEFAULT NULL,
+  `approve_submittion` timestamp NULL DEFAULT NULL,
+  `verified_by` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `application_id` (`application_id`),
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `mgf_eligibility_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`),
+  CONSTRAINT `mgf_eligibility_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_eligibility_approval`
+--
+
+DROP TABLE IF EXISTS `mgf_eligibility_approval`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_eligibility_approval` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `application_id` int NOT NULL,
+  `is_active` int DEFAULT '0',
+  `scores` varchar(5) DEFAULT '0',
+  `review_remark` text,
+  `review_submission` timestamp NULL DEFAULT NULL,
+  `reviewed_by` varchar(20) DEFAULT NULL,
+  `certify_remark` text,
+  `certify_submission` timestamp NULL DEFAULT NULL,
+  `certified_by` varchar(20) DEFAULT NULL,
+  `review2_remark` text,
+  `review2_submission` timestamp NULL DEFAULT NULL,
+  `reviewed2_by` varchar(20) DEFAULT NULL,
+  `approval_remark` text,
+  `approve_submittion` timestamp NULL DEFAULT NULL,
+  `approved_by` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `application_id` (`application_id`),
+  CONSTRAINT `mgf_eligibility_approval_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_environmental_consideration`
+--
+
+DROP TABLE IF EXISTS `mgf_environmental_consideration`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_environmental_consideration` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `description` mediumtext,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_existing_facilities`
+--
+
+DROP TABLE IF EXISTS `mgf_existing_facilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_existing_facilities` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `facility_name` varchar(100) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `use_to_be_made` varchar(100) DEFAULT NULL,
+  `estimate_cost` decimal(9,2) DEFAULT NULL,
+  `comment` varchar(100) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_expected_beneficiaries`
+--
+
+DROP TABLE IF EXISTS `mgf_expected_beneficiaries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_expected_beneficiaries` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `type_of_beneficialy` varchar(200) NOT NULL,
+  `total_no` int DEFAULT NULL,
+  `no_of_women` int DEFAULT NULL,
+  `no_of_youth` int DEFAULT NULL,
+  `benefits` varchar(100) DEFAULT NULL,
+  `sources` varchar(100) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_expected_outputs_and_gross_revenue`
+--
+
+DROP TABLE IF EXISTS `mgf_expected_outputs_and_gross_revenue`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_expected_outputs_and_gross_revenue` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `output_name` varchar(100) NOT NULL,
+  `unit_of_measure` varchar(20) DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `expected_price` decimal(9,2) DEFAULT NULL,
+  `expected_gross_revenue` decimal(9,2) DEFAULT NULL,
+  `comment` varchar(100) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2287,15 +2651,15 @@ DROP TABLE IF EXISTS `mgf_experience`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_experience` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `financed_before` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `any_collaboration` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `collaboration_will` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `collaboration_ready` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `financed_before` enum('YES','NO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `any_collaboration` enum('YES','NO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `collaboration_will` enum('YES','NO','N/A') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `collaboration_ready` enum('YES','NO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `organisation_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_experience_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `mgf_experience_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2311,18 +2675,128 @@ CREATE TABLE `mgf_final_evaluation` (
   `proposal_id` int NOT NULL,
   `organisation_id` int NOT NULL,
   `status` int NOT NULL DEFAULT '0',
-  `finalscore` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `decision` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `finalscore` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `decision` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `notified` tinyint(1) NOT NULL DEFAULT '0',
-  `finalcomment` text COLLATE utf8mb4_unicode_ci,
-  `response` text COLLATE utf8mb4_unicode_ci,
+  `finalcomment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `proposal_id` (`proposal_id`),
   KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_final_evaluation_ibfk_1` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_final_evaluation_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `mgf_final_evaluation_ibfk_1` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
+  CONSTRAINT `mgf_final_evaluation_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_implementation_arrangements_cooperating_partners`
+--
+
+DROP TABLE IF EXISTS `mgf_implementation_arrangements_cooperating_partners`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_implementation_arrangements_cooperating_partners` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `main_activities` varchar(100) NOT NULL,
+  `respobility` varchar(20) DEFAULT NULL,
+  `experience` varchar(50) DEFAULT NULL,
+  `comment` varchar(50) DEFAULT NULL,
+  `typee` enum('Staff','Technical Assistance','Collaborating Partners') NOT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_implementation_arrangements_staff`
+--
+
+DROP TABLE IF EXISTS `mgf_implementation_arrangements_staff`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_implementation_arrangements_staff` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `main_activities` varchar(100) NOT NULL,
+  `respobility` varchar(20) DEFAULT NULL,
+  `experience` varchar(50) DEFAULT NULL,
+  `comment` varchar(50) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_implementation_arrangements_technical_assistance`
+--
+
+DROP TABLE IF EXISTS `mgf_implementation_arrangements_technical_assistance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_implementation_arrangements_technical_assistance` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `main_activities` varchar(100) NOT NULL,
+  `respobility` varchar(20) DEFAULT NULL,
+  `experience` varchar(50) DEFAULT NULL,
+  `comment` varchar(50) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_implementation_schedule`
+--
+
+DROP TABLE IF EXISTS `mgf_implementation_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_implementation_schedule` (
+  `id` int unsigned NOT NULL,
+  `activity_id` int DEFAULT NULL,
+  `yr1qtr1` tinyint(1) DEFAULT '0',
+  `yr1qtr2` tinyint(1) DEFAULT '0',
+  `yr1qtr3` tinyint(1) DEFAULT '0',
+  `yr1qtr4` tinyint(1) DEFAULT '0',
+  `yr2qtr1` tinyint(1) DEFAULT '0',
+  `yr2qtr2` tinyint(1) DEFAULT '0',
+  `yr2qtr3` tinyint(1) DEFAULT '0',
+  `yr2qtr4` tinyint(1) DEFAULT '0',
+  `yr3qtr1` tinyint(1) DEFAULT '0',
+  `yr3qtr2` tinyint(1) DEFAULT '0',
+  `yr3qtr3` tinyint(1) DEFAULT '0',
+  `yr3qtr4` tinyint(1) DEFAULT '0',
+  `yr4qtr1` tinyint(1) DEFAULT '0',
+  `yr4qtr2` tinyint(1) DEFAULT '0',
+  `yr4qtr3` tinyint(1) DEFAULT '0',
+  `yr4qtr4` tinyint(1) DEFAULT '0',
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2335,7 +2809,7 @@ DROP TABLE IF EXISTS `mgf_input_cost`;
 CREATE TABLE `mgf_input_cost` (
   `id` int NOT NULL AUTO_INCREMENT,
   `item_no` int NOT NULL,
-  `input_name` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `input_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `unit_cost` decimal(9,2) NOT NULL,
   `project_year_1` decimal(9,2) unsigned DEFAULT NULL,
   `project_year_2` decimal(9,2) unsigned DEFAULT NULL,
@@ -2346,15 +2820,15 @@ CREATE TABLE `mgf_input_cost` (
   `project_year_7` decimal(9,2) unsigned NOT NULL,
   `project_year_8` decimal(9,2) unsigned NOT NULL,
   `total_cost` decimal(9,2) NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `activity_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `activity_id` (`activity_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_input_cost_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_input_cost_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `mgf_activity` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `activity_id` (`activity_id`),
+  CONSTRAINT `mgf_input_cost_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_input_cost_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `mgf_activity` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2368,8 +2842,8 @@ DROP TABLE IF EXISTS `mgf_input_item`;
 CREATE TABLE `mgf_input_item` (
   `id` int NOT NULL AUTO_INCREMENT,
   `item_no` int NOT NULL,
-  `input_name` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `unit_of_measure` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `input_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unit_of_measure` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `project_year_1` decimal(9,2) NOT NULL DEFAULT '0.00',
   `project_year_2` decimal(9,2) DEFAULT '0.00',
   `project_year_3` decimal(9,2) NOT NULL DEFAULT '0.00',
@@ -2380,16 +2854,63 @@ CREATE TABLE `mgf_input_item` (
   `project_year_8` decimal(9,2) unsigned NOT NULL,
   `unit_cost` decimal(9,2) NOT NULL,
   `total_cost` decimal(9,2) NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `activity_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `activity_id` (`activity_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_input_item_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_input_item_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `mgf_activity` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `activity_id` (`activity_id`),
+  CONSTRAINT `mgf_input_item_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_input_item_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `mgf_activity` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_interests_taxes`
+--
+
+DROP TABLE IF EXISTS `mgf_interests_taxes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_interests_taxes` (
+  `id` int unsigned NOT NULL,
+  `interest_tax_type` enum('Interest','Tax') DEFAULT NULL,
+  `interest_tax_percent` double(9,2) DEFAULT '0.00',
+  `interest_tax_name` varchar(50) DEFAULT NULL,
+  `interest_yr1_value` double(9,2) DEFAULT '0.00',
+  `interest_yr2_value` double(9,2) DEFAULT '0.00',
+  `interest_yr3_value` double(9,2) DEFAULT '0.00',
+  `interest_yr4_value` double(9,2) DEFAULT '0.00',
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_netprofit`
+--
+
+DROP TABLE IF EXISTS `mgf_netprofit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_netprofit` (
+  `id` int unsigned NOT NULL,
+  `netprofit_yr1_value` double(9,2) DEFAULT NULL,
+  `netprofit_yr2_value` double(9,2) DEFAULT NULL,
+  `netprofit_yr3_value` double(9,2) DEFAULT NULL,
+  `netprofit_yr4_value` double(9,2) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2403,7 +2924,7 @@ CREATE TABLE `mgf_offer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int NOT NULL,
   `organisation_id` int NOT NULL,
-  `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Offer Accepted','Offer Rejected') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amountoffered` decimal(12,2) NOT NULL,
   `contribution` decimal(12,2) NOT NULL,
   `responded` tinyint(1) DEFAULT '0',
@@ -2411,13 +2932,13 @@ CREATE TABLE `mgf_offer` (
   `date_responde` timestamp NULL DEFAULT NULL,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `organisation_id` (`organisation_id`),
-  KEY `proposal_id` (`proposal_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_offer_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_offer_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_offer_ibfk_3` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `proposal_id` (`proposal_id`),
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `mgf_offer_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_offer_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
+  CONSTRAINT `mgf_offer_ibfk_3` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2429,11 +2950,11 @@ DROP TABLE IF EXISTS `mgf_operation`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_operation` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `operation_type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `operation_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `operation_type` (`operation_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2445,32 +2966,31 @@ DROP TABLE IF EXISTS `mgf_organisation`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_organisation` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `cooperative` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `acronym` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `registration_type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `registration_no` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `trade_license_no` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cooperative` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `acronym` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `registration_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `registration_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trade_license_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `registration_date` date NOT NULL,
-  `business_objective` text COLLATE utf8mb4_unicode_ci,
-  `email_address` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `physical_address` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tel_no` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `business_objective` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `email_address` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `physical_address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `organisational_branches` int DEFAULT NULL,
+  `tel_no` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fax_no` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `province_id` int unsigned DEFAULT NULL,
   `district_id` int unsigned DEFAULT NULL,
   `applicant_id` int NOT NULL,
   `is_active` int DEFAULT '1',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email_address` (`email_address`),
-  UNIQUE KEY `trade_license_no` (`trade_license_no`),
   UNIQUE KEY `registration_no` (`registration_no`),
+  UNIQUE KEY `trade_license_no` (`trade_license_no`),
+  UNIQUE KEY `email_address` (`email_address`),
   KEY `applicant_id` (`applicant_id`),
-  KEY `fk_org_district` (`district_id`),
-  KEY `fk_org_province_idx` (`province_id`),
-  CONSTRAINT `fk_org_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_org_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_organisation_ibfk_1` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `fk_org_province` (`province_id`),
+  KEY `fk_org_district` (`district_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2489,13 +3009,12 @@ CREATE TABLE `mgf_organisational_details` (
   `last_board` date NOT NULL,
   `last_agm` date NOT NULL,
   `last_audit` date NOT NULL,
-  `has_finance` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `has_resources` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `has_finance` enum('YES','NO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `has_resources` enum('YES','NO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `organisation_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_organisational_details_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `organisation_id` (`organisation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2508,17 +3027,17 @@ DROP TABLE IF EXISTS `mgf_partnership`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_partnership` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `partner_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `partnership_aim` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `partner_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `partnership_aim` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `partnership_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `partnership_status` enum('On-Going','Completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `experience_id` int NOT NULL,
   `organisation_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_partnership_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `mgf_partnership_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2531,19 +3050,19 @@ DROP TABLE IF EXISTS `mgf_pastproject`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_pastproject` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `project_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `project_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `years_assisted` int NOT NULL,
   `amount_assisted` decimal(10,0) NOT NULL,
-  `obligations_met` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `outcome_response` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `obligations_met` enum('YES','NO') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `outcome_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `organisation_id` int NOT NULL,
   `experience_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `experience_id` (`experience_id`),
   KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_pastproject_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_pastproject_ibfk_2` FOREIGN KEY (`experience_id`) REFERENCES `mgf_experience` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `experience_id` (`experience_id`),
+  CONSTRAINT `mgf_pastproject_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
+  CONSTRAINT `mgf_pastproject_ibfk_2` FOREIGN KEY (`experience_id`) REFERENCES `mgf_experience` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2556,11 +3075,60 @@ DROP TABLE IF EXISTS `mgf_position`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_position` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `position` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `position` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `position` (`position`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_product_market_marketing`
+--
+
+DROP TABLE IF EXISTS `mgf_product_market_marketing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_product_market_marketing` (
+  `id` int unsigned NOT NULL,
+  `marketing` varchar(200) NOT NULL,
+  `market_outlets` varchar(100) DEFAULT NULL,
+  `sales_contract` varchar(100) DEFAULT NULL,
+  `person_responsible` varchar(50) DEFAULT NULL,
+  `competition_penetration` varchar(100) DEFAULT NULL,
+  `future_prospects` varchar(100) DEFAULT NULL,
+  `branding_market_penetration` varchar(100) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_profit_before_interest_taxes`
+--
+
+DROP TABLE IF EXISTS `mgf_profit_before_interest_taxes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_profit_before_interest_taxes` (
+  `id` int unsigned NOT NULL,
+  `profit_yr1_value` double(9,2) DEFAULT '0.00',
+  `profit_yr2_value` double(9,2) DEFAULT '0.00',
+  `profit_yr3_value` double(9,2) DEFAULT '0.00',
+  `profit_yr4_value` double(9,2) DEFAULT '0.00',
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2574,25 +3142,75 @@ CREATE TABLE `mgf_project_evaluation` (
   `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int NOT NULL,
   `organisation_id` int NOT NULL,
-  `window` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `window` enum('1','2') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` int NOT NULL DEFAULT '0',
-  `observation` text COLLATE utf8mb4_unicode_ci,
-  `declaration` text COLLATE utf8mb4_unicode_ci,
-  `totalscore` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT '0',
-  `decision` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `observation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `declaration` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `totalscore` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `decision` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_submitted` timestamp NULL DEFAULT NULL,
   `date_reviewed` timestamp NULL DEFAULT NULL,
   `reviewedby` int NOT NULL,
-  `signature` text COLLATE utf8mb4_unicode_ci,
+  `signature` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `organisation_id` (`organisation_id`),
-  KEY `proposal_id` (`proposal_id`),
   KEY `reviewedby` (`reviewedby`),
-  CONSTRAINT `mgf_project_evaluation_ibfk_1` FOREIGN KEY (`reviewedby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_project_evaluation_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_project_evaluation_ibfk_3` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `proposal_id` (`proposal_id`),
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `mgf_project_evaluation_ibfk_1` FOREIGN KEY (`reviewedby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_project_evaluation_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
+  CONSTRAINT `mgf_project_evaluation_ibfk_3` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_project_facilities`
+--
+
+DROP TABLE IF EXISTS `mgf_project_facilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_project_facilities` (
+  `id` int unsigned NOT NULL,
+  `facilityname` varchar(30) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `quantity` int NOT NULL,
+  `facility_use` varchar(150) DEFAULT NULL,
+  `estimated_cost` decimal(9,2) NOT NULL,
+  `comment` varchar(50) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `organisation_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `organisation_id` (`organisation_id`),
+  KEY `proposal_id` (`proposal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_project_risks_and_mitigation_measures`
+--
+
+DROP TABLE IF EXISTS `mgf_project_risks_and_mitigation_measures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_project_risks_and_mitigation_measures` (
+  `id` int unsigned NOT NULL,
+  `expected_risks` varchar(200) DEFAULT NULL,
+  `consequences_of_risk` varchar(200) DEFAULT NULL,
+  `mitigation_measures_planned` varchar(200) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2604,35 +3222,35 @@ DROP TABLE IF EXISTS `mgf_proposal`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_proposal` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `project_title` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `mgf_no` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `project_title` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mgf_no` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `organisation_id` int NOT NULL,
-  `applicant_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `applicant_type` enum('Category-A','Category-B') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `starting_date` date NOT NULL,
   `ending_date` date DEFAULT NULL,
   `project_length` int NOT NULL DEFAULT '0',
   `number_reviewers` int NOT NULL DEFAULT '0',
-  `project_operations` text COLLATE utf8mb4_unicode_ci,
-  `any_experience` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `experience_response` text COLLATE utf8mb4_unicode_ci,
-  `indicate_partnerships` text COLLATE utf8mb4_unicode_ci,
-  `proposal_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Created',
+  `project_operations` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `any_experience` enum('YES','NO','N/A') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `experience_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `indicate_partnerships` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `proposal_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Created',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_submitted` timestamp NULL DEFAULT NULL,
-  `problem_statement` text COLLATE utf8mb4_unicode_ci,
-  `overall_objective` text COLLATE utf8mb4_unicode_ci,
+  `problem_statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `overall_objective` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` int DEFAULT '0',
   `totalcost` decimal(15,2) DEFAULT '0.00',
   `province_id` int unsigned DEFAULT NULL,
   `district_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `organisation_id` (`organisation_id`),
+  KEY `fk_prop_province` (`province_id`),
   KEY `fk_prop_district` (`district_id`),
-  KEY `fk_prop_province_idx` (`province_id`),
-  CONSTRAINT `fk_prop_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_prop_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_proposal_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `fk_prop_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
+  CONSTRAINT `fk_prop_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `mgf_proposal_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2647,17 +3265,17 @@ CREATE TABLE `mgf_proposal_evaluation` (
   `proposal_id` int NOT NULL,
   `criterion_id` int NOT NULL,
   `awardedscore` int DEFAULT NULL,
-  `grade` varchar(70) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci,
+  `grade` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `criterion_id` (`criterion_id`),
-  KEY `proposal_id` (`proposal_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_proposal_evaluation_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_proposal_evaluation_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_proposal_evaluation_ibfk_3` FOREIGN KEY (`criterion_id`) REFERENCES `mgf_selection_criteria` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `proposal_id` (`proposal_id`),
+  KEY `criterion_id` (`criterion_id`),
+  CONSTRAINT `mgf_proposal_evaluation_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_proposal_evaluation_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
+  CONSTRAINT `mgf_proposal_evaluation_ibfk_3` FOREIGN KEY (`criterion_id`) REFERENCES `mgf_selection_criteria` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2670,23 +3288,23 @@ DROP TABLE IF EXISTS `mgf_reviewer`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_reviewer` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `login_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mobile` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `reviewer_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `area_of_expertise` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` enum('Mr.','Mrs.','Ms.','Miss.','Dr.','Prof.','Rev.') DEFAULT NULL,
+  `login_code` varchar(50) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `mobile` varchar(15) NOT NULL,
+  `reviewer_type` enum('Internal','External') DEFAULT NULL,
+  `area_of_expertise` text NOT NULL,
   `user_id` int NOT NULL,
   `confirmed` int DEFAULT '0',
   `createdBy` int unsigned DEFAULT NULL,
   `total_assigned_1` int DEFAULT '0',
   `total_assigned_2` int DEFAULT '0',
-  `email` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(50) NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_code` (`login_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2700,15 +3318,15 @@ CREATE TABLE `mgf_screening` (
   `id` int NOT NULL AUTO_INCREMENT,
   `conceptnote_id` int NOT NULL,
   `organisation_id` int NOT NULL,
-  `criterion` text COLLATE utf8mb4_unicode_ci,
-  `satisfactory` varchar(4) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `criterion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `satisfactory` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `approve_submittion` timestamp NULL DEFAULT NULL,
-  `verified_by` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `verified_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `organisation_id` (`organisation_id`),
   KEY `conceptnote_id` (`conceptnote_id`),
-  CONSTRAINT `mgf_screening_ibfk_1` FOREIGN KEY (`conceptnote_id`) REFERENCES `mgf_concept_note` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_screening_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `mgf_screening_ibfk_1` FOREIGN KEY (`conceptnote_id`) REFERENCES `mgf_concept_note` (`id`),
+  CONSTRAINT `mgf_screening_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2721,12 +3339,11 @@ DROP TABLE IF EXISTS `mgf_selection_category`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_selection_category` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `category` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_selection_category_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `createdby` (`createdby`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2739,15 +3356,15 @@ DROP TABLE IF EXISTS `mgf_selection_criteria`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_selection_criteria` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `criterion` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `criterion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `category_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_selection_criteria_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_selection_criteria_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `mgf_selection_category` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `mgf_selection_criteria_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_selection_criteria_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `mgf_selection_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2760,17 +3377,52 @@ DROP TABLE IF EXISTS `mgf_selection_grade`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_selection_grade` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `grade` varchar(70) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `grade` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `criterion_id` int NOT NULL,
   `awardedscore` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `criterion_id` (`criterion_id`),
   KEY `createdby` (`createdby`),
-  CONSTRAINT `mgf_selection_grade_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `mgf_selection_grade_ibfk_2` FOREIGN KEY (`criterion_id`) REFERENCES `mgf_selection_criteria` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  KEY `criterion_id` (`criterion_id`),
+  CONSTRAINT `mgf_selection_grade_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
+  CONSTRAINT `mgf_selection_grade_ibfk_2` FOREIGN KEY (`criterion_id`) REFERENCES `mgf_selection_criteria` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_settings`
+--
+
+DROP TABLE IF EXISTS `mgf_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `window` int NOT NULL,
+  `max_reviewers` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_sustainability_scalability`
+--
+
+DROP TABLE IF EXISTS `mgf_sustainability_scalability`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_sustainability_scalability` (
+  `id` int unsigned NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2782,15 +3434,158 @@ DROP TABLE IF EXISTS `mgf_unit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_unit` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `unit` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `synonym` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unit` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `synonym` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unit` (`unit`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `mgf_unit_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `mgf_unit_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_value_of_product`
+--
+
+DROP TABLE IF EXISTS `mgf_value_of_product`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_value_of_product` (
+  `id` int unsigned NOT NULL,
+  `product_name` varchar(200) NOT NULL,
+  `product_unit` varchar(11) DEFAULT NULL,
+  `product_yr1_qty` decimal(9,2) DEFAULT '0.00',
+  `product_yr1_price` double(9,2) DEFAULT '0.00',
+  `product_yr1_value` double(9,2) DEFAULT '0.00',
+  `product_yr2_qty` decimal(9,2) DEFAULT '0.00',
+  `product_yr2_price` double(9,2) DEFAULT '0.00',
+  `product_yr2_value` double(9,2) DEFAULT '0.00',
+  `product_yr3_qty` decimal(9,2) DEFAULT '0.00',
+  `product_yr3_price` double(9,2) DEFAULT '0.00',
+  `product_yr3_value` double(9,2) DEFAULT '0.00',
+  `product_yr4_qty` decimal(9,2) DEFAULT '0.00',
+  `product_yr4_price` double(9,2) DEFAULT '0.00',
+  `product_yr4_value` double(9,2) DEFAULT '0.00',
+  `comment` varchar(100) DEFAULT NULL,
+  `project_id` int NOT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_value_of_product_totals`
+--
+
+DROP TABLE IF EXISTS `mgf_value_of_product_totals`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_value_of_product_totals` (
+  `id` int unsigned NOT NULL,
+  `total_yr1_value` double(9,2) DEFAULT NULL,
+  `total_yr2_value` double(9,2) DEFAULT NULL,
+  `total_yr3_value` double(9,2) DEFAULT NULL,
+  `total_yr4_value` double(9,2) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_variable_fixed_cost`
+--
+
+DROP TABLE IF EXISTS `mgf_variable_fixed_cost`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_variable_fixed_cost` (
+  `id` int unsigned NOT NULL,
+  `cost_name` varchar(200) NOT NULL,
+  `cost_type` enum('Variable','Fixed') DEFAULT NULL,
+  `cost_yr1_value` double(9,2) DEFAULT NULL,
+  `cost_yr2_value` double(9,2) DEFAULT NULL,
+  `cost_yr3_value` double(9,2) DEFAULT NULL,
+  `cost_yr4_value` double(9,2) DEFAULT NULL,
+  `comment` varchar(100) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_variable_fixed_cost_totals`
+--
+
+DROP TABLE IF EXISTS `mgf_variable_fixed_cost_totals`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_variable_fixed_cost_totals` (
+  `id` int unsigned NOT NULL,
+  `total_yr1_value` double(9,2) DEFAULT '0.00',
+  `total_yr2_value` double(9,2) DEFAULT '0.00',
+  `total_yr3_value` double(9,2) DEFAULT '0.00',
+  `total_yr4_value` double(9,2) DEFAULT '0.00',
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_window`
+--
+
+DROP TABLE IF EXISTS `mgf_window`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_window` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `window` int NOT NULL,
+  `open_from` date NOT NULL,
+  `closing_date` date NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_wnd_y` (`year_id`),
+  CONSTRAINT `fk_wnd_y` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mgf_year`
+--
+
+DROP TABLE IF EXISTS `mgf_year`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_year` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(30) NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2880,6 +3675,31 @@ CREATE TABLE `roles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `auth_key` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `password_hash` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `password_reset_token` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `status` smallint NOT NULL DEFAULT '10',
+  `created_at` int NOT NULL,
+  `updated_at` int NOT NULL,
+  `verification_token` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `password_reset_token` (`password_reset_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `users`
 --
 
@@ -2929,4 +3749,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-10 19:55:00
+-- Dump completed on 2021-08-16 17:29:39
