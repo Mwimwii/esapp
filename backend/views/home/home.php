@@ -383,16 +383,19 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     </li>
                     <li>
                         <?php
+                         $awpb_template1 = \backend\models\AwpbTemplate::findOne([
+                                    'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
+                        ]);
                         echo Html::a(
                                 '<div  class="icheck-primary d-inline ml-2">
                             <i class="fa fa-file-excel fa-2x"></i>
                         </div>
                         <!-- todo text -->
-                        <span class="text">' . $fiscal_y . ' Sage Pastel Budget File</span>
+                        <span class="text">' . $awpb_template1->fiscal_year . ' Sage Pastel Budget File</span>
                         <div class="tools">
                             <i class="fas fa-download fa-2x"></i>
                         </div>',
-                                ['reports/download-budget', 'id' => (!empty($awpb_template->id) ? $awpb_template->id : ""),
+                                ['reports/download-budget', 'id' => (!empty($awpb_template1->id) ? $awpb_template1->id : ""),
                                 ], [
                             'title' => 'Download Cat A farmer registration form',
                             'target' => '_blank',

@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+
 use Yii;
 use frontend\models\MgfExperience;
 use frontend\models\MgfExperienceSearch;
@@ -10,18 +11,18 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use frontend\models\MgfPastproject;
 use frontend\models\MgfApplicant;
-
 use frontend\models\MgfChecklist;
 use frontend\models\MgfOrganisation;
 
 /**
  * MgfExperienceController implements the CRUD actions for MgfExperience model.
  */
-class MgfExperienceController extends Controller{
+class MgfExperienceController extends Controller {
+
     /**
      * {@inheritdoc}
      */
-    public function behaviors(){
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -36,13 +37,13 @@ class MgfExperienceController extends Controller{
      * Lists all MgfExperience models.
      * @return mixed
      */
-    public function actionIndex(){
+    public function actionIndex() {
         $searchModel = new MgfExperienceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -52,55 +53,52 @@ class MgfExperienceController extends Controller{
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id,$status){
-        if($status==0){
+    public function actionView($id, $status) {
+        if ($status == 0) {
             return $this->render('viewproj', ['model' => $this->findModel($id),]);
-        }else{
+        } else {
             return $this->render('viewpart', ['model' => $this->findModel($id),]);
         }
     }
 
-
-    public function actionPastproject($id){
+    public function actionPastproject($id) {
         $model = new MgfPastproject();
         $experience = MgfExperience::findOne($id);
         if ($model->load(Yii::$app->request->post())) {
-            $model->organisation_id=$experience->organisation_id;
-            $model->experience_id=$experience->id;
+            $model->organisation_id = $experience->organisation_id;
+            $model->experience_id = $experience->id;
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
-                return $this->redirect(['update', 'id' =>$experience->id]);
+                return $this->redirect(['update', 'id' => $experience->id]);
             } else {
                 Yii::$app->session->setFlash('error', 'NOT Saved');
-                return $this->redirect(['update', 'id' =>$experience->id]);
+                return $this->redirect(['update', 'id' => $experience->id]);
             }
         }
     }
 
-
-    public function actionPartnership($id){
+    public function actionPartnership($id) {
         $model = new MgfPartnership();
         $experience = MgfExperience::findOne($id);
         if ($model->load(Yii::$app->request->post())) {
-            $userid=Yii::$app->user->identity->id;
-            $model->organisation_id=$experience->organisation_id;
-            $model->experience_id=$id;
-            if (MgfPartnership::find()->where(['partner_name'=>$model->partner_name,'start_date'=>$model->start_date,'experience_id'=>$experience->id])->exists()) {
+            $userid = Yii::$app->user->identity->id;
+            $model->organisation_id = $experience->organisation_id;
+            $model->experience_id = $id;
+            if (MgfPartnership::find()->where(['partner_name' => $model->partner_name, 'start_date' => $model->start_date, 'experience_id' => $experience->id])->exists()) {
                 Yii::$app->session->setFlash('error', 'NOT Saved: This Partnership has already been recorded');
-                return $this->redirect(['update', 'id' =>$experience->id]);
-            }else{
+                return $this->redirect(['update', 'id' => $experience->id]);
+            } else {
                 if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'Saved successfully.');
-                    return $this->redirect(['update', 'id' =>$experience->id]);
+                    return $this->redirect(['update', 'id' => $experience->id]);
                 } else {
                     Yii::$app->session->setFlash('error', 'NOT Saved');
-                    return $this->redirect(['update', 'id' =>$experience->id]);
+                    return $this->redirect(['update', 'id' => $experience->id]);
                 }
             }
         }
     }
 
-562
     /**
      * Updates an existing MgfExperience model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -108,15 +106,15 @@ class MgfExperienceController extends Controller{
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id){
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
 
-        $userid=Yii::$app->user->identity->id;
-        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+        $userid = Yii::$app->user->identity->id;
+        $applicant = MgfApplicant::findOne(['user_id' => $userid]);
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                if($model->financed_before=='NO'){
-                    MgfPastproject::deleteAll(['experience_id'=>$id]);
+                if ($model->financed_before == 'NO') {
+                    MgfPastproject::deleteAll(['experience_id' => $id]);
 
                     Yii::$app->session->setFlash('success', 'Saved successfully.');
                     return $this->render('update', ['model' => $model,]);
@@ -126,20 +124,16 @@ class MgfExperienceController extends Controller{
                 return $this->render('update', ['model' => $model,]);
             }
 
-                }
-                if ($model->collaboration_ready=='YES' || $model->collaboration_ready=='NO') {
-                    MgfChecklist::updateAll(['experience_updated'=>1], 'applicant_id='.$applicant->id); 
-                }
-                Yii::$app->session->setFlash('success', 'Saved successfully.'.$model->collaboration_ready);
-            
-            } else {
-                Yii::$app->session->setFlash('error', 'Information NOT Saved!.');
+
+            if ($model->collaboration_ready == 'YES' || $model->collaboration_ready == 'NO') {
+                MgfChecklist::updateAll(['experience_updated' => 1], 'applicant_id=' . $applicant->id);
             }
-            return $this->redirect(['update', 'id' =>$id]);
+            Yii::$app->session->setFlash('success', 'Saved successfully.' . $model->collaboration_ready);
         }
+        return $this->redirect(['update', 'id' => $id]);
+        
         return $this->render('update', ['model' => $model,]);
     }
-
 
     /**
      * Deletes an existing MgfExperience model.
@@ -148,24 +142,23 @@ class MgfExperienceController extends Controller{
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionProjectDelete($id){
-        $pastproj=MgfPastproject::findOne($id);
-        if($pastproj->delete()){
+    public function actionProjectDelete($id) {
+        $pastproj = MgfPastproject::findOne($id);
+        if ($pastproj->delete()) {
             Yii::$app->session->setFlash('success', 'Deleted successfully.');
         }
-        
-        return $this->redirect(['view', 'id' =>$pastproj->experience_id,'status'=>0]);
+
+        return $this->redirect(['view', 'id' => $pastproj->experience_id, 'status' => 0]);
     }
 
-    public function actionPartnershipDelete($id){
-        $partnership=MgfPartnership::findOne($id);
-        if($partnership->delete()){
+    public function actionPartnershipDelete($id) {
+        $partnership = MgfPartnership::findOne($id);
+        if ($partnership->delete()) {
             Yii::$app->session->setFlash('success', 'Deleted successfully.');
         }
-        
-        return $this->redirect(['view', 'id' =>$partnership->experience_id,'status'=>1]);
-    }
 
+        return $this->redirect(['view', 'id' => $partnership->experience_id, 'status' => 1]);
+    }
 
     /**
      * Finds the MgfExperience model based on its primary key value.
@@ -174,12 +167,12 @@ class MgfExperienceController extends Controller{
      * @return MgfExperience the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = MgfExperience::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }
