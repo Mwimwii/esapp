@@ -22,7 +22,7 @@ use backend\models\AwpbTemplate;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplate */
 
-$this->title = 'AWPB Activity : ' . $model->name;
+$this->title = 'AWPB Activity: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->id;
 \yii\web\YiiAsset::register($this);
@@ -68,10 +68,10 @@ $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
 $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
 
-$awpb_province  = \backend\models\AwpbProvince::findOne(['awpb_template_id'=>$model->awpb_template_id,'province_id'=>$model->province_id]);
-              
-if (!empty($awpb_province)) {
-  $status= $awpb_province->status;
+ $awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$model->awpb_template_id, 'district_id'=>$user->district_id]);
+$status=100;
+if (!empty($awpb_district)) {
+  $status= $awpb_district->status;
    
 }
 ?>
@@ -89,8 +89,8 @@ if (!empty($awpb_province)) {
 
 <?php
 
-//
-//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa','status'=>$status,'district_id' =>  $model->district_id,'province_id'=>$model->province_id,'awpb_template_id'=>$model->awpb_template_id,'output_id' => $model->output_id,'activity_id' => $model->activity_id], [
+
+//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index','id'=>$model->awpb_template_id, 'status'=>0], [
 //    'title' => 'back',
 //    'data-toggle' => 'tooltip',
 //    'data-placement' => 'top',
@@ -98,9 +98,10 @@ if (!empty($awpb_province)) {
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if ( User::userIsAllowedTo('Approve AWPB - PCO')&&$status == \backend\models\AwpbBudget::STATUS_REVIEWED ) {
+if (\backend\models\User::userIsAllowedTo('Manage PW AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
 
-
+if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT){
+ 
  
         echo Html::a(
                 '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id,'status'=>$status], [
@@ -130,7 +131,7 @@ if ( User::userIsAllowedTo('Approve AWPB - PCO')&&$status == \backend\models\Awp
                 ]
         );}
     
-}
+}}
 ?>
         <div clas="row">
             <div class="col-lg-12">
@@ -500,14 +501,14 @@ if ( User::userIsAllowedTo('Approve AWPB - PCO')&&$status == \backend\models\Awp
                 <?php
                 if (!empty($model->name)) {
                     
- if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id==0 ||$user->province_id=='')) {
-    
+   if ($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT && User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')) {
+if(strtotime($template_model->submission_deadline) >= strtotime($today)){
  
                 echo Html::a('Add AWPB Input', ['awpb-input/create', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
            
                   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
              
-   }
+   }}
                     $searchModel = new \backend\models\AwpbInputSearch();
 
                     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -757,7 +758,7 @@ if ( User::userIsAllowedTo('Approve AWPB - PCO')&&$status == \backend\models\Awp
                     'template' => '{view}{update}{delete}',
                     'buttons' => [
                         'view' => function ($url, $model) {
-                           // if ( User::userIsAllowedTo('View AWPB') ) {
+                            if ( User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Manage AWPB') ) {
                                 return Html::a(
                                                 '<span class="fa fa-eye"></span>', ['awpb-input/view', 'id' => $model->id], [
                                             'title' => 'View input',
@@ -768,12 +769,10 @@ if ( User::userIsAllowedTo('Approve AWPB - PCO')&&$status == \backend\models\Awp
                                             'class' => 'bt btn-lg'
                                                 ]
                                 );
-                           // }
+                            }
                         },
                         'update' => function ($url, $model) use ($status, $user) {
- if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id==0 ||$user->province_id=='')) {
-    
-  
+ if ($status==0 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')) {  
                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
                                             'title' => 'Update input',
@@ -788,9 +787,7 @@ if ( User::userIsAllowedTo('Approve AWPB - PCO')&&$status == \backend\models\Awp
                             }
                         },
                         'delete' => function ($url, $model) use ($status,$user) {
- if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id==0 ||$user->province_id=='')) {
-    
- 
+                          if ($status==0 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')) {
           return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [
                                             'title' => 'delete input',

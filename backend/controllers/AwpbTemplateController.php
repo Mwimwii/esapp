@@ -21,7 +21,7 @@ use yii\web\UploadedFile;
 use \yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\mpdf\Pdf;
-
+use backend\models\AwpbTemplateComponent;
 /**
  * AwpbTemplateController implements the CRUD actions for AwpbTemplate model.
  */
@@ -179,6 +179,31 @@ class AwpbTemplateController extends Controller {
                         //     $session = Yii::$app->session;
                         //     $session->set('rights', $rights);
                         // }
+                        
+                        
+                          $awpbTemplateComponent = new AwpbTemplateComponent();
+                        //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
+                        $_awpbTemplateComponents = \backend\models\AwpbTemplateActivity::find()->select('component_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
+                        // var_dump($_awpbTemplateProvinces );
+                        //$_awpbTemplateProvinces = \backend\models\AwpbDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
+                        //  $_awpbTemplateProvinces = $awpbTemplateDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
+                        if (!empty($_awpbTemplateComponents)) {
+                            foreach ($_awpbTemplateComponents as $component) {
+                                //check if the right was already assigned to this role
+                                $comp = \backend\models\AwpbTemplateComponent::findOne(['component_id' => $component->component_id]);
+                                if (empty($comp->id)) {
+                                    $awpbTemplateComponent->awpb_template_id = $id;
+                                    $awpbTemplateComponent->component_id = $component->component_id;
+                                     $awpbTemplateComponent->id = NULL; //primary key(auto increment id) id
+                                     $awpbTemplateComponent->isNewRecord = true;
+                                     $awpbTemplateComponent->updated_by = Yii::$app->user->id;
+                                    $awpbTemplateComponent->created_by = Yii::$app->user->id;
+                                     $awpbTemplateComponent->status = AwpbTemplate::STATUS_DRAFT;
+                                     $awpbTemplateComponent->save();
+                                }
+                            }
+                        }
+                        
 
                         $audit = new AuditTrail();
                         $audit->user = Yii::$app->user->id;

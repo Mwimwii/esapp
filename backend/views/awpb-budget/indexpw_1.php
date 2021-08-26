@@ -37,7 +37,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 
 //$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id'=> $id,'district_id'=>$user->district_id]);
 //$_awpb_district = new \backend\models\AwpbDistrict();
-$awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$id, 'district_id'=>$user->district_id]);
+$awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$id, 'province_id'=>null]);
 $status=100;
 if (!empty($awpb_district)) {
   $status= $awpb_district->status;
@@ -48,25 +48,21 @@ if (!empty($awpb_district)) {
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-        <div class="row">
-            <div class="col-md-12">
-                
-            </div></div>
    <p>
            
             <?php
    
-          
+           
   //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
-       if (User::userIsAllowedTo("Manage AWPB") || User::userIsAllowedTo("Approve AWPB - Provincial") || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+       if ((User::userIsAllowedTo("Manage AWPB") || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) &&($user->province_id == 0 || $user->province_id == '')) {
                                  
         
 
-  if(!empty($template_model) &&( $user->district_id>0 ||$user->district_id!='') )
+  if(!empty($template_model))  
             { 
-if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbBudget::STATUS_DRAFT){
+if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbBudget::STATUS_DRAFT ){
  
-                echo Html::a('Add AWPB', ['create','template_id'=>$template_model->id], ['class' => 'btn btn-success btn-sm']);
+                echo Html::a('Add AWPB', ['createpw','template_id'=>$template_model->id], ['class' => 'btn btn-success btn-sm']);
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
           
                 // echo  $template_model->submission_deadline ;
@@ -93,36 +89,34 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
         ],
         
         [
-            'attribute' => 'component_id', 
-            'label' => 'Component', 
+            'attribute' => 'output_id', 
             'vAlign' => 'middle',
             'width' => '150px',
             'value' => function ($model, $key, $index, $widget) {
-                $component= \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);						
+                $outcome= \backend\models\AwpbOutput::findOne(['id' => $model->output_id]);						
             
-            return     !empty( $component) ?  $component->code:"";
+            return     !empty( $outcome) ? Html::a( $outcome->name, ['awpb-output/view', 'id' => $model->output_id], ['class' => 'awbp-output']):"";
            
             },
             'filterType' => GridView::FILTER_SELECT2,
-            'filter' => ArrayHelper::map(backend\models\AwpbComponent::find()->orderBy('code')->asArray()->all(), 'id', 'code'), 
+            'filter' => ArrayHelper::map(backend\models\AwpbOutput::find()->orderBy('name')->asArray()->all(), 'id', 'name'), 
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
                 'options' => ['multiple' => true]
             ],
-            'filterInputOptions' => ['placeholder' => 'Filter by component'],
+            'filterInputOptions' => ['placeholder' => 'Filter by name'],
             'format' => 'raw'
         ], 
   
         [
             'attribute' => 'activity_id',
-            'label' => 'Activity', 
+            'label' => 'Activity Code', 
             'vAlign' => 'middle',
             'width' => '180px',
 
             'value' => function ($model) {
-                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id]);
-            
-            return     $name->activity_code .' '.$name->name;
+                $name =  \backend\models\AwpbActivity::findOne(['id' =>  $model->activity_id])->activity_code;
+                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
             },
            
             'filterType' => GridView::FILTER_SELECT2,
@@ -134,26 +128,26 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
             'filterInputOptions' => ['placeholder' => 'Filter by activity'],
             'format' => 'raw'
         ],
-//        [
-//            'attribute' => 'indicator_id',
-//            'label' => 'Indicator', 
-//            'vAlign' => 'middle',
-//            'width' => '180px',
-//
-//            'value' => function ($model) {
-//                $name =  \backend\models\AwpbIndicator::findOne(['id' =>  $model->indicator_id])->name;
-//                return Html::a($name, ['awpb-indicator/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
-//            },
-//           
-//            'filterType' => GridView::FILTER_SELECT2,
-//            'filter' =>  \backend\models\AwpbIndicator::getIndicators(), 
-//            'filterWidgetOptions' => [
-//                'pluginOptions' => ['allowClear' => true],
-//                'options' => ['multiple' => true]
-//            ],
-//            'filterInputOptions' => ['placeholder' => 'Filter by indicator'],
-//            'format' => 'raw'
-//        ],
+        [
+            'attribute' => 'indicator_id',
+            'label' => 'Indicator', 
+            'vAlign' => 'middle',
+            'width' => '180px',
+
+            'value' => function ($model) {
+                $name =  \backend\models\AwpbIndicator::findOne(['id' =>  $model->indicator_id])->name;
+                return Html::a($name, ['awpb-indicator/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
+            },
+           
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' =>  \backend\models\AwpbIndicator::getIndicators(), 
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+                'options' => ['multiple' => true]
+            ],
+            'filterInputOptions' => ['placeholder' => 'Filter by indicator'],
+            'format' => 'raw'
+        ],
         // [
         //     'label' => 'Activity Name',
         //           'value' =>  function ($model) {
@@ -350,11 +344,11 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 //'readonly' => function($model, $key, $index, $widget) {
                 //    return (!$model->status); // do not allow editing of inactive records
                // },
-//                                'value' => function ($model) {
-//               //  \backend\models\AwpbInput::findOne(['id' =>  $model->indicator_id])->name;
-//               $total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('total_amount');
-//                return $total_amount; // Html::a($name, ['awpb-ind/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
-          //  },
+                                'value' => function ($model) {
+               //  \backend\models\AwpbInput::findOne(['id' =>  $model->indicator_id])->name;
+               $total_amount =\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('total_amount');
+                return $total_amount; // Html::a($name, ['awpb-ind/view', 'id' => $model->indicator_id], ['class' => 'awbp-indicator']);
+            },
                'refreshGrid' => true,
                 'editableOptions' => [
                     'header' => 'Budget', 
@@ -392,7 +386,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                             if (  User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Manage AWPB') ) {
                                 return Html::a(
                                                 '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id,'status'=>$status], [
-                                            'title' => 'View AWPB',
+                                            'title' => 'View AWPB Indicator',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data-pjax' => '0',
@@ -403,12 +397,12 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                             }
                         },
                         'update' => function ($url, $model) use ($editable,$user,$template_model,$today,$status) {
-                            if ($editable ==1 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id != 0 || $user->district_id != '')) {
+                            if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
                            if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT){
     
                                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id,'status'=>$status], [
-                                            'title' => 'Update AWPB',
+                                            'title' => 'Update AWPB Indicator',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             // 'target' => '_blank',
@@ -420,7 +414,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                             }}
                         },
                         'delete' => function ($url, $model)  use ($editable,$user,$template_model,$today,$status ) {
-                            if ($editable==1 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id != 0 || $user->district_id != '')) {
+                            if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
                              if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT){
            
                                     
@@ -428,7 +422,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
         {
                                       return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id,'id2'=>$model->awpb_template_id,'status'=>$status], [
-                                            'title' => 'delete AWPB',
+                                            'title' => 'delete component',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data' => [
@@ -452,7 +446,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
 
 
 
-       // if ($dataProvider->getCount() > 0) {
+        if ($dataProvider->getCount() > 0) {
    
           // echo ' </p>';
             echo ExportMenu::widget([
@@ -476,7 +470,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 //      // btn btn-outline-primary btn-space
                 //            echo Html::a('Submit Provincial AWPB', ['approve'], ['class' => 'btn btn-success btn-sm btn-space']);         
                 //    }
-        //}
+        }
         ?>
       
 
