@@ -34,6 +34,9 @@ use yii\db\ActiveRecord;
 class MeCampSubprojectRecordsMonthlyPlannedActivitiesActual extends \yii\db\ActiveRecord {
 
     public $camp_id;
+    public $target_women;
+    public $target_youth;
+    public $target_women_headed;
 
     /**
      * {@inheritdoc}
@@ -47,12 +50,21 @@ class MeCampSubprojectRecordsMonthlyPlannedActivitiesActual extends \yii\db\Acti
      */
     public function rules() {
         return [
-            [['planned_activity_id', 'achieved_activity_target', 'hours_worked_field', 'hours_worked_office', 'hours_worked_total', 'achieved_activity_target', 'beneficiary_target_achieved_total', 'beneficiary_target_achieved_women', 'beneficiary_target_achieved_youth', 'beneficiary_target_achieved_women_headed'], 'required'],
+            [['planned_activity_id', 'achieved_activity_target', 'hours_worked_field', 'hours_worked_office', 'hours_worked_total', 'achieved_activity_target'], 'required'],
             [['planned_activity_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['remarks'], 'string'],
-            [['hours_worked_field', 'hours_worked_office'], 'safe'],
+            [['hours_worked_field', 'hours_worked_office', 'target_women', 'target_youth', 'target_women_headed'], 'safe'],
             [['hours_worked_total'], 'safe'],
             [['achieved_activity_target', 'beneficiary_target_achieved_total', 'beneficiary_target_achieved_women', 'beneficiary_target_achieved_youth', 'beneficiary_target_achieved_women_headed'], 'safe'],
+            ['beneficiary_target_achieved_women', 'required', 'when' => function($model) {
+                    return $model->target_women > 0;
+                }, 'message' => 'Target achieved women cannot be blank!'],
+            ['beneficiary_target_achieved_youth', 'required', 'when' => function($model) {
+                    return $model->target_youth > 0;
+                }, 'message' => 'Target achieved youth cannot be blank!'],
+            ['beneficiary_target_achieved_women_headed', 'required', 'when' => function($model) {
+                    return $model->target_women_headed > 0;
+                }, 'message' => 'Target achieved women headed cannot be blank!'],
             [['year'], 'string', 'max' => 5],
             [['month'], 'string', 'max' => 3],
             // [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],

@@ -112,7 +112,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
  
  
         echo Html::a(
-                '<span class="fa fa-edit">'. $status.'</span>', ['updatepw', 'id' => $model->id,'status'=>$status], [
+                '<span class="fa fa-edit"></span>', ['updatepw', 'id' => $model->id,'status'=>$status], [
             'title' => 'Update AWPB',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',

@@ -1,6 +1,7 @@
+
 <?php
 
-namespace backend\models;
+namespace frontend\models;
 use backend\models\Districts;
 use backend\models\Provinces;
 
@@ -31,7 +32,7 @@ use Yii;
  * @property float|null $totalcost
  * @property int|null $province_id
  * @property int|null $district_id
- *
+
  * @property MgfComponent[] $mgfComponents
  * @property MgfFinalEvaluation $mgfFinalEvaluation
  * @property MgfOffer[] $mgfOffers
@@ -41,13 +42,12 @@ use Yii;
  * @property MgfOrganisation $organisation
  * @property MgfProposalEvaluation[] $mgfProposalEvaluations
  */
-class MgfProposal extends \yii\db\ActiveRecord
-{
+
+class MgfProposal extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName(){
         return 'mgf_proposal';
     }
 
@@ -180,3 +180,4 @@ class MgfProposal extends \yii\db\ActiveRecord
         return $this->hasMany(MgfProposalEvaluation::className(), ['proposal_id' => 'id']);
     }
 }
+

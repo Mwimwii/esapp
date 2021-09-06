@@ -1,3 +1,4 @@
+
 <?php
 
 namespace backend\models;
@@ -247,3 +248,4 @@ class AwpbComponent extends \yii\db\ActiveRecord {
   
 
 }
+

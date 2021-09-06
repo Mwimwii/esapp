@@ -39,28 +39,30 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Quarterly Operations Funds Requisition';
-//$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
-$this->params['breadcrumbs'][] = $this->title;
-
-//$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
-//$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
-
 $user = User::findOne(['id' => Yii::$app->user->id]);
 //$budget = AwpbBudget::findOne(['id'=>$modid]);
 //$model = new backend\models\AwpbInput();
 //$access_level=1;
 $status=1;
 $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+$this->title = 'Quarterly Operations Funds Requisition for Quarter '. $template_model->quarter;
+//$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
+$this->params['breadcrumbs'][] = $this->title;
+
+//$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
+//$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
+
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
+         <h3><?= Html::encode($this->title) ?></h3>
+
         <p>
             <?php
-            var_dump($template_model->id);
+           // var_dump($template_model->id);
             if (User::userIsAllowedTo("Request Funds")&& ($user->province_id == 0 || $user->province_id == '')) {
 
-             { $status=0;
+              $status=0;
                       echo Html::a(
                                         '<span class="btn btn-success float-right">Submit Request</span>',['awpb-district/submit','id'=>$template_model->id,'id2'=>$user->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
                                     'title' => 'Submit Funds Request',
@@ -72,7 +74,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                                     'class' => 'bt btn-lg'
                                         ]
                         );
-             }
+            }
             ?>
 
         </p>
@@ -346,7 +348,7 @@ $gridColumns = [
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,
                 ]);
-               
+              
 //            }
 //            elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != ''))
 //            {
@@ -368,7 +370,7 @@ $gridColumns = [
                                $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
             $query->where(['=','awpb_template_id', $template_model->id]);
            $query->andWhere(['=', 'created_by',$user->id]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+           // $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
             $query->andWhere(['=','status', AwpbActualInput::STATUS_DISTRICT]);
             $query->groupBy('budget_id'); 
             $query->all();
@@ -384,7 +386,7 @@ $gridColumns = [
                 $query = $searchModel::find();
                 $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
                 $query->where(['=','awpb_template_id', $template_model->id]);
-              $query->andWhere(['=', 'created_by',$user->id]);
+             // $query->andWhere(['=', 'created_by',$user->id]);
                 $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
                 $query->andWhere(['=','status', AwpbActualInput::STATUS_SPECIALIST]);
                 $query->groupBy('budget_id'); 
@@ -463,6 +465,6 @@ if ($dataProvider->getCount() > 0) {
         
     </div>
 </div>
-        <?php
+         <?php
         $this->registerCss('.popover-x {display:none}');
         ?>

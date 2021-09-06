@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+
+use frontend\models\MgfChecklist;
 use frontend\models\MgfApplicant;
 use Yii;
 use frontend\models\MgfOrganisationalDetails;
@@ -66,13 +68,15 @@ class MgfOrganisationalDetailController extends Controller
     public function actionCreate(){
         $model = new MgfOrganisationalDetails();
         $userid=Yii::$app->user->identity->id;
-        $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
+
+        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
         if ($model->load(Yii::$app->request->post())) {
             $model->organisation_id=$applicant->organisation_id;
             $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            MgfChecklist::updateAll(['management_updated'=>1],'applicant_id='.$applicant->id);
         }
         if(MgfOrganisationalDetails::find()->where(['organisation_id'=>$applicant->organisation_id])->exists()){
+            MgfChecklist::updateAll(['management_updated'=>1],'applicant_id='.$applicant->id);
             $model = MgfOrganisationalDetails::find()->where(['organisation_id'=>$applicant->organisation_id])->one();
             return $this->redirect(['view', 'id' => $model->id]);
         }else{
@@ -87,15 +91,18 @@ class MgfOrganisationalDetailController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
 
+    public function actionUpdate($id){
+        $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $userid=Yii::$app->user->identity->id;
+            $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+            MgfChecklist::updateAll(['management_updated'=>1],'applicant_id='.$applicant->id);
+            Yii::$app->session->setFlash('success', 'Saved99 successfully.'.$model->applicant_id);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render('upd', [
             'model' => $model,
         ]);
     }

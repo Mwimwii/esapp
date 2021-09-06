@@ -15,8 +15,10 @@ use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\AwpbTemplateActivitySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Activity Funding Profile';
+ $awpb_template = \backend\models\AwpbTemplate::findOne([
+                                    'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
+                        ]);
+$this->title = $awpb_template->fiscal_year.' Activity Funding Profile';
 $this->params['breadcrumbs'][] = $this->title;
 
 if (isset(Yii::$app->session['fiscal_year']))
@@ -34,15 +36,14 @@ if (isset(Yii::$app->session['fiscal_year']))
 
 <div class="card card-success card-outline">
     <div class="card-body">
+<h3><?= Html::encode($this->title) ?></h3>
 
         <p>
             
              <ul class="todo-list" data-widget="todo-list">
                     <li>
          <?php
-           $awpb_template = \backend\models\AwpbTemplate::findOne([
-                                    'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
-                        ]);
+          
                         $fiscal_year = !empty($awpb_template->fiscal_year) ? $awpb_template->fiscal_year : "";
             if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
            //    echo Html::a('<i class="fa fa-plus"></i> Add AWPB Activity', ['create'], ['class' => 'btn btn-success btn-sm']);
@@ -97,7 +98,7 @@ if (isset(Yii::$app->session['fiscal_year']))
             [
                 'attribute' => 'name', 
                 'vAlign' => 'middle',
-               // 'width' => '180px',
+          //      'width' => '220px',
                 'value' => function ($model, $key, $index, $widget) { 
                 return      Html::a($model->activity_code ." ".$model->name, ['awpb-activity/view', 'id' => $model->id], ['class' => 'awbp-activity']);
                
@@ -254,28 +255,29 @@ if (isset(Yii::$app->session['fiscal_year']))
 //                    'format' => 'raw',
 //                    'refreshGrid' => true,
                 ],
- [
-                    'class' => EditableColumn::className(),
-                 'readonly'=>true,
-                    'enableSorting' => true,
-                             'width' => '7%',
-                    'attribute' => 'budget_amount',
-                    'editableOptions' => [
-                        'asPopover' => true,
-                        'type' => 'success',
-                        'size' => kartik\popover\PopoverX::SIZE_MEDIUM,
-                    ],
-//                    'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
-//                    'filterWidgetOptions' => [
-//                        'pluginOptions' => ['allowClear' => true],
+// [
+//                    'class' => EditableColumn::className(),
+//                 'readonly'=>true,
+//                    'enableSorting' => true,
+//                             'width' => '7%',
+//                    'attribute' => 'budget_amount',
+//                    'editableOptions' => [
+//                        'asPopover' => true,
+//                        'type' => 'success',
+//                        'size' => kartik\popover\PopoverX::SIZE_MEDIUM,
 //                    ],
-//                    'filter' => \backend\models\Provinces::getProvinceNames(),
-//                    'filterInputOptions' => ['prompt' => 'Filter by name', 'class' => 'form-control',],
-//                    'format' => 'raw',
-//                    'refreshGrid' => true,
-                ],
-           
-['class' => 'yii\grid\ActionColumn',
+////                    'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+////                    'filterWidgetOptions' => [
+////                        'pluginOptions' => ['allowClear' => true],
+////                    ],
+////                    'filter' => \backend\models\Provinces::getProvinceNames(),
+////                    'filterInputOptions' => ['prompt' => 'Filter by name', 'class' => 'form-control',],
+////                    'format' => 'raw',
+////                    'refreshGrid' => true,
+//                ],
+           ['class' => 'yii\grid\ActionColumn',
+             'options' => ['style' => 'width:8%;'],
+            'header' => 'Action',
 'template' => '{update}{update1}',
 'buttons' => [
 //    'view' => function ($url, $model) {

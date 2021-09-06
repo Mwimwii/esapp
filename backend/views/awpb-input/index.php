@@ -39,12 +39,12 @@ $access_level = 1;
         <p>
 
             <?php
-            if (User::userIsAllowedTo('Manage AWPB Input') && $user->district_id > 0 || $user->district_id != '') {
+         //   if (User::userIsAllowedTo('Manage AWPB Input') && $user->district_id > 0 || $user->district_id != '') {
 
                 echo Html::a('Add AWPB Input', ['create'], ['class' => 'btn btn-success btn-sm']);
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 echo Html::a('Submit District AWPB', ['submit', 'id' => $id, 'id2' => $user->district_id, 'status' => AwpbInput:: STATUS_SUBMITTED], ['class' => 'float-right btn btn-success btn-sm btn-space']);
-            }
+         //   }
             ?>
 
         </p>

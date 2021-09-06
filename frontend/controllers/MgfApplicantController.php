@@ -10,6 +10,12 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\Districts;
+
+use backend\models\MeFaabsCategoryAFarmers;
+use backend\models\MgfDistrictEligibility;
+use backend\models\MgfYear;
+use frontend\models\MgfApplication;
+use frontend\models\MgfChecklist;
 use frontend\models\MgfOrganisation;
 
 /**
@@ -129,10 +135,23 @@ class MgfApplicantController extends Controller{
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
             $model->save();
+
+            if(MeFaabsCategoryAFarmers::find()->where(['nrc'=>$model->nationalid])->exists()){
+                $farmer_type='Category-A';
+            }else{
+                $farmer_type='Category-B';
+            }
+            $model->applicant_type=$farmer_type;
             $districtid=$model->district_id;
             $district=Districts::findOne($districtid);
             $model->province_id=$district->province_id;
             if($model->save()){
+
+                if (!MgfChecklist::find()->where(['applicant_id'=>$model->id])->exists()) {
+                    $checklist=new MgfChecklist();
+                    $checklist->applicant_id=$model->id;
+                    $checklist->save();
+                }
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
                 return $this->redirect(['applicant', 'id' => $model->id]);
             }else{
@@ -147,10 +166,25 @@ class MgfApplicantController extends Controller{
     public function actionConfirm($id){
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
+
+            $year=MgfYear::findOne(['is_active'=>1]);
             $model->save();      
             $model->confirmed=1;
             if ($model->save()) {
+                MgfChecklist::updateAll(['profile_confirmed'=>1], 'applicant_id='.$id);
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
+                
+                if (!MgfDistrictEligibility::find()->where(['district_id'=>$model->district_id,'year_id'=>$year->id])->exists()){
+                    $districtEligibilty=new MgfDistrictEligibility();
+                    $districtEligibilty->year_id=$year->id;
+                    $districtEligibilty->district_id=$model->district_id;
+                    $districtEligibilty->province_id=$model->province_id;
+                    $districtEligibilty->save();
+                }
+
+                MgfApplication::updateAll(['application_status'=>'Sumitted'], 'applicant_id='.$id);
+
+
                 return $this->redirect(['applicant', 'id' => $model->id]);
             }else{
                 Yii::$app->session->setFlash('error', 'NOT Saved!.');

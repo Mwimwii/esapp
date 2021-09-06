@@ -411,6 +411,8 @@ $unsubmitted_input = \backend\models\AwpbActualInput::find()->where(['budget_id'
             if ($balance>0) {
                echo Html::a('<i class="fa fa-plus "></i> Add AWPB Input', ['awpb-actual-input/create', 'id'=>$model->id], ['class' => 'btn btn-success btn-sm float-right']);
            }
+            echo Html::a('<i class="fa fa-plus "></i> Add AWPB Input', ['awpb-actual-input/create', 'id'=>$model->id], ['class' => 'btn btn-success btn-sm float-right']);
+  
         ?>
             </div></div>
   <?php

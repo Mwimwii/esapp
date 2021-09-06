@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use backend\models\MgfApplication;
 use backend\models\User;
 use common\models\Role;
 use Yii;
@@ -12,6 +13,7 @@ use yii\filters\VerbFilter;
 use frontend\models\MgfComponent;
 use frontend\models\MgfProposal;
 use frontend\models\MgfApplicant;
+use frontend\models\MgfChecklist;
 use frontend\models\MgfOffer;
 use frontend\models\MgfSelectionCategory;
 use frontend\models\MgfProposalEvaluation;
@@ -102,8 +104,6 @@ class MgfProposalController extends Controller
         ]);
     }
 
-
-
     /**
      * Displays a single MgfProposal model.
      * @param integer $id
@@ -149,7 +149,7 @@ class MgfProposalController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $userid=Yii::$app->user->identity->id;
             $username=Yii::$app->user->identity->username;
-            $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
+            $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
             MgfProposal::updateAll(['is_active' => 0], 'organisation_id='.$applicant->organisation_id);
             $model->organisation_id=$applicant->organisation_id;
             $model->applicant_type=$applicant->applicant_type;
@@ -160,6 +160,7 @@ class MgfProposalController extends Controller
             if($model->save()){
                 $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
                 MgfProposal::updateAll(['ending_date' => $end], 'id='.$model->id);
+                MgfChecklist::updateAll(['proposal_created'=>1], 'applicant_id='.$applicant->id);
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
                 return $this->redirect(['view', 'id' => $model->id]);
             }else{
@@ -229,6 +230,7 @@ class MgfProposalController extends Controller
                 MgfProposal::updateAll(['is_active' => 0], 'id!='.$model->id);
                 $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
                 MgfProposal::updateAll(['ending_date' => $end], 'id='.$model->id);
+                MgfChecklist::updateAll(['proposal_created'=>1], 'applicant_id='.$applicant->id);
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
                 return $this->redirect(['view', 'id' => $model->id]);
             }else{
@@ -263,6 +265,10 @@ class MgfProposalController extends Controller
             $model->proposal_status="Submitted";
             $model->date_submitted=date('Y-m-d H:i:s');
             if ($model->save()) {
+                $userid=Yii::$app->user->identity->id;
+                $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+                #MgfApplication::updateAll(['application_status'=>$model->proposal_status], 'applicant_id='.$applicant->id.' AND is_active=1');
+                MgfChecklist::updateAll(['project_submitted'=>1], 'applicant_id='.$applicant->id);
                 Yii::$app->session->setFlash('success', 'Submiited successfully.');
             } else {
                 Yii::$app->session->setFlash('error', 'Action Fail');
@@ -275,10 +281,15 @@ class MgfProposalController extends Controller
 
     public function actionCancel($id){
         $model = $this->findModel($id);
-        if ($model->proposal_status=="Submitted") {
+        $isassigned=boolval(MgfProjectEvaluation::find()->where(['proposal_id'=>$id])->count());
+        if ($model->proposal_status=="Submitted" && !$isassigned) {
             $model->proposal_status="Cancelled";
             $model->date_submitted=null;
             if ($model->save()) {
+                $userid=Yii::$app->user->identity->id;
+                $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+                #MgfApplication::updateAll(['application_status'=>$model->proposal_status], 'applicant_id='.$applicant->id.' AND is_active=1');
+                MgfChecklist::updateAll(['project_submitted'=>0], 'applicant_id='.$applicant->id);
                 Yii::$app->session->setFlash('success', 'Cancelled successfully.');
             } else {
                 Yii::$app->session->setFlash('error', 'Action Fail');

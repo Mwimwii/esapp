@@ -34,7 +34,7 @@ $role = \common\models\Role::findOne(['id' => $user->role])->role;
 $access_level =1;
 $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
-$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+$awpb_template =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
 
 //$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id'=> $id,'district_id'=>$user->district_id]);
 //$_awpb_district = new \backend\models\AwpbDistrict();
@@ -54,8 +54,7 @@ $status=100;
           
   //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
      
- if (User::userIsAllowedTo("Request Funds")&& ($user->province_id == 0 || $user->province_id == '')) {
-     {
+
                                  
         
 
@@ -372,11 +371,7 @@ if ($dataProvider->getCount() > 0) {
            
             }
 
- } else {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
- return $this->redirect(['site/home']);
 
-            }
  ?>
 
 <div class="row">

@@ -45,16 +45,20 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
             [['component_id','output_id', 'unit_of_measure_id', 'name', 'description', 'unit_of_measure_id','programme_target'], 'required'],
             [['activity_id', 'component_id', 'outcome_id', 'output_id', 'unit_of_measure_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['programme_target'], 'number'],
+
             [['description'], 'string', 'max' => 255],
             [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
             [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
             [['output_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutput::className(), 'targetAttribute' => ['output_id' => 'id']],
+
               //  [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
+
         ];
     }
 
@@ -65,6 +69,7 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+
             'activity_id' => 'Activity',
             'component_id' => 'Component',
             'outcome_id' => 'Outcome',
@@ -73,6 +78,7 @@ class AwpbIndicator extends \yii\db\ActiveRecord
             'description' => 'Description',
             'programme_target' => 'Programme Target',
             'unit_of_measure_id' => 'Unit Of Measure',
+
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',

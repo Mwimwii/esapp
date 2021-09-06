@@ -27,7 +27,8 @@ include("check.php");
 
     <div class="form-group">
     <?php if(allowed_to("mgf_view_applicants")){?>
-        <?=  Html::a('Back', ['/mgf-applicant/index'], ['class' => 'btn btn-default'])?>
+
+        <?=  Html::a('Home', ['/mgf-applicant/index'], ['class' => 'btn btn-default'])?>
         <?php }else{ ?>
         <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
         <?php }?>

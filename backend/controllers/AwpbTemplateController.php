@@ -58,7 +58,7 @@ class AwpbTemplateController extends Controller {
      */
     public function actionIndex() {
 
-        if (User::userIsAllowedTo('View AWPB templates')) {
+        if (User::userIsAllowedTo('View AWPB templates') || User::userIsAllowedTo('Manage AWPB templates')) {
 
             $searchModel = new AwpbTemplateSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -280,6 +280,7 @@ class AwpbTemplateController extends Controller {
                             $awpbTemplateUsers->other_name = $user_model->other_name;
                             $awpbTemplateUsers->id = NULL; //primary key(auto increment id) id
                             $awpbTemplateUsers->isNewRecord = true;
+                            $awpbTemplateUsers->status_budget = 0;
                             $awpbTemplateUsers->user_id = $user;
                             $awpbTemplateUsers->updated_by = Yii::$app->user->id;
                             $awpbTemplateUsers->created_by = Yii::$app->user->id;

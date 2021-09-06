@@ -1,5 +1,4 @@
 <?php
-
 namespace backend\controllers;
 
 use Yii;
@@ -207,6 +206,9 @@ class AwpbBudgetController extends Controller {
 
      public function actionIndex_2pw($id, $status) {
   $user = User::findOne(['id' => Yii::$app->user->id]);
+   $awpb_template = \backend\models\AwpbTemplate::findOne([
+                                    'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
+                        ]);
         if (User::userIsAllowedTo("Request Funds")&& ($user->province_id == 0 || $user->province_id == '')) {
 
           
@@ -219,7 +221,8 @@ class AwpbBudgetController extends Controller {
 //$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
 //$budget = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
 
-
+if(!empty($awpb_template_user))
+{
             if ($awpb_template_user->status_budget == \backend\models\AwpbBudget::STATUS_MINISTRY ) {
 
 
@@ -277,7 +280,11 @@ class AwpbBudgetController extends Controller {
                 return $this->redirect(['home/home']);
             }
         } else {
-            Yii::$app->session->setFlash('error', 'No Programme wide activities.');
+            Yii::$app->session->setFlash('error', 'You have no programme wide activities.');
+            return $this->redirect(['home/home']);
+        }
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
     }
@@ -389,7 +396,7 @@ class AwpbBudgetController extends Controller {
         if (!empty($awpb_template_user)) {
             $status = $awpb_district->status;
         }
-        return $this->render('viewpw', [
+        return $this->render('view', [
                     'model' => $this->findModel($id),
                     'status' => $status
         ]);
@@ -1147,7 +1154,7 @@ class AwpbBudgetController extends Controller {
                         Yii::$app->session->setFlash('error', 'Enter quantity for at least one month.');
                     }
                 } else {
-                    Yii::$app->session->setFlash('error', 'An AWPB with this activity and camp has already added. Kindly proceed to update it.');
+                    Yii::$app->session->setFlash('error', 'An AWPB with this activity and cost centre has been added already. Kindly proceed to update it.');
                     return $this->redirect(['viewpw', 'id' => $_model->id, 'status' => $status]);
                 }
             }
@@ -2930,9 +2937,9 @@ $email_users = 1;
                 $query->where(['awpb_budget.awpb_template_id' => $awpb_template->id]);
                 $query->andWhere(['awpb_template_component.awpb_template_id' => $awpb_template->id]);
                 $query->andWhere(['awpb_component.access_level_programme' => 1]);
-               //  $query->andWhere(['awpb_template_users.status_budget' => AwpbBudget::STATUS_SUBMITTED]);
- $query->andWhere(['>=', 'awpb_template_users.status_budget', AwpbBudget::STATUS_DRAFT]);
-                $query->andWhere(['>=', 'awpb_template_component.status', AwpbBudget::STATUS_DRAFT]);
+                 //$query->andWhere(['awpb_template_users.status_budget' => AwpbBudget::STATUS_SUBMITTED]);
+ $query->andWhere(['>=', 'awpb_template_users.status_budget', AwpbBudget::STATUS_SUBMITTED]);
+                $query->andWhere(['>=', 'awpb_template_component.status', AwpbBudget::STATUS_SUBMITTED]);
                 
                 $query->groupBy('awpb_budget.component_id');
                 $query->all();

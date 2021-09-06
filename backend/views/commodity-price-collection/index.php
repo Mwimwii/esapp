@@ -161,7 +161,7 @@ $months = [
                     'type' => 'success',
                     'placement' => kartik\popover\PopoverX::ALIGN_TOP_RIGHT,
                     'size' => PopoverX::SIZE_MEDIUM,
-                    'options' => ['data' => \backend\models\CommodityPriceCollection::getYearsList()],
+                  //  'options' => ['data' => \backend\models\CommodityPriceCollection::getYearsList()],
                     'inputType' => Editable::INPUT_MONEY,
                 ],
             ],

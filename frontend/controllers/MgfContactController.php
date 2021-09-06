@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+
+use frontend\models\MgfApplicant;
+use frontend\models\MgfChecklist;
 use Yii;
 use frontend\models\MgfContact;
 use frontend\models\MgfContactSearch;
@@ -72,19 +75,24 @@ class MgfContactController extends Controller
      * @return mixed
      */
     public function actionCreate($id){
-        $organisation=MgfOrganisation::findOne($id);
+
         $model = new MgfContact();
         if ($model->load(Yii::$app->request->post())) {
-            $model->applicant_id=$organisation->applicant_id;
-            $model->organisation_id=$id;
-
+            $applicant=MgfApplicant::findOne($id);
+            $model->applicant_id=$applicant->id;
+            $model->organisation_id=$applicant->organisation_id;
             if($model->save()){
+                if (MgfContact::find()->where(['organisation_id'=>$id])->count()==2) {
+                    MgfChecklist::updateAll(['contacts_added'=>1], 'applicant_id='.$id);
+                }
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
             }else{
                 Yii::$app->session->setFlash('error', 'NOT Saved');
             }
             
-            return $this->redirect(['mgf-organisation/view', 'id' => $id]);
+
+            return $this->redirect(['mgf-organisation/view', 'id' => $applicant->organisation_id]);
+
         }
     }
 

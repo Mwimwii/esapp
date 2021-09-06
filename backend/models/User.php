@@ -390,14 +390,15 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      */
     public static function seedUser() {
         //We check if seed has run already
-        if (empty(Role::findOne(["role" => "Admin"]))) {
+       // if (empty(Role::findOne(["role" => "Admin"]))) {
             //First we create a role
             $role = new Role();
             $role->role = "Admin";
             $role->active = 1;
             $role->rights = "NA";
             if ($role->save()) {
-                //The we assign the ultimate permissions to the role,
+
+                //Then we assign the ultimate permissions to the role,
                 //The rest is history
                 $rights = [
                     "Manage Users", "Manage Roles","View Roles","View Users"
@@ -421,9 +422,9 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
                 }
                 echo "Error occured while running user seeder. Error:" . $message;
             }
-        } else {
+       /* } else {
             echo "User seed has already been run!";
-        }
+	}*/
     }
 
     public static function createTempAdminUser($id, $count) {

@@ -56,7 +56,8 @@ if(MeFaabsCategoryAFarmers::find()->where(['nrc'=>$userID])->exists()){
 
         <br/><br/>
             <?php if($applicant->district_id>0){?>
-                <?=  Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default'])?>
+
+                <?=  Html::a('<i class="fa fa-home"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default'])?>
             <?php } ?>
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         <?php ActiveForm::end(); ?>

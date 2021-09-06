@@ -2,12 +2,12 @@
 
 namespace backend\models;
 
+
 use Yii;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
-
 /**
  * This is the model class for table "awpb_output".
  *
@@ -57,6 +57,7 @@ class AwpbOutput extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
             [['code', 'component_id', 'name', 'description',], 'required'],
             [['component_id', 'outcome_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['code'], 'string', 'max' => 10],
@@ -71,6 +72,7 @@ class AwpbOutput extends \yii\db\ActiveRecord
             [['description'], 'unique', 'when' => function($model) {
                     return $model->isAttributeChanged('description');
                 }, 'message' => 'Description already in use!'],
+
             [['outcome_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbOutcome::className(), 'targetAttribute' => ['outcome_id' => 'id']],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
         ];
@@ -84,6 +86,7 @@ class AwpbOutput extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'code' => 'Code',
+
             'component_id' => 'Component ID',
             'outcome_id' => 'Outcome ID',
             'name' => 'Name',
@@ -154,7 +157,9 @@ class AwpbOutput extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
     }
+
      public static function getOutputs() {
+
         $data = self::find()->orderBy(['name' => SORT_ASC])
         //->where(['id'=>$id])
         ->all();

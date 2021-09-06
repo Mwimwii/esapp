@@ -40,7 +40,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-        <h1><?= Html::encode($this->title) ?></h1>
+        <h3><?= Html::encode($this->title) ?></h3>
    <p>
          
 
@@ -49,7 +49,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
          if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status1 == \backend\models\AwpbBudget::STATUS_DRAFT) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
   
          echo Html::a(
-                                        '<span class="btn btn-success float-left">Approve PW AWPB</span>',['awpb-budget/submitpw','id'=>0], [ 
+                                        '<span class="btn btn-success float-right">Approve PW AWPB</span>',['awpb-budget/submitpw','id'=>0], [ 
                                     'title' => 'Approve PW AWPB',
                                     'data-toggle' => 'tooltip',
                                     'data-placement' => 'top',
@@ -58,14 +58,19 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                                    // 'style' => "padding:5px;",
                                     'class' => 'bt btn-lg'
                                         ]
-                        );    
+                        );  
+    
+         
+         
+         
+         
          }
          if (((User::userIsAllowedTo('Approve AWPB - Ministry') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) 
          {
 
                 
 echo Html::a(
-                                        '<span class="btn btn-success float-right">Decline PW AWPB</span>',['awpb-comment/declinepw','id'=>0], [ 
+                                        '<span class="btn btn-success float-left">Decline PW AWPB</span>',['awpb-comment/declinepw','id'=>0], [ 
                                     'title' => 'Decline PW AWPB',
                                     'data-toggle' => 'tooltip',
                                     'data-placement' => 'top',
@@ -79,7 +84,9 @@ echo Html::a(
                     }
                 
         
-        
+        ?>
+   </p>
+       <?php
        $gridColumns = [
         [
             'class'=>'kartik\grid\SerialColumn',
@@ -347,7 +354,7 @@ echo Html::a(
 
         if ($dataProvider->getCount() > 0) {
             
-        }
+        
    
           // echo ' </p>';
             echo ExportMenu::widget([
@@ -358,9 +365,9 @@ echo Html::a(
                     'label' => 'Export All',
                     'class' => 'btn btn-default'
                 ],
-                'filename' => 'AWPB' . date("YmdHis")
+                'filename' => $this->title."_" . date("YmdHis")
             ]);
-                 //   echo '<p>';
+        }  //   echo '<p>';
                 //  if (User::userIsAllowedTo('Submit District AWPB')&& $user->district_id>0 ||$user->district_id!='') {
                 //     //   echo Html::a('&nbsp;');
                 //      // btn btn-outline-primary btn-space

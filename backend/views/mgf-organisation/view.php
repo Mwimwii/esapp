@@ -62,6 +62,7 @@ $usertype=Yii::$app->user->identity->type_of_user;
             <th scope="col">Mobile No.</th>
             <th scope="col">Position</th>
             <th scope="col">Date Created</th>
+
             <th scope="col">
                 <?= Html::button('<i class="glyphicon glyphicon-plus"></i>New Contact', [ 'class' => 'btn btn-success btn-sm', 'onclick' => '$(\'#addContantact\').modal();']);?>
             </th>
@@ -78,6 +79,7 @@ $usertype=Yii::$app->user->identity->type_of_user;
             <td><?=$post->mobile; ?></td>
             <td><?=$post->position->position; ?></td>
             <td><?=$post->date_created; ?></td>
+
             <td>
               <span><?=Html::a('<i class="glyphicon glyphicon-edit"></i>Edit',['mgf-contact/update','id'=>$post->id],['class'=>'label label-primary'])?></span> 
               <?= Html::a('<i class="glyphicon glyphicon-trash"></i>Delete', ['mgf-contact/delete', 'id' => $post->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
@@ -93,7 +95,6 @@ $usertype=Yii::$app->user->identity->type_of_user;
         </tbody>
       </table>
     </div>
-
 
     <div class="modal fade" id="addContantact">
     <div class="modal-dialog">

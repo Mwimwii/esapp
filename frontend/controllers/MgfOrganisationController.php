@@ -1,6 +1,8 @@
 <?php
 
 namespace frontend\controllers;
+
+use backend\models\Districts;
 use Yii;
 use frontend\models\MgfOrganisation;
 use frontend\models\MgfOrganisationSearch;
@@ -18,6 +20,11 @@ use frontend\models\MgfScreening;
 use frontend\models\MgfApproval;
 use frontend\models\MgfProposal;
 use frontend\models\MgfApprovalStatus;
+use frontend\models\MgfBranch;
+use frontend\models\MgfChecklist;
+use frontend\models\MgfEligibility;
+use frontend\models\MgfEligibilityApproval;
+
 //include("findid.php");
 /**
  * MgfOrganisationController implements the CRUD actions for MgfOrganisation model.
@@ -81,13 +88,13 @@ class MgfOrganisationController extends Controller{
         ]);
     }
 
-
     /**
      * Displays a single MgfOrganisation model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
+
     public function actionView($id){
         $userid=Yii::$app->user->identity->id;
         //$model = $this->findModel($id);
@@ -95,16 +102,17 @@ class MgfOrganisationController extends Controller{
         $concepts=MgfConceptNote::find()->where(['organisation_id'=>$id])->all();
         $screening=MgfScreening::find()->where(['organisation_id'=>$id])->all();   
         $contacts=MgfContact::find()->joinWith('position')->where(['organisation_id'=>$id])->all(); 
+        $branches=MgfBranch::find()->joinWith('district')->where(['organisation_id'=>$id])->all();
         $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one(); 
         //$id=getOrganisationID(); 
-        return $this->render('view', ['model' => $this->findModel($id),'documents'=>$documents,'criteria'=>$screening,'concepts'=>$concepts,'contacts'=>$contacts,'applicant'=>$applicant]);
+        return $this->render('view', ['model' => $this->findModel($id),'documents'=>$documents,'criteria'=>$screening,'concepts'=>$concepts,'contacts'=>$contacts,'branches'=>$branches,'applicant'=>$applicant]);
     }
 
     public function actionOpen($id){
         $model = $this->findModel($id);
         $application=MgfApplication::find()->where(['organisation_id'=>$id])->where(['application_status'=>'Submitted','is_active'=>1])->orWhere(['application_status'=>'Under_Review','is_active'=>1])->one();
         if ($application==null) {
-                throw new NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
         $applicationid=$application->id;
         $application->application_status='Under_Review';
@@ -132,7 +140,41 @@ class MgfOrganisationController extends Controller{
         }
         //echo $applicationid;
         return $this->render('application', ['model' => $this->findModel($id),
-        'document'=>$documents,'criteria'=>$screening,'concept'=>$concept,'unmarked'=>$unmarked,'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
+        'document'=>$documents,'criteria'=>$screening,'concept'=>$concept,'unmarked'=>$unmarked,
+        'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
+    }
+
+
+    public function actionScreen($id){
+        $model = $this->findModel($id);
+        $application=MgfApplication::find()->where(['organisation_id'=>$id])->where(['application_status'=>'Submitted','is_active'=>1])->orWhere(['application_status'=>'Under_Review','is_active'=>1])->one();
+        if ($application==null) {
+            throw new NotFoundHttpException();
+        }
+        $applicationid=$application->id;
+        $application->application_status='Under_Review';
+        $application->save();
+        $documents=MgfAttachements::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->one();
+        $screening=MgfEligibility::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->all();
+        $unmarked=MgfScreening::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid,'satisfactory'=>null])->count();
+        $approval=MgfEligibilityApproval::find()->where(['application_id'=>$applicationid])->one();
+        
+        
+        $accepted=MgfApprovalStatus::find()->where(['approval_status'=>'Accepted'])->one();
+        $rejected=MgfApprovalStatus::find()->where(['approval_status'=>'Rejected'])->one();
+        $application_status=$application->application_status;
+        if (boolval($unmarked)==false) {
+            if ($approval->scores>=$accepted->lowerlimit) {
+                $application_status="Accepted";
+            } elseif ($approval->scores<=$rejected->upperlimit) {
+                $application_status="Rejected";
+            } else {
+                $application_status="On-Hold";
+            }
+        }
+        //echo $applicationid;
+        return $this->render('eligilibity', ['model' => $this->findModel($id),'document'=>$documents,'criteria'=>$screening,'unmarked'=>$unmarked,
+        'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
     }
 
 
@@ -180,6 +222,7 @@ class MgfOrganisationController extends Controller{
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+
     public function actionCreate(){
         $model = new MgfOrganisation();
         if ($model->load(Yii::$app->request->post())) {
@@ -189,7 +232,8 @@ class MgfOrganisationController extends Controller{
             $model->district_id=$applicant->district_id;
             $model->province_id=$applicant->province_id;
             $model->is_active=1;
-            if ($model->save()) {
+            if ($model->save()){
+                MgfChecklist::updateAll(['organisation_created'=>1],'applicant_id='.$applicant->id);
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
                 return $this->redirect(['view', 'id' => $model->id]);
             }else{
@@ -199,8 +243,44 @@ class MgfOrganisationController extends Controller{
         }
         return $this->render('create', ['model' => $model,]);
     }
-    
 
+
+    public function actionCreatebranch($id){
+        $model = new MgfBranch();
+        if ($model->load(Yii::$app->request->post())) {
+            $model->organisation_id=$id;
+            $district=Districts::findOne($model->district_id);
+            $model->province_id=$district->province_id;
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            } else {
+                Yii::$app->session->setFlash('error', 'NOT Saved');
+            }
+            return $this->redirect(['mgf-organisation/view', 'id' => $id]);
+        }
+    }
+
+
+    public function actionUpdatebranch($id){
+        $model=MgfBranch::findOne($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Saved successfully.');
+            return $this->redirect(['view', 'id' => $model->organisation_id]);
+        }
+
+        return $this->render('branch', ['model' => $model,]);
+    }
+
+    public function actionDeletebranch($id){
+        $model=MgfBranch::findOne($id);
+        if($model->delete()){
+            Yii::$app->session->setFlash('success', 'Deleted successfully.');
+        }else{
+            Yii::$app->session->setFlash('error', 'NOT Deleted.');
+        }
+        return $this->redirect(['view', 'id' => $model->organisation_id]);
+    }
+    
     /**
      * Updates an existing MgfOrganisation model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -208,12 +288,17 @@ class MgfOrganisationController extends Controller{
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
+
     public function actionUpdate($id){
         //$id=getOrganisationID();
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            MgfChecklist::updateAll(['organisation_created'=>1],'applicant_id='.$model->applicant_id);
             Yii::$app->session->setFlash('success', 'Saved successfully.');
+            if($model->organisational_branches==0){
+                MgfBranch::deleteAll(['organisation_id'=>$id]);
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -221,6 +306,7 @@ class MgfOrganisationController extends Controller{
             'model' => $model,
         ]);
     }
+
 
     /**
      * Deletes an existing MgfOrganisation model.

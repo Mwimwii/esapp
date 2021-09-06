@@ -34,7 +34,9 @@ $count=MgfApplicant::find()->where(['user_id'=>$userid])->count();
 
     </ul>
 </div>
-<?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
+
+<?= Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
+
 
 
 

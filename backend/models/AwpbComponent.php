@@ -267,3 +267,4 @@ class AwpbComponent extends \yii\db\ActiveRecord {
   
 
 }
+

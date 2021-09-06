@@ -5,14 +5,19 @@ use yii\widgets\ActiveForm;
 use backend\models\Districts;
 use frontend\models\MgfApplicant;
 
+use frontend\models\MgfChecklist;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfApplicant */
 /* @var $form yii\widgets\ActiveForm */
 //include("check.php");
 $this->title = 'Form 5: Confirmation';
-$applicant=MgfApplicant::findOne($_GET['id']);
+
+$userid=Yii::$app->user->identity->id;
+$applicant=MgfApplicant::findOne(['user_id'=>$userid]);
 $userID=Yii::$app->user->identity->nrc;
 $userEmail=Yii::$app->user->identity->email;
+$checlist=MgfChecklist::findOne(['applicant_id'=>$applicant->id]);
 ?>
 
 <div class="row">
@@ -50,8 +55,13 @@ $userEmail=Yii::$app->user->identity->email;
                 <input value=<?=date('Y-m-d H:i:s')?> disabled class="form-control"><br/>
 
                 <br/><br/>
+
+                <?php if ($checlist->contacts_added==1 && $checlist->management_updated==1 && $checlist->experience_updated==1 && $checlist->attachements_uploaded==1) { ?>
                 <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']),
-                    Html::submitButton('Confirm', ['class' => 'btn btn-success']) ?>
+                    Html::submitButton('Confirm and Submit Application for Eligibity', ['class' => 'btn btn-success']) ?>
+                <?php }else{ ?>
+                    <?= Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);?>
+               <?php } ?>
             <?php ActiveForm::end(); ?>
 
         <?php }else{ ?>
@@ -78,7 +88,8 @@ $userEmail=Yii::$app->user->identity->email;
                 <input value=<?=date('Y-m-d H:i:s')?> disabled class="form-control"><br/>
 
                 <br/><br/>
-                <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
+
+                <?= Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
                 <?php ActiveForm::end(); ?>
 
         <?php } ?>

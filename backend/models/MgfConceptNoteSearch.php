@@ -41,18 +41,16 @@ class MgfConceptNoteSearch extends MgfConceptNote{
         $usertype=Yii::$app->user->identity->type_of_user;
         if ($usertype=="Provincial user") {
             $provinceid=Yii::$app->user->identity->province_id;
-            $query = MgfConceptNote::find()->joinWith('organisation')->where(['province_id'=>$provinceid]);
+
+            $query = MgfConceptNote::find()->joinWith('organisation')->joinWith('application')->where(['province_id'=>$provinceid,'application_status'=>'Accepted']);
         }else if($usertype=="District user") {
             $districtid=Yii::$app->user->identity->district_id;
-            $query = MgfConceptNote::find()->joinWith('organisation')->where(['district_id'=>$districtid]);
+            $query = MgfConceptNote::find()->joinWith('organisation')->joinWith('application')->where(['district_id'=>$districtid,'application_status'=>'Submitted'])->orWhere(['district_id'=>$districtid,'application_status'=>'Under_Review']);
         }else if($usertype=="National user") {
-            $query = MgfConceptNote::find();
-        }else if($usertype=="Applicant") {
-            $userid=Yii::$app->user->identity->id;
-            $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
-            $query = MgfConceptNote::find()->where(['organisation_id'=>$applicant->organisation_id]);
+            $query = MgfConceptNote::find()->joinWith('organisation')->joinWith('application')->where(['application_status'=>'Verified'])->orWhere(['application_status'=>'Approved']);
         }else{
-            $query = MgfConceptNote::find();
+            $query = MgfConceptNote::find()->joinWith('application')->where(['NOT',['application_status'=>'Initialized']]);
+
         }
 
         // add conditions that should always apply here

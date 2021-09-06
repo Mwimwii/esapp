@@ -19,9 +19,11 @@ use yii\bootstrap\Tabs;
                 <?= Html::a('Submitted', ['proposals']) ?>
             </li>
             <li>
+
                 <?= Html::a('Reviewers', ['reviewers']) ?>
             </li>
             <li>
+
                 <?= Html::a('Assigned', ['mgf-project-evaluation/index']) ?>
             </li>
         </div>

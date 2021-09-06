@@ -67,9 +67,13 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    //public $activities;
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+    const TYPE_MAIN = 0;
+    const TYPE_SUB = 1;
     const STATUS_OPEN = 0;
     const STATUS_LOCKED = 1;
-    
     public static function tableName()
     {
         return 'awpb_template_activity';
@@ -81,6 +85,7 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
             [['activity_id', 'activity_code', 'name', 'awpb_template_id'], 'required'],
             [['activity_id',  'status','component_id', 'outcome_id', 'output_id', 'awpb_template_id', 'funder_id', 'expense_category_id', 'access_level_district', 'access_level_province', 'access_level_programme', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['ifad', 'ifad_grant', 'grz', 'beneficiaries', 'private_sector', 'iapri', 'parm', 'ifad_amount', 'ifad_grant_amount', 'grz_amount', 'beneficiaries_amount', 'private_sector_amount', 'iapri_amount', 'parm_amount', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'budget_amount'], 'number'],
@@ -111,10 +116,12 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+
             'activity_id' => 'Activity',
             'activity_code' => 'Activity Code',
             'name' => 'Name',
             'component_id' => 'Component',
+
             'outcome_id' => 'Outcome ID',
             'output_id' => 'Output ID',
             'awpb_template_id' => 'Awpb Template',
@@ -171,7 +178,10 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbActivity::className(), ['id' => 'activity_id']);
     }
-
+    public function getOutput()
+    {
+        return $this->hasOne(AwpbOutput::className(), ['id' => 'output_id']);
+    }
     /**
      * Gets query for [[AwpbTemplate]].
      *
@@ -191,6 +201,41 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
     {
         return $this->hasOne(AwpbComponent::className(), ['id' => 'component_id']);
     }
+
+
+    public static function getAwpbActivitiesList() {
+
+        $activties = self::find()
+                ->select(['activity_id as id', "CONCAT(.awpb_activity.activity_code,' ',awpb_activity.name) as name"])
+                ->joinWith('activity')
+                //->joinWith('component')
+               ->where(['access_level_district' => self::STATUS_ACTIVE])
+               // ->andWhere(['awpb_activity.type' => self::TYPE_SUB])
+                ->all();
+        $list = ArrayHelper::map($activties, 'id', 'name');
+        return $list;
+    }
+
+
+    public static function getActivities1($template_id) {
+
+        
+        // $activties = self::find()
+        //         ->select(['awpb_template_activity.activity_id', "CONCAT(awpb_activity.activity_code,' ',awpb_activity.name) as name"])
+        //         ->joinWith('activity')  
+        //         ->where(['awpb_template_activity.awpb_template_id'=>$template_id])
+        //         ->andWhere(['=', 'awpb_template_activity.activity_id', 'awpb_activity.id'])
+        //         ->all();
+
+
+                
+              
+                    $query = self::find()
+                    ->where(['awpb_template_id'=>$template_id])
+                    ->all();
+                    return $query;
+                
+}
     
     public static function getTemplateActivity($template_id, $activity_id) {
                       $query = self::find()
@@ -212,7 +257,6 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
       // $list = ArrayHelper::map($activties, 'id', 'name');
         return  $activities;
 
-
-
     }
+
 }

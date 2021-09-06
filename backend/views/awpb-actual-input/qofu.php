@@ -38,10 +38,12 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+$status=1;
+$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
 
-$this->title = 'Funds Utilisation';
+$this->title = $template_model->fiscal_year.' Funds Utilisation';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = $this->title;
 
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
 //$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
@@ -50,32 +52,12 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
 //$budget = AwpbBudget::findOne(['id'=>$modid]);
 //$model = new backend\models\AwpbInput();
 //$access_level=1;
-$status=1;
-$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-        <p>
-            <?php
-            var_dump($template_model->id);
-             if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != ''))
-             { $status=0;
-                      echo Html::a(
-                                        '<span class="btn btn-success float-right">Submit Request</span>',['awpb-district/submit','id'=>$template_model->id,'id2'=>$user->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
-                                    'title' => 'Submit Funds Request',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
-             }
-            ?>
-
-        </p>
-
+                     <h3><?= Html::encode($this->title) ?></h3>
+    
    <?php
  //$gridColumns ="";
 $id3=0;
@@ -249,33 +231,33 @@ $gridColumns = [
     'format' => ['decimal', 2],
     'pageSummary' => true
 ],
-             ['class' => 'yii\grid\ActionColumn',
-                    'options' => ['style' => 'width:50px;'],
-                         'header' => 'Action', 
-                    'template' => '{view}',
-                    'buttons' => [
-                        'view' => function ($url, $model) use($user){
-                             if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != ''))
-                             {
-                                return Html::a(
-                                                '<span class="fa fa-eye"></span>', ['awpb-budget/view_1', 'id' => $model->budget_id,'status'=>0], [
-                                            'title' => 'View AWPB',
-                                            'data-toggle' => 'tooltip',
-                                            'data-placement' => 'top',
-                                            'data-pjax' => '0',
-                                            'style' => "padding:5px;",
-                                            'class' => 'bt btn-lg'
-                                                ]
-                                );
-                            }
-                        },
-            
-
-//                   
-//               
-           ]]          
-              
-              
+//             ['class' => 'yii\grid\ActionColumn',
+//                    'options' => ['style' => 'width:50px;'],
+//                         'header' => 'Action', 
+//                    'template' => '{view}',
+//                    'buttons' => [
+//                        'view' => function ($url, $model) use($user){
+//                             if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != ''))
+//                             {
+//                                return Html::a(
+//                                                '<span class="fa fa-eye"></span>', ['awpb-budget/view_1', 'id' => $model->budget_id,'status'=>0], [
+//                                            'title' => 'View AWPB',
+//                                            'data-toggle' => 'tooltip',
+//                                            'data-placement' => 'top',
+//                                            'data-pjax' => '0',
+//                                            'style' => "padding:5px;",
+//                                            'class' => 'bt btn-lg'
+//                                                ]
+//                                );
+//                            }
+//                        },
+//            
+//
+////                   
+////               
+//           ]]          
+//              
+//              
 ];
 
 

@@ -315,7 +315,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 
                               
                         return Html::a(
-                                        '<span class="fas fa-check">'.$status.'</span>',['submit','id'=>$model->province_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
+                                        '<span class="fas fa-check"></span>',['submit','id'=>$model->province_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
                                     'title' => 'Approve Provincial AWPB',
                                     'data-toggle' => 'tooltip',
                                     'data-placement' => 'top',

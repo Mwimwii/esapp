@@ -18,6 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <li>Fill out the form below and click <span class="badge badge-success">Save as draft</span> to save the report for later editing and
                 click <span class="badge badge-info">Submit for review</span> to submit for review
             </li>
+            <li>You will be able to add <code>Back to office annexes (pictures and/or videos)</code> on the view page after adding all required fields
+            </li>
             <li>Fields marked with <i style="color:red;">*</i> are required
             </li>
         </ol>  

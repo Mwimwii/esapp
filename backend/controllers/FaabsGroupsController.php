@@ -25,10 +25,10 @@ class FaabsGroupsController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'faabs-by-camp', 'farmers'],
+                'only' => ['index', 'create', 'delete', 'faabs-by-camp', 'farmers', 'update', 'view'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'faabs-by-camp', 'farmers'],
+                        'actions' => ['index', 'create', 'delete', 'faabs-by-camp', 'farmers', 'update', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -295,6 +295,11 @@ class FaabsGroupsController extends Controller {
             }
 
             if ($model->load(Yii::$app->request->post())) {
+                if (!empty($model->coordinates)) {
+                    $arr = explode(",", $model->coordinates);
+                    $model->latitude = $arr[0];
+                    $model->longitude = $arr[1];
+                }
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->status = 1;
@@ -310,7 +315,7 @@ class FaabsGroupsController extends Controller {
                 } else {
                     Yii::$app->session->setFlash('error', 'Error occured while adding FaaBS group ' . $model->name);
                 }
-                return $this->redirect(['index']);
+                //  return $this->redirect(['index']);
             }
 
             return $this->render('create', [
@@ -329,17 +334,33 @@ class FaabsGroupsController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    /* public function actionUpdate($id) {
-      $model = $this->findModel($id);
+    public function actionUpdate($id) {
+        if (User::userIsAllowedTo('Manage faabs groups')) {
+            $model = $this->findModel($id);
 
-      if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      return $this->redirect(['view', 'id' => $model->id]);
-      }
+            if ($model->load(Yii::$app->request->post())) {
+                if (!empty($model->coordinates)) {
+                    $arr = explode(",", $model->coordinates);
+                    $model->latitude = $arr[0];
+                    $model->longitude = $arr[1];
+                }
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'FaaBS group: ' . $model->name . ' was successfully updated');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occured while updating FaaBS group ' . $model->name);
+                }
+            }
 
-      return $this->render('update', [
-      'model' => $model,
-      ]);
-      } */
+            return $this->render('update', [
+                        'model' => $model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
 
     /**
      * Deletes an existing MeFaabsGroups model.

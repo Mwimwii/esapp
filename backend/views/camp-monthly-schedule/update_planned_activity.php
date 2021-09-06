@@ -15,7 +15,8 @@ $form = ActiveForm::begin([
         echo
                 $form->field($model, 'activity_id')
                 ->dropDownList(
-                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model_work_effort->year,$source_id, $model_work_effort->month,$model->activity_id), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
+                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model_work_effort->year,$source_id, $model_work_effort->month,$model->activity_id),
+                        ['id' => 'activity', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
         );
         ?>
         <?php
@@ -31,7 +32,7 @@ $form = ActiveForm::begin([
           'min' => 0,
           // 'max' => 100,
           ],
-          ]); */
+          ]); 
 
         echo $form->field($model, 'beneficiary_target_women')->widget(TouchSpin::classname(), [
             'options' => ['placeholder' => 'Beneficiary target women'],
@@ -54,7 +55,7 @@ $form = ActiveForm::begin([
           'min' => 0,
           'max' => 10
           ],
-          ]); */
+          ]); 
         echo $form->field($model, 'beneficiary_target_youth')->widget(TouchSpin::classname(), [
             'options' => ['placeholder' => 'Beneficiary target youth'],
             'pluginOptions' => [
@@ -71,7 +72,7 @@ $form = ActiveForm::begin([
                 'min' => 0,
             //'max' => 100,
             ],
-        ]);
+        ]);*/
         ?>
 
     </div>

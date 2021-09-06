@@ -11,6 +11,9 @@ use yii\filters\VerbFilter;
 use frontend\models\MgfPastproject;
 use frontend\models\MgfApplicant;
 
+use frontend\models\MgfChecklist;
+use frontend\models\MgfOrganisation;
+
 /**
  * MgfExperienceController implements the CRUD actions for MgfExperience model.
  */
@@ -97,7 +100,7 @@ class MgfExperienceController extends Controller{
         }
     }
 
-
+562
     /**
      * Updates an existing MgfExperience model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -107,10 +110,14 @@ class MgfExperienceController extends Controller{
      */
     public function actionUpdate($id){
         $model = $this->findModel($id);
+
+        $userid=Yii::$app->user->identity->id;
+        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
                 if($model->financed_before=='NO'){
                     MgfPastproject::deleteAll(['experience_id'=>$id]);
+
                     Yii::$app->session->setFlash('success', 'Saved successfully.');
                     return $this->render('update', ['model' => $model,]);
                 }
@@ -118,6 +125,17 @@ class MgfExperienceController extends Controller{
                 Yii::$app->session->setFlash('error', 'Information NOT Saved!.');
                 return $this->render('update', ['model' => $model,]);
             }
+
+                }
+                if ($model->collaboration_ready=='YES' || $model->collaboration_ready=='NO') {
+                    MgfChecklist::updateAll(['experience_updated'=>1], 'applicant_id='.$applicant->id); 
+                }
+                Yii::$app->session->setFlash('success', 'Saved successfully.'.$model->collaboration_ready);
+            
+            } else {
+                Yii::$app->session->setFlash('error', 'Information NOT Saved!.');
+            }
+            return $this->redirect(['update', 'id' =>$id]);
         }
         return $this->render('update', ['model' => $model,]);
     }

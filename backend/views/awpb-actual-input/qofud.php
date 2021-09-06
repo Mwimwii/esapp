@@ -48,7 +48,7 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
 //$access_level=1;
 $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
 
-$this->title = 'Quarter '. $template_model->quarter;
+$this->title = $template_model->fiscal_year.' Funds Utilisation';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -56,26 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-        <p>
-
-            <?php
-             if (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != ''))
-             {
-//                      echo Html::a(
-//                                        '<span class="btn btn-success btn-lg float-right">Submit</span>',['awpb-district/submit','id'=>$template_model->id,'id2'=>$user->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
-//                                    'title' => 'Submit Funds Request',
-//                                    'data-toggle' => 'tooltip',
-//                                    'data-placement' => 'top',
-//                                    // 'target' => '_blank',
-//                                    'data-pjax' => '0',
-//                                   // 'style' => "padding:5px;",
-//                                    'class' => 'bt btn-lg'
-//                                        ]
-//                        );
-             }
-                 ?>
-
-        </p>
+     <h3><?= Html::encode($this->title) ?></h3>
 
    <?php
  //$gridColumns ="";
@@ -170,7 +151,20 @@ $gridColumns = [
 
 ],
 
+[
+    'class' => 'kartik\grid\EditableColumn',
+    'attribute' => 'cost_centre_id',
+     'header' => 'Cost centre', 
+    'pageSummary' => 'Total',
+    'vAlign' => 'middle',
+    'width' => '210px',
+     'readonly' => true,
+     'value' => function ($model) {
+         return !empty($model->cost_centre_id) && $model->cost_centre_id > 0 ? backend\models\AwpbCostCentre::findOne($model->cost_centre_id)->name : "";
+                        ;
+      },
 
+],
 [
     'class' => 'kartik\grid\EditableColumn',
     'attribute' => 'quarter_one_amount', 
@@ -253,59 +247,59 @@ $gridColumns = [
     'format' => ['decimal', 2],
     'pageSummary' => true
 ],
-             ['class' => 'yii\grid\ActionColumn',
-                    'options' => ['style' => 'width:50px;'],
-                         'header' => 'Action', 
-                    'template' => '{submit}{decline}',
-                    'buttons' => [
-                        'submit' => function ($url, $model) use($user,$template_model){
-                             if ((User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->district_id != ''))||
-                                     (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == ''))||
-                                     (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')))
-                             {
+//             ['class' => 'yii\grid\ActionColumn',
+//                    'options' => ['style' => 'width:50px;'],
+//                         'header' => 'Action', 
+//                    'template' => '{submit}{decline}',
+//                    'buttons' => [
+//                        'submit' => function ($url, $model) use($user,$template_model){
+//                             if ((User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->district_id != ''))||
+//                                     (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == ''))||
+//                                     (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')))
+//                             {
+////                        
+//                                 
+//                                   return Html::a(
+//                                        '<span class="fa fa-check"></span>',['awpb-district/submit','id'=>$template_model->id,'id2'=>$model->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
+//                                    'title' => 'Approve Funds Request',
+//                                    'data-toggle' => 'tooltip',
+//                                    'data-placement' => 'top',
+//                                    // 'target' => '_blank',
+//                                    'data-pjax' => '0',
+//                                   // 'style' => "padding:5px;",
+//                                    'class' => 'bt btn-lg'
+//                                        ]
+//                        );
+//                                    
 //                        
-                                 
-                                   return Html::a(
-                                        '<span class="fa fa-check"></span>',['awpb-district/submit','id'=>$template_model->id,'id2'=>$model->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
-                                    'title' => 'Approve Funds Request',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
-                                    
-                        
-                            }
-                        },
-            
-'decline' => function ($url, $model) use($user,$template_model){
-                             if ((User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id != ''))||
-                                     (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == ''))||
-                                     (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')))
-                             {
+//                            }
+//                        },
+//            
+//'decline' => function ($url, $model) use($user,$template_model){
+//                             if ((User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id != ''))||
+//                                     (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == ''))||
+//                                     (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')))
+//                             {
+////                        
+//                                 
+//                                   return Html::a(
+//                                        '<span class="fa fa-ban"></span>',['awpb-district/decline','id'=>$template_model->id,'id2'=>$model->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
+//                                    'title' => 'Decline Funds Request',
+//                                    'data-toggle' => 'tooltip',
+//                                    'data-placement' => 'top',
+//                                    // 'target' => '_blank',
+//                                    'data-pjax' => '0',
+//                                   // 'style' => "padding:5px;",
+//                                    'class' => 'bt btn-lg'
+//                                        ]
+//                        );
+//                                    
 //                        
-                                 
-                                   return Html::a(
-                                        '<span class="fa fa-ban"></span>',['awpb-district/decline','id'=>$template_model->id,'id2'=>$model->district_id,'status'=> \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [ 
-                                    'title' => 'Decline Funds Request',
-                                    'data-toggle' => 'tooltip',
-                                    'data-placement' => 'top',
-                                    // 'target' => '_blank',
-                                    'data-pjax' => '0',
-                                   // 'style' => "padding:5px;",
-                                    'class' => 'bt btn-lg'
-                                        ]
-                        );
-                                    
-                        
-                            }
-                        },
+//                            }
+//                        },
 //                   
 //               
-           ]]          
+        //   ]]          
 //              
               
 ];
