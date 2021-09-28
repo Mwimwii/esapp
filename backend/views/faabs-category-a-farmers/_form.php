@@ -26,12 +26,12 @@ use kartik\date\DatePicker;
 
 
         <?=
-                $form->field($model, 'faabs_group_id',['enableAjaxValidation' => true])
+                $form->field($model, 'faabs_group_id', ['enableAjaxValidation' => true])
                 ->dropDownList(
                         \backend\models\MeFaabsGroups::getListByCampIds(), ['prompt' => 'Select farmers FaaBS group', 'required' => true]
         );
         ?>
-         <?=
+        <?=
         $form->field($model, 'title')->dropDownList(
                 [
                     'Mr.' => 'Mr',
@@ -63,22 +63,22 @@ use kartik\date\DatePicker;
         ]);
         ?>
 
-        <?= $form->field($model, 'nrc',['enableAjaxValidation' => true])->textInput(['placeholder' => 'Enter farmers NRC number', 'maxlength' => true]) ?>
+        <?= $form->field($model, 'nrc', ['enableAjaxValidation' => true])->textInput(['placeholder' => 'Enter farmers NRC number', 'maxlength' => true]) ?>
         <?= $form->field($model, 'marital_status')->radioList(['Married' => "Married", "Single" => "Single"], ['inline' => true]); ?>
         <?= $form->field($model, 'sex')->radioList(['Male' => "Male", "Female" => "Female"], ['inline' => true]); ?>
-       
 
-    </div>
-    <div class="col-lg-6 form-group">
         <?=
         $form->field($model, 'contact_number')->widget(PhoneInput::className(), [
-            'options' => ['maxlength' => true],
+            'options' => ['maxlength' => true, "style" => "width:580px"],
             'jsOptions' => [
                 'allowExtensions' => true,
                 'preferredCountries' => ['ZM'],
             ]
         ]);
         ?>
+    </div>
+    <div class="col-lg-6 form-group">
+
         <?=
         $form->field($model, 'registration_date')->widget(DatePicker::classname(), [
             'options' => ['id' => "reg_date", 'placeholder' => 'Enter farmers date of registration i.e. YYYY-MM-DD', 'maxlength' => true, 'style' => 'width:320px;',],
@@ -89,6 +89,11 @@ use kartik\date\DatePicker;
                 'todayHighlight' => TRUE
             ]
         ]);
+        ?>
+        <?=
+                $form->field($model, "household_head_type", ['enableAjaxValidation' => true])
+                ->dropDownList(['Female headed' => "Female headed", "Male headed" => "Male headed"], ['custom' => true, 'prompt' => 'Select household head type', 'required' => false]
+        );
         ?>
         <?= $form->field($model, 'relationship_to_household_head')->textInput(['placeholder' => 'Enter relationship to household head', 'maxlength' => true]) ?>
 

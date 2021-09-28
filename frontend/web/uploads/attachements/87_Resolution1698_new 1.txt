@@ -1,0 +1,21 @@
+CREATE TABLE Mgf_Project_Financing_Plan (
+id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+itemno INT(11)
+Input_name VARCHAR(40) NOT NULL,
+Total_cost decimal(9,2) NOT NULL,
+applicant_inkind decimal(9,2) NOT NULL,
+applicant_incash decimal(9,2) NOT NULL,
+Total_contribution decimal(9,2) NOT NULL,
+mgf_grant decimal(9,2) NOT NULL,
+other_sources decimal(9,2) NOT NULL,
+Total decimal(9,2) NOT NULL,
+mgf_percentage decimal(9,2) NOT NULL,
+);
+
+CREATE TABLE Mgf_other_Sources (
+id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+itemno INT(11)
+Source_name VARCHAR(40) NOT NULL,
+Source_amount decimal(9,2) NOT NULL,
+
+);

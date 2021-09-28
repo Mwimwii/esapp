@@ -162,7 +162,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ],
                                             'style' => "padding:5px;",
                                             'class' => 'bt btn-lg'
-                                                ]
+                                        ]
                                 );
                             }
                         },

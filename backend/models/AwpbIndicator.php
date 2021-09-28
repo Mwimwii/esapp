@@ -45,12 +45,12 @@ class AwpbIndicator extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['component_id', 'name', 'description', 'unit_of_measure_id', 'created_at', 'updated_at'], 'required'],
-            [['component_id', 'unit_of_measure_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['outcome_id', 'name', 'description'], 'required'],
+            [['component_id', 'outcome_id','output_id','created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 40],
             [['description'], 'string', 'max' => 255],
             [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
-            [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
+           
         ];
     }
 
@@ -62,9 +62,10 @@ class AwpbIndicator extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'component_id' => 'Component ID',
+            'outcome_id'=>'Outcome',
+            'output-id'=>'Output',
             'name' => 'Name',
             'description' => 'Description',
-            'unit_of_measure_id' => 'Unit Of Measure ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -104,7 +105,8 @@ class AwpbIndicator extends \yii\db\ActiveRecord
 
     public static function getIndicatorsPerComponent($id) {
         $data = self::find()->orderBy(['name' => SORT_ASC])
-      //  ->where(['component_id'=>40])
+
+      ->where(['component_id'=>$id])
         ->all();
         $list = ArrayHelper::map($data, 'id','name');
         return $list;

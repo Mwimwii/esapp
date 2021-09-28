@@ -9,6 +9,7 @@ use yii\grid\ActionColumn;
 use backend\models\User;
 use kartik\popover\PopoverX;
 use kartik\export\ExportMenu;
+use kartik\touchspin\TouchSpin;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\MeFaabsGroupsSearch */
@@ -27,6 +28,7 @@ $district = !empty($district_model) ? $district_model->name : "";
         if (User::userIsAllowedTo('Manage faabs groups')) {
             if (!empty(backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id))) {
                 $ready_only = false;
+
                 echo '<p> 
                           <h5>Instructions</h5>
                           <ol>
@@ -93,6 +95,7 @@ $district = !empty($district_model) ? $district_model->name : "";
                     'pluginOptions' => ['allowClear' => true],
                 ],
                 //  'filter' => true,
+                //'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
                 'filter' => !empty(Yii::$app->user->identity->district_id) ? \backend\models\Camps::getListByDistrictId(Yii::$app->user->identity->district_id) : backend\models\Camps::getList(),
                 'filterInputOptions' => ['prompt' => 'Filter by camp', 'class' => 'form-control', 'id' => null],
                 'readonly' => $ready_only,
@@ -128,24 +131,22 @@ $district = !empty($district_model) ? $district_model->name : "";
                 'refreshGrid' => true,
                 'readonly' => $ready_only,
             ],
-            /* [
-              'class' => EditableColumn::className(),
-              'enableSorting' => true,
-              'attribute' => 'code',
-              'editableOptions' => [
-              'type' => 'success',
-              'asPopover' => true,
-              'size' => PopoverX::SIZE_MEDIUM,
-              ],
-              'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
-              'filterWidgetOptions' => [
-              'pluginOptions' => ['allowClear' => true],
-              ],
-              'filter' => \backend\models\MeFaabsGroups::getNames(),
-              'filterInputOptions' => ['prompt' => 'Filter by FaaBS name', 'class' => 'form-control',],
-              'format' => 'raw',
-              'refreshGrid' => true,
-              ], */
+            [
+                'class' => EditableColumn::className(),
+                'enableSorting' => true,
+                'attribute' => 'max_farmer_graduation_training_topics',
+                'editableOptions' => [
+                    'type' => 'success',
+                    'asPopover' => true,
+                    'size' => PopoverX::SIZE_MEDIUM,
+                    'inputType' => Editable::INPUT_WIDGET,
+                    'widgetClass' => '\kartik\touchspin\TouchSpin',
+                ],
+                'filter' => false,
+                'format' => 'raw',
+                'refreshGrid' => true,
+                'readonly' => $ready_only,
+            ],
             [
                 'class' => EditableColumn::className(),
                 'attribute' => 'status',
@@ -342,6 +343,16 @@ $district = !empty($district_model) ? $district_model->name : "";
                 <?=
                 $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'placeholder' =>
                     'Enter name of FaaBS group', 'id' => "province", 'required' => true,])
+                ?>
+                <?=
+                $form->field($model, 'max_farmer_graduation_training_topics')->widget(TouchSpin::classname(), [
+                    'options' => ['placeholder' => 'Enter max topics farmer needs to graduate'],
+                    'pluginOptions' => [
+                        // 'initval' => 3.00,
+                        'min' => 1,
+                        'max' => 1000,
+                    ],
+                ])->hint("Enter the maximum number of topics farmer needs to graduate");
                 ?>
 
             </div>

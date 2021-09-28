@@ -42,7 +42,7 @@ class MeFaabsGroups extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['camp_id', 'name'], 'required'],
-            [['camp_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['camp_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by','max_farmer_graduation_training_topics'], 'integer'],
             [['name'], 'string', 'max' => 255],
             ['name', 'unique', 'when' => function($model) {
                     return $model->isAttributeChanged('name') &&

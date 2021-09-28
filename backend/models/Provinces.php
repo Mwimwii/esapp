@@ -44,7 +44,7 @@ class Provinces extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => 'ID',
-            'name' => 'Province name',
+            'name' => 'Province Name',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -90,6 +90,10 @@ class Provinces extends \yii\db\ActiveRecord {
     public static function getProvinceById($id) {
         $province = self::find()->where(['id' => $id])->one();
         return $province->name;
+    }
+    public static function getName($id) {
+        $province = self::find()->where(['id' => $id])->one();
+        return ucfirst(strtolower($this->name));
     }
 
 }

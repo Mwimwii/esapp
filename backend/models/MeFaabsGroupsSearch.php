@@ -9,24 +9,22 @@ use backend\models\MeFaabsGroups;
 /**
  * MeFaabsGroupsSearch represents the model behind the search form of `backend\models\MeFaabsGroups`.
  */
-class MeFaabsGroupsSearch extends MeFaabsGroups
-{
+class MeFaabsGroupsSearch extends MeFaabsGroups {
+
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['id', 'camp_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'code','province_id', 'district_id'], 'safe'],
+            [['id', 'camp_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'max_farmer_graduation_training_topics'], 'integer'],
+            [['name', 'code', 'province_id', 'district_id'], 'safe'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -38,8 +36,7 @@ class MeFaabsGroupsSearch extends MeFaabsGroups
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = MeFaabsGroups::find();
 
         // add conditions that should always apply here
@@ -61,6 +58,7 @@ class MeFaabsGroupsSearch extends MeFaabsGroups
             'id' => $this->id,
             'camp_id' => $this->camp_id,
             'status' => $this->status,
+            'max_farmer_graduation_training_topics' => $this->max_farmer_graduation_training_topics,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
@@ -68,8 +66,9 @@ class MeFaabsGroupsSearch extends MeFaabsGroups
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'code', $this->code]);
+                ->andFilterWhere(['like', 'code', $this->code]);
 
         return $dataProvider;
     }
+
 }

@@ -8,6 +8,7 @@ return [
     'senderEmail' => 'esappmis@noreply.gov.zm',
     'bsVersion' => '4.x',
     'user.passwordResetTokenExpire' => 3600,
+    'user.passwordMinLength'=>7,
     'maskMoneyOptions' => [
         'prefix' => 'ZMW ',
         'suffix' => '',
@@ -19,5 +20,5 @@ return [
         'allowNegative' => false,
     ],
     'youthMinAge' => 15,
-    'youthMaxAge' => 24
+    'youthMaxAge' => 35,
 ];

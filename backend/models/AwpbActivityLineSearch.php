@@ -9,30 +9,28 @@ use backend\models\AwpbActivityLine;
 /**
  * AwpbActivityLineSearch represents the model behind the search form of `backend\models\AwpbActivityLine`.
  */
-class AwpbActivityLineSearch extends AwpbActivityLine {
 
+class AwpbActivityLineSearch extends AwpbActivityLine
+{
     /**
      * {@inheritdoc}
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['id', 'activity_id', 'awpb_template_id', 'status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'year'], 'safe'],
-            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7',
-            'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity',
-            'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity',
-            'total_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount',
-            'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount',
-            'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount',
-            'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount',
-            'total_amount'], 'number'],
+            [['id', 'activity_id','awpb_template_id','status', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['name'], 'safe'],
+            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity','mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount'], 'number'],
+
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scenarios() {
+
+    public function scenarios()
+    {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -44,7 +42,10 @@ class AwpbActivityLineSearch extends AwpbActivityLine {
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+
+    public function search($params)
+    {
+
         $query = AwpbActivityLine::find();
 
         // add conditions that should always apply here
@@ -57,7 +58,11 @@ class AwpbActivityLineSearch extends AwpbActivityLine {
         // $query->select('SUM(quarter_four_quantity) AS quarter_four_quantity');
         // $query->select('SUM(total_quantity) AS total_quantity');
         // $query->select('SUM(total_amount) AS total_amount');
+
+
         // $query->groupBy('province_id');
+
+
         // $query->groupBy('district_id');
 
 
