@@ -72,6 +72,8 @@ class Right extends \yii\db\ActiveRecord {
             'View AWPB templates' => "",
             'View AWPB activity lines' => "",
             'Manage AWPB activity lines' => "",
+            'Manage AWPB' => "Manage AWPB",
+            'Manage PW AWPB' => "Manage PW AWPB",
             'Manage AWPB activity lines' => 'View AWPB activity lines',
             'Submit District AWPB' => "",
             'Approve AWPB - Provincial' => 'Approve AWPB - Provincial',
@@ -142,6 +144,24 @@ class Right extends \yii\db\ActiveRecord {
             'View MGF Approvals' => "",
             'View MGF Proposals' => "",
             'View MGF Evaluations' => "",
+<<<<<<< HEAD
+=======
+            'Remove cost centre' => "Remove cost centre",
+            'Manage cost centre' => "Manage cost centre",
+            'Request Funds' => "Request Funds",
+            'Approve Funds Requisition' => "Approve Funds Requisition",
+            'Disburse Funds' => "Disburse Funds",
+            'Review Funds Request' => "Review Funds Request",
+            'View Funds Utilisation' => "View Funds Utilisation",
+            'Remove project outreach records' => "Remove project outreach records",
+            'Submit project outreach records' => "Can submit project outreach quarterly records",
+            'Add staff hourly rates' => "Add staff hourly rates",
+            'View staff hourly rates' => "View staff hourly rates",
+            'Review timesheets' => "Review timesheets",
+            'Submit timesheets' => "Submit timesheets",
+            'View time sheets' => "View time sheets",
+                //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
+>>>>>>> 533aaa68199c280935e5bf987418d2dc2fa8d833
         ];
 
         $count = 0;
@@ -159,4 +179,8 @@ class Right extends \yii\db\ActiveRecord {
         echo "Inserted $count rights into permissions table";
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 533aaa68199c280935e5bf987418d2dc2fa8d833
 }

@@ -51,11 +51,10 @@ class RoleController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        if (User::userIsAllowedTo('View Roles')) {
+        if (User::userIsAllowedTo('View Roles') || 
+                User::userIsAllowedTo('Manage Roles')) {
             $searchModel = new RoleSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            //Board role is just a placeholder hence should not be tempered with
-            $dataProvider->query->andFilterWhere(['NOT LIKE', 'role', "Board"]);
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
@@ -214,7 +213,7 @@ class RoleController extends Controller {
             if ($this->findModel($id)->delete()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Removed role " . $name." from the system";
+                $audit->action = "Removed role " . $name . " from the system";
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
