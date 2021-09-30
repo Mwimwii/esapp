@@ -8,22 +8,19 @@ use kartik\number\NumberControl;
 /* @var $model backend\models\MeCampSubprojectRecordsPlannedWorkEffort */
 /* @var $form yii\widgets\ActiveForm */
 $max_days = date('t');
-
 ?>
 
 <div class="me-camp-subproject-records-planned-work-effort-form">
 
     <?php
     $form = ActiveForm::begin([
-              //  'action' => 'work-effort',
-              //  'enableAjaxValidation' => true,
+                    //  'action' => 'work-effort',
+                    //  'enableAjaxValidation' => true,
                     // 'enableClientValidation' => true,
             ])
     ?>
     <div class="row">
         <div class="col-lg-5">
-
-
             <?php
             echo
                     $form->field($model, 'camp_id', ['enableAjaxValidation' => true])

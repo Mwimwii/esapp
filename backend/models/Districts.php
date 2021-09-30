@@ -126,4 +126,10 @@ class Districts extends \yii\db\ActiveRecord {
         return $data->name;
     }
 
+       public function getAwpbBudgets() {
+        return $this->hasMany(Market::className(), ['district_id' => 'id']);
+    }
+      public function getAwpbDistricts() {
+        return $this->hasMany(Camp::className(), ['district_id' => 'id']);
+    }
 }

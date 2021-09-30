@@ -56,9 +56,15 @@ class MgfBranch extends \yii\db\ActiveRecord
             'id' => 'ID',
             'address' => 'Address',
             'employess' => 'Employess',
+<<<<<<< HEAD
             'province_id' => 'Province',
             'district_id' => 'District',
             'organisation_id' => 'Organisation',
+=======
+            'province_id' => 'Province ID',
+            'district_id' => 'District ID',
+            'organisation_id' => 'Organisation ID',
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'date_created' => 'Date Created',
         ];
     }

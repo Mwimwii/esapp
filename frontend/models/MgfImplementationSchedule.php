@@ -3,7 +3,10 @@
 namespace frontend\models;
 
 use Yii;
+<<<<<<< HEAD
 use yii\data\ArrayDataProvider;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /**
  * This is the model class for table "mgf_implementation_schedule".
@@ -86,6 +89,7 @@ class MgfImplementationSchedule extends \yii\db\ActiveRecord
         ];
     }
 }
+<<<<<<< HEAD
 
 class GanttTest extends \yii\base\Model
 {
@@ -120,3 +124,5 @@ class GanttTest extends \yii\base\Model
       );
   }
 }
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

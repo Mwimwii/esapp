@@ -138,6 +138,7 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
 
         $columnName = self::getMonthColumnName($month);
         $activity_ids = [];
+        $activity_ids1 = [];
         $work_effort_model = self::find()
                 ->select(['activity_id'])
                 ->where(['work_effort_id' => $work_effort_id])
@@ -153,6 +154,7 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
             }
         }
 
+<<<<<<< HEAD
         //var_dump($activity_ids);
         $list = AwpbActivityLine::find()
                 //->select(["awpb_activity_line.activity_id"])
@@ -163,6 +165,25 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
                 ->andWhere(['>=', "awpb_activity_line." . $columnName, 1])
                 ->orderBy(['awpb_activity_line.id' => SORT_ASC])
                 ->all();
+=======
+        $list1 = AwpbBudget::find()
+                //->select(["awpb_activity_line.activity_id"])
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_budget.awpb_template_id')
+                ->where(['awpb_budget.district_id' => $id])
+                ->andWhere(['awpb_template.fiscal_year' => $year])
+                ->andWhere(['NOT IN', 'awpb_budget.activity_id', $activity_ids])
+                ->andWhere(['>=', "awpb_budget." . $columnName, 1])
+                ->orderBy(['awpb_budget.id' => SORT_ASC])
+                ->all();
+        if (!empty($list1)) {
+            foreach ($list1 as $_model) {
+                array_push($activity_ids1, $_model['activity_id']);
+            }
+        }
+
+        $list = AwpbActivity::find()
+                        ->where(['IN', 'id', $activity_ids1])->all();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         $response = ArrayHelper::map($list, 'id', 'name');
         return $response;
     }
@@ -247,6 +268,23 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
             $columnName = "mo_12_actual";
         }
         return $columnName;
+    }
+
+    public static function getQuarter($month) {
+        $quarter = "";
+        if (in_array($month, [1, 2, 3])) {
+            $quarter = "quarter_one_actual";
+        }
+        if (in_array($month, [4, 5, 6])) {
+            $quarter = "quarter_two_actual";
+        }
+        if (in_array($month, [7, 8, 9])) {
+            $quarter = "quarter_three_actual";
+        }
+        if (in_array($month, [10, 11, 12])) {
+            $quarter = "quarter_four_actual";
+        }
+        return $quarter;
     }
 
 }

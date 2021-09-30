@@ -7,7 +7,7 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
         '@Psr/SimpleCache' => '@vendor/psr/simple-cache/src',
-       // '@PhpOffice' => '@vendor/phpoffice/phpword/src',
+        // '@PhpOffice' => '@vendor/phpoffice/phpword/src',
         '@PhpOffice' => '@vendor/phpoffice/phpspreadsheet/src',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
@@ -15,20 +15,25 @@ return [
     'components' => [
         'assetManager' => [
             'bundles' => [
-                /* 'dosamigos\google\maps\MapAsset' => [
-                  'options' => [
-                  'key' => 'AIzaSyDse73j9ooUEdUlbCf4xcNmeMKgfZiKRSs',
-                  'language' => 'id',
-                  'version' => '3.1.18'
-                  ]
-                  ], */
+                'dosamigos\google\maps\MapAsset' => [
+                    'options' => [
+                        // 'key' => 'AIzaSyDse73j9ooUEdUlbCf4xcNmeMKgfZiKRSs',
+                        'key' => 'AIzaSyB6G0OqzcLTUt1DyYbWFbK4MPUbi1mSCSc',
+                        'language' => 'eng',
+                        'version' => '3.1.18'
+                    ]
+                ],
                 'kartik\form\ActiveFormAsset' => [
                     'bsDependencyEnabled' => false // do not load bootstrap assets for a specific asset bundle
                 ],
             ]
         ],
+<<<<<<< HEAD
 
         /*' cache' => [ 
+=======
+        ' cache' => [
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'class' => 'yii\caching\MemCache',
             'servers' => [
                 [
@@ -56,4 +61,8 @@ return [
         'redactor' => 'yii\redactor\RedactorModule',
     ],
 ];
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

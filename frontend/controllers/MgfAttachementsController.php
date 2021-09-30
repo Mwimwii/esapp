@@ -1,7 +1,11 @@
 <?php
 namespace frontend\controllers;
 use Yii;
+<<<<<<< HEAD
 use backend\models\MgfAttachements;
+=======
+use frontend\models\MgfAttachements;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfApplicant;
 use frontend\models\MgfAttachementsSearch;
 use frontend\models\MgfChecklist;
@@ -204,4 +208,8 @@ class MgfAttachementsController extends Controller{
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

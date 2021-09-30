@@ -215,6 +215,7 @@ $usertype=Yii::$app->user->identity->type_of_user;
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 </div>
 
 
@@ -223,3 +224,6 @@ $usertype=Yii::$app->user->identity->type_of_user;
 
 
 
+=======
+</div>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

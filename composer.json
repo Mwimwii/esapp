@@ -59,7 +59,11 @@
 
         "phpoffice/phpword": "^0.17.0",
         "ivankff/yii2-modal-ajax": "@dev",
-        "bizley/migration": "^4.1"
+        "bizley/migration": "^4.1",
+        "2amigos/yii2-leaflet-extension": "*",
+        "davidjeddy/yii2-leaflet-draw-plugin": "*",
+        "pigochu/yii2-jquery-locationpicker": "*",
+        "2amigos/yii2-google-maps-library": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

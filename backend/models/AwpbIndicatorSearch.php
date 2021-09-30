@@ -17,7 +17,7 @@ class AwpbIndicatorSearch extends AwpbIndicator
     public function rules()
     {
         return [
-            [['id', 'component_id', 'unit_of_measure_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'activity_id', 'outcome_id', 'output_id', 'unit_of_measure_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -59,7 +59,9 @@ class AwpbIndicatorSearch extends AwpbIndicator
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'component_id' => $this->component_id,
+            'activity_id' => $this->activity_id,
+            'outcome_id' => $this->outcome_id,
+            'output_id' => $this->output_id,
             'unit_of_measure_id' => $this->unit_of_measure_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

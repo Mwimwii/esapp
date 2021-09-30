@@ -1,5 +1,4 @@
 <?php
-
 namespace backend\models;
 
 use Yii;
@@ -104,6 +103,13 @@ class AwpbOutcome extends \yii\db\ActiveRecord
         return  $awpboutcomes;
    
     }
+    // public static function getOutcomes($id) {
+    //     $data = self::find()->orderBy(['name' => SORT_ASC])
+    //     ->where(['id'=>$id])
+    //     ->all();
+    //     $list = ArrayHelper::map($data, 'id','name');
+    //     return $list;
+    // }
     public static function getOutcomes($id) {
         $data = self::find()->orderBy(['name' => SORT_ASC])
         ->where(['id'=>$id])

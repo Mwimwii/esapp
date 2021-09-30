@@ -6,6 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfApplicant */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $this->title = "Contact Person Details";
 \yii\web\YiiAsset::register($this);
 ?>
@@ -28,6 +32,10 @@ $this->title = "Contact Person Details";
             'organisation_id',
             'date_created',
         ],
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     ]) , Html::a('<i class="fa fa-home"></i>Back', ['index'], ['class' => 'btn btn-default']);?>
 
 </div>

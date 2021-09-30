@@ -1,15 +1,25 @@
 <?php
 
 namespace frontend\controllers;
+<<<<<<< HEAD
 use Yii;
 use frontend\models\MgfApplicant;
 use frontend\models\MgfEligibilityApproval;
+=======
+
+use Yii;
+use frontend\models\MgfApplicant;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfApplicantSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\Districts;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use backend\models\MeFaabsCategoryAFarmers;
 use backend\models\MgfDistrictEligibility;
 use backend\models\MgfYear;
@@ -134,6 +144,10 @@ class MgfApplicantController extends Controller{
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
             $model->save();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             if(MeFaabsCategoryAFarmers::find()->where(['nrc'=>$model->nationalid])->exists()){
                 $farmer_type='Category-A';
             }else{
@@ -144,6 +158,10 @@ class MgfApplicantController extends Controller{
             $district=Districts::findOne($districtid);
             $model->province_id=$district->province_id;
             if($model->save()){
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 if (!MgfChecklist::find()->where(['applicant_id'=>$model->id])->exists()) {
                     $checklist=new MgfChecklist();
                     $checklist->applicant_id=$model->id;
@@ -163,12 +181,17 @@ class MgfApplicantController extends Controller{
     public function actionConfirm($id){
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             $year=MgfYear::findOne(['is_active'=>1]);
             $model->save();      
             $model->confirmed=1;
             if ($model->save()) {
                 MgfChecklist::updateAll(['profile_confirmed'=>1], 'applicant_id='.$id);
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
+<<<<<<< HEAD
 
                 $application=MgfApplication::findOne(['organisation_id'=>$model->organisation_id,'is_active'=>1]);
                 if (!MgfEligibilityApproval::find()->where(['application_id'=>$application->id,'is_active'=>1])->exists()) {
@@ -177,6 +200,8 @@ class MgfApplicantController extends Controller{
                     $eligilbility->is_active=1;
                     $eligilbility->save();
                 }
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 
                 if (!MgfDistrictEligibility::find()->where(['district_id'=>$model->district_id,'year_id'=>$year->id])->exists()){
                     $districtEligibilty=new MgfDistrictEligibility();
@@ -186,7 +211,12 @@ class MgfApplicantController extends Controller{
                     $districtEligibilty->save();
                 }
 
+<<<<<<< HEAD
                 MgfApplication::updateAll(['application_status'=>'Submitted'], 'id='.$application->id);
+=======
+                MgfApplication::updateAll(['application_status'=>'Sumitted'], 'applicant_id='.$id);
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
                 return $this->redirect(['applicant', 'id' => $model->id]);
             }else{
@@ -198,6 +228,7 @@ class MgfApplicantController extends Controller{
         return $this->render('confirmation', ['model' => $model,]);
     }
 
+<<<<<<< HEAD
 
     public function actionDeclaration($id){
         $model = $this->findModel($id);
@@ -237,6 +268,8 @@ class MgfApplicantController extends Controller{
 
         return $this->render('declaration', ['model' => $model,]);
     }
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     /**
      * Deletes an existing MgfApplicant model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

@@ -50,7 +50,7 @@ class AwpbActivityController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AwbpActivitySearch();
+        $searchModel = new \backend\models\AwpbActivitySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -95,6 +95,138 @@ class AwpbActivityController extends Controller
 		}
     }
     
+    public function actionParentActivities() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+                $out_id = $parents[0];
+                $out = \backend\models\AwpbActivity::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                ->where(['type' =>\backend\models\AwpbActivity::TYPE_MAIN])
+                ->andWhere(['output_id' => $out_id])
+                ->asArray()
+                ->all();
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+    public function actionChildactivities() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+                $out_id = $parents[0];
+                $out = \backend\models\AwpbActivity::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                ->where(['type' =>\backend\models\AwpbActivity::TYPE_SUB])
+                ->andWhere(['output_id' => $out_id])
+                ->asArray()
+                ->all();
+
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+    
+    public function actionActvityindicators() {
+      
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+            
+                $act_id = $parents[0];
+                $out = \backend\models\AwpbIndicator::find()
+                ->select(['name', 'id'])
+                //->where(['type' =>\backend\models\AwpbActivity::TYPE_SUB])
+                ->where(['activity_id' =>  $act_id])
+                ->asArray()
+                ->all();
+
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+
+
+    public function actionTemplateactivities() {
+        $template_id =  \backend\models\AwpbTemplate::findOne(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->id;
+      
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+            
+                $out_id = $parents[0];
+                $out = \backend\models\AwpbTemplateActivity::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'activity_id as id'])
+                ->where(['type' =>\backend\models\AwpbActivity::TYPE_SUB])
+                ->where(['awpb_template_id' =>  $template_id])
+                 ->andWhere(['component_id' => $out_id])
+                ->asArray()
+                ->all();
+
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+    
+        public function actionParantactivities() {
+       //$template_id =  \backend\models\AwpbTemplate::findOne(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->id;
+      
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+            
+                $out_id = $parents[0];
+                $out = \backend\models\AwpbActivity::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'activity_id as id'])
+                ->where(['type' =>\backend\models\AwpbActivity::TYPE_MAIN])
+                //->where(['awpb_template_id' =>  $template_id])
+                 ->andWhere(['component_id' => $out_id])
+                ->asArray()
+                ->all();
+
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
 
  
     public function actionParentactivity() {
@@ -109,24 +241,7 @@ class AwpbActivityController extends Controller
                 ];
             }
         }
-        // return ['output' => '', 'selected' => ''];
-        // $out = [];
-        // if (isset($_POST['depdrop_parents'])) {
-        //     $parents = $_POST['depdrop_parents'];
-        //     if ($parents != null) {
-        //         $comp_id = $parents[0];
-        //         $out = AwpbActivity:: getAwpbComponentActivities($comp_id); 
-        //         // the getSubCatList function will query the database based on the
-        //         // cat_id and return an array like below:
-        //         // [
-        //         //    ['id'=>'<sub-cat-id-1>', 'name'=>'<sub-cat-name1>'],
-        //         //    ['id'=>'<sub-cat_id_2>', 'name'=>'<sub-cat-name2>']
-        //         // ]
-        //         return json_encode(['output'=>$out, 'selected'=>'']);
-            
-        //     }
-        // }
-        // return json_encode(['output'=>'', 'selected'=>'']);
+       
     }
 
     public function actionView($id)
@@ -150,7 +265,7 @@ class AwpbActivityController extends Controller
 
     public function actionCreate()
     {
-		$number_of_activities='';
+	$number_of_activities='';
         $number_of_subactivities='';
         $sub="";
 		if (User::userIsAllowedTo('Manage AWPB activities')) 
@@ -175,7 +290,7 @@ class AwpbActivityController extends Controller
 
                 $model->created_by = Yii::$app->user->id;
                 $model->updated_by = Yii::$app->user->id;
-				$model->name = $model->description;
+				//$model->name = $model->description;
 	
                 if ($model->activity_type == "Subactivity")
                 {
@@ -230,7 +345,7 @@ class AwpbActivityController extends Controller
                     $audit->ip_address = Yii::$app->request->getUserIP();
                     $audit->user_agent = Yii::$app->request->getUserAgent();
                     $audit->save();
-                    Yii::$app->session->setFlash('success', 'activity ' . $model->activity_code. ' '.$model->name.' was successfully added. Act'.$number_of_activities. ' Sub ' .$number_of_subactivities++ );
+                    Yii::$app->session->setFlash('success', 'activity ' . $model->activity_code. ' '.$model->name.' was successfully added.' );
                 } else 
                 {
                     $message = '';
@@ -244,11 +359,7 @@ class AwpbActivityController extends Controller
                 "sub" => $sub
             ]);
                 }
-
-
-			 
-            //  
-				
+	
             }
 			
 			return $this->render('create', [
@@ -279,6 +390,36 @@ class AwpbActivityController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            
+            if ( $model->type == AwpbActivity::TYPE_MAIN){
+                
+           
+                        //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
+                     $awpbActivities  = \backend\models\AwpbActivity::find()->where(['=', 'parent_activity_id', $id])->all();
+                       
+                        if(!empty($awpbActivities)){
+                        foreach ($awpbActivities  as $activity) {
+                            $awpbActivity= \backend\models\AwpbActivity::findOne(['id'=>$activity->id]);
+                         
+                            //check if the right was already assigned to this role
+                       
+                                $awpbActivity->indicator_id = $model->indicator_id;
+                           
+                    $awpbActivity->save();
+                        }
+                        
+                        }
+            
+                        }
+            
+                        
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Updated activity" . $model->activity_code;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success',  $model->activity_code . ' activity was successfully updated.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

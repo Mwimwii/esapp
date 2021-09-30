@@ -6,6 +6,9 @@ use kartik\form\ActiveForm;
 use kartik\touchspin\TouchSpin;
 
 $_model = backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($id);
+$model->target_women= $_model->beneficiary_target_women;
+$model->target_youth=$_model->beneficiary_target_youth;
+$model->target_women_headed= $_model->beneficiary_target_women_headed;
 
 $form = ActiveForm::begin([
         ]);
@@ -79,7 +82,7 @@ $form = ActiveForm::begin([
         </ol>
         <hr class="dotted">
         <p>
-        <h5><?= \backend\models\AwpbActivityLine::findOne($_model->activity_id)->name ?> activity <?= DateTime::createFromFormat('!m', backend\models\MeCampSubprojectRecordsPlannedWorkEffort::findOne($_model->work_effort_id)->month)->format('F') ?> planned targets</h5>
+        <strong><?= \backend\models\AwpbActivity::findOne($_model->activity_id)->name ?> activity <?= DateTime::createFromFormat('!m', backend\models\MeCampSubprojectRecordsPlannedWorkEffort::findOne($_model->work_effort_id)->month)->format('F') ?> planned targets</strong>
         <ul>
             <b>FaaBS:</b> <?= backend\models\MeFaabsGroups::findOne($_model->faabs_id)->name ?><br/>
             <b>Activity target:</b> <?= $_model->activity_target ?><br/>

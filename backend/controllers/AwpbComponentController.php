@@ -1,5 +1,4 @@
 <?php
-
 namespace backend\controllers;
 
 use Yii;
@@ -117,24 +116,28 @@ class AwpbComponentController extends Controller
               
                      
                     if ($model->subcomponent== "Subcomponent") 
-                    {   $number_of_subcomponents = $model::find()
-                        ->where(["parent_component_id" => $model->parent_component_id])
-                        //->andWhere(["component_id" => $model->component_id])
-                        ->count();
+                     { 
+                         //  $number_of_subcomponents = $model::find()
+                    //     ->where(["parent_component_id" => $model->parent_component_id])
+                    //     //->andWhere(["component_id" => $model->component_id])
+                    //     ->count();
                         
                         $comp_model = $this->findModel($model->parent_component_id);
                         
-                        if($number_of_subcomponents==0||$number_of_subcomponents =='')
-                            {
-                                    $comp_code = $comp_model->code .'.1';	
-                            }
-                            if($number_of_subcomponents>0||$number_of_subcomponents!='')
-                            {		
-                                $co = $number_of_subcomponents+1;				
-                                $comp_code  =$comp_model->code .'.'.$co;
-                            }
-                        $model->access_level = $comp_model->access_level;    
-                        $model->code = $comp_code;
+                        // if($number_of_subcomponents==0||$number_of_subcomponents =='')
+                        //     {
+                        //             $comp_code = $comp_model->code .'.1';	
+                        //     }
+                        //     if($number_of_subcomponents>0||$number_of_subcomponents!='')
+                        //     {		
+                        //         $co = $number_of_subcomponents+1;				
+                        //         $comp_code  =$comp_model->code .'.'.$co;
+                        //     }
+                        $model->access_level_district = $comp_model->access_level_district;  
+                        $model->access_level_province = $comp_model->access_level_province;  
+                        $model->access_level_programme = $comp_model->access_level_programme;  
+        
+                        //$model->code = $comp_code;
                         //$model->funder_id = $comp_model->funder_id;
                         //$model->expense_category_id = $comp_model->expense_category_id;
                         $model->type = AwpbComponent::TYPE_SUB;
@@ -164,13 +167,15 @@ class AwpbComponentController extends Controller
                         $message = '';
                         foreach ($model->getErrors() as $error) {
                             $message .= $error[0];
+                              Yii::$app->session->setFlash('error', "Error occured while creating a component: ". $message);
+                               return $this->redirect(['index',]);
                         }
-                        Yii::$app->session->setFlash('error', "Error occured while creating component: $model->name.Please try again.Error::" . $message);
                       
-                return $this->render('create', [
-                    'model' => $model,
-                    "sub_component" => $sub_component
-                ]);
+//                   
+//                return $this->render('create', [
+//                    'model' => $model,
+//                    "sub_component" => $sub_component
+//                ]);
                     }
                  
                 //    return $this->redirect(['index']);
@@ -217,9 +222,8 @@ class AwpbComponentController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                
                
-                if ($model->save(true,['name','outcome', 'output','access_level','updated_by'])&& $model->validate()) {
-
-
+                if ($model->save(true,['name','outcome', 'output','access_level','access_level_district','access_level_prvince','access_level_programme','gl_account_code','updated_by'])&& $model->validate()) {
+                    
                     $subcomponents = AwpbComponent::find()->where(['=','parent_component_id',$model->id])->all();
          
                     if(isset($subcomponents) )
@@ -229,8 +233,12 @@ class AwpbComponentController extends Controller
                         foreach($subcomponents as $sub)
                         {
                             $sub->access_level =$model->access_level;
+
                             if ($sub->validate())
                             {
+                                $sub->access_level_district = $model->access_level_district;  
+                                $sub->access_level_province =$model->access_level_province; 
+                                $sub->access_level_programme = $model->access_level_programme;  
                                 $sub->save();
                             }
                             else{
@@ -332,4 +340,73 @@ class AwpbComponentController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    public function actionOutputs() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+                $comp_id = $parents[0];
+                $out = \backend\models\AwpbOutput::find()
+                ->select(["CONCAT(code,' ',name) as name", 'id'])
+                //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                ->where(['component_id' => $comp_id])
+                ->asArray()
+                ->all();
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+    public function actionActivities() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+                $comp_id = $parents[0];
+                $out = \backend\models\AwpbActivity::find()
+                ->select(["CONCAT(code,' ',name) as name", 'id'])
+                //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                ->where(['component_id' => $comp_id])
+                ->asArray()
+                ->all();
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+    
+      public function actionParentactivities() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+                $out_id = $parents[0];
+                $out = \backend\models\AwpbActivity::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                ->where(['type' =>\backend\models\AwpbActivity::TYPE_MAIN])
+                ->andWhere(['component_id' => $out_id])
+                ->asArray()
+                ->all();
+
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+	
 }

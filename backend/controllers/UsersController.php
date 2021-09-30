@@ -138,9 +138,9 @@ class UsersController extends Controller {
                 $model->username = $model->email;
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->updated_by = Yii::$app->user->identity->id;
+                //$model->created_at = new \yii\db\Expression('NOW()');
+               // $model->updated_at = new \yii\db\Expression('NOW()');
 
-                $model->created_at = new \yii\db\Expression('NOW()');
-                $model->updated_at = new \yii\db\Expression('NOW()');
 
 
                 if ($model->save() && $model->validate()) {

@@ -7,7 +7,11 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\MgfImplementationArrangementsCooperatingPartnersSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+<<<<<<< HEAD
 $this->title = 'Implementation Arrangements Cooperating';
+=======
+$this->title = 'Mgf Implementation Arrangements Cooperating Partners';
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="mgf-implementation-arrangements-cooperating-partners-index">
@@ -15,8 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+<<<<<<< HEAD
     <?= Html::a('<i class="fa fa-Home"></i>Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-default']);?>
     <?= Html::a('Create Implementation Arrangements Cooperating', ['create'], ['class' => 'btn btn-success']) ?>
+=======
+        <?= Html::a('Create Mgf Implementation Arrangements Cooperating Partners', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-Home"></i>Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-default']);?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -27,7 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+<<<<<<< HEAD
            // 'id',
+=======
+            'id',
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'main_activities',
             'respobility',
             'experience',
@@ -52,7 +65,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 //return $model->zone_status!='active';
                 //},
                 ]
+<<<<<<< HEAD
             ]
+=======
+            ],
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ],
     ]); ?>
 

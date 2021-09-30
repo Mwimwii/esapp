@@ -1,16 +1,21 @@
 <?php
 
 use yii\helpers\Html;
+<<<<<<< HEAD
 use kartik\grid\EditableColumn;
 use kartik\grid\GridView;;
 use kartik\editable\Editable;
 use backend\models\User;
 use yii\helpers\ArrayHelper;
+=======
+use yii\grid\GridView;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\AwpbOutputSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+<<<<<<< HEAD
 $this->title = 'AWPB Outputs';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -26,6 +31,20 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
         </p>
         <hr class="dotted short">
+=======
+$this->title = 'Awpb Outputs';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="awpb-output-index">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <p>
+        <?= Html::a('Create Awpb Output', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -33,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+<<<<<<< HEAD
            
         
             [
@@ -57,11 +77,20 @@ $this->params['breadcrumbs'][] = $this->title;
      
             'name',
             'output_description',
+=======
+            'id',
+            'code',
+            'component_id',
+            'outcome_id',
+            'name',
+            //'description',
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             //'created_at',
             //'updated_at',
             //'created_by',
             //'updated_by',
 
+<<<<<<< HEAD
            ['class' => 'yii\grid\ActionColumn'],
             ['class' => 'yii\grid\ActionColumn',
 'template' => '{view}{update}{delete}',
@@ -118,4 +147,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
         ],
     ]); ?>
+=======
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
+
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 </div>

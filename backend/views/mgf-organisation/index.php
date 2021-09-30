@@ -39,6 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'view' => function ($url, $model) {
                     if (User::userIsAllowedTo('View MGF Organisations')) {
                         return Html::a(
+<<<<<<< HEAD
                                 '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
                                 'title' => 'View',
                                 'data-toggle' => 'tooltip',
@@ -50,6 +51,36 @@ $this->params['breadcrumbs'][] = $this->title;
                         );
                     }
                 },
+=======
+                                        '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
+                                    'title' => 'View',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    'data-pjax' => '0',
+                                    'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );
+                    }
+                },
+
+                'update' => function ($url, $model) {
+                    if (User::userIsAllowedTo('Update MGF Organisation')) {
+                        return Html::a(
+                                        '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id], [
+                                    'title' => 'Update',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                    'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                ]
+                        );
+                    }
+                },
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             ]
         ]
         ],

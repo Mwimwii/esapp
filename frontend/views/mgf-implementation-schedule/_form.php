@@ -2,7 +2,11 @@
 use kartik\checkbox\CheckboxX;
 use kartik\form\ActiveForm;
 use yii\helpers\Html;
+<<<<<<< HEAD
 use frontend\models\MgfActivity;
+=======
+use backend\models\MgfActivity;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfImplementationSchedule */
@@ -19,12 +23,18 @@ $userid=Yii::$app->user->identity->id;
 $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
 $proposal=MgfProposal::find()->where(['is_active'=>1,'organisation_id'=>$applicant->organisation_id])->one();
 
+<<<<<<< HEAD
 $activities = ArrayHelper::map(MgfActivity::find()->where(['createdby'=>$userid])->groupBy('activity_no')->all(), 'id', 'activity_name');
 ?>
 <p>
         <?= Html::a('Back', ['index'], ['class' => 'btn btn-success']) ?>
         
 </p>
+=======
+$activities = ArrayHelper::map(MgfActivity::find()->groupBy('activity_no')->all(), 'id', 'activity_name');
+?>
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <div class="mgf-implementation-schedule-form">
 
 <?php $form = ActiveForm::begin(); ?>

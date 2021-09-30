@@ -361,20 +361,44 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
         return ArrayHelper::map($query, 'name', 'name');
     }
 
+    public static function getAwpbTemplateUsers() {
+
+        $query = static::find()
+                ->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                ->where(['status' => self::STATUS_ACTIVE])            
+                ->orderBy(['last_name' => SORT_ASC])
+                ->asArray()
+                ->all();
+        return ArrayHelper::map($query, 'id', 'name');
+    
+
+
+    //    $users = self::find()
+    //     //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+    //     ->select(["CONCAT(first_name,' ',last_name) as name", 'id'])
+    //     ->where(['status' => self::STATUS_ACTIVE])
+    //         //->asArray()
+    //     ->orderBy(['name' => SORT_ASC])
+    //         ->all();
+    //     return $users;
+    }
+
+   
     /**
      * Function for seeding default system user
      * NOTE:: USER should be removed after an admin user is created
      */
     public static function seedUser() {
         //We check if seed has run already
-        if (empty(Role::findOne(["role" => "Admin"]))) {
+       // if (empty(Role::findOne(["role" => "Admin"]))) {
             //First we create a role
             $role = new Role();
             $role->role = "Admin";
             $role->active = 1;
             $role->rights = "NA";
             if ($role->save()) {
-                //The we assign the ultimate permissions to the role,
+
+                //Then we assign the ultimate permissions to the role,
                 //The rest is history
                 $rights = [
                     "Manage Users", "Manage Roles","View Roles","View Users"
@@ -398,9 +422,9 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
                 }
                 echo "Error occured while running user seeder. Error:" . $message;
             }
-        } else {
+       /* } else {
             echo "User seed has already been run!";
-        }
+	}*/
     }
 
     public static function createTempAdminUser($id, $count) {

@@ -19,8 +19,15 @@ return [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
             'namespace' => 'common\fixtures',
+
+
         ],
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
           'migration' => [
             'class' => 'bizley\migration\controllers\MigrationController',
         ],

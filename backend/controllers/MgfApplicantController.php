@@ -199,8 +199,6 @@ class MgfApplicantController extends Controller{
         return $this->render('documents', ['model' => $organisation,]);
     }
 
-
-
     /**
      * Finds the MgfApplicant model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

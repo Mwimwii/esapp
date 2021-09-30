@@ -1,7 +1,11 @@
 <?php
 namespace backend\controllers;
 use Yii;
+<<<<<<< HEAD
 use backend\models\MgfAttachements;
+=======
+use frontend\models\MgfAttachements;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfApplicant;
 use frontend\models\MgfAttachementsSearch;
 use yii\web\Controller;
@@ -98,24 +102,24 @@ class MgfAttachementsController extends Controller{
         
 
             $image_certificate=$model->registration_certificate;
-            $certificate_path='uploads/documents/'.$model->id.'_Certificate'.rand(1,4000).'_'.$image_certificate;
+            $certificate_path='uploads/attachements/'.$model->id.'_Certificate'.rand(1,4000).'_'.$image_certificate;
             $model->registration_certificate->saveAs($certificate_path);
             $model->registration_certificate=$certificate_path;
 
             $image_articles_of_assoc=$model->articles_of_assoc;
-            $articles_path='uploads/documents/'.$model->id.'_Article'.rand(1,4000).'_'.$image_articles_of_assoc;
+            $articles_path='uploads/attachements/'.$model->id.'_Article'.rand(1,4000).'_'.$image_articles_of_assoc;
             $model->articles_of_assoc->saveAs($articles_path);
             $model->articles_of_assoc=$articles_path;
 
            
 
             $image_mou_contract=$model->mou_contract;
-            $contract_path='uploads/documents/'.$model->id.'_Contract'.rand(1,4000).'_'.$image_mou_contract;
+            $contract_path='uploads/attachements/'.$model->id.'_Contract'.rand(1,4000).'_'.$image_mou_contract;
             $model->mou_contract->saveAs($contract_path);
             $model->mou_contract=$contract_path;
 
             $image_board_resolution=$model->board_resolution;
-            $resolution_path='uploads/documents/'.$model->id.'_Resolution'.rand(1,4000).'_'.$image_board_resolution;
+            $resolution_path='uploads/attachements/'.$model->id.'_Resolution'.rand(1,4000).'_'.$image_board_resolution;
             $model->board_resolution->saveAs($resolution_path);
             $model->board_resolution=$resolution_path;
 
@@ -127,12 +131,12 @@ class MgfAttachementsController extends Controller{
                 $model->application_attachement=UploadedFile::getInstance($model,'application_attachement');
 
                 $image_audit_reports=$model->audit_reports;
-                $audit_path='uploads/documents/'.$model->id.'_Audit'.rand(1,4000).'_'.$image_audit_reports;
+                $audit_path='uploads/attachements/'.$model->id.'_Audit'.rand(1,4000).'_'.$image_audit_reports;
                 $model->audit_reports->saveAs($audit_path);
                 $model->audit_reports=$audit_path;
 
                 $image_application_attachement=$model->application_attachement;
-                $application_path='uploads/documents/'.$model->id.'_Application'.rand(1,4000).'_'.$image_application_attachement;
+                $application_path='uploads/attachements/'.$model->id.'_Application'.rand(1,4000).'_'.$image_application_attachement;
                 $model->application_attachement->saveAs($application_path);
                 $model->application_attachement=$application_path;
             }

@@ -38,8 +38,8 @@ $district = !empty($district_model) ? $district_model->name : "";
                           
                           </ol>
                      </p>';
-                echo '<button class="btn btn-success btn-xs" href="#" onclick="$(\'#addNewModal\').modal(); 
-                    return false;"><i class="fa fa-plus"></i> Add FaaBS Group</button>';
+               
+                echo Html::a('<i class="fa fa-plus"></i> <span class="text-xs">Add FaaBS Group</span>', ['create'], ['class' => 'btn btn-success btn-xs']);
                 echo '<hr class="dotted short">';
             } else {
                 echo!empty($district_model) ?
@@ -218,7 +218,7 @@ $district = !empty($district_model) ? $district_model->name : "";
             //'updated_by',
             ['class' => ActionColumn::className(),
                 'options' => ['style' => 'width:130px;'],
-                'template' => '{view}{delete}',
+                'template' => '{view}{update}{delete}',
                 'buttons' => [
                     'view' => function ($url, $model) {
                         return Html::a(
@@ -231,6 +231,20 @@ $district = !empty($district_model) ? $district_model->name : "";
                                     'class' => 'bt btn-lg'
                                         ]
                         );
+                    },
+                    'update' => function ($url, $model) {
+                        if (User::userIsAllowedTo('Manage faabs groups')) {
+                            return Html::a(
+                                            '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id], [
+                                        'title' => 'Update group',
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                        'data-pjax' => '0',
+                                        'style' => "padding:5px;",
+                                        'class' => 'bt btn-lg'
+                                            ]
+                            );
+                        }
                     },
                     'delete' => function ($url, $model) {
                         if (User::userIsAllowedTo('Remove faabs groups')) {

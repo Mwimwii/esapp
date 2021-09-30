@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if (User::userIsAllowedTo('Remove markets')) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
-                                            'title' => 'Remove camp',
+                                            'title' => 'Remove market',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data' => [

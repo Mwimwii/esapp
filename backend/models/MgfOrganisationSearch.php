@@ -149,6 +149,7 @@ class MgfOrganisationSearch extends MgfOrganisation
             ->andFilterWhere(['like', 'tel_no', $this->tel_no]);
         return $dataProvider;
     }
+<<<<<<< HEAD
     
 
     public function searchApplications($params){
@@ -863,6 +864,25 @@ class MgfOrganisationSearch extends MgfOrganisation
             $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Not-Confirmed']);
         }else{
             $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Not-Confirmed']);
+=======
+
+
+    public function searchApplications($params){
+        $usertype=Yii::$app->user->identity->type_of_user;
+        if ($usertype=="Provincial user") {
+            $provinceid=Yii::$app->user->identity->province_id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['mgf_applicant.province_id'=>$provinceid])->where(['application_status'=>'Submitted'])->orWhere(['application_status'=>'Under_Review']);
+        }else if($usertype=="District user") {
+            $districtid=Yii::$app->user->identity->district_id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['mgf_applicant.district_id'=>$districtid])->where(['application_status'=>'Submitted'])->orWhere(['application_status'=>'Under_Review']);
+        }else if($usertype=="National user") {
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['application_status'=>'Submitted'])->orWhere(['application_status'=>'Under_Review']);
+        }else if($usertype=="Applicant") {
+            $userid=Yii::$app->user->identity->id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['user_id'=>$userid,'is_active'=>1])->where(['application_status'=>'Submitted'])->orWhere(['application_status'=>'Under_Review']);
+        }else{
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Submitted'])->orWhere(['application_status'=>'Under_Review']);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         }
 
         // add conditions that should always apply here
@@ -903,6 +923,7 @@ class MgfOrganisationSearch extends MgfOrganisation
         return $dataProvider;
     }
 
+<<<<<<< HEAD
     public function searchApplicationsUncertified1($params){
         $usertype=Yii::$app->user->identity->type_of_user;
         if ($usertype=="Other user") {
@@ -957,6 +978,24 @@ class MgfOrganisationSearch extends MgfOrganisation
             $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Not-Confirmed','mgf_applicant.applicant_type'=>'Category-B']);
         }else{
             $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Not-Confirmed','mgf_applicant.applicant_type'=>'Category-B']);
+=======
+
+    public function searchApplicationsAccepted($params){
+        $usertype=Yii::$app->user->identity->type_of_user;
+        if ($usertype=="Provincial user") {
+            $provinceid=Yii::$app->user->identity->province_id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['mgf_applicant.province_id'=>$provinceid])->where(['application_status'=>'Accepted']);
+        }else if($usertype=="District user") {
+            $districtid=Yii::$app->user->identity->district_id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['mgf_applicant.district_id'=>$districtid])->where(['application_status'=>'Accepted']);
+        }else if($usertype=="National user") {
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['application_status'=>'Accepted']);
+        }else if($usertype=="Applicant") {
+            $userid=Yii::$app->user->identity->id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['user_id'=>$userid,'is_active'=>1])->where(['application_status'=>'Accepted']);
+        }else{
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Accepted']);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         }
 
         // add conditions that should always apply here
@@ -997,6 +1036,7 @@ class MgfOrganisationSearch extends MgfOrganisation
         return $dataProvider;
     }
 
+<<<<<<< HEAD
 
 
     public function searchApplicationsApproved($params){
@@ -1014,6 +1054,23 @@ class MgfOrganisationSearch extends MgfOrganisation
             $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['user_id'=>$userid,'is_active'=>1])->where(['application_status'=>'Approved']);
         }else{
             $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Approved']);
+=======
+    public function searchApplicationsCertified($params){
+        $usertype=Yii::$app->user->identity->type_of_user;
+        if ($usertype=="Provincial user") {
+            $provinceid=Yii::$app->user->identity->province_id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['mgf_applicant.province_id'=>$provinceid])->where(['application_status'=>'Certified']);
+        }else if($usertype=="District user") {
+            $districtid=Yii::$app->user->identity->district_id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['mgf_applicant.district_id'=>$districtid])->where(['application_status'=>'Certified']);
+        }else if($usertype=="National user") {
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->joinWith('province')->joinWith('district')->where(['application_status'=>'Certified']);
+        }else if($usertype=="Applicant") {
+            $userid=Yii::$app->user->identity->id;
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['user_id'=>$userid,'is_active'=>1])->where(['application_status'=>'Certified']);
+        }else{
+            $query = MgfOrganisation::find()->joinWith('applicant')->joinWith('mgfApplications')->where(['application_status'=>'Certified']);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         }
 
         // add conditions that should always apply here
@@ -1054,9 +1111,13 @@ class MgfOrganisationSearch extends MgfOrganisation
         return $dataProvider;
     }
 
+<<<<<<< HEAD
 
 
     public function searchApplicationsApproved22($params){
+=======
+    public function searchApplicationsApproved($params){
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         $usertype=Yii::$app->user->identity->type_of_user;
         if ($usertype=="Provincial user") {
             $provinceid=Yii::$app->user->identity->province_id;
@@ -1110,4 +1171,8 @@ class MgfOrganisationSearch extends MgfOrganisation
             ->andFilterWhere(['like', 'tel_no', $this->tel_no]);
         return $dataProvider;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

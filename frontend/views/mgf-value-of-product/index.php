@@ -10,7 +10,11 @@ use yii\helpers\Url;
 /* @var $searchModel frontend\models\MgfValueOfProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+<<<<<<< HEAD
 $this->title = 'Profit and Loss Values';
+=======
+$this->title = 'Mgf Profit and Loss Values';
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -21,7 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
  </div>
  
     <p>
+<<<<<<< HEAD
         <?= Html::a('Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-success']);?>
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         <?= Html::a('Value Of Product', ['create'], ['class' => 'btn btn-success']) ?>
         
         <?= Html::a('variable fixed costs', ['/mgf-variable-fixed-cost/create'], ['class' => 'btn btn-success']) ?>

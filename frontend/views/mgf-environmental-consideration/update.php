@@ -13,8 +13,11 @@ $this->params['breadcrumbs'][] = 'Update';
 <div class="mgf-environmental-consideration-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
+<<<<<<< HEAD
     <?= Html::a('Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-success']);?>
     <?= Html::a('Back', ['/mgf-environmental-consideration/index',], ['class' => 'btn btn-success']);?>
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     <?= $this->render('_form', [
         'model' => $model,

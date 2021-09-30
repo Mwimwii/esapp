@@ -58,11 +58,19 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         /*'urlManager' => [
             'enablePrettyUrl' => false,
             'showScriptName' => false,
             'rules' => [
             ],
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ],*/
     ],
     'params' => $params,

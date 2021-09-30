@@ -1,6 +1,9 @@
 <?php
 
+<<<<<<< HEAD
 use backend\models\MgfContact;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use backend\models\MgfWindow;
 use backend\models\MgfYear;
 use frontend\models\MgfChecklist;
@@ -34,7 +37,10 @@ if($applicant->applicant_type=="Category-A"){
 }else{
     $window=2;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $year=MgfYear::findOne(['is_active'=>1]);
 $mgfWindow=MgfWindow::findOne(['window'=>$window,'year_id'=>$year->id]);
 
@@ -45,6 +51,7 @@ $days_remaining = $today->diff($deadline)->format("%r%a");
 
 if($days_remaining>0){
 
+<<<<<<< HEAD
     if ($checlist->organisation_created==1) {
         if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1])->exists()) {
             $application=MgfApplication::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
@@ -53,16 +60,28 @@ if($days_remaining>0){
             if (MgfContact::find()->where(['organisation_id'=>$applicant->organisation_id])->count()==2) {
                 MgfChecklist::updateAll(['contacts_added'=>1], 'applicant_id='.$applicant->id);
             }
+=======
+    if ($applicant->organisation_id>0) {
+        if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1])->exists()) {
+            $application=MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1])->one();
+            $attachement = MgfAttachements::find()->where(['application_id'=>$application->id])->one();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         } else {
             $application=new MgfApplication();
             $application->organisation_id=$applicant->organisation_id;
             $application->applicant_id=$applicant->id;
             $application->is_active=1;
             $application->save();
+<<<<<<< HEAD
             $application=MgfApplication::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
             $attachement = MgfAttachements::findOne(['application_id'=>$application->id]);
         }
 
+=======
+            $application=MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1])->one();
+            $attachement = MgfAttachements::find()->where(['application_id'=>$application->id])->one();
+        }
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         MgfApplication::updateAll(['is_active' => 0], 'organisation_id='.$applicant->organisation_id);
         MgfApplication::updateAll(['is_active' => 1], 'id='.$application->id);
     
@@ -92,6 +111,7 @@ if($days_remaining>0){
         </div>
     <?php }?>
 
+<<<<<<< HEAD
     <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Compliant'])->exists()) { ?>
         <div role="alert" style="text-align: center;border-style: outset;">
             <hr><p style="font-weight: bold; color:blue">Your Application is Under Review at Provincial Level</p><hr>
@@ -115,10 +135,19 @@ if($days_remaining>0){
         <div role="alert" style="text-align: center;border-style: outset;">
             <hr><p style="font-weight: bold; color:red">Your Application is Under Review at National Level</p><hr>
         </div>
+=======
+    <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Accepted'])->exists()) { ?>
+        <?php Yii::$app->session->setFlash('info', 'Your Application is Under Review at Provincial Level');?>
+    <?php }?>
+
+    <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Certified'])->exists()) { ?>
+        <?php Yii::$app->session->setFlash('info', 'Your Application is Under Review at National Level');?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <?php }?>
 
 
     <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Approved'])->exists()) { ?>
+<<<<<<< HEAD
         <div role="alert" style="text-align: center;border-style: outset;">
             <hr><p style="font-weight: bold; color:blue">Your Application is Has been Approved at National Level</p><hr>
         </div>
@@ -134,14 +163,30 @@ if($days_remaining>0){
         <div role="alert" style="text-align: center;border-style: outset;">
             <hr><p style="font-weight: bold; color:red">Your Application has been Sent Back to the District for further Review</p><hr>
         </div>
+=======
+        <?php Yii::$app->session->setFlash('info', 'Your Application is Has been Approved at National Level');?>
+    <?php }?>
+
+    <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Rejected'])->exists()) { ?>
+        <?php Yii::$app->session->setFlash('danger', 'Your Application has been Rejected at District Level');?>
+    <?php }?>
+
+
+    <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'On-Hold'])->exists()) { ?>
+        <?php Yii::$app->session->setFlash('danger', 'Your Application has been put ON-HOLD at District Level');?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <?php }?>
 
 
     <?php if(MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id, 'is_active'=>1])->exists()) { ?>
         <?php $proposal=MgfProposal::findOne(['organisation_id'=>$applicant->organisation_id, 'is_active'=>1]);?>
+<<<<<<< HEAD
         <div role="alert" style="text-align: center;border-style: outset;">
             <hr><p style="font-weight: bold; color:green">Project Proposal Status: <?= $proposal->proposal_status;?></p><hr>
         </div>
+=======
+        <?php Yii::$app->session->setFlash('info', 'Full Project Proposal Status: '.$proposal->proposal_status);?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <?php }?>
 
 
@@ -166,7 +211,11 @@ if($days_remaining>0){
                 <div clas s="card-header" id="headingOrganisation">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOrg" aria-expanded="true" aria-controls="collapseOrg">
+<<<<<<< HEAD
                             <i class="fa fa-thumb-tack"></i> Background of Applicant
+=======
+                            <i class="fa fa-thumb-tack"></i> Bckground of Applicant
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         </button>
                     </h5>
                 </div>
@@ -209,6 +258,7 @@ if($days_remaining>0){
                         <div class="col-md-1"></div>
                             <div class="col-md-2">
                                 <div class="card-body">
+<<<<<<< HEAD
     
                                     <!--CONCEPT NOTE-->
 
@@ -234,6 +284,16 @@ if($days_remaining>0){
                                     <?php }?>
                                 <?php }?>
 
+=======
+                                    <?php if ($checlist->organisation_created==1) { ?>
+                                        <?php if (MgfConceptNote::find()->where(['application_id'=>$application->id])->exists()) { ?>
+                                            <?php $concept=MgfConceptNote::findOne(['application_id'=>$application->id]); ?>
+                                            <?= Html::a('<i class="glyphicon glyphicon-pushpin"></i>MGF_Concepte_Note', ['/mgf-concept-note/view','id'=>$concept->id], ['class' => 'btn btn-link']) ?>
+                                        <?php } else { ?>
+                                            <?= Html::button('<i class="glyphicon glyphicon-plus"></i>MGF_Project_Concept_Note', [ 'class' => 'btn btn-link', 'onclick' => '$(\'#newConceptNote\').modal();']);?>
+                                        <?php }?>                         
+                                    <?php }?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                                 </div>
                             </div>
                     </div>
@@ -257,9 +317,15 @@ if($days_remaining>0){
                     <div class="col-md-1"></div>
                         <div class="col-md-2">
                             <div class="card-body">
+<<<<<<< HEAD
                                 <?php if($applicant->confirmed==1){ ?>
                                     <?php if (MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id,'is_concept'=>0, 'is_active'=>1])->exists()) { ?>
                                         <?php $proposal=MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id,'is_concept'=>0, 'is_active'=>1])->one();?>
+=======
+                                <?php if ($checlist->organisation_created==1) { ?>
+                                    <?php if (MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id, 'is_active'=>1])->exists()) { ?>
+                                        <?php $proposal=MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id, 'is_active'=>1])->one();?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                                             <?= Html::a('<i class="glyphicon glyphicon-pushpin"></i>Project_Details', ['/mgf-proposal/view','id'=>$proposal->id], ['class' => 'btn btn-link']) ?> <br/>
                                             <?= Html::a('<i class="glyphicon glyphicon-pushpin"></i>Project_Description', ['/mgf-component/components',], ['class' => 'btn btn-link']) ?> <br/>
                                             <!--<?= Html::a('<i class="glyphicon glyphicon-pushpin"></i> Project_Activites', ['/mgf-activity/activities',], ['class' => 'btn btn-link']) ?> <br/>-->
@@ -273,7 +339,11 @@ if($days_remaining>0){
                                             <?= Html::a('<i class="fa fa-pushpin"></i>Sustainability_Scalability', ['/mgf-sustainability-scalability/index',], ['class' => 'btn btn-link']) ?> <br/>
                                             <?= Html::a('<i class="fa fa-pushpin"></i>Implementation_Schedule', ['/mgf-implementation-schedule/index',], ['class' => 'btn btn-link']) ?> <br/>
                                             <?= Html::a('<i class="fa fa-pushpin"></i>BP_Indicators', ['/mgf-business-perfomance-indicator/index',], ['class' => 'btn btn-link']) ?> <br/>
+<<<<<<< HEAD
                                             <?= Html::a('Declaration', ['/mgf-applicant/declaration2','id'=>$applicant->id], ['class' => 'btn btn-link']) ?><br/>
+=======
+                                        
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                                         <?php } else {?>
                                             <?php if ($window==1) { ?>
                                                 <?= Html::a('<i class="glyphicon glyphicon-plus"></i>Profile of the Project', ['/mgf-proposal/create'], ['class' => 'btn btn-link']) ?>
@@ -352,7 +422,11 @@ if($days_remaining>0){
                 <b style="color:red"><i class="fa fa-times"></i></b>
             <?php } ?><br/>
             (viii) Project Fully Managed
+<<<<<<< HEAD
             <?php if ($checlist->activities_created) { ?>
+=======
+            <?php if ($checlist->items_created) { ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 <b style="color:green"><i class="fa fa-check"></i></b>
             <?php } else { ?>
                 <b style="color:red"><i class="fa fa-times"></i></b>
@@ -424,7 +498,11 @@ if($days_remaining>0){
                 <b style="color:red"><i class="fa fa-times"></i></b>
             <?php } ?><br/>
             (x) Project Fully Managed
+<<<<<<< HEAD
             <?php if ($checlist->activities_created) { ?>
+=======
+            <?php if ($checlist->items_created) { ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 <b style="color:green"><i class="fa fa-check"></i></b>
             <?php } else { ?>
                 <b style="color:red"><i class="fa fa-times"></i></b>
@@ -441,6 +519,7 @@ if($days_remaining>0){
 
             <p style="color:red"><b>This application should be fully completed.</b></p>
             
+<<<<<<< HEAD
             <?php if ($window==1) { ?>
                                          
                 <?php if (MgfOrganisation::find()->where(['applicant_id'=>$applicant->id])->exists()) { ?>
@@ -494,10 +573,58 @@ if($days_remaining>0){
                     <?php } ?>
                 <?php }?>
             <?php }?>
+=======
+            <?php if ($window==2) { ?>
+                <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Initialized'])->exists()) { ?>
+                    <?php if (MgfConceptNote::find()->where(['application_id'=>$application->id])->exists()) { ?>
+                        <?php $concept=MgfConceptNote::findOne(['application_id'=>$application->id]); ?>
+                        <?= Html::a('<i class="fa fa-check"></i>Submit MGF Concept Note', ['/mgf-concept-note/submit','id'=>$concept->id], ['class' => 'btn btn-primary']) ?>
+                    <?php }?>
+                <?php }?>
+              
+                <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Cancelled'])->exists() ||
+                MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Updated'])->exists() ||
+                MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Initialized'])->exists()) { ?>
+                    <?php if (MgfConceptNote::find()->where(['application_id'=>$application->id])->exists()) { ?>
+                        <?php $concept=MgfConceptNote::findOne(['application_id'=>$application->id]); ?>
+                        <?php if ($checlist->contacts_added==1 && $checlist->management_updated==1 && $checlist->experience_updated==1 && $checlist->profile_confirmed==1 && $checlist->attachements_uploaded==1) { ?>
+                            <?= Html::a('<i class="fa fa-check"></i>Submit MGF Concept Note', ['/mgf-concept-note/submit','id'=>$concept->id], ['class' => 'btn btn-primary']) ?>
+                        <?php }?>
+                    <?php }?>
+                <?php }?>
+
+                <?php if (MgfApplication::find()->where(['organisation_id'=>$applicant->organisation_id,'is_active'=>1,'application_status'=>'Submitted'])->exists()) { ?>
+                    <?php if (MgfConceptNote::find()->where(['application_id'=>$application->id])->exists()) { ?>
+                        <?php $concept=MgfConceptNote::findOne(['application_id'=>$application->id]); ?>
+                        <?= Html::a('<i class="fa fa-times"></i>Cancel Concept Note Submission', ['/mgf-concept-note/cancel','id'=>$concept->id], ['class' => 'btn btn-danger']) ?>
+                    <?php }?>
+                <?php }?>
+            <?php } ?>
+
+                                         
+        <?php if (MgfOrganisation::find()->where(['applicant_id'=>$applicant->id])->exists()) { ?>
+            <?php if (MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id, 'is_active'=>1])->andWhere(['NOT',['totalcost'=>0]])->exists()) { ?>
+                <?php $proposal=MgfProposal::find()->where(['organisation_id'=>$applicant->organisation_id, 'is_active'=>1])->andWhere(['NOT',['totalcost'=>0]])->one() ?>
+                <?php $components=MgfComponent::find()->where(['proposal_id'=>$proposal->id])->count() ?>
+                    <?php if (($proposal->proposal_status=="Prepared" || $proposal->proposal_status=="Cancelled") && $components>0) { ?>
+                        <?php if ($checlist->contacts_added==1 && $checlist->management_updated==1 && $checlist->profile_confirmed==1 && $checlist->attachements_uploaded==1 && $checlist->contacts_added==1 && $checlist->items_created==1) { ?>
+                            <?= Html::a('<i class="glyphicon glyphicon-ok"></i>Submit Proposal', ['/mgf-proposal/submit','id'=>$proposal->id], ['class' => 'btn btn-success']) ?>
+                        <?php } ?>
+                    <?php } elseif ($proposal->proposal_status=="Submitted") { ?>
+                        <?= Html::a('<i class="glyphicon glyphicon-remove"></i>Cancel Submission', ['/mgf-proposal/cancel','id'=>$proposal->id], ['class' => 'btn btn-danger']) ?>
+                    <?php } else { ?>
+                    <?php } ?>
+            <?php } ?>
+        <?php }?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         <hr>
     </div>
 
     
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <div class="col-md-2">
             <div class="card-header">
                 <h3 class="card-title">
@@ -529,6 +656,11 @@ if($days_remaining>0){
                             'data-placement' => 'top','data-pjax' => '0','style' => "padding:5px;",]);
                         ?>
                     </li>
+<<<<<<< HEAD
+=======
+
+                   
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                     
                     <li>
                         <?php
@@ -693,4 +825,8 @@ if($days_remaining>0){
     <hr><p style="font-weight: bold; color:red">MGF Application Periond was From <?= $mgfWindow->open_from." to ".$mgfWindow->closing_date; ?></p><hr>
 </div>
     
+<<<<<<< HEAD
 <?php } ?>
+=======
+<?php } ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

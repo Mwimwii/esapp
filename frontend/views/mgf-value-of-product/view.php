@@ -15,9 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+<<<<<<< HEAD
     <?= Html::a('Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-success']);?>    
     <?= Html::a('<i class="fa fa-backward"></i>Back', ['/mgf-value-of-product/index',], ['class' => 'btn btn-success']);?>
 
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [

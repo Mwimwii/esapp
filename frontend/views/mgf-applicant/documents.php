@@ -34,6 +34,10 @@ $count=MgfApplicant::find()->where(['user_id'=>$userid])->count();
 
     </ul>
 </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <?= Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
 
 
@@ -41,3 +45,7 @@ $count=MgfApplicant::find()->where(['user_id'=>$userid])->count();
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

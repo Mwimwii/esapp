@@ -8,9 +8,12 @@ use frontend\models\MgfImplementationScheduleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+<<<<<<< HEAD
 use frontend\models\MgfGantty;
 use frontend\models\MgfActivity;
 use yii\base\Model;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /**
  * MgfImplementationScheduleController implements the CRUD actions for MgfImplementationSchedule model.
@@ -47,6 +50,7 @@ class MgfImplementationScheduleController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
     public function actionGantty()
     {
        // $searchModel = new MgfImplementationScheduleSearch();
@@ -57,6 +61,8 @@ class MgfImplementationScheduleController extends Controller
            'dataProvider' => $dataProvider]);
     }
 
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     /**
      * Displays a single MgfImplementationSchedule model.
      * @param integer $id
@@ -83,11 +89,17 @@ class MgfImplementationScheduleController extends Controller
             $userid=Yii::$app->user->identity->id;
             //$applicant=MgfApplicant::findOne(['user_id'=>$userid]);
             //$proposal=MgfProposal::find()->where(['is_active'=>1,'organisation_id'=>$applicant->organisation_id])->one();
+<<<<<<< HEAD
             $activity = MgfActivity::findOne($model->activity_id);
             //$model->proposal_id=$proposal->id;
             $model->date_created=date('Y-m-d H:i:s');
             $model->created_by=$userid;  
             $model->activity_name=$activity->activity_name;
+=======
+            //$model->proposal_id=$proposal->id;
+            $model->date_created=date('Y-m-d H:i:s');
+            $model->created_by=$userid;  
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             
             
             

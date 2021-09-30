@@ -82,10 +82,17 @@ class MgfInterestsTaxesController extends Controller
             if (MgfProfitBeforeInterestTaxes::find()->where(['proposal_id'=>$model->proposal_id])->exists())
             {
              $ProfitBeforeInterestTaxes=MgfProfitBeforeInterestTaxes::find()->where(['proposal_id'=>$model->proposal_id])->one();
+<<<<<<< HEAD
              $model->interest_yr1_value=($ProfitBeforeInterestTaxes->profit_yr1_value*$model->interest_tax_percent)/100;
              $model->interest_yr2_value=($ProfitBeforeInterestTaxes->profit_yr2_value*$model->interest_tax_percent)/100;
              $model->interest_yr3_value=($ProfitBeforeInterestTaxes->profit_yr3_value*$model->interest_tax_percent)/100;
              $model->interest_yr4_value=($ProfitBeforeInterestTaxes->profit_yr4_value*$model->interest_tax_percent)/100;
+=======
+             $model->interest_yr1_value=$ProfitBeforeInterestTaxes->profit_yr1_value*$model->interest_tax_percent;
+             $model->interest_yr2_value=$ProfitBeforeInterestTaxes->profit_yr2_value*$model->interest_tax_percent;
+             $model->interest_yr3_value=$ProfitBeforeInterestTaxes->profit_yr3_value*$model->interest_tax_percent;
+             $model->interest_yr4_value=$ProfitBeforeInterestTaxes->profit_yr4_value*$model->interest_tax_percent;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
              if($model->save())
              {
                if (MgfNetprofit::find()->where(['proposal_id'=>$model->proposal_id])->exists())

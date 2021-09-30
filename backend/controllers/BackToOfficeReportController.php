@@ -14,6 +14,7 @@ use backend\models\AuditTrail;
 use backend\models\User;
 use yii\helpers\Html;
 use backend\models\Storyofchange;
+use yii\web\UploadedFile;
 
 /**
  * BackToOfficeReportController implements the CRUD actions for MeBackToOfficeReport model.
@@ -196,6 +197,129 @@ class BackToOfficeReportController extends Controller {
         }
     }
 
+    public function actionMedia($id, $type = "") {
+        if (User::userIsAllowedTo('Submit back to office report')) {
+            $model = new \backend\models\BackToOfficeAnnexes();
+            $model2 = $this->findModel($id);
+            $model->type = $type;
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                $media_file = UploadedFile::getInstance($model, 'file');
+
+
+                if (!empty($media_file)) {
+
+                    $Filename = Yii::$app->security->generateRandomString(45) . '.' . $media_file->extension;
+                    $model->file = $Filename;
+                    $model->btor_id = $id;
+
+                    !empty($media_file->name) ? $model->file_name = $media_file->name : "";
+
+                    if ($model->type === "Image") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/image/' . $Filename);
+                    }
+                    if ($model->type === "Video") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/video/' . $Filename);
+                    }
+
+                    if ($model->save()) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Added Back to Office media: " . $model->type;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        $model = new \backend\models\BackToOfficeAnnexes();
+                        Yii::$app->session->setFlash('success', 'Back to Office media was successfully added.You can add another ' . $type);
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error occured while adding Back to Office media ');
+                    }
+                }
+            }
+
+            return $this->render('media', [
+                        'model' => $model,
+                        'model2' => $model2,
+                        "type" => $type
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionUpdateMedia($id, $id1, $type = "") {
+        if (User::userIsAllowedTo('Submit back to office report')) {
+            $model = \backend\models\BackToOfficeAnnexes::findOne($id);
+            $file = $model->file;
+            $model2 = $this->findModel($id1);
+            $model->type = $type;
+
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                $media_file = UploadedFile::getInstance($model, 'file');
+
+                if (!empty($media_file)) {
+
+                    $Filename = Yii::$app->security->generateRandomString(45) . '.' . $media_file->extension;
+                    $model->file = $Filename;
+                    $model->type = $type;
+                    //$model->btor_id = $id1;
+                    !empty($media_file->name) ? $model->file_name = $media_file->name : "";
+
+                    if ($model->type === "Image") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/image/' . $Filename);
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/image/' . $file;
+                        if (file_exists($_file)) {
+                            unlink($_file);
+                        }
+                    }
+                    if ($model->type === "Video") {
+                        $media_file->saveAs(Yii::getAlias('@backend') . '/web/uploads/video/' . $Filename);
+                        $_file = Yii::getAlias('@backend') . '/web/uploads/video/' . $file;
+                        if (file_exists($_file)) {
+                            unlink($_file);
+                        }
+                    }
+
+                    if ($model->save(false)) {
+                        $audit = new AuditTrail();
+                        $audit->user = Yii::$app->user->id;
+                        $audit->action = "Updated Back to Office media: " . $model->type;
+                        $audit->ip_address = Yii::$app->request->getUserIP();
+                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                        $audit->save();
+                        Yii::$app->session->setFlash('success', 'Back to Office media was successfully updated.');
+                        return $this->redirect(['view', 'id' => $id1]);
+                    } else {
+                        $message = '';
+                        foreach ($model->getErrors() as $error) {
+                            $message .= $error[0];
+                        }
+                        Yii::$app->session->setFlash('error', 'Error occured while updating Back to Office media.Error::' . $message);
+                    }
+                }
+            }
+
+            return $this->render('update-media', [
+                        'model' => $model,
+                        'model2' => $model2,
+                        "type" => $type
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
     /**
      * Creates a new MeBackToOfficeReport model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -240,7 +364,8 @@ class BackToOfficeReportController extends Controller {
                                     $msg .= "<p>Dear " . $_model->first_name . " " . $_model->other_name . " " . $_model->last_name . ",<br/>";
                                     $msg .= $model->name_of_officer . " has submitted a 'Back to office report' below is the summary of the assignment outcome<br/>";
                                     $msg .= $model->summary_of_assignment_outcomes . "</b></p>";
-                                    $msg .= '<p>You can login <i style="color: blue;">' . Html::a('(Click Here to Login)', $resetLink) . '</i> to see more details and review the submitted BtOR</p>';
+                                     $msg .= '<p>You can login <i style="color: blue;">' . Html::a('(Click Here to Login)', $resetLink) . '</i> to see more details and review the submitted BtOR if you are suppose to review Back To Office reports.'
+                                            . ' Please ignore the email if you are not suppose to review Back to Office reports</p>';
                                     \backend\models\Storyofchange::sendEmail($msg, $subject, $_model->email);
                                 }
                             }
@@ -464,6 +589,48 @@ class BackToOfficeReportController extends Controller {
                 Yii::$app->session->setFlash('error', "BtOR report could not be removed. Please try again!");
             }
             return $this->redirect(['index']);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionDeleteMedia($id, $id1) {
+        if (User::userIsAllowedTo('Submit back to office report')) {
+            $model_media = \backend\models\BackToOfficeAnnexes::findOne($id);
+            if (!empty($model_media)) {
+                $file_name = $model_media->file_name;
+                $type = $model_media->type;
+                if ($model_media->type == "Image") {
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/image/' . $model_media->file;
+                    if (file_exists($_file) && $model_media->delete()) {
+                        unlink($_file);
+                        $audit_msg = "Removed Back to office media type: $type - $file_name";
+                        Yii::$app->session->setFlash('success', "Back to office media type: $type was successfully removed.");
+                    } else {
+                        Yii::$app->session->setFlash('error', "Back to office media could not be removed. Please try again!");
+                    }
+                }
+                if ($model_media->type == "Video") {
+                    $_file = Yii::getAlias('@backend') . '/web/uploads/video/' . $model_media->file;
+                    if (file_exists($_file) && $model_media->delete()) {
+                        unlink($_file);
+                        $audit_msg = "Removed Back to office media type: $type - $file_name";
+                        Yii::$app->session->setFlash('success', "Back to office media was successfully removed.");
+                    } else {
+                        Yii::$app->session->setFlash('error', "Back to office media could not be removed. Please try again!");
+                    }
+                }
+
+
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = $audit_msg;
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                return $this->redirect(['view', 'id' => $id1]);
+            }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);

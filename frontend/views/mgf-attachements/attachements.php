@@ -24,7 +24,13 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
                 'board_resolution:ntext',
                 'date_submitted',
             ],
+<<<<<<< HEAD
             ]) ,Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+=======
+
+            ]) ,Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ?>
 
         <table class="table table-hover">
@@ -54,9 +60,17 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
               <td><a href="<?=$post->mou_contract;?>">Download</a></td>
               <td><a href="<?=$post->board_resolution;?>">Download</a></td>
             <?php endif; ?>
+<<<<<<< HEAD
               <?php if($post->application->application_status=="Initialized" || $post->application->application_status=="Updated" || $post->application->application_status=="Cancelled"): ?>
               <td>
                 <?=Html::a('<i class="fa fa-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+=======
+
+              <?php if($post->application->application_status=="Initialized" || $post->application->application_status=="Updated" || $post->application->application_status=="Cancelled"): ?>
+              <td>
+                <?=Html::a('<i class="fa fa-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
               </td>
               <?php endif; ?>
             </tr>
@@ -83,7 +97,13 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
                 'application_attachement:ntext',
                 'date_submitted',
             ],
+<<<<<<< HEAD
             ]) ,Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+=======
+
+            ]) ,Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']);
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ?>
 
         <table class="table table-hover">
@@ -119,9 +139,17 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
               <td><a href="<?=$post->board_resolution;?>">Download</a></td>
               <td><a href="<?=$post->application_attachement;?>">Download</a></td>
             <?php endif; ?>
+<<<<<<< HEAD
             <?php if($post->application->application_status=="Initialized" || $post->application->application_status=="Updated" || $post->application->application_status=="Cancelled"): ?>
               <td>
                 <?=Html::a('<i class="fa fa-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+=======
+
+            <?php if($post->application->application_status=="Initialized" || $post->application->application_status=="Updated" || $post->application->application_status=="Cancelled"): ?>
+              <td>
+                <?=Html::a('<i class="fa fa-upload"></i>Upload Documents',['mgf-attachements/update','id'=>$post->id],['class'=>'btn btn-default'])?>
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
               </td>
               <?php endif; ?>
             </tr>

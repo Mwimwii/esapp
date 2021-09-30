@@ -71,9 +71,14 @@ class Right extends \yii\db\ActiveRecord {
             'Manage AWPB templates' => "",
             'View AWPB templates' => "",
             'View AWPB activity lines' => "",
+<<<<<<< HEAD
             'Manage AWPB activity lines' => "",
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'Manage AWPB' => "Manage AWPB",
             'Manage PW AWPB' => "Manage PW AWPB",
+
             'Manage AWPB activity lines' => 'View AWPB activity lines',
             'Submit District AWPB' => "",
             'Approve AWPB - Provincial' => 'Approve AWPB - Provincial',
@@ -145,7 +150,11 @@ class Right extends \yii\db\ActiveRecord {
             'View MGF Proposals' => "",
             'View MGF Evaluations' => "",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'Remove cost centre' => "Remove cost centre",
             'Manage cost centre' => "Manage cost centre",
             'Request Funds' => "Request Funds",
@@ -160,8 +169,13 @@ class Right extends \yii\db\ActiveRecord {
             'Review timesheets' => "Review timesheets",
             'Submit timesheets' => "Submit timesheets",
             'View time sheets' => "View time sheets",
+
                 //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
+<<<<<<< HEAD
 >>>>>>> 533aaa68199c280935e5bf987418d2dc2fa8d833
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ];
 
         $count = 0;
@@ -180,7 +194,10 @@ class Right extends \yii\db\ActiveRecord {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 533aaa68199c280935e5bf987418d2dc2fa8d833
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 }

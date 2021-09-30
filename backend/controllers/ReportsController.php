@@ -68,58 +68,43 @@ class ReportsController extends Controller {
 
     public function actionPhysicalTrackingTable() {
         if (User::userIsAllowedTo('View physical tracking table report')) {
-            $searchModel = new \backend\models\AwbpActivitySearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $searchModel = new \backend\models\AwpbBudgetSearch();
+
             // var_dump($dataProvider->getModels());
             $year = date('Y');
-            if (isset(Yii::$app->request->queryParams['AwbpActivitySearch'])) {
-                /* if (!empty(Yii::$app->request->queryParams['AwbpActivitySearch']['province_id'])) {
-                  // $dataProvider->query->andFilterWhere(['province_id' => Yii::$app->request->queryParams['AwpbActivityLineSearch']['province_id']]);
-                  $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
-                  if (!empty($awpb_template)) {
-                  $activity_ids = [];
-                  $activity_lines = \backend\models\AwpbActivityLine::find()
-                  ->where(['awpb_template_id' => $awpb_template->id])
-                  ->andWhere(['province_id' => Yii::$app->request->queryParams['AwbpActivitySearch']['province_id']])
-                  ->all();
-                  if (!empty($activity_lines)) {
-                  foreach ($activity_lines as $_activity) {
-                  array_push($activity_ids, $_activity['activity_id']);
-                  }
-                  }
-                  $dataProvider->query->andFilterWhere(["IN", 'id', $activity_ids]);
-                  }
-                  }
-                  if (!empty(Yii::$app->request->queryParams['AwbpActivitySearch']['district_id'])) {
-                  $dataProvider->query->andFilterWhere(['district_id' => Yii::$app->request->queryParams['AwbpActivitySearch']['district_id']]);
-                  }
-                  if (!empty(Yii::$app->request->queryParams['AwbpActivitySearch']['year'])) {
-                  $year = Yii::$app->request->queryParams['AwbpActivitySearch']['year'];
-                  $dataProvider->query->andFilterWhere(['year' => Yii::$app->request->queryParams['AwbpActivitySearch']['year']]);
-                  } */
-            } else {
-                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => date('Y')]);
-                //1. Load template for the current year
-                //2. use template to fetch activity lines for the year
-                //3. use Activity lines [activity_ids] to pull the subactivities from the activities table
-                //4. 
-                if (!empty($awpb_template)) {
-                    $activity_ids = [];
-                    $activity_lines = \backend\models\AwpbActivityLine::find()
-                            ->where(['awpb_template_id' => $awpb_template->id])
-                            ->all();
-                    if (!empty($activity_lines)) {
-                        foreach ($activity_lines as $_activity) {
-                            array_push($activity_ids, $_activity['activity_id']);
-                        }
+
+            if (isset(Yii::$app->request->queryParams['AwpbBudgetSearch'])) {
+                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+                if (!empty(Yii::$app->request->queryParams['AwpbBudgetSearch']['province_id'])) {
+                    $dataProvider->query->andFilterWhere(['province_id' => Yii::$app->request->queryParams['AwpbBudgetSearch']['province_id']]);
+                }
+
+                if (!empty(Yii::$app->request->queryParams['AwpbBudgetSearch']['district_id'])) {
+                    $dataProvider->query->andFilterWhere(['district_id' => Yii::$app->request->queryParams['AwpbBudgetSearch']['district_id']]);
+                }
+
+                if (!empty(Yii::$app->request->queryParams['AwpbBudgetSearch']['year'])) {
+                    // var_dump(Yii::$app->request->queryParams['AwpbBudgetSearch']);
+                    $year = Yii::$app->request->queryParams['AwpbBudgetSearch']['year'];
+                    $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+                    if (!empty($awpb_template)) {
+                        $dataProvider->query->andFilterWhere(["awpb_template_id" => $awpb_template->id]);
+                    } else {
+                        $dataProvider->query->andFilterWhere(["awpb_template_id" => -1]);
                     }
-                    $dataProvider->query->andFilterWhere(["IN", 'id', $activity_ids]);
+                } else {
+                    $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+                    if (!empty($awpb_template)) {
+                        $dataProvider->query->andFilterWhere(["awpb_template_id" => $awpb_template->id]);
+                    }
+                }
+            } else {
+                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+                if (!empty($awpb_template)) {
+                    $dataProvider->query->andFilterWhere(["awpb_template_id" => $awpb_template->id]);
                 }
             }
-
-            //We only need sub activities
-            $dataProvider->query->andFilterWhere(['activity_type' => "Subactivity"]);
-
             $dataProvider->setSort([
                 'attributes' => [
                     'id' => [
@@ -792,6 +777,472 @@ class ReportsController extends Controller {
             return $this->render('training-attendance-cumulatives', [
                         'searchModel' => $searchModel,
                         'data' => $_data,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionProjectOutreachReport() {
+        if (User::userIsAllowedTo('View project outreach reports')) {
+            $subcomp_21 = [
+                'cumulative_since_2017_number_females' => 0,
+                'cumulative_since_2017_number_males' => 0,
+                'cumulative_since_2017_number_young' => 0,
+                'cumulative_since_2017_number_not_young' => 0,
+                'cumulative_since_2017_number_women_headed_households' => 0,
+                'cumulative_since_2017_number_non_women_headed_households' => 0,
+                'cumulative_since_2017_number_households' => 0,
+                'cumulative_since_2017_number_household_members' => 0,
+                'q1' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q2' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q3' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q4' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ]
+            ];
+            $subcomp_22 = [
+                'cumulative_since_2017_number_females' => 0,
+                'cumulative_since_2017_number_males' => 0,
+                'cumulative_since_2017_number_young' => 0,
+                'cumulative_since_2017_number_not_young' => 0,
+                'cumulative_since_2017_number_women_headed_households' => 0,
+                'cumulative_since_2017_number_non_women_headed_households' => 0,
+                'cumulative_since_2017_number_households' => 0,
+                'cumulative_since_2017_number_household_members' => 0,
+                'q1' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q2' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q3' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q4' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ]
+            ];
+            $subcomp_23 = [
+                'q1' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q2' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q3' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'q4' => [
+                    'province_id' => 0,
+                    'district_id' => 0,
+                    'year' => 0,
+                    'female' => 0,
+                    'male' => 0,
+                    'Total_female_male' => 0,
+                    'young' => 0,
+                    'not_young' => 0,
+                    'total_young_not_young' => 0,
+                    'women_headed_household' => 0,
+                    'non_women_headed_household' => 0,
+                    'number_households' => 0,
+                    'number_household_members' => 0,
+                ],
+                'cumulative_since_2017_number_females' => 0,
+                'cumulative_since_2017_number_males' => 0,
+                'cumulative_since_2017_number_young' => 0,
+                'cumulative_since_2017_number_not_young' => 0,
+                'cumulative_since_2017_number_women_headed_households' => 0,
+                'cumulative_since_2017_number_non_women_headed_households' => 0,
+                'cumulative_since_2017_number_households' => 0,
+                'cumulative_since_2017_number_household_members' => 0,
+            ];
+            $searchModel = new \backend\models\ProjectOutreachSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $year = date("Y");
+            //var_dump($dataProvider->getModels());
+            //We get cumulatives before any filters
+            if ($dataProvider->getCount() > 0) {
+                $models = $dataProvider->getModels();
+            
+                foreach ($models as $model) {
+                    if ($model['sub_component'] == "2.1: Strategic Linkages of Graduating Subsistence Farmers") {
+                        $subcomp_21['cumulative_since_2017_number_females'] += $model['number_females'];
+                        $subcomp_21['cumulative_since_2017_number_males'] += $model['number_males'];
+                        $subcomp_21['cumulative_since_2017_number_young'] += $model['number_young'];
+                        $subcomp_21['cumulative_since_2017_number_not_young'] += $model['number_not_young'];
+                        $subcomp_21['cumulative_since_2017_number_women_headed_households'] += $model['number_women_headed_households'];
+                        $subcomp_21['cumulative_since_2017_number_non_women_headed_households'] += $model['number_non_women_headed_households'];
+                        $subcomp_21['cumulative_since_2017_number_households'] += $model['number_households'];
+                        $subcomp_21['cumulative_since_2017_number_household_members'] += $model['number_household_members'];
+                    }
+                    if ($model['sub_component'] == "2.2: Enhancing Agro-Micro, Small & Medium Enterprises") {
+                        $subcomp_22['cumulative_since_2017_number_females'] += $model['number_females'];
+                        $subcomp_22['cumulative_since_2017_number_males'] += $model['number_males'];
+                        $subcomp_22['cumulative_since_2017_number_young'] += $model['number_young'];
+                        $subcomp_22['cumulative_since_2017_number_not_young'] += $model['number_not_young'];
+                        $subcomp_22['cumulative_since_2017_number_women_headed_households'] += $model['number_women_headed_households'];
+                        $subcomp_22['cumulative_since_2017_number_non_women_headed_households'] += $model['number_non_women_headed_households'];
+                        $subcomp_22['cumulative_since_2017_number_households'] += $model['number_households'];
+                        $subcomp_22['cumulative_since_2017_number_household_members'] += $model['number_household_members'];
+                    }
+                    if ($model['sub_component'] == "2.3: Facilitating Pro-Smallholder Market-Pull Agribusiness") {
+                        $subcomp_23['cumulative_since_2017_number_females'] += $model['number_females'];
+                        $subcomp_23['cumulative_since_2017_number_males'] += $model['number_males'];
+                        $subcomp_23['cumulative_since_2017_number_young'] += $model['number_young'];
+                        $subcomp_23['cumulative_since_2017_number_not_young'] += $model['number_not_young'];
+                        $subcomp_23['cumulative_since_2017_number_women_headed_households'] += $model['number_women_headed_households'];
+                        $subcomp_23['cumulative_since_2017_number_non_women_headed_households'] += $model['number_non_women_headed_households'];
+                        $subcomp_23['cumulative_since_2017_number_households'] += $model['number_households'];
+                        $subcomp_23['cumulative_since_2017_number_household_members'] += $model['number_household_members'];
+                    }
+                }
+            }
+
+            if (isset(Yii::$app->request->queryParams['ProjectOutreachSearch'])) {
+                $dataProvider->query->andFilterWhere(["year" => Yii::$app->request->queryParams['ProjectOutreachSearch']['year']]);
+            } else {
+                $dataProvider->query->andFilterWhere(["year" => $year]);
+            }
+
+            if ($dataProvider->getCount() > 0) {
+                $models = $dataProvider->getModels();
+                foreach ($models as $model) {
+                    //For sub componet 2.1
+                    if ($model['sub_component'] == "2.1: Strategic Linkages of Graduating Subsistence Farmers") {
+                        if ($model['quarter'] == 1) {
+                            $subcomp_21['q1']['province_id'] = $model['province_id'];
+                            $subcomp_21['q1']['district_id'] = $model['district_id'];
+                            $subcomp_21['q1']['year'] = $model['year'];
+                            $subcomp_21['q1']['female'] = $model['number_females'];
+                            $subcomp_21['q1']['male'] = $model['number_males'];
+                            $subcomp_21['q1']['young'] = $model['number_young'];
+                            $subcomp_21['q1']['not_young'] = $model['number_not_young'];
+                            $subcomp_21['q1']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q1']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_21['q1']['number_households'] = $model['number_households'];
+                            $subcomp_21['q1']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_21['q1']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_21['q1']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 2) {
+                            $subcomp_21['q2']['province_id'] = $model['province_id'];
+                            $subcomp_21['q2']['district_id'] = $model['district_id'];
+                            $subcomp_21['q2']['year'] = $model['year'];
+                            $subcomp_21['q2']['female'] = $model['number_females'];
+                            $subcomp_21['q2']['male'] = $model['number_males'];
+                            $subcomp_21['q2']['young'] = $model['number_young'];
+                            $subcomp_21['q2']['not_young'] = $model['number_not_young'];
+                            $subcomp_21['q2']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q2']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_21['q2']['number_households'] = $model['number_households'];
+                            $subcomp_21['q2']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_21['q2']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_21['q2']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 3) {
+                            $subcomp_21['q3']['province_id'] = $model['province_id'];
+                            $subcomp_21['q3']['district_id'] = $model['district_id'];
+                            $subcomp_21['q3']['year'] = $model['year'];
+                            $subcomp_21['q3']['female'] = $model['number_females'];
+                            $subcomp_21['q3']['male'] = $model['number_males'];
+                            $subcomp_21['q3']['young'] = $model['number_young'];
+                            $subcomp_21['q3']['not_young'] = $model['number_not_young'];
+                            $subcomp_21['q3']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q3']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_21['q3']['number_households'] = $model['number_households'];
+                            $subcomp_21['q3']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_21['q3']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_21['q3']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 4) {
+                            $subcomp_21['q4']['province_id'] = $model['province_id'];
+                            $subcomp_21['q4']['district_id'] = $model['district_id'];
+                            $subcomp_21['q4']['year'] = $model['year'];
+                            $subcomp_21['q4']['female'] = $model['number_females'];
+                            $subcomp_21['q4']['male'] = $model['number_males'];
+                            $subcomp_21['q4']['young'] = $model['number_young'];
+                            $subcomp_21['q4']['not_young'] = $model['number_not_young'];
+                            $subcomp_21['q4']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q4']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_21['q4']['number_households'] = $model['number_households'];
+                            $subcomp_21['q4']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_21['q4']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_21['q4']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                    }
+                    //For sub componet 2.2
+                    if ($model['sub_component'] == "2.2: Enhancing Agro-Micro, Small & Medium Enterprises") {
+                        if ($model['quarter'] == 1) {
+                            $subcomp_22['q1']['province_id'] = $model['province_id'];
+                            $subcomp_22['q1']['district_id'] = $model['district_id'];
+                            $subcomp_22['q1']['year'] = $model['year'];
+                            $subcomp_22['q1']['female'] = $model['number_females'];
+                            $subcomp_22['q1']['male'] = $model['number_males'];
+                            $subcomp_22['q1']['young'] = $model['number_young'];
+                            $subcomp_22['q1']['not_young'] = $model['number_not_young'];
+                            $subcomp_22['q1']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q1']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_22['q1']['number_households'] = $model['number_households'];
+                            $subcomp_22['q1']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_22['q1']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_22['q1']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 2) {
+                            $subcomp_22['q2']['province_id'] = $model['province_id'];
+                            $subcomp_22['q2']['district_id'] = $model['district_id'];
+                            $subcomp_22['q2']['year'] = $model['year'];
+                            $subcomp_22['q2']['female'] = $model['number_females'];
+                            $subcomp_22['q2']['male'] = $model['number_males'];
+                            $subcomp_22['q2']['young'] = $model['number_young'];
+                            $subcomp_22['q2']['not_young'] = $model['number_not_young'];
+                            $subcomp_22['q2']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q2']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_22['q2']['number_households'] = $model['number_households'];
+                            $subcomp_22['q2']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_22['q2']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_22['q2']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 3) {
+                            $subcomp_22['q3']['province_id'] = $model['province_id'];
+                            $subcomp_22['q3']['district_id'] = $model['district_id'];
+                            $subcomp_22['q3']['year'] = $model['year'];
+                            $subcomp_22['q3']['female'] = $model['number_females'];
+                            $subcomp_22['q3']['male'] = $model['number_males'];
+                            $subcomp_22['q3']['young'] = $model['number_young'];
+                            $subcomp_22['q3']['not_young'] = $model['number_not_young'];
+                            $subcomp_22['q3']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q3']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_22['q3']['number_households'] = $model['number_households'];
+                            $subcomp_22['q3']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_22['q3']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_22['q3']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 4) {
+                            $subcomp_22['q4']['province_id'] = $model['province_id'];
+                            $subcomp_22['q4']['district_id'] = $model['district_id'];
+                            $subcomp_22['q4']['year'] = $model['year'];
+                            $subcomp_22['q4']['female'] = $model['number_females'];
+                            $subcomp_22['q4']['male'] = $model['number_males'];
+                            $subcomp_22['q4']['young'] = $model['number_young'];
+                            $subcomp_22['q4']['not_young'] = $model['number_not_young'];
+                            $subcomp_22['q4']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q4']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_22['q4']['number_households'] = $model['number_households'];
+                            $subcomp_22['q4']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_22['q4']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_22['q4']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                    }
+                    //For sub componet 2.3
+                    if ($model['sub_component'] == "2.3: Facilitating Pro-Smallholder Market-Pull Agribusiness") {
+                        if ($model['quarter'] == 1) {
+                            $subcomp_23['q1']['province_id'] = $model['province_id'];
+                            $subcomp_23['q1']['district_id'] = $model['district_id'];
+                            $subcomp_23['q1']['year'] = $model['year'];
+                            $subcomp_23['q1']['female'] = $model['number_females'];
+                            $subcomp_23['q1']['male'] = $model['number_males'];
+                            $subcomp_23['q1']['young'] = $model['number_young'];
+                            $subcomp_23['q1']['not_young'] = $model['number_not_young'];
+                            $subcomp_23['q1']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q1']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_23['q1']['number_households'] = $model['number_households'];
+                            $subcomp_23['q1']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_23['q1']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_23['q1']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 2) {
+                            $subcomp_23['q2']['province_id'] = $model['province_id'];
+                            $subcomp_23['q2']['district_id'] = $model['district_id'];
+                            $subcomp_23['q2']['year'] = $model['year'];
+                            $subcomp_23['q2']['female'] = $model['number_females'];
+                            $subcomp_23['q2']['male'] = $model['number_males'];
+                            $subcomp_23['q2']['young'] = $model['number_young'];
+                            $subcomp_23['q2']['not_young'] = $model['number_not_young'];
+                            $subcomp_23['q2']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q2']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_23['q2']['number_households'] = $model['number_households'];
+                            $subcomp_23['q2']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_23['q2']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_23['q2']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 3) {
+                            $subcomp_23['q3']['province_id'] = $model['province_id'];
+                            $subcomp_23['q3']['district_id'] = $model['district_id'];
+                            $subcomp_23['q3']['year'] = $model['year'];
+                            $subcomp_23['q3']['female'] = $model['number_females'];
+                            $subcomp_23['q3']['male'] = $model['number_males'];
+                            $subcomp_23['q3']['young'] = $model['number_young'];
+                            $subcomp_23['q3']['not_young'] = $model['number_not_young'];
+                            $subcomp_23['q3']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q3']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_23['q3']['number_households'] = $model['number_households'];
+                            $subcomp_23['q3']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_23['q3']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_23['q3']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                        if ($model['quarter'] == 4) {
+                            $subcomp_23['q4']['province_id'] = $model['province_id'];
+                            $subcomp_23['q4']['district_id'] = $model['district_id'];
+                            $subcomp_23['q4']['year'] = $model['year'];
+                            $subcomp_23['q4']['female'] = $model['number_females'];
+                            $subcomp_23['q4']['male'] = $model['number_males'];
+                            $subcomp_23['q4']['young'] = $model['number_young'];
+                            $subcomp_23['q4']['not_young'] = $model['number_not_young'];
+                            $subcomp_23['q4']['women_headed_household'] = $model['number_women_headed_households'];
+                            $subcomp_21['q4']['non_women_headed_household'] = $model['number_non_women_headed_households'];
+                            $subcomp_23['q4']['number_households'] = $model['number_households'];
+                            $subcomp_23['q4']['number_household_members'] = $model['number_household_members'];
+                            $subcomp_23['q4']['Total_female_male'] += ($model['number_males'] + $model['number_females']);
+                            $subcomp_23['q4']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
+                        }
+                    }
+                }
+            }
+            return $this->render('project-outreach-report', [
+                        'searchModel' => $searchModel,
+                        'sub_component_21' => $subcomp_21,
+                        'sub_component_22' => $subcomp_22,
+                        'sub_component_23' => $subcomp_23,
             ]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
@@ -1527,7 +1978,11 @@ class ReportsController extends Controller {
     }
 
     public function actionDownloadPhysicalTrackingTable() {
+<<<<<<< HEAD
         $searchModel = new \backend\models\AwbpActivitySearch();
+=======
+        $searchModel = new \backend\models\AwpbBudgetSearch();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
         $province_id = Yii::$app->request->post('province_id', null);
         $district_id = Yii::$app->request->post('district_id', null);
@@ -1618,118 +2073,57 @@ class ReportsController extends Controller {
                     $subcomponent = $component_model->code;
                 }
             }
+            //Get activity description
+            $awpb_activity = \backend\models\AwpbActivity::findOne($model->activity_id);
+            $activity = !empty($awpb_activity) ? $awpb_activity->description : "";
 
             //get indicator
             $awpb_indicator = \backend\models\AwpbIndicator::findOne($model->indicator_id);
             //Get awpb target
             $awpb_q_total = 0;
-            if (!empty($awpb_template)) {
-                //Get all activity lines that belongs to this subactivity
-                $activity_lines = \backend\models\AwpbActivityLine::find()
-                        ->where(['activity_id' => $model->id])
-                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                        ->all();
-                if (!empty($activity_lines)) {
-                    foreach ($activity_lines as $_line) {
-                        $awpb_q_total += $_line['mo_1'];
-                        $awpb_q_total += $_line['mo_2'];
-                        $awpb_q_total += $_line['mo_3'];
-                        $awpb_q_total += $_line['mo_4'];
-                        $awpb_q_total += $_line['mo_5'];
-                        $awpb_q_total += $_line['mo_6'];
-                        $awpb_q_total += $_line['mo_7'];
-                        $awpb_q_total += $_line['mo_8'];
-                        $awpb_q_total += $_line['mo_9'];
-                        $awpb_q_total += $_line['mo_10'];
-                        $awpb_q_total += $_line['mo_11'];
-                        $awpb_q_total += $_line['mo_12'];
-                    }
-                }
-            }
-
-            //Planned q1
-            $planned_q1_total = 0;
-            //Planned q2
-            $planned_q2_total = 0;
-            //Planned q3
-            $planned_q3_total = 0;
-            //Planned q4
-            $planned_q4_total = 0;
-            //actuals
-            $actual_q1_total = 0;
-            $actual_q2_total = 0;
-            $actual_q3_total = 0;
-            $actual_q4_total = 0;
-
-            if (!empty($awpb_template)) {
-                //Get all activity lines that belongs to this subactivity
-                $activity_lines = \backend\models\AwpbActivityLine::find()
-                        ->where(['activity_id' => $model->id])
-                        ->andWhere(['awpb_template_id' => $awpb_template->id])
-                        ->all();
-                if (!empty($activity_lines)) {
-                    foreach ($activity_lines as $_line) {
-                        $planned_q1_total += $_line['mo_1'];
-                        $planned_q1_total += $_line['mo_2'];
-                        $planned_q1_total += $_line['mo_3'];
-                        $planned_q2_total += $_line['mo_4'];
-                        $planned_q2_total += $_line['mo_5'];
-                        $planned_q2_total += $_line['mo_6'];
-                        $planned_q3_total += $_line['mo_7'];
-                        $planned_q3_total += $_line['mo_8'];
-                        $planned_q3_total += $_line['mo_9'];
-                        $planned_q4_total += $_line['mo_10'];
-                        $planned_q4_total += $_line['mo_11'];
-                        $planned_q4_total += $_line['mo_12'];
-
-                        $actual_q1_total += $_line['mo_1_actual'];
-                        $actual_q1_total += $_line['mo_2_actual'];
-                        $actual_q1_total += $_line['mo_3_actual'];
-                        $actual_q2_total += $_line['mo_4_actual'];
-                        $actual_q2_total += $_line['mo_5_actual'];
-                        $actual_q2_total += $_line['mo_6_actual'];
-                        $actual_q3_total += $_line['mo_7_actual'];
-                        $actual_q3_total += $_line['mo_8_actual'];
-                        $actual_q3_total += $_line['mo_9_actual'];
-                        $actual_q4_total += $_line['mo_10_actual'];
-                        $actual_q4_total += $_line['mo_11_actual'];
-                        $actual_q4_total += $_line['mo_12_actual'];
-                    }
-                }
-            }
+            $awpb_q_total += $model->quarter_one_quantity;
+            $awpb_q_total += $model->quarter_two_quantity;
+            $awpb_q_total += $model->quarter_three_quantity;
+            $awpb_q_total += $model->quarter_four_quantity;
+            $awpb_actual_total = 0;
+            $awpb_actual_total += $model->quarter_one_actual;
+            $awpb_actual_total += $model->quarter_two_actual;
+            $awpb_actual_total += $model->quarter_three_actual;
+            $awpb_actual_total += $model->quarter_four_actual;
 
             //calculate planned/achieved percentage
             $awpb_achieved = 0;
-            $planned_q_total = $planned_q1_total + $planned_q2_total + $planned_q3_total + $planned_q4_total;
-            $actual_q_total = $actual_q1_total + $actual_q2_total + $actual_q3_total + $actual_q4_total;
-            if ($planned_q_total > 0) {
-                $awpb_achieved = round(($actual_q_total / $planned_q_total) * 100, 1);
+            if ($awpb_q_total > 0) {
+                $awpb_achieved = round(($awpb_actual_total / $awpb_q_total) * 100, 1);
             }
 
             $appr_percentage = 0;
-            $appr = !empty($model->programme_target) ? $model->programme_target : 0;
-            $cum_actual = !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
+            $appr = !empty($awpb_activity) ? $awpb_activity->programme_target : 0;
+            $cum_actual = !empty($awpb_activity) ? $awpb_activity->cumulative_actual : 0;
             if ($appr > 0) {
                 $appr_percentage = round(($cum_actual / $appr) * 100, 2);
             }
 
+            $unity_model = !empty($awpb_activity) ? \backend\models\AwpbUnitOfMeasure::findOne($awpb_activity->unit_of_measure_id) : "";
+            $unity = !empty($unity_model) ? $unity_model->name : "";
+
             $spreadsheet->setActiveSheetIndex(0)
                     ->setCellValue("B" . $current_row, $component)
                     ->setCellValue("C" . $current_row, $subcomponent)
-                    ->setCellValue("D" . $current_row, $model->name)
+                    ->setCellValue("D" . $current_row, $activity)
                     ->setCellValue("E" . $current_row, !empty($awpb_indicator) ? $awpb_indicator->name : "")
-                    ->setCellValue("F" . $current_row, !empty($model->unit_of_measure_id) ? \backend\models\AwpbUnitOfMeasure::findOne($model->unit_of_measure_id)->name : "")
+                    ->setCellValue("F" . $current_row, $unity)
                     ->setCellValue("G" . $current_row, $awpb_q_total)
-                    ->setCellValue("H" . $current_row, $planned_q1_total)
-                    ->setCellValue("I" . $current_row, $planned_q2_total)
-                    ->setCellValue("J" . $current_row, $planned_q3_total)
-                    ->setCellValue("K" . $current_row, $planned_q4_total)
-                    ->setCellValue("L" . $current_row, $planned_q_total)
-                    ->setCellValue("M" . $current_row, $actual_q1_total)
-                    ->setCellValue("N" . $current_row, $actual_q2_total)
-                    ->setCellValue("O" . $current_row, $actual_q3_total)
-                    ->setCellValue("P" . $current_row, $actual_q4_total)
-                    ->setCellValue("Q" . $current_row, $actual_q_total)
+                    ->setCellValue("H" . $current_row, $model->quarter_one_quantity)
+                    ->setCellValue("I" . $current_row, $model->quarter_two_quantity)
+                    ->setCellValue("J" . $current_row, $model->quarter_three_quantity)
+                    ->setCellValue("K" . $current_row, $model->quarter_four_quantity)
+                    ->setCellValue("L" . $current_row, $awpb_q_total)
+                    ->setCellValue("M" . $current_row, $model->quarter_one_actual)
+                    ->setCellValue("N" . $current_row, $model->quarter_two_actual)
+                    ->setCellValue("O" . $current_row, $model->quarter_three_actual)
+                    ->setCellValue("P" . $current_row, $model->quarter_four_actual)
+                    ->setCellValue("Q" . $current_row, $awpb_actual_total)
                     ->setCellValue("R" . $current_row, $awpb_achieved)
                     ->setCellValue("S" . $current_row, $appr_percentage)
                     ->setCellValue("T" . $current_row, $appr)
@@ -2180,6 +2574,144 @@ class ReportsController extends Controller {
         $writer->save('php://output');
         exit;
     }
+public function actionDownloadBudget($id) {
+    $budget_model = \backend\models\AwpbGeneralLedger::find()
+                ->select(['awpb_template.fiscal_year as year', 'awpb_general_ledger.general_ledger_account as code',
+                    'SUM(mo_1_amount) as m1',
+                    'SUM(mo_2_amount) as m2',
+                    'SUM(mo_3_amount) as m3',
+                    'SUM(mo_4_amount) as m4',
+                    'SUM(mo_5_amount) as m5',
+                    'SUM(mo_6_amount) as m6',
+                    'SUM(mo_7_amount) as m7',
+                    'SUM(mo_8_amount) as m8',
+                    'SUM(mo_9_amount) as m9',
+                    'SUM(mo_10_amount) as m10',
+                    'SUM(mo_11_amount) as m11',
+                    'SUM(mo_12_amount) as m12',
+                ])
+               // ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_general_ledger.awpb_template_id')
+                ->where(['awpb_general_ledger.awpb_template_id' => $id])
+                // ->andWhere(['quarter' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['quarter']])
+                //  ->andWhere(['IN', 'faabs_group_id', $faabs_ids])
+                // ->andWhere(['youth_non_youth' => 'Youth'])
+                // ->andWhere(['YEAR(training_date)' => date("Y", strtotime(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['year']))])
+                ->groupBy(['funder_id'])
+                ->asArray()
+                ->all();
+
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getDefaultStyle()->applyFromArray(
+                [
+                    'border' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ],
+                    ]
+                ]
+        );
+
+        $spreadsheet->getProperties()->setCreator('esappmis')
+                ->setLastModifiedBy('esappmis')
+                ->setTitle('Office 2007 XLSX Facilitation of Improved Technologies/Best Practices Report')
+                ->setSubject('Office 2007 XLSX Facilitation of Improved Technologies/Best Practices Report')
+                ->setDescription('Facilitation of Improved Technologies/Best Practices report for Office 2007 XLSX, generated using PHP classes.')
+                ->setKeywords('office 2007 openxml php')
+                ->setCategory('Report');
+$year="";
+        if (!empty($budget_model)) {
+            $row = 0;
+            foreach ($budget_model as $_model) {
+                $year = $_model['year'];
+                $row1 = $row + 1;
+                $row2 = $row1 + 1;
+                $row3 = $row2 + 1;
+                $row4 = $row3 + 1;
+                $row5 = $row4 + 1;
+                $row6 = $row5 + 1;
+                $row7 = $row6 + 1;
+                $row8 = $row7 + 1;
+                $row9 = $row8 + 1;
+                $row10 = $row9 + 1;
+                $row11 = $row10 + 1;
+                $row12 = $row11 + 1;
+                //Legder Account, Budget Period Date, Budget
+                //       0700        2019-02-31      K2000
+                //
+                $spreadsheet->setActiveSheetIndex(0)
+                        // ->setCellValue('B1', $_model['quarter_one_amount'])
+                        // ->setCellValue('B2',$_model['mo_1'])
+                        // ->setCellValue('B3', $_model['quarter_three_amount'])
+                        // ->setCellValue('B4',$_model['quarter_four_amount'])
+                        ->setCellValue('A' . $row1, $_model['code'])
+                        ->setCellValue('B' . $row1, $_model['year'] . '-01-31')
+                        ->setCellValue('C' . $row1, $_model['m1'])
+                        ->setCellValue('A' . $row2, $_model['code'])
+                        ->setCellValue('B' . $row2, $_model['year'] . '-02-28')
+                        ->setCellValue('C' . $row2, $_model['m2'])
+                        ->setCellValue('A' . $row3, $_model['code'])
+                        ->setCellValue('B' . $row3, $_model['year'] . '-03-31')
+                        ->setCellValue('C' . $row3, $_model['m3'])
+                        ->setCellValue('A' . $row4, $_model['code'])
+                        ->setCellValue('B' . $row4, $_model['year'] . '-04-30')
+                        ->setCellValue('C' . $row4, $_model['m4'])
+                        ->setCellValue('A' . $row5, $_model['code'])
+                        ->setCellValue('B' . $row5, $_model['year'] . '-06-31')
+                        ->setCellValue('C' . $row5, $_model['m5'])
+                        ->setCellValue('A' . $row6, $_model['code'])
+                        ->setCellValue('B' . $row6, $_model['year'] . '-08-30')
+                        ->setCellValue('C' . $row6, $_model['m6'])
+                        ->setCellValue('A' . $row7, $_model['code'])
+                        ->setCellValue('B' . $row7, $_model['year'] . '-07-31')
+                        ->setCellValue('C' . $row7, $_model['m7'])
+                        ->setCellValue('A' . $row8, $_model['code'])
+                        ->setCellValue('B' . $row8, $_model['year'] . '-08-31')
+                        ->setCellValue('C' . $row8, $_model['m8'])
+                        ->setCellValue('A' . $row9, $_model['code'])
+                        ->setCellValue('B' . $row9, $_model['year'] . '-09-30')
+                        ->setCellValue('C' . $row9, $_model['m9'])
+                        ->setCellValue('A' . $row10, $_model['code'])
+                        ->setCellValue('B' . $row10, $_model['year'] . '-10-31')
+                        ->setCellValue('C' . $row10, $_model['m10'])
+                        ->setCellValue('A' . $row11, $_model['code'])
+                        ->setCellValue('B' . $row11, $_model['year'] . '-11-30')
+                        ->setCellValue('C' . $row11, $_model['m11'])
+                        ->setCellValue('A' . $row12, $_model['code'])
+                        ->setCellValue('B' . $row12, $_model['year'] . '-12-31')
+                        ->setCellValue('C' . $row12, $_model['m12']);
+
+                $row = $row + 12;
+                //$row10 = $row+1;$row11 = $row+1;$row12 = $row+1;
+            }
+        }
+
+
+        $spreadsheet->getActiveSheet()->setTitle( $year.' Budget');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+
+        // Redirect output to a client's web browser (Xlsx)
+        $file = $year.'_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
 
     public function actionDownloadBudget($id) {
 
@@ -2344,3 +2876,5 @@ class ReportsController extends Controller {
     }
 
 }
+
+

@@ -1,7 +1,11 @@
 <?php
 
 namespace frontend\models;
+<<<<<<< HEAD
 use yii;
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\MgfBpiCategoriesIndicators;
@@ -40,6 +44,7 @@ class MgfBpiCategoriesIndicatorsSearch extends MgfBpiCategoriesIndicators
      */
     public function search($params)
     {
+<<<<<<< HEAD
        // $query = MgfBpiCategoriesIndicators::find();
 
        $userid=Yii::$app->user->identity->id;
@@ -47,6 +52,9 @@ class MgfBpiCategoriesIndicatorsSearch extends MgfBpiCategoriesIndicators
         $proposal=MgfProposal::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
         $query = MgfImplementationSchedule::find()->where(['proposal_id'=>$proposal->id]);
         //$query = MgfImplementationSchedule::find();
+=======
+        $query = MgfBpiCategoriesIndicators::find();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
         // add conditions that should always apply here
 

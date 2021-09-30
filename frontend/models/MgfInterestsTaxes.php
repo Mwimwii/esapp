@@ -54,7 +54,11 @@ class MgfInterestsTaxes extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'interest_tax_type' => 'Interest/Tax Type',
+<<<<<<< HEAD
             'interest_tax_percent' => 'Interest/Tax Percent(%)',
+=======
+            'interest_tax_percent' => 'Interest/Tax Percent',
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'interest_tax_name' => 'Interest/Tax Name',
             'interest_yr1_value' => 'Interest Yr1 Value',
             'interest_yr2_value' => 'Interest Yr2 Value',

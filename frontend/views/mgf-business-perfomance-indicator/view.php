@@ -6,7 +6,11 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfBusinessPerfomanceIndicator */
 
+<<<<<<< HEAD
 $this->title = "Business Perfomance Indicators";
+=======
+$this->title = $model->id;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $this->params['breadcrumbs'][] = ['label' => 'Mgf Business Perfomance Indicators', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -14,10 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="mgf-business-perfomance-indicator-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
+<<<<<<< HEAD
     <p>
     <?= Html::a('Home', ['mgf-applicant/profile'], ['class' => 'btn btn-success']) ?>
     <?= Html::a('Back', ['mgf-business-perfomance-indicator/index'], ['class' => 'btn btn-success']) ?>
     </p>
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>

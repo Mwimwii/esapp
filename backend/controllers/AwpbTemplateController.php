@@ -524,7 +524,6 @@ public function actionRead($id)
                         //     $awpbTemplateActivityArray = \backend\models\AwpbTemplateActivity::getActivities($model->id);
                         //     ($id);
                         //     $awpbTemplateActivity = implode(",", $awpbTemplateActivityArray);
-
                         //    // $session = Yii::$app->session;
                         //    // $session->set('rights', $rights);
                         // }
@@ -559,8 +558,12 @@ public function actionRead($id)
         }
     }
 
+<<<<<<< HEAD
 
   /**
+=======
+    /**
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
      * Deletes an existing AwpbTemplate model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

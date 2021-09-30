@@ -5,7 +5,11 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfSustainabilityScalability */
 
+<<<<<<< HEAD
 $this->title = 'Update Sustainability Scalability: ' . $model->id;
+=======
+$this->title = 'Update Mgf Sustainability Scalability: ' . $model->id;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $this->params['breadcrumbs'][] = ['label' => 'Mgf Sustainability Scalabilities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -14,9 +18,12 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+<<<<<<< HEAD
     <?= Html::a('Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-success']);?>
     <?= Html::a('Back', ['/mgf-sustainability-scalability/index',], ['class' => 'btn btn-success']);?>
 
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

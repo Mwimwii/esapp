@@ -16,6 +16,10 @@ class m210523_092656_057_create_table_mgf_component extends Migration
             [
                 'id' => $this->primaryKey(),
                 'component_no' => $this->integer()->notNull(),
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 'component_name' => $this->string(100)->notNull(),
                 'subtotal' => $this->decimal(12, 2)->notNull()->defaultValue('0.00'),
                 'proposal_id' => $this->integer()->notNull(),

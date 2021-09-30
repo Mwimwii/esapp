@@ -49,4 +49,8 @@ $this->title = "Update Project Proposal";
             <?php ActiveForm::end(); ?>
         </div>
         <div class="col-md-1"></div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

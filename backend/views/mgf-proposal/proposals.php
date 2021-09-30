@@ -1,5 +1,9 @@
 <?php
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use backend\models\User;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -13,7 +17,13 @@ $usertype=Yii::$app->user->identity->type_of_user;
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
+<<<<<<< HEAD
     
+=======
+
+    <?php include('tab.php');?>
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <hr class="dotted short"> 
     <?= Html::beginForm(['/mgf-proposal/select'], 'post'); ?>
     
@@ -32,6 +42,16 @@ $usertype=Yii::$app->user->identity->type_of_user;
                 'applicant_type',
                 'district.name',
                 'number_reviewers',
+<<<<<<< HEAD
+=======
+                [
+                    'class' => 'yii\grid\CheckboxColumn',
+                    'checkboxOptions' =>function($model,$key,$index,$widget){
+                        return ["value"=>$model->id];
+                    }
+                ],
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 ['class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',
                 'buttons' => [

@@ -1,7 +1,11 @@
 <?php
 
 namespace frontend\models;
+<<<<<<< HEAD
 use yii;
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\MgfValueOfProduct;
@@ -41,12 +45,16 @@ class MgfValueOfProductSearch extends MgfValueOfProduct
      */
     public function search($params)
     {
+<<<<<<< HEAD
         //$query = MgfValueOfProduct::find();
         $userid=Yii::$app->user->identity->id;
         $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
         $proposal=MgfProposal::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
         $query = MgfValueOfProduct::find()->where(['proposal_id'=>$proposal->id]);
         //$query = MgfImplementationSchedule::find();
+=======
+        $query = MgfValueOfProduct::find();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
         // add conditions that should always apply here
 

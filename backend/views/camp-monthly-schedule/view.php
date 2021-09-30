@@ -6,9 +6,6 @@ use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
 use backend\models\User;
 use kartik\form\ActiveForm;
-use kartik\number\NumberControl;
-use kartik\editable\Editable;
-use kartik\grid\EditableColumn;
 use yii\grid\ActionColumn;
 use kartik\touchspin\TouchSpin;
 use ivankff\yii2ModalAjax\ModalAjax;
@@ -30,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <ol>
             <li>Click the icon <span class="fa fa-edit"></span> to update the monthly work effort record
             </li>
-            <li>Click the icon <span class="fa fa-trash"></span> to delete the monthly work effort record and its associative activities
+            <li>Click the icon <span class="fa fa-trash"></span> to delete the monthly work effort record and its associated activities
             </li>
 
         </ol>
@@ -572,7 +569,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         echo
                                 $form->field($_model, 'activity_id')
                                 ->dropDownList(
-                                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
+                                        \backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month),
+                                        ['id' => 'activity', 'custom' => true, 'prompt' => 'Please select activity', 'required' => true]
                         );
                         ?>
                         <?php
@@ -590,20 +588,20 @@ $this->params['breadcrumbs'][] = $this->title;
                           ],
                           ]); */
 
-                        echo $form->field($_model, 'beneficiary_target_women')->widget(TouchSpin::classname(), [
-                            'options' => ['placeholder' => 'Beneficiary target women'],
-                            'pluginOptions' => [
-                                // 'initval' => 3.00,
-                                'min' => 0,
-                            //  'max' => 100,
-                            // 'step' => 0.1,
-                            // 'decimals' => 2,
-                            // 'boostat' => 5,
-                            // 'maxboostedstep' => 10,
-                            // 'prefix' => '$',
-                            ],
-                        ]);
-                        /* echo $form->field($_model, 'beneficiary_target_women', ['enableAjaxValidation' => true])->widget(NumberControl::classname(), [
+                        /* echo $form->field($_model, 'beneficiary_target_women')->widget(TouchSpin::classname(), [
+                          'options' => ['placeholder' => 'Beneficiary target women'],
+                          'pluginOptions' => [
+                          // 'initval' => 3.00,
+                          'min' => 0,
+                          //  'max' => 100,
+                          // 'step' => 0.1,
+                          // 'decimals' => 2,
+                          // 'boostat' => 5,
+                          // 'maxboostedstep' => 10,
+                          // 'prefix' => '$',
+                          ],
+                          ]);
+                          /* echo $form->field($_model, 'beneficiary_target_women', ['enableAjaxValidation' => true])->widget(NumberControl::classname(), [
                           'maskedInputOptions' => [
                           // 'prefix' => '$ ',
                           'suffix' => '',
@@ -611,24 +609,24 @@ $this->params['breadcrumbs'][] = $this->title;
                           'min' => 0,
                           'max' => 10
                           ],
-                          ]); */
-                        echo $form->field($_model, 'beneficiary_target_youth')->widget(TouchSpin::classname(), [
-                            'options' => ['placeholder' => 'Beneficiary target youth'],
-                            'pluginOptions' => [
-                                // 'initval' => 3.00,
-                                'min' => 0,
-                            // 'max' => 100,
-                            ],
-                        ]);
+                          ]);
+                          echo $form->field($_model, 'beneficiary_target_youth')->widget(TouchSpin::classname(), [
+                          'options' => ['placeholder' => 'Beneficiary target youth'],
+                          'pluginOptions' => [
+                          // 'initval' => 3.00,
+                          'min' => 0,
+                          // 'max' => 100,
+                          ],
+                          ]);
 
-                        echo $form->field($_model, 'beneficiary_target_women_headed')->widget(TouchSpin::classname(), [
-                            'options' => ['placeholder' => 'Beneficiary target women headed'],
-                            'pluginOptions' => [
-                                // 'initval' => 3.00,
-                                'min' => 0,
-                            //'max' => 100,
-                            ],
-                        ]);
+                          echo $form->field($_model, 'beneficiary_target_women_headed')->widget(TouchSpin::classname(), [
+                          'options' => ['placeholder' => 'Beneficiary target women headed'],
+                          'pluginOptions' => [
+                          // 'initval' => 3.00,
+                          'min' => 0,
+                          //'max' => 100,
+                          ],
+                          ]); */
                         ?>
 
                     </div>

@@ -94,15 +94,22 @@ class AwpbActivity extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['activity_code', 'component_id', 'description', 'name'], 'required'],
+            [['activity_code','component_id', 'description','expense_category_id', 'name'], 'required'],
             [['parent_activity_id', 'component_id', 'outcome_id', 'output_id', 'commodity_type_id', 'type', 'awpb_template_id', 'unit_of_measure_id', 'indicator_id', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['programme_target', 'cumulative_planned', 'cumulative_actual', 'quarter_one_budget', 'quarter_two_budget', 'quarter_three_budget', 'quarter_four_budget', 'total_budget'], 'number'],
             [['activity_code'], 'string', 'max' => 10],
             [['activity_type', 'description'], 'string', 'max' => 255],
-            [['name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => 100],
             [['gl_account_code'], 'string', 'max' => 4],
-            [['description'], 'unique'],
-            [['name'], 'unique'],
+            [['activity_code'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('activity_code');
+                }, 'message' => 'Code already in use!'],
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Name already in use!'],
+            [['description'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('description');
+                }, 'message' => 'Description already in use!'],
             ['parent_activity_id', 'required', 'when' => function($model) {
                     return $model->sub == 'Subactivity';
                 }, 'message' => 'Parent activity can not be blank!'],
@@ -278,7 +285,7 @@ class AwpbActivity extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getAwpbActivityFunders() {
-        return $this->hasMany(AwpbActivityFunder::className(), ['activity_id' => 'id']);
+        return $this->hasMany(AwpbFunder::className(), ['activity_id' => 'id']);
     }
 
     /**
@@ -286,8 +293,36 @@ class AwpbActivity extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbActivitiesLineItems() {
-        return $this->hasMany(AwpbActivityLineItem::className(), ['activity_id' => 'id']);
+ 
+
+    public static function getMainAwpbActivities() {
+        $data = self::find()->orderBy(['name' => SORT_ASC])
+                ->where(['parent_activity_id' => null])
+                ->all();
+        $list = ArrayHelper::map($data, 'id', 'name');
+        return $list;
+    }
+
+    public function getAwpbFunders() {
+        return $this->hasMany(AwpbFunder::className(), ['activity_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbActivityLines]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbActivityLines() {
+        return $this->hasMany(AwpbActivityLine::className(), ['activity_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbTemplateActivities]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbTemplateActivities() {
+        return $this->hasMany(AwpbTemplateActivity::className(), ['activity_id' => 'id']);
     }
 
     public static function getMainAwpbActivities() {
@@ -380,7 +415,7 @@ class AwpbActivity extends \yii\db\ActiveRecord {
 
     public static function getName($id) {
         $component = self::find()->where(['id' => $id])->one();
-        return ucfirst(strtolower($this->name));
+        return ucfirst(strtolower($component->name));
     }
 
     public static function getAwpbActivityCodeName($id) {
@@ -451,6 +486,30 @@ class AwpbActivity extends \yii\db\ActiveRecord {
                 ->where(['type' => self::TYPE_SUB])
                 ->orderBy(['parent_activity_id' => SORT_ASC])
                 ->all();
+        $list = ArrayHelper::map($data, 'id', 'name');
+        return $list;
+    }
+
+    public static function getSubActivities() {
+        $data = self::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                //->where(['component_id'=>$id])
+                ->where(['type' => self::TYPE_SUB])
+                ->asArray()
+                ->all();
+        $list = ArrayHelper::map($data, 'name', 'name');
+        return $list;
+    }
+
+    public static function getSubActivityList() {
+        $data = self::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                //->where(['component_id'=>$id])
+                ->where(['type' => self::TYPE_SUB])
+                ->orderBy(['parent_activity_id' => SORT_ASC])
+                ->all();
         $list = ArrayHelper::map($data, 'name', 'name');
         return $list;
     }
@@ -463,15 +522,17 @@ class AwpbActivity extends \yii\db\ActiveRecord {
         return $list;
     }
 
-    public static function getRightList() {
-        $rights = self::find()->orderBy(['name' => SORT_ASC])->all();
-        $list = ArrayHelper::map($rights, 'right', 'right');
-        return $list;
-    }
+   
 
-    public static function getAllRights() {
-        $query = self::find()->all();
+    public static function getAllSubActivities() {
+        $query = self::find()
+        ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+        ->where(['type' => self::TYPE_SUB])
+        ->orderBy(['parent_activity_id' => SORT_ASC])
+        ->all();
         return $query;
     }
+    
 
 }
+

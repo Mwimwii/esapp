@@ -3,12 +3,10 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use kartik\grid\GridView;
-use backend\models\User;
 use backend\models\Storyofchange;
 use yii\helpers\Url;
 use kartik\tabs\TabsX;
 use kartik\icons\Icon;
-use lo\widgets\modal\ModalAjax;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Storyofchange */
@@ -309,7 +307,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </div>
                                             </div> 
                                             <div class="card-footer">' .
-                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id, "media_type" => "Audio"], [
+                                                Html::a('<span class="fa fa-edit fa-2x"></span>', ['update-media', 'id' => $_model->id, 'id1' => $model->id, "media_type" => "Vidoe"], [
                                                     'class' => 'bt btn-md',
                                                     'title' => 'Update video',
                                                     'data-toggle' => 'tooltip',

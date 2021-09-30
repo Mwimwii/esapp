@@ -220,6 +220,7 @@ class MgfProposalSearch extends MgfProposal{
         $usertype=Yii::$app->user->identity->type_of_user;
         if ($usertype=="Provincial user") {
             $provinceid=Yii::$app->user->identity->province_id;
+<<<<<<< HEAD
             $query = MgfProposal::find()->where(['province_id'=>$provinceid])->where(['is_concept'=>0,'is_active'=>1]);
         }else if($usertype=="District user") {
             $districtid=Yii::$app->user->identity->district_id;
@@ -228,6 +229,16 @@ class MgfProposalSearch extends MgfProposal{
             $query = MgfProposal::find()->where(['proposal_status'=>'Submitted','is_concept'=>0,'is_active'=>1]);
         }else{
             $query = MgfProposal::find()->where(['proposal_status'=>'Submitted','is_active'=>1]);
+=======
+            $query = MgfProposal::find()->where(['province_id'=>$provinceid])->where(['proposal_status'=>'Submitted','is_active'=>1])->orWhere(['proposal_status'=>'Under_Review','is_active'=>1]);
+        }else if($usertype=="District user") {
+            $districtid=Yii::$app->user->identity->district_id;
+            $query = MgfProposal::find()->where(['district_id'=>$districtid])->where(['proposal_status'=>'Submitted','is_active'=>1])->orWhere(['proposal_status'=>'Under_Review','is_active'=>1]);
+        }else if($usertype=="National user") {
+            $query = MgfProposal::find()->where(['proposal_status'=>'Submitted','is_active'=>1])->orWhere(['proposal_status'=>'Under_Review','is_active'=>1]);
+        }else{
+            $query = MgfProposal::find()->where(['proposal_status'=>'Submitted','is_active'=>1])->orWhere(['proposal_status'=>'Under_Review','is_active'=>1]);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         }
         //$query = MgfProposal::find();
 

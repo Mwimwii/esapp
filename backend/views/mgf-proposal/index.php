@@ -15,6 +15,11 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
+<<<<<<< HEAD
+=======
+
+    <?php include('tab.php');?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <hr class="dotted short"> 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -37,6 +42,7 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
             'date_submitted',
             'applicant_type',
             'district.name',
+<<<<<<< HEAD
             ['class' => 'yii\grid\ActionColumn',
             'template' => '{view}',
             'buttons' => [
@@ -70,6 +76,22 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
                     );       
                 }, 
             ]],
+=======
+            [
+                'class' => 'yii\grid\ActionColumn','template' => '{view} {message}',
+                'visibleButtons' => [
+                    'update' => function ($model) {
+                        return $model->proposal_status == 'Created' || $model->proposal_status == 'Updated' || $model->proposal_status == 'Cancelled';
+                    },
+                     'submit' => function ($model) {
+                         return ($model->proposal_status == 'Updated' || $model->proposal_status == 'Cancelled') && ($model->totalcost > 0 && $model->is_active == 1);                                    
+                    },
+                    'message' => function ($model) {
+                        return $model->proposal_status == 'Strongly Recommended' || $model->proposal_status == 'Recommended' || $model->proposal_status == 'Not Recommended';
+                    },
+                ]
+            ] 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ],
     ]); ?>
 </div>

@@ -11,6 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Awpb Outputs', 'url' => ['index']]
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
+<<<<<<< HEAD
 <div class="card card-success card-outline">
     <div class="card-body">
 
@@ -71,8 +72,41 @@ if (!empty($outcome)) {
     ],
             'name',
             'output_description',     
+=======
+<div class="awpb-output-view">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <p>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+    </p>
+
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'id',
+            'code',
+            'component_id',
+            'outcome_id',
+            'name',
+            'description',
+            'created_at',
+            'updated_at',
+            'created_by',
+            'updated_by',
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ],
     ]) ?>
 
 </div>
+<<<<<<< HEAD
 </div>
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

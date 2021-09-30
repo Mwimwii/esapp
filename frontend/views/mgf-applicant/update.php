@@ -56,6 +56,10 @@ if(MeFaabsCategoryAFarmers::find()->where(['nrc'=>$userID])->exists()){
 
         <br/><br/>
             <?php if($applicant->district_id>0){?>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 <?=  Html::a('<i class="fa fa-home"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default'])?>
             <?php } ?>
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

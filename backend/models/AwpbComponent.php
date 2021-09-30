@@ -58,6 +58,7 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     public static function tableName() {
         return 'awpb_component';
     }
+    
 
     /**
      * {@inheritdoc}
@@ -65,17 +66,39 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['code', 'name', 'description', 'type'], 'required'],
+<<<<<<< HEAD
             [['parent_component_id', 'type', 'access_level', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+=======
+            [['parent_component_id', 'type', 'access_level', 'access_level_district','access_level_province','access_level_programme','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             [['outcome', 'output'], 'string'],
             [['code'], 'string', 'max' => 10],
             [['name', 'description', 'subcomponent'], 'string', 'max' => 255],
             [['gl_account_code'], 'string', 'max' => 4],
+<<<<<<< HEAD
             [['code'], 'unique'],
             [['name'], 'unique'],
             [['description'], 'unique'],
             ['access_level', 'required', 'when' => function($model) {
                     return $model->subcomponent == 'Component';
                 }, 'message' => 'Access level can not be blank for a main component!'],
+=======
+             ['parent_component_id', 'required', 'when' => function($model) {
+                    return $model->subcomponent== 'Subcomponent';
+                }, 'message' => 'Parent component can not be blank!'],
+            [['code'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('code');
+                }, 'message' => 'Component code already in use!'],
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Component name already in use!'],
+            [['description'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('description');
+                }, 'message' => 'Component description already in use!'],
+            // ['access_level', 'required', 'when' => function($model) {
+            //         return $model->subcomponent == 'Component';
+            //     }, 'message' => 'Access level can not be blank for a main component!'],
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             [['expense_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbExpenseCategory::className(), 'targetAttribute' => ['expense_category_id' => 'id']],
             [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
         ];
@@ -87,7 +110,7 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => 'ID',
-            'code' => 'Code',
+            'code' => 'Component Code',
             'parent_component_id' => 'Parent Component',
             'name' => 'Name',
             'description' => 'Description',
@@ -95,6 +118,9 @@ class AwpbComponent extends \yii\db\ActiveRecord {
             'output' => 'Output',
             'type' => 'Type',
             'access_level' => 'Access Level',
+            'access_level_district'=>'District',
+            'access_level_province'=>'Province',
+            'access_level_programme'=>'Programme',
             'subcomponent' => 'Subcomponent',
             'funder_id' => 'Funder ID',
             'expense_category_id' => 'Expense Category ID',
@@ -146,7 +172,11 @@ class AwpbComponent extends \yii\db\ActiveRecord {
 
     public static function getName($id) {
         $component = self::find()->where(['id' => $id])->one();
+<<<<<<< HEAD
         return ucfirst(strtolower($this->name));
+=======
+        return ucfirst(strtolower($component->name));
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     }
 
 
@@ -167,6 +197,12 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     public function getAwpbOutcomes() {
         return $this->hasMany(AwpbOutcome::className(), ['component_id' => 'id']);
     }
+<<<<<<< HEAD
+=======
+    public function getAwpbOutputs() {
+        return $this->hasMany(AwpbOutput::className(), ['component_id' => 'id']);
+    }
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     /**
      * Gets query for [[AwpbTemplateActivities]].
@@ -188,8 +224,14 @@ class AwpbComponent extends \yii\db\ActiveRecord {
         //     ->where(['type'=>TYPE_MAIN ])
         //     $rc=0;
         $components = self::find()
+<<<<<<< HEAD
                         ->where(['type' => self::TYPE_MAIN])
                         ->orderBy(['name' => SORT_ASC])->all();
+=======
+                ->select(["CONCAT(code,' ',name) as name", 'id'])
+                ->where(['type' => self::TYPE_MAIN])
+                ->orderBy(['name' => SORT_ASC])->all();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
 
@@ -212,11 +254,39 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     public static function getAwpbSubComponentsList() {
 
         $components = self::find()
+<<<<<<< HEAD
+=======
+        ->select(["CONCAT(code,' ',name) as name", 'id'])
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         ->where(['type' => self::TYPE_SUB])
                         ->orderBy(['name' => SORT_ASC])->all();
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
     }
+<<<<<<< HEAD
+=======
+     public static function getAwpbSubComponentsListPW() {
+
+        $components = self::find()
+        ->select(["CONCAT(code,' ',name) as name", 'id'])
+                        ->where(['type' => self::TYPE_SUB])
+                        ->andWhere(['access_level_programme' => self::TYPE_SUB])
+                        ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
+    }
+
+    public static function getAwpbSubComponentsListDistrict() {
+
+        $components = self::find()
+        ->select(["CONCAT(code,' ',name) as name", 'id'])
+                        ->where(['type' => self::TYPE_SUB])
+                        ->andWhere(['access_level_district' => self::TYPE_SUB])
+                        ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
+    }
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     public static function getAwpbComponentCodes() {
         $components = self::find()->orderBy(['code' => SORT_ASC])->all();
@@ -228,3 +298,4 @@ class AwpbComponent extends \yii\db\ActiveRecord {
   
 
 }
+

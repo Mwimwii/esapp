@@ -17,9 +17,13 @@ $usertype=Yii::$app->user->identity->type_of_user;
 \yii\web\YiiAsset::register($this);
 ?>
 
+<<<<<<< HEAD
 
 <div class="card card-success card-outline">
     <div class="card-body">
+=======
+<div class="mgf-proposal-view">
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <h3><?= Html::encode($this->title)?></h3>
     <?= DetailView::widget([
         'model' => $model,
@@ -33,13 +37,17 @@ $usertype=Yii::$app->user->identity->type_of_user;
             'starting_date',
             'ending_date',
             'date_submitted',
+<<<<<<< HEAD
             'experience_response:ntext',
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'problem_statement:ntext',
             'overall_objective:ntext',
             'province.name',
             'district.name',
         ],
     ])?>
+<<<<<<< HEAD
     <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['submitted-concept-notes'],['class' => 'btn btn-default'])?>
 
 
@@ -169,4 +177,14 @@ $usertype=Yii::$app->user->identity->type_of_user;
       </table>
     </div>
 </div>
+=======
+
+<?php if($usertype=="Applicant"){ ?>
+    <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'],['class' => 'btn btn-default']),
+    Html::a('<i class="glyphicon glyphicon-edit"></i> Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])?>
+<?php }else{ ?>
+    <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['index'],['class' => 'btn btn-default'])?>
+<?php } ?>
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 </div>

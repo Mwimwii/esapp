@@ -1,6 +1,9 @@
 <?php
 
+<<<<<<< HEAD
 use backend\models\MgfPcoEligibility;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use backend\models\User;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -8,9 +11,13 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\MgfOrganisationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+<<<<<<< HEAD
 $eligibility=MgfPcoEligibility::findOne(['is_active'=>1]);
 ?>
 
+=======
+?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <div class="card card-success card-outline">
     <div class="card-body">
         <h3><?= Html::encode($this->title) ?></h3>
@@ -30,7 +37,11 @@ $eligibility=MgfPcoEligibility::findOne(['is_active'=>1]);
                     ['class' => 'yii\grid\ActionColumn','template' => '{open}',
                     'buttons' => [
                         'open' => function ($url, $model) {
+<<<<<<< HEAD
                             if (User::userIsAllowedTo('Screen Eligibility')) {
+=======
+                            if (User::userIsAllowedTo('Review Concept Note')) {
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                                 return Html::a(
                                     '<span class="fa fa-folder-open"></span>', ['open', 'id' => $model->id], [
                                     'title' => 'Review',
@@ -47,6 +58,10 @@ $eligibility=MgfPcoEligibility::findOne(['is_active'=>1]);
                     ]
                 ],
             ]); ?>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     </div>
 </div>
 

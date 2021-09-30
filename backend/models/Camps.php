@@ -26,6 +26,7 @@ use yii\helpers\ArrayHelper;
 class Camps extends \yii\db\ActiveRecord {
 
     public $province_id;
+    public $coordinates;
 
     /**
      * {@inheritdoc}
@@ -41,8 +42,8 @@ class Camps extends \yii\db\ActiveRecord {
         return [
             [['district_id', 'name'], 'required'],
             [['district_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['description'], 'string'],
-            [['province_id'], 'safe'],
+            [['description','longitude', 'latitude'], 'string'],
+            [['province_id','coordinates'], 'safe'],
             [['name'], 'string', 'max' => 255],
             ['name', 'unique', 'when' => function($model) {
                     return $model->isAttributeChanged('name') &&
