@@ -90,7 +90,7 @@ DynamicFormWidget::begin([
                 <div class="row">
                     <div class="col-lg-2">
                         <?=
-                                $form->field($modelprice, "[{$index}]market_id",['enableAjaxValidation' => true])
+                                $form->field($modelprice, "[{$index}]market_id", ['enableAjaxValidation' => true])
                                 ->dropDownList(
                                         \backend\models\Markets::getByDistrict(Yii::$app->getUser()->identity->district_id), ['custom' => true, 'prompt' => 'Select market', 'required' => true]
                         );
@@ -99,27 +99,27 @@ DynamicFormWidget::begin([
                     </div>
                     <div class="col-lg-2">
                         <?=
-                                $form->field($modelprice, "[{$index}]commodity_type_id",['enableAjaxValidation' => true])
+                                $form->field($modelprice, "[{$index}]commodity_type_id", ['enableAjaxValidation' => true])
                                 ->dropDownList(\backend\models\CommodityTypes::getList(), ['custom' => true, 'prompt' => 'Select commodity', 'required' => true]
                         );
                         ?>
                     </div>
                     <div class="col-lg-2">
                         <?=
-                                $form->field($modelprice, "[{$index}]price_level_id",['enableAjaxValidation' => true])
+                                $form->field($modelprice, "[{$index}]price_level_id", ['enableAjaxValidation' => true])
                                 ->dropDownList(\backend\models\CommodityPriceLevels::getList(), ['custom' => true, 'prompt' => 'Select price level', 'required' => true]
                         );
                         ?>
                     </div>
                     <div class="col-lg-2">
                         <?=
-                                $form->field($modelprice, "[{$index}]unit_of_measure",['enableAjaxValidation' => true])->textInput(['maxlength' => true, "placeholder" => "i.e. 10KG, 2KG etc"])
+                                $form->field($modelprice, "[{$index}]unit_of_measure", ['enableAjaxValidation' => true])->textInput(['maxlength' => true, "placeholder" => "i.e. 10KG, 2KG etc"])
                                 ->label("Unit of measure");
                         ?>
                     </div>
                     <div class="col-lg-2">
                         <?=
-                        $form->field($modelprice, "[{$index}]price",['enableAjaxValidation' => true])->widget(MaskMoney::classname(), [
+                        $form->field($modelprice, "[{$index}]price", ['enableAjaxValidation' => true])->widget(MaskMoney::classname(), [
                             'pluginOptions' => [
                                 'allowZero' => false,
                                 'allowNegative' => false,
@@ -129,7 +129,7 @@ DynamicFormWidget::begin([
                     </div>
                     <div class="col-lg-1">
                         <?=
-                                $form->field($modelprice, "[{$index}]year",['enableAjaxValidation' => true])
+                                $form->field($modelprice, "[{$index}]year", ['enableAjaxValidation' => true])
                                 ->dropDownList(\backend\models\CommodityPriceCollection::getYearsList(),
                                         ['custom' => true, 'prompt' => 'Select year', 'required' => true,
                                             'value' => date("Y")]
@@ -138,7 +138,7 @@ DynamicFormWidget::begin([
                     </div>
                     <div class="col-lg-1">
                         <?=
-                                $form->field($modelprice, "[{$index}]month",['enableAjaxValidation' => true])
+                                $form->field($modelprice, "[{$index}]month", ['enableAjaxValidation' => true])
                                 ->dropDownList($months,
                                         ['custom' => true, 'prompt' => 'Select month', 'required' => true,
                                             'value' => date("m")]
@@ -157,7 +157,7 @@ DynamicFormWidget::begin([
 
 <?php DynamicFormWidget::end(); ?>
 <div class="form-group col-lg-12">
-  <?= Html::submitButton('Save prices', ['class' => 'btn btn-success btn-sm']) ?>
+    <?= Html::submitButton('Save prices', ['class' => 'btn btn-success btn-sm']) ?>
 </div>
 <?php ActiveForm::end(); ?>
 

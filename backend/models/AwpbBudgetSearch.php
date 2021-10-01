@@ -12,6 +12,7 @@ use backend\models\AwpbBudget;
 
 class AwpbBudgetSearch extends AwpbBudget
 {
+    public $year;
     /**
      * {@inheritdoc}
      */
@@ -184,7 +185,7 @@ class AwpbBudgetSearch extends AwpbBudget
     }
 
 
-    public function searchByYearProvinceDistrict($year, $province_id, $district_id) {
+   /* public function searchByYearProvinceDistrict($year, $province_id, $district_id) {
 
         //Needed for a search filter
         if (!empty($district_id) ||
@@ -217,7 +218,7 @@ class AwpbBudgetSearch extends AwpbBudget
         ]);
 
         return $dataProvider;
-    }
+    }*/
 
 
 }

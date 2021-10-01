@@ -55,7 +55,7 @@ class Storyofchange extends \yii\db\ActiveRecord {
         return [
             [['category_id', 'title', 'interviewee_names', 'interviewer_names', 'date_interviewed', 'status'], 'required'],
             [['category_id', 'status', 'paio_review_status', 'ikmo_review_status', 'created_at',
-            'updated_at', 'created_by', 'updated_byfile', 'camp_id', 'district_id', 'province_id'], 'integer'],
+            'updated_at', 'created_by', 'updated_by', 'camp_id', 'district_id', 'province_id'], 'integer'],
             [['title', 'interviewee_names', 'interviewer_names', 'introduction', 'challenge', 'actions', 'results', 'conclusions', 'sequel', 'paio_comments', 'ikmo_comments'], 'string'],
             [['date_interviewed'], 'safe'],
             ['title', 'unique', 'message' => 'Story of change title exist already!'],

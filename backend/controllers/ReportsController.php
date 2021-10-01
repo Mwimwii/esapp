@@ -38,7 +38,10 @@ class ReportsController extends Controller {
                     'facilitation-imporoved-technologies',
                     'download-fit-report',
                     'training-attendance-cumulatives',
-                    'physical-tracking-table'
+                    'physical-tracking-table',
+                    'log-framework',
+                    'project-outreach-report',
+                    'sage-budget',
                 ],
                 'rules' => [
                     [
@@ -46,7 +49,10 @@ class ReportsController extends Controller {
                             'facilitation-imporoved-technologies',
                             'download-fit-report',
                             'training-attendance-cumulatives',
-                            'physical-tracking-table'
+                            'physical-tracking-table',
+                            'log-framework',
+                            'project-outreach-report',
+                            'sage-budget',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -69,8 +75,6 @@ class ReportsController extends Controller {
     public function actionPhysicalTrackingTable() {
         if (User::userIsAllowedTo('View physical tracking table report')) {
             $searchModel = new \backend\models\AwpbBudgetSearch();
-
-            // var_dump($dataProvider->getModels());
             $year = date('Y');
 
             if (isset(Yii::$app->request->queryParams['AwpbBudgetSearch'])) {
@@ -84,7 +88,7 @@ class ReportsController extends Controller {
                 }
 
                 if (!empty(Yii::$app->request->queryParams['AwpbBudgetSearch']['year'])) {
-                    // var_dump(Yii::$app->request->queryParams['AwpbBudgetSearch']);
+// var_dump(Yii::$app->request->queryParams['AwpbBudgetSearch']);
                     $year = Yii::$app->request->queryParams['AwpbBudgetSearch']['year'];
                     $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
                     if (!empty($awpb_template)) {
@@ -130,6 +134,18 @@ class ReportsController extends Controller {
         }
     }
 
+    public function actionLogFramework() {
+        if (User::userIsAllowedTo('View logframe report')) {
+            return $this->render('log-framework', [
+                       // 'searchModel' => $searchModel,
+                      //  'dataProvider' => $dataProvider,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
     /*
      * 
      */
@@ -140,7 +156,7 @@ class ReportsController extends Controller {
             $searchModel = new \backend\models\MeFaabsTrainingAttendanceSheetSearch();
 
 
-            //Filter by province
+//Filter by province
             if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
                     empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
                     empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
@@ -149,7 +165,7 @@ class ReportsController extends Controller {
                 $_camp_ids = [];
 
 
-                //We get all the districts in a province
+//We get all the districts in a province
                 $districts = \backend\models\Districts::find()->where(['province_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']])->all();
                 if (!empty($districts)) {
                     foreach ($districts as $id) {
@@ -157,7 +173,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get all the camps in a province
+//We get all the camps in a province
                 $camp_ids = \backend\models\Camps::find()
                         ->select(['id'])
                         ->where(["IN", 'district_id', $district_ids])
@@ -172,7 +188,7 @@ class ReportsController extends Controller {
                 }
 
 
-                //We get all the FaaBS in a province
+//We get all the FaaBS in a province
                 $faabs_model = MeFaabsGroups::find()->where(["IN", 'camp_id', $_camp_ids])
                         ->asArray()
                         ->all();
@@ -186,7 +202,7 @@ class ReportsController extends Controller {
                             $jan_jun_count = 0;
                             $jul_dec_count = 0;
                             $_faabs[$id['name']] = [
-                                //'id' => $id['id'],
+//'id' => $id['id'],
                                 'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
                                 'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
                                         ->where(['faabs_group_id' => $id['id']])
@@ -194,17 +210,17 @@ class ReportsController extends Controller {
                             ];
 
 
-                            //We get those trained in a year for a particular period
+//We get those trained in a year for a particular period
                             /* $_years = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                               ->select(['YEAR(training_date) as year'])
                               ->where(["faabs_group_id" => $id['id']])
                               ->distinct()
                               ->all(); */
-                            //if (!empty($_years)) {
-                            //  foreach ($_years as $yr) {
-                            //We use hardcoded years instead of dynamically fetching them
-                            //2019,2020,2021,2022,2023,2024
-                            //1.2019
+//if (!empty($_years)) {
+//  foreach ($_years as $yr) {
+//We use hardcoded years instead of dynamically fetching them
+//2019,2020,2021,2022,2023,2024
+//1.2019
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                                     ->andWhere(['YEAR(training_date)' => '2019'])
@@ -221,7 +237,7 @@ class ReportsController extends Controller {
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
 
-                            //2.2020
+//2.2020
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -238,7 +254,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //3.2021
+//3.2021
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -255,7 +271,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //4.2022
+//4.2022
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -272,7 +288,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //5.2023
+//5.2023
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -289,7 +305,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //6.2024
+//6.2024
                             /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                               ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                               ->andWhere(['YEAR(training_date)' => '2024'])
@@ -305,18 +321,18 @@ class ReportsController extends Controller {
                               'jul_dec' => $jul_dec_count
                               ];
                               array_push($_faabs[$id['name']], $_cnt_array); */
-                            //}
+//}
 
 
                             array_push($_data, $_faabs);
-                            //}
+//}
                         }
                     }
-                    //var_dump($_data);
+//var_dump($_data);
                 }
             }
 
-            //Filter by district
+//Filter by district
             if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
                     !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
                     empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
@@ -324,7 +340,7 @@ class ReportsController extends Controller {
                 $faabs_ids = [];
                 $_camp_ids = [];
 
-                //We get all the camps in a district
+//We get all the camps in a district
                 $camp_ids = \backend\models\Camps::find()
                         ->select(['id'])
                         ->where(['district_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']])
@@ -339,7 +355,7 @@ class ReportsController extends Controller {
                 }
 
 
-                //We get all the FaaBS in a district
+//We get all the FaaBS in a district
                 $faabs_model = MeFaabsGroups::find()->where(["IN", 'camp_id', $_camp_ids])
                         ->asArray()
                         ->all();
@@ -353,7 +369,7 @@ class ReportsController extends Controller {
                             $jan_jun_count = 0;
                             $jul_dec_count = 0;
                             $_faabs[$id['name']] = [
-                                //'id' => $id['id'],
+//'id' => $id['id'],
                                 'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
                                 'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
                                         ->where(['faabs_group_id' => $id['id']])
@@ -361,17 +377,17 @@ class ReportsController extends Controller {
                             ];
 
 
-                            //We get those trained in a year for a particular period
+//We get those trained in a year for a particular period
                             /* $_years = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                               ->select(['YEAR(training_date) as year'])
                               ->where(["faabs_group_id" => $id['id']])
                               ->distinct()
                               ->all(); */
-                            //if (!empty($_years)) {
-                            //  foreach ($_years as $yr) {
-                            //We use hardcoded years instead of dynamically fetching them
-                            //2019,2020,2021,2022,2023,2024
-                            //1.2019
+//if (!empty($_years)) {
+//  foreach ($_years as $yr) {
+//We use hardcoded years instead of dynamically fetching them
+//2019,2020,2021,2022,2023,2024
+//1.2019
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                                     ->andWhere(['YEAR(training_date)' => '2019'])
@@ -388,7 +404,7 @@ class ReportsController extends Controller {
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
 
-                            //2.2020
+//2.2020
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -405,7 +421,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //3.2021
+//3.2021
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -422,7 +438,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //4.2022
+//4.2022
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -439,7 +455,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //5.2023
+//5.2023
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -456,7 +472,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //6.2024
+//6.2024
                             /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                               ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                               ->andWhere(['YEAR(training_date)' => '2024'])
@@ -472,25 +488,25 @@ class ReportsController extends Controller {
                               'jul_dec' => $jul_dec_count
                               ];
                               array_push($_faabs[$id['name']], $_cnt_array); */
-                            //}
+//}
 
 
                             array_push($_data, $_faabs);
-                            //}
+//}
                         }
                     }
-                    //var_dump($_data);
+//var_dump($_data);
                 }
             }
 
-            //Filter by camp
+//Filter by camp
             if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
                     !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
                     !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
                 $district_ids = [];
                 $faabs_ids = [];
 
-                //We get all the FaaBS in a camp
+//We get all the FaaBS in a camp
                 $faabs_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
                         ->asArray()
                         ->all();
@@ -504,7 +520,7 @@ class ReportsController extends Controller {
                             $jan_jun_count = 0;
                             $jul_dec_count = 0;
                             $_faabs[$id['name']] = [
-                                //'id' => $id['id'],
+//'id' => $id['id'],
                                 'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
                                 'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
                                         ->where(['faabs_group_id' => $id['id']])
@@ -512,12 +528,12 @@ class ReportsController extends Controller {
                             ];
 
 
-                            //We get those trained in a year for a particular period
-                            //if (!empty($_years)) {
-                            //  foreach ($_years as $yr) {
-                            //We use hardcoded years instead of dynamically fetching them
-                            //2019,2020,2021,2022,2023,2024
-                            //1.2019
+//We get those trained in a year for a particular period
+//if (!empty($_years)) {
+//  foreach ($_years as $yr) {
+//We use hardcoded years instead of dynamically fetching them
+//2019,2020,2021,2022,2023,2024
+//1.2019
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                                     ->andWhere(['YEAR(training_date)' => '2019'])
@@ -534,7 +550,7 @@ class ReportsController extends Controller {
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
 
-                            //2.2020
+//2.2020
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -551,7 +567,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //3.2021
+//3.2021
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -568,7 +584,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //4.2022
+//4.2022
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -585,7 +601,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //5.2023
+//5.2023
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -602,7 +618,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //6.2024
+//6.2024
                             /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                               ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                               ->andWhere(['YEAR(training_date)' => '2024'])
@@ -618,24 +634,24 @@ class ReportsController extends Controller {
                               'jul_dec' => $jul_dec_count
                               ];
                               array_push($_faabs[$id['name']], $_cnt_array); */
-                            //}
+//}
 
 
                             array_push($_data, $_faabs);
-                            //}
+//}
                         }
                     }
-                    //var_dump($_data);
+//var_dump($_data);
                 }
             }
-            //Filter by camp for camp/district users only
+//Filter by camp for camp/district users only
             if (empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['province_id']) &&
                     empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['district_id']) &&
                     !empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id'])) {
                 $district_ids = [];
                 $faabs_ids = [];
 
-                //We get all the FaaBS in a camp
+//We get all the FaaBS in a camp
                 $faabs_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
                         ->asArray()
                         ->all();
@@ -649,7 +665,7 @@ class ReportsController extends Controller {
                             $jan_jun_count = 0;
                             $jul_dec_count = 0;
                             $_faabs[$id['name']] = [
-                                //'id' => $id['id'],
+//'id' => $id['id'],
                                 'camp' => \backend\models\Camps::findOne($id['camp_id'])->name,
                                 'total_faabs_enrolled' => \backend\models\MeFaabsCategoryAFarmers::find()
                                         ->where(['faabs_group_id' => $id['id']])
@@ -657,12 +673,12 @@ class ReportsController extends Controller {
                             ];
 
 
-                            //We get those trained in a year for a particular period
-                            //if (!empty($_years)) {
-                            //  foreach ($_years as $yr) {
-                            //We use hardcoded years instead of dynamically fetching them
-                            //2019,2020,2021,2022,2023,2024
-                            //1.2019
+//We get those trained in a year for a particular period
+//if (!empty($_years)) {
+//  foreach ($_years as $yr) {
+//We use hardcoded years instead of dynamically fetching them
+//2019,2020,2021,2022,2023,2024
+//1.2019
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                                     ->andWhere(['YEAR(training_date)' => '2019'])
@@ -679,7 +695,7 @@ class ReportsController extends Controller {
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
 
-                            //2.2020
+//2.2020
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -696,7 +712,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //3.2021
+//3.2021
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -713,7 +729,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //4.2022
+//4.2022
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -730,7 +746,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //5.2023
+//5.2023
                             $_cnt_array = [];
                             $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                                     ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
@@ -747,7 +763,7 @@ class ReportsController extends Controller {
                                 'jul_dec' => $jul_dec_count
                             ];
                             array_push($_faabs[$id['name']], $_cnt_array);
-                            //6.2024
+//6.2024
                             /* $jan_jun_count = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                               ->where(['IN', 'MONTH(training_date)', [1, 2, 3, 4, 5, 6]])
                               ->andWhere(['YEAR(training_date)' => '2024'])
@@ -763,14 +779,14 @@ class ReportsController extends Controller {
                               'jul_dec' => $jul_dec_count
                               ];
                               array_push($_faabs[$id['name']], $_cnt_array); */
-                            //}
+//}
 
 
                             array_push($_data, $_faabs);
-                            //}
+//}
                         }
                     }
-                    //var_dump($_data);
+//var_dump($_data);
                 }
             }
 
@@ -999,11 +1015,11 @@ class ReportsController extends Controller {
             $searchModel = new \backend\models\ProjectOutreachSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $year = date("Y");
-            //var_dump($dataProvider->getModels());
-            //We get cumulatives before any filters
+//var_dump($dataProvider->getModels());
+//We get cumulatives before any filters
             if ($dataProvider->getCount() > 0) {
                 $models = $dataProvider->getModels();
-            
+
                 foreach ($models as $model) {
                     if ($model['sub_component'] == "2.1: Strategic Linkages of Graduating Subsistence Farmers") {
                         $subcomp_21['cumulative_since_2017_number_females'] += $model['number_females'];
@@ -1047,7 +1063,7 @@ class ReportsController extends Controller {
             if ($dataProvider->getCount() > 0) {
                 $models = $dataProvider->getModels();
                 foreach ($models as $model) {
-                    //For sub componet 2.1
+//For sub componet 2.1
                     if ($model['sub_component'] == "2.1: Strategic Linkages of Graduating Subsistence Farmers") {
                         if ($model['quarter'] == 1) {
                             $subcomp_21['q1']['province_id'] = $model['province_id'];
@@ -1110,7 +1126,7 @@ class ReportsController extends Controller {
                             $subcomp_21['q4']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
                         }
                     }
-                    //For sub componet 2.2
+//For sub componet 2.2
                     if ($model['sub_component'] == "2.2: Enhancing Agro-Micro, Small & Medium Enterprises") {
                         if ($model['quarter'] == 1) {
                             $subcomp_22['q1']['province_id'] = $model['province_id'];
@@ -1173,7 +1189,7 @@ class ReportsController extends Controller {
                             $subcomp_22['q4']['total_young_not_young'] += ($model['number_young'] + $model['number_not_young']);
                         }
                     }
-                    //For sub componet 2.3
+//For sub componet 2.3
                     if ($model['sub_component'] == "2.3: Facilitating Pro-Smallholder Market-Pull Agribusiness") {
                         if ($model['quarter'] == 1) {
                             $subcomp_23['q1']['province_id'] = $model['province_id'];
@@ -1258,7 +1274,7 @@ class ReportsController extends Controller {
         if (User::userIsAllowedTo('View facilitation of improved technologies/best practices report')) {
             $searchModel = new \backend\models\MeFaabsTrainingAttendanceSheetSearch();
 
-            //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -1295,8 +1311,8 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //1.We get details for indicator 1 
-                //We fetch sex details for each subcomponent
+//1.We get details for indicator 1 
+//We fetch sex details for each subcomponent
                 $indicator_one_sex_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['sex', 'count(sex) as cnt_sex', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_one])
@@ -1331,7 +1347,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_one])
@@ -1353,7 +1369,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_one])
@@ -1377,8 +1393,8 @@ class ReportsController extends Controller {
                 $indicator_1 ['subcomp_21'] = $subcomp_21;
                 $indicator_1 ['subcomp_22'] = $subcomp_22;
 
-                //2.We get details for indicator 2
-                //We fetch sex details for each subcomponent
+//2.We get details for indicator 2
+//We fetch sex details for each subcomponent
                 $subcomp_21 = [
                     'female' => 0,
                     'male' => 0,
@@ -1427,7 +1443,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_two])
@@ -1449,7 +1465,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_two])
@@ -1474,8 +1490,8 @@ class ReportsController extends Controller {
                 $indicator_2 ['subcomp_22'] = $subcomp_22;
 
 
-                //3.We get details for indicator 3
-                //We fetch sex details for each subcomponent
+//3.We get details for indicator 3
+//We fetch sex details for each subcomponent
                 $subcomp_21 = [
                     'female' => 0,
                     'male' => 0,
@@ -1524,7 +1540,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_three])
@@ -1546,7 +1562,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_three])
@@ -1571,8 +1587,8 @@ class ReportsController extends Controller {
                 $indicator_3 ['subcomp_22'] = $subcomp_22;
 
 
-                //4.We get details for indicator 4
-                //We fetch sex details for each subcomponent
+//4.We get details for indicator 4
+//We fetch sex details for each subcomponent
                 $subcomp_21 = [
                     'female' => 0,
                     'male' => 0,
@@ -1621,7 +1637,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_four])
@@ -1643,7 +1659,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_four])
@@ -1667,8 +1683,8 @@ class ReportsController extends Controller {
                 $indicator_4 ['subcomp_21'] = $subcomp_21;
                 $indicator_4 ['subcomp_22'] = $subcomp_22;
 
-                //5.We get details for indicator 5
-                //We fetch sex details for each subcomponent
+//5.We get details for indicator 5
+//We fetch sex details for each subcomponent
                 $subcomp_21 = [
                     'female' => 0,
                     'male' => 0,
@@ -1717,7 +1733,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_five])
@@ -1739,7 +1755,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_five])
@@ -1764,8 +1780,8 @@ class ReportsController extends Controller {
                 $indicator_5 ['subcomp_22'] = $subcomp_22;
 
 
-                //6.We get details for indicator 6
-                //We fetch sex details for each subcomponent
+//6.We get details for indicator 6
+//We fetch sex details for each subcomponent
                 $subcomp_21 = [
                     'female' => 0,
                     'male' => 0,
@@ -1814,7 +1830,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_six])
@@ -1836,7 +1852,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_six])
@@ -1860,8 +1876,8 @@ class ReportsController extends Controller {
                 $indicator_6 ['subcomp_21'] = $subcomp_21;
                 $indicator_6 ['subcomp_22'] = $subcomp_22;
 
-                //7.We get details for indicator 7
-                //We fetch sex details for each subcomponent
+//7.We get details for indicator 7
+//We fetch sex details for each subcomponent
                 $subcomp_21 = [
                     'female' => 0,
                     'male' => 0,
@@ -1910,7 +1926,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get women headed count
+//We get women headed count
                 $indicator_one_women_head_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(household_head_type) as hh_type', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_seven])
@@ -1932,7 +1948,7 @@ class ReportsController extends Controller {
                     }
                 }
 
-                //We get youth count
+//We get youth count
                 $indicator_one_wyouth_details = \backend\models\MeFaabsTrainingAttendanceSheet::find()
                         ->select(['count(youth_non_youth) as cnt_youth', 'topic_subcomponent'])
                         ->where(['topic_indicator' => \backend\models\MeFaabsTrainingAttendanceSheet::indicator_seven])
@@ -1957,7 +1973,7 @@ class ReportsController extends Controller {
                 $indicator_7 ['subcomp_22'] = $subcomp_22;
 
 
-                //var_dump($indicator_2);
+//var_dump($indicator_2);
             }
 
             return $this->render('facilitation-imporoved-technologies', [
@@ -1983,7 +1999,7 @@ class ReportsController extends Controller {
         $district_id = Yii::$app->request->post('district_id', null);
         $year = Yii::$app->request->post('year', null);
         $dataProvider = $searchModel->searchByYearProvinceDistrict($year, $province_id, $district_id);
-        //var_dump($dataProvider->getModels());
+//var_dump($dataProvider->getModels());
         $district = !empty($district_id) ? \backend\models\Districts::findOne($district_id)->name : "";
         $province = !empty($province_id) ? \backend\models\Provinces::findOne($province_id)->name : "";
 
@@ -2007,7 +2023,7 @@ class ReportsController extends Controller {
                 ->setKeywords('office 2007 openxml php')
                 ->setCategory('Report');
 
-        //Header row
+//Header row
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B1', 'Physical Progress Tracking Table')
                 ->setCellValue('H1', "Planned AWPB ")
@@ -2024,7 +2040,7 @@ class ReportsController extends Controller {
         $spreadsheet->getActiveSheet()->getStyle("R1:V1")->getAlignment()->setHorizontal('center');
 
 
-        //Second row
+//Second row
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B2', 'Comp#')
                 ->setCellValue('C2', 'Sub-comp')
@@ -2050,7 +2066,7 @@ class ReportsController extends Controller {
         $current_row = 3;
         foreach ($dataProvider->getModels() as $models => $model) {
             $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
-            //Get component
+//Get component
             $component = "";
             $component_model = \backend\models\AwpbComponent::findOne($model->component_id);
             if (!empty($component_model)) {
@@ -2061,20 +2077,20 @@ class ReportsController extends Controller {
                 }
             }
 
-            //Get subcomponent
+//Get subcomponent
             $subcomponent = "";
             if (!empty($component_model)) {
                 if ($component_model->subcomponent == "Subcomponent") {
                     $subcomponent = $component_model->code;
                 }
             }
-            //Get activity description
+//Get activity description
             $awpb_activity = \backend\models\AwpbActivity::findOne($model->activity_id);
             $activity = !empty($awpb_activity) ? $awpb_activity->description : "";
 
-            //get indicator
+//get indicator
             $awpb_indicator = \backend\models\AwpbIndicator::findOne($model->indicator_id);
-            //Get awpb target
+//Get awpb target
             $awpb_q_total = 0;
             $awpb_q_total += $model->quarter_one_quantity;
             $awpb_q_total += $model->quarter_two_quantity;
@@ -2086,7 +2102,7 @@ class ReportsController extends Controller {
             $awpb_actual_total += $model->quarter_three_actual;
             $awpb_actual_total += $model->quarter_four_actual;
 
-            //calculate planned/achieved percentage
+//calculate planned/achieved percentage
             $awpb_achieved = 0;
             if ($awpb_q_total > 0) {
                 $awpb_achieved = round(($awpb_actual_total / $awpb_q_total) * 100, 1);
@@ -2129,12 +2145,12 @@ class ReportsController extends Controller {
 
 
 
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+// Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $spreadsheet->setActiveSheetIndex(0);
         $file = 'Physical_tracking_table' . date("Ymdhis");
-        // Rename worksheet
+// Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle('Physical tracking table');
-        // Redirect output to a client's web browser (Xlsx)
+// Redirect output to a client's web browser (Xlsx)
         if (!empty($province)) {
             $file = 'Physicaltrktbl' . $province . date("Ymdhis");
             $spreadsheet->getActiveSheet()->setTitle('Physicaltrktbl|' . $province);
@@ -2146,10 +2162,10 @@ class ReportsController extends Controller {
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
         header('Cache-Control: max-age=0');
-        // If you're serving to IE 9, then the following may be needed
+// If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
 
-        // If you're serving to IE over SSL, then the following may be needed
+// If you're serving to IE over SSL, then the following may be needed
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
@@ -2166,7 +2182,7 @@ class ReportsController extends Controller {
         $camp_id = Yii::$app->request->post('camp_id', null);
         $training_type = Yii::$app->request->post('training_type', null);
         $data = json_decode(Yii::$app->request->post('data', null), true);
-        // $camp_model = \backend\models\Camps::findOne($camp_id);
+// $camp_model = \backend\models\Camps::findOne($camp_id);
         $district = !empty($district_id) ? \backend\models\Districts::findOne($district_id)->name : "";
         $province = !empty($province_id) ? \backend\models\Provinces::findOne($province_id)->name : "";
         $spreadsheet = new Spreadsheet();
@@ -2190,7 +2206,7 @@ class ReportsController extends Controller {
                 ->setKeywords('office 2007 openxml php')
                 ->setCategory('Report');
 
-        //Row 1
+//Row 1
         if (!empty($province) || !empty($district)) {
             $spreadsheet->setActiveSheetIndex(0)
                     ->setCellValue('B1', 'Province')
@@ -2209,13 +2225,13 @@ class ReportsController extends Controller {
             $spreadsheet->getActiveSheet()->getStyle("B1")->getFont()->setBold(true);
         }
 
-        //Row 2
+//Row 2
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B3', $training_type)
                 ->mergeCells('B3:O3');
         $spreadsheet->getActiveSheet()->getStyle("B3")->getFont()->setBold(true);
 
-        //Row 3
+//Row 3
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B4', 'FaaBS Location Details')
                 ->setCellValue('D4', '')
@@ -2243,7 +2259,7 @@ class ReportsController extends Controller {
         $spreadsheet->getActiveSheet()->getStyle("K4")->getAlignment()->setHorizontal('center');
         $spreadsheet->getActiveSheet()->getStyle("M4")->getAlignment()->setHorizontal('center');
 
-        //Row 4
+//Row 4
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B5', 'Name of FaaBS')
                 ->setCellValue('C5', 'Camp')
@@ -2259,7 +2275,7 @@ class ReportsController extends Controller {
                 ->setCellValue('M5', '# of Trained [Jan-Jun]')
                 ->setCellValue('N5', '# of Trained [Jul-Dec]');
 
-        //Row 6
+//Row 6
         $sum_2019_jan_jun = 0;
         $sum_2019_jul_dec = 0;
         $sum_2020_jan_jun = 0;
@@ -2306,7 +2322,7 @@ class ReportsController extends Controller {
             }
         }
 
-        //Row after loop
+//Row after loop
         $_next_row = $current_row;
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B' . $_next_row, "")
@@ -2326,21 +2342,21 @@ class ReportsController extends Controller {
         $spreadsheet->getActiveSheet()->getStyle("C" . $_next_row)->getAlignment()->setHorizontal('right');
         $spreadsheet->getActiveSheet()->getStyle("C" . $_next_row . ":N" . $_next_row)->getFont()->setBold(true);
 
-        // Rename worksheet
+// Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle('Training attendance cumulative');
 
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+// Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $spreadsheet->setActiveSheetIndex(0);
 
-        // Redirect output to a client's web browser (Xlsx)
+// Redirect output to a client's web browser (Xlsx)
         $file = 'Training attendance cumulative_' . date("Ymdhis");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
         header('Cache-Control: max-age=0');
-        // If you're serving to IE 9, then the following may be needed
+// If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
 
-        // If you're serving to IE over SSL, then the following may be needed
+// If you're serving to IE over SSL, then the following may be needed
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
@@ -2391,7 +2407,7 @@ class ReportsController extends Controller {
                 ->setKeywords('office 2007 openxml php')
                 ->setCategory('Report');
 
-        //Row 1
+//Row 1
         if (!empty($province) && !empty($district)) {
             $spreadsheet->setActiveSheetIndex(0)
                     ->setCellValue('B1', 'Province')
@@ -2422,14 +2438,14 @@ class ReportsController extends Controller {
             $spreadsheet->getActiveSheet()->getStyle("F1")->getFont()->setBold(true);
         }
 
-        //Row 2
+//Row 2
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('C3', 'Sub-component 2.1')
                 ->setCellValue('H3', 'Sub-component 2.2')
                 ->mergeCells('C3:G3')
                 ->mergeCells('H3:L3');
 
-        //Row 3
+//Row 3
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B4', 'Output Level Indicator')
                 ->setCellValue('C4', '# Female')
@@ -2444,7 +2460,7 @@ class ReportsController extends Controller {
                 ->setCellValue('L4', 'Youth');
         $spreadsheet->getActiveSheet()->getStyle("B4")->getFont()->setBold(true);
 
-        //Row 4 indicator 1
+//Row 4 indicator 1
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B5', 'Number of smallholders trained in the use of improved production technologies & best practices to enhance productivity that allow production to comply with market requirements (at least 3 improved production technologies facilitated)')
                 ->setCellValue('C5', $indicator_1['subcomp_21']['female'])
@@ -2458,7 +2474,7 @@ class ReportsController extends Controller {
                 ->setCellValue('K5', $indicator_1['subcomp_22']['women_heads'])
                 ->setCellValue('L5', $indicator_1['subcomp_22']['Youth']);
 
-        //Row 5 indicator 2
+//Row 5 indicator 2
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B6', 'Number of smallholders trained in improved Post-harvest technologies (at least 2 improved post-harvest technologies)')
                 ->setCellValue('C6', $indicator_2['subcomp_21']['female'])
@@ -2472,7 +2488,7 @@ class ReportsController extends Controller {
                 ->setCellValue('K6', $indicator_2['subcomp_22']['women_heads'])
                 ->setCellValue('L6', $indicator_2['subcomp_22']['Youth']);
 
-        //Row 6 indicator 3
+//Row 6 indicator 3
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B7', 'Number of smallholders who have been trained in improved pre- and Post-harvest technologies (at least 2 improved post-harvest technologies) to minimize losses and increase market value of their produce')
                 ->setCellValue('C7', $indicator_3['subcomp_21']['female'])
@@ -2486,7 +2502,7 @@ class ReportsController extends Controller {
                 ->setCellValue('K7', $indicator_3['subcomp_22']['women_heads'])
                 ->setCellValue('L7', $indicator_3['subcomp_22']['Youth']);
 
-        //Row 7 indicator 4
+//Row 7 indicator 4
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B8', 'Number of producer organizations/cooperatives/marketing groups established or strengthened [Strengthening of coordination & business models]')
                 ->setCellValue('C8', $indicator_4['subcomp_21']['female'])
@@ -2500,7 +2516,7 @@ class ReportsController extends Controller {
                 ->setCellValue('K8', $indicator_4['subcomp_22']['women_heads'])
                 ->setCellValue('L8', $indicator_4['subcomp_22']['Youth']);
 
-        //Row 8 indicator 5
+//Row 8 indicator 5
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B9', 'Number of smallholder producers (desegregated by gender) in organizations/cooperatives/marketing groups trained in crucial aspects for inclusion in VC i.e. identification of partnership opportunities, negotiation, market linkages, business management, governance etc [Strengthening of coordination & business models] ')
                 ->setCellValue('C9', $indicator_5['subcomp_21']['female'])
@@ -2515,9 +2531,9 @@ class ReportsController extends Controller {
                 ->setCellValue('L9', $indicator_5['subcomp_22']['Youth']);
 
 
-        //Row 9 indicator 6
+//Row 9 indicator 6
         $spreadsheet->setActiveSheetIndex(0)
-                // ->setCellValue('B3', 'Report name')
+// ->setCellValue('B3', 'Report name')
                 ->setCellValue('B10', 'Number of local service providers (farm & non-farm) strengthened and/or trained to provide services that allow production to meet market requirements [Strengthening of coordination & business models]')
                 ->setCellValue('C10', $indicator_6['subcomp_21']['female'])
                 ->setCellValue('D10', $indicator_6['subcomp_21']['male'])
@@ -2531,7 +2547,7 @@ class ReportsController extends Controller {
                 ->setCellValue('L10', $indicator_6['subcomp_22']['Youth']);
 
 
-        //Row 10 indicator 7
+//Row 10 indicator 7
         $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('B11', 'C..1.8 Number of Households reached with targeted support to improve their nutrition')
                 ->setCellValue('C11', $indicator_7['subcomp_21']['female'])
@@ -2544,22 +2560,22 @@ class ReportsController extends Controller {
                 ->setCellValue('J11', $indicator_7['subcomp_22']['Total_female_male'])
                 ->setCellValue('K11', $indicator_7['subcomp_22']['women_heads'])
                 ->setCellValue('L11', $indicator_7['subcomp_22']['Youth']);
-        // $spreadsheet->getActiveSheet()->getStyle('B11')->getAlignment()->setWrapText(true);
-        // Rename worksheet
+// $spreadsheet->getActiveSheet()->getStyle('B11')->getAlignment()->setWrapText(true);
+// Rename worksheet
         $spreadsheet->getActiveSheet()->setTitle($camp_model->name . ' FIT Report');
 
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+// Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $spreadsheet->setActiveSheetIndex(0);
 
-        // Redirect output to a client's web browser (Xlsx)
+// Redirect output to a client's web browser (Xlsx)
         $file = $camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
         header('Cache-Control: max-age=0');
-        // If you're serving to IE 9, then the following may be needed
+// If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
 
-        // If you're serving to IE over SSL, then the following may be needed
+// If you're serving to IE over SSL, then the following may be needed
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
@@ -2569,8 +2585,9 @@ class ReportsController extends Controller {
         $writer->save('php://output');
         exit;
     }
-public function actionDownloadBudget($id) {
-    $budget_model = \backend\models\AwpbGeneralLedger::find()
+
+    public function actionDownloadBudget($id) {
+        $budget_model = \backend\models\AwpbGeneralLedger::find()
                 ->select(['awpb_template.fiscal_year as year', 'awpb_general_ledger.general_ledger_account as code',
                     'SUM(mo_1_amount) as m1',
                     'SUM(mo_2_amount) as m2',
@@ -2585,13 +2602,13 @@ public function actionDownloadBudget($id) {
                     'SUM(mo_11_amount) as m11',
                     'SUM(mo_12_amount) as m12',
                 ])
-               // ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
+// ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
                 ->leftJoin('awpb_template', 'awpb_template.id = awpb_general_ledger.awpb_template_id')
                 ->where(['awpb_general_ledger.awpb_template_id' => $id])
-                // ->andWhere(['quarter' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['quarter']])
-                //  ->andWhere(['IN', 'faabs_group_id', $faabs_ids])
-                // ->andWhere(['youth_non_youth' => 'Youth'])
-                // ->andWhere(['YEAR(training_date)' => date("Y", strtotime(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['year']))])
+// ->andWhere(['quarter' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['quarter']])
+//  ->andWhere(['IN', 'faabs_group_id', $faabs_ids])
+// ->andWhere(['youth_non_youth' => 'Youth'])
+// ->andWhere(['YEAR(training_date)' => date("Y", strtotime(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['year']))])
                 ->groupBy(['funder_id'])
                 ->asArray()
                 ->all();
@@ -2616,7 +2633,7 @@ public function actionDownloadBudget($id) {
                 ->setDescription('Facilitation of Improved Technologies/Best Practices report for Office 2007 XLSX, generated using PHP classes.')
                 ->setKeywords('office 2007 openxml php')
                 ->setCategory('Report');
-$year="";
+        $year = "";
         if (!empty($budget_model)) {
             $row = 0;
             foreach ($budget_model as $_model) {
@@ -2633,14 +2650,14 @@ $year="";
                 $row10 = $row9 + 1;
                 $row11 = $row10 + 1;
                 $row12 = $row11 + 1;
-                //Legder Account, Budget Period Date, Budget
-                //       0700        2019-02-31      K2000
-                //
+//Legder Account, Budget Period Date, Budget
+//       0700        2019-02-31      K2000
+//
                 $spreadsheet->setActiveSheetIndex(0)
-                        // ->setCellValue('B1', $_model['quarter_one_amount'])
-                        // ->setCellValue('B2',$_model['mo_1'])
-                        // ->setCellValue('B3', $_model['quarter_three_amount'])
-                        // ->setCellValue('B4',$_model['quarter_four_amount'])
+// ->setCellValue('B1', $_model['quarter_one_amount'])
+// ->setCellValue('B2',$_model['mo_1'])
+// ->setCellValue('B3', $_model['quarter_three_amount'])
+// ->setCellValue('B4',$_model['quarter_four_amount'])
                         ->setCellValue('A' . $row1, $_model['code'])
                         ->setCellValue('B' . $row1, $_model['year'] . '-01-31')
                         ->setCellValue('C' . $row1, $_model['m1'])
@@ -2679,25 +2696,25 @@ $year="";
                         ->setCellValue('C' . $row12, $_model['m12']);
 
                 $row = $row + 12;
-                //$row10 = $row+1;$row11 = $row+1;$row12 = $row+1;
+//$row10 = $row+1;$row11 = $row+1;$row12 = $row+1;
             }
         }
 
 
-        $spreadsheet->getActiveSheet()->setTitle( $year.' Budget');
+        $spreadsheet->getActiveSheet()->setTitle($year . ' Budget');
 
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+// Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $spreadsheet->setActiveSheetIndex(0);
 
-        // Redirect output to a client's web browser (Xlsx)
-        $file = $year.'_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
+// Redirect output to a client's web browser (Xlsx)
+        $file = $year . '_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
         header('Cache-Control: max-age=0');
-        // If you're serving to IE 9, then the following may be needed
+// If you're serving to IE 9, then the following may be needed
         header('Cache-Control: max-age=1');
 
-        // If you're serving to IE over SSL, then the following may be needed
+// If you're serving to IE over SSL, then the following may be needed
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
@@ -2709,5 +2726,3 @@ $year="";
     }
 
 }
-
-

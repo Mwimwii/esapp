@@ -71,10 +71,8 @@ class Right extends \yii\db\ActiveRecord {
             'Manage AWPB templates' => "",
             'View AWPB templates' => "",
             'View AWPB activity lines' => "",
-
             'Manage AWPB' => "Manage AWPB",
             'Manage PW AWPB' => "Manage PW AWPB",
-
             'Manage AWPB activity lines' => 'View AWPB activity lines',
             'Submit District AWPB' => "",
             'Approve AWPB - Provincial' => 'Approve AWPB - Provincial',
@@ -160,6 +158,10 @@ class Right extends \yii\db\ActiveRecord {
             'Review timesheets' => "Review timesheets",
             'Submit timesheets' => "Submit timesheets",
             'View time sheets' => "View time sheets",
+            'Submit logframe data' => "Submit logframe data",
+            'View logframe data' => "View logframe data",
+            'View logframe report' => "View logframe report",
+            'Manage logframe programe targets' => "Manage logframe programe targets",
 
                 //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
 

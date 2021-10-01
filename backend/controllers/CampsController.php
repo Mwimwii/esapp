@@ -48,7 +48,7 @@ class CampsController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        if (User::userIsAllowedTo('Manage camps')) {
+        if (User::userIsAllowedTo('Manage camps') || User::userIsAllowedTo('View camps')) {
             $model = new Camps();
             $searchModel = new CampsSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -117,7 +117,7 @@ class CampsController extends Controller {
         }
     }
     public function actionView($id) {
-        if (User::userIsAllowedTo('Manage camps')) {
+        if (User::userIsAllowedTo('Manage camps') || User::userIsAllowedTo('View camps')) {
             return $this->render('view', [
                         'model' => $this->findModel($id),
             ]);

@@ -24,7 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
         if (User::userIsAllowedTo('Manage camps')) {
-            echo Html::a('<i class="fa fa-plus"></i> <span class="text-xs">Add Camp</span>', ['create'], ['class' => 'btn btn-success btn-xs']);
+            echo Html::a('<i class="fa fa-plus"></i> '
+                    . '<span class="text-xs">Add Camp</span>', ['create'], ['class' => 'btn btn-success btn-xs']);
             echo '<hr class="dotted short">';
         }
         $gridColumns = [
@@ -171,8 +172,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
             ],
         ];
-        ?>
-        <?php
+       
         $fullExportMenu = "";
         if (!empty($dataProvider) && $dataProvider->getCount() > 0) {
 

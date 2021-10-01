@@ -32,8 +32,11 @@ $data = [
                     $form->field($model, "category", ['enableAjaxValidation' => true])
                     ->dropDownList(
                             [
-                                'Crops' => 'Crops',
-                                'Livestock' => 'Livestock',
+                                'Legumes' => 'Legumes',
+                                'Rice' => 'Rice',
+                                'Small livestock - Goats & sheep' => 'Small livestock - Goats & sheep',
+                                'Small livestock - Village chickens' => 'Small livestock - Village chickens',
+                                'Small livestock - Pigs' => 'Small livestock - Pigs',
                                 'Aquaculture' => 'Aquaculture'
                             ], ['custom' => true, 'prompt' => 'Select topic category', 'required' => true]
             );

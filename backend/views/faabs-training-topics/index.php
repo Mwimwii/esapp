@@ -57,8 +57,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'pluginOptions' => ['allowClear' => true],
                     ],
                     'filter' => [
-                        'Crops' => 'Crops',
-                        'Livestock' => 'Livestock',
+                        'Legumes' => 'Legumes',
+                        'Rice' => 'Rice',
+                        'Small livestock - Goats & sheep' => 'Small livestock - Goats & sheep',
+                        'Small livestock - Village chickens' => 'Small livestock - Village chickens',
+                        'Small livestock - Pigs' => 'Small livestock - Pigs',
                         'Aquaculture' => 'Aquaculture'
                     ],
                     'filterInputOptions' => ['prompt' => 'Filter by category', 'class' => 'form-control', 'id' => null],

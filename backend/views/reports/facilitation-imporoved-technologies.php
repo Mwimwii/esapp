@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]);
                 ?>
             </p>
-            <table class="table table-bordered table table-sm">
+            <table class="table table-bordered table-sm">
                 <tr>
                     <th colspan="1"></th> 
                     <th colspan="5" class="text-center">Sub-component 2.1</th>

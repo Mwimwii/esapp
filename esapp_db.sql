@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.26, for Linux (x86_64)
 --
--- Host: localhost    Database: e_sapp
+-- Host: localhost    Database: esapp_server
 -- ------------------------------------------------------
 -- Server version	8.0.26-0ubuntu0.21.04.3
 
@@ -46,7 +46,7 @@ CREATE TABLE `activity_time_sheets_district_staff` (
   PRIMARY KEY (`id`),
   KEY `fk_activity_time_sheets_district_staff_1_idx` (`rate_id`),
   CONSTRAINT `fk_activity_time_sheets_district_staff_1` FOREIGN KEY (`rate_id`) REFERENCES `conf_hourly_rates` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -55,6 +55,7 @@ CREATE TABLE `activity_time_sheets_district_staff` (
 
 LOCK TABLES `activity_time_sheets_district_staff` WRITE;
 /*!40000 ALTER TABLE `activity_time_sheets_district_staff` DISABLE KEYS */;
+INSERT INTO `activity_time_sheets_district_staff` VALUES (1,1,'September','PCO-06','Test desc',2,2,4,2000.00,1,'',1630918941,1630919153,10,1,'2021',2,1,'2021-09-06',1),(2,1,'August','PCO-06','Activity description',4,4,8,4000.00,1,'',1632306084,1632306241,9,1,'2021',2,1,'2021-09-22',1);
 /*!40000 ALTER TABLE `activity_time_sheets_district_staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +156,7 @@ CREATE TABLE `awpb_activity` (
 
 LOCK TABLES `awpb_activity` WRITE;
 /*!40000 ALTER TABLE `awpb_activity` DISABLE KEYS */;
-INSERT INTO `awpb_activity` VALUES (90,'1.1.A',NULL,42,1,1,NULL,0,'Main Activity',32,'Policy related activities','Policy related activities',1,NULL,0,0,19,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1607182013,1625672105,14,14),(95,'1.1.A2',90,42,NULL,1,12,1,'Subactivity',NULL,'Provincial Validation of the ZNAD','Provincial Validation of the ZNAD',1,500,0,1965,19,2,'0764',NULL,NULL,NULL,NULL,NULL,9,1621278447,1627088269,14,14),(96,'1.1.A1',90,42,NULL,1,12,1,'Subactivity',NULL,'Drafting of the ZNADS','Drafting of the ZNADS',1,500,0,0,19,1,'0763',NULL,NULL,NULL,NULL,NULL,1,1621281291,1627058788,14,14),(98,'1.1.B',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,' ZNADS implementation activities ',' ZNADS implementation activities ',NULL,NULL,0,0,20,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1621282942,1625666470,14,14),(99,'1.1.B1',98,42,NULL,1,12,1,'Subactivity',NULL,'Dissemination of the Strategy    ','Dissemination of the Strategy    ',1,300,0,0,NULL,2,'0765',NULL,NULL,NULL,NULL,NULL,1,1621283049,1627058899,14,14),(100,'2.1.A',NULL,44,NULL,2,NULL,0,'Main Activity',NULL,'Activities related to strengthening of organizations/cooperatives/marketing groups  and creation of formal partnerships/agreements','Activity 2.1.A',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1622381978,1622381978,14,14),(101,'2.1.A1',100,44,NULL,2,12,1,'Subactivity',NULL,'Stakeholder Engagement for Phase 2 and 3 Cat. A farmers\r\n','Stakeholder Engagement for Phase 2 and 3 Cat. A farmers',NULL,500,0,0,NULL,2,'0760',NULL,NULL,NULL,NULL,NULL,1,1622386805,1627059142,14,14),(102,'1.1.A3',90,42,NULL,1,12,1,'Subactivity',NULL,'ZNADS launch','ZNADS launch',NULL,500,0,0,19,1,'2000',NULL,NULL,NULL,NULL,NULL,1,1625654005,1625672105,14,14),(103,'1.1.C',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'Key agribusiness studies related activities','Key agribusiness studies related activit',NULL,NULL,0,0,22,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1625667087,1625667087,14,14),(104,'1.1.D',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'Policy-relevant knowledge products activities','Policy-relevant knowledge products activities',NULL,NULL,0,0,23,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1625667150,1625668787,14,14),(105,'1.1.E',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'Number of policy forum related activities','Number of policy forum related activitie',NULL,NULL,0,0,24,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1625667244,1625667244,14,14),(106,'2.1.B',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to Physical access to Markets, processing and storage ','Activities related to Physical access to Markets, processing and storage ',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043429,1626043429,14,14),(107,'2.1.C',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to production techniques and technologies and climate change\r\n','Activities related to production techniques and technologies and climate change',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043522,1626043522,14,14),(108,'2.1.D',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activity D: Activities related to improving MDDW\r\n','Activity D: Activities related to improving MDDW',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043584,1626043584,14,14),(109,'2.1.E',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to HHs with targeted support to improve their nutrition\r\n','Activities related to HHs with targeted support to improve their nutrition',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043640,1626043640,14,14),(110,'2.1.F',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'M&E/KMC Related activities\r\n','M&E/KMC Related activities',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043706,1626043706,14,14),(111,'2.2.A',NULL,47,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to support to physical infrastructure and other investments\r\n','Activities related to support to physical infrastructure and other investments',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043774,1626043774,14,14),(112,'2.2.B',NULL,47,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to training in processing, post-harvest, and value addition\r\n','Activities related to trainings in processing, post-harvet and value addition',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043841,1626043841,14,14),(113,'2.2.C',NULL,47,NULL,NULL,NULL,0,'Main Activity',NULL,'Fidisury\r\n','Fidisury',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043912,1626043912,14,14),(114,'3.1.A',NULL,50,NULL,NULL,NULL,0,'Main Activity',NULL,'Fiduciary & Admin related activities\r\n','Fiduciary & Admin related activities',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626044040,1626044040,14,14),(115,'3.1.B',NULL,50,NULL,NULL,NULL,0,'Main Activity',NULL,'Procurement and Contracts\r\n','Procurement and Contracts',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626044152,1626044152,14,14),(116,'3.1.D',NULL,50,NULL,NULL,NULL,0,'Main Activity',NULL,'Management Information System\r\n','Management Information System',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626044193,1626044193,14,14),(117,'2.1.A2',100,44,NULL,NULL,NULL,1,'Subactivity',NULL,'VC innovation  multi-stakeholder  engagement meetings\r\n','VC innovation  multi-stakeholder  engagement meetings',NULL,500,0,0,NULL,2,'0955',NULL,NULL,NULL,NULL,NULL,8,1626197636,1627088223,14,14),(118,'2.1.A3',100,44,NULL,NULL,12,1,'Subactivity',NULL,'Technical support(training and mentorship) facilitation  in specialised production ','Technical support(training and mentorship) facilitation  in specialised production ',NULL,500,0,0,NULL,1,'0960',NULL,NULL,NULL,NULL,NULL,1,1626197795,1627088189,14,14),(119,'2.2.A2',111,47,NULL,NULL,12,1,'Subactivity',NULL,'District Review of Applications and PCNs\r\n','District Review of Applications and PCNs',NULL,500,0,0,NULL,2,'1063',NULL,NULL,NULL,NULL,NULL,1,1626197906,1627059290,14,14);
+INSERT INTO `awpb_activity` VALUES (90,'1.1.A',NULL,42,1,1,NULL,0,'Main Activity',32,'Policy related activities','Policy related activities',1,NULL,0,0,19,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1607182013,1625672105,1,1),(95,'1.1.A2',90,42,NULL,1,12,1,'Subactivity',NULL,'Provincial Validation of the ZNAD','Provincial Validation of the ZNAD',1,500,0,1965,19,2,'0764',NULL,NULL,NULL,NULL,NULL,9,1621278447,1627088269,1,1),(96,'1.1.A1',90,42,NULL,1,12,1,'Subactivity',NULL,'Drafting of the ZNADS','Drafting of the ZNADS',1,500,0,0,19,1,'0763',NULL,NULL,NULL,NULL,NULL,1,1621281291,1627058788,1,1),(98,'1.1.B',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'ZNADS implementation activities ',' ZNADS implementation activities ',NULL,NULL,0,0,20,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1621282942,1625666470,1,1),(99,'1.1.B1',98,42,NULL,1,12,1,'Subactivity',NULL,'Dissemination of the Strategy    ','Dissemination of the Strategy    ',1,300,0,0,NULL,2,'0765',NULL,NULL,NULL,NULL,NULL,1,1621283049,1627058899,1,1),(100,'2.1.A',NULL,44,NULL,2,NULL,0,'Main Activity',NULL,'Activities related to strengthening of organizations/cooperatives/marketing groups  and creation of formal partnerships/agreements','Activity 2.1.A',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1622381978,1622381978,1,1),(101,'2.1.A1',100,44,NULL,2,12,1,'Subactivity',NULL,'Stakeholder Engagement for Phase 2 and 3 Cat. A farmers\r\n','Stakeholder Engagement for Phase 2 and 3 Cat. A farmers',NULL,500,0,0,NULL,2,'0760',NULL,NULL,NULL,NULL,NULL,1,1622386805,1627059142,1,1),(102,'1.1.A3',90,42,NULL,1,12,1,'Subactivity',NULL,'ZNADS launch','ZNADS launch',NULL,500,0,0,19,1,'2000',NULL,NULL,NULL,NULL,NULL,1,1625654005,1625672105,1,1),(103,'1.1.C',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'Key agribusiness studies related activities','Key agribusiness studies related activit',NULL,NULL,0,0,22,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1625667087,1625667087,1,1),(104,'1.1.D',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'Policy-relevant knowledge products activities','Policy-relevant knowledge products activities',NULL,NULL,0,0,23,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1625667150,1625668787,1,1),(105,'1.1.E',NULL,42,NULL,1,NULL,0,'Main Activity',NULL,'Number of policy forum related activities','Number of policy forum related activitie',NULL,NULL,0,0,24,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1625667244,1625667244,1,1),(106,'2.1.B',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to Physical access to Markets, processing and storage ','Activities related to Physical access to Markets, processing and storage ',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043429,1626043429,1,1),(107,'2.1.C',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to production techniques and technologies and climate change\r\n','Activities related to production techniques and technologies and climate change',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043522,1626043522,1,1),(108,'2.1.D',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activity D: Activities related to improving MDDW\r\n','Activity D: Activities related to improving MDDW',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043584,1626043584,1,1),(109,'2.1.E',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to HHs with targeted support to improve their nutrition\r\n','Activities related to HHs with targeted support to improve their nutrition',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043640,1626043640,1,1),(110,'2.1.F',NULL,44,NULL,NULL,NULL,0,'Main Activity',NULL,'M&E/KMC Related activities\r\n','M&E/KMC Related activities',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043706,1626043706,1,1),(111,'2.2.A',NULL,47,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to support to physical infrastructure and other investments\r\n','Activities related to support to physical infrastructure and other investments',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043774,1626043774,1,1),(112,'2.2.B',NULL,47,NULL,NULL,NULL,0,'Main Activity',NULL,'Activities related to training in processing, post-harvest, and value addition\r\n','Activities related to trainings in processing, post-harvet and value addition',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043841,1626043841,1,1),(113,'2.2.C',NULL,47,NULL,NULL,NULL,0,'Main Activity',NULL,'Fidisury\r\n','Fidisury',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626043912,1626043912,1,1),(114,'3.1.A',NULL,50,NULL,NULL,NULL,0,'Main Activity',NULL,'Fiduciary & Admin related activities\r\n','Fiduciary & Admin related activities',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626044040,1626044040,1,1),(115,'3.1.B',NULL,50,NULL,NULL,NULL,0,'Main Activity',NULL,'Procurement and Contracts\r\n','Procurement and Contracts',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626044152,1626044152,1,1),(116,'3.1.D',NULL,50,NULL,NULL,NULL,0,'Main Activity',NULL,'Management Information System\r\n','Management Information System',NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626044193,1626044193,1,1),(117,'2.1.A2',100,44,NULL,NULL,NULL,1,'Subactivity',NULL,'VC innovation  multi-stakeholder  engagement meetings\r\n','VC innovation  multi-stakeholder  engagement meetings',NULL,500,0,0,NULL,2,'0955',NULL,NULL,NULL,NULL,NULL,8,1626197636,1627088223,1,1),(118,'2.1.A3',100,44,NULL,NULL,12,1,'Subactivity',NULL,'Technical support(training and mentorship) facilitation  in specialised production ','Technical support(training and mentorship) facilitation  in specialised production ',NULL,500,0,0,NULL,1,'0960',NULL,NULL,NULL,NULL,NULL,1,1626197795,1627088189,1,1),(119,'2.2.A2',111,47,NULL,NULL,12,1,'Subactivity',NULL,'District Review of Applications and PCNs\r\n','District Review of Applications and PCNs',NULL,500,0,0,NULL,2,'1063',NULL,NULL,NULL,NULL,NULL,1,1626197906,1627059290,1,1);
 /*!40000 ALTER TABLE `awpb_activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +281,7 @@ CREATE TABLE `awpb_activity_line` (
 
 LOCK TABLES `awpb_activity_line` WRITE;
 /*!40000 ALTER TABLE `awpb_activity_line` DISABLE KEYS */;
-INSERT INTO `awpb_activity_line` VALUES (59,44,2,101,33,14,'MM',NULL,1,0,0,2,0,0,0,0,0,0,0,0,1,2,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,2,1,0,1623493924,14,14);
+INSERT INTO `awpb_activity_line` VALUES (59,44,2,101,33,14,'MM',NULL,1,0,0,2,0,0,0,0,0,0,0,0,1,2,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,2,1,0,1623493924,1,1);
 /*!40000 ALTER TABLE `awpb_activity_line` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,21 +301,55 @@ CREATE TABLE `awpb_actual_input` (
   `indicator_id` int DEFAULT NULL,
   `budget_id` int NOT NULL,
   `input_id` int DEFAULT NULL,
-  `quarter_number` int NOT NULL,
   `name` varchar(255) NOT NULL,
   `unit_of_measure_id` int DEFAULT NULL,
   `unit_cost` double NOT NULL,
   `mo_1` double DEFAULT NULL,
   `mo_2` double DEFAULT NULL,
   `mo_3` double DEFAULT NULL,
-  `quarter_quantity` double DEFAULT NULL,
-  `quarter_amount` double DEFAULT NULL,
+  `mo_4` double DEFAULT NULL,
+  `mo_5` double DEFAULT NULL,
+  `mo_6` double DEFAULT NULL,
+  `mo_7` double DEFAULT NULL,
+  `mo_8` double DEFAULT NULL,
+  `mo_9` double DEFAULT NULL,
+  `mo_10` double DEFAULT NULL,
+  `mo_11` double DEFAULT NULL,
+  `mo_12` double DEFAULT NULL,
+  `quarter_one_quantity` double DEFAULT NULL,
+  `quarter_two_quantity` double DEFAULT NULL,
+  `quarter_three_quantity` double DEFAULT NULL,
+  `quarter_four_quantity` double DEFAULT NULL,
+  `total_quantity` double DEFAULT NULL,
   `mo_1_amount` double DEFAULT NULL,
   `mo_2_amount` double DEFAULT NULL,
   `mo_3_amount` double DEFAULT NULL,
+  `mo_4_amount` double DEFAULT NULL,
+  `mo_5_amount` double DEFAULT NULL,
+  `mo_6_amount` double DEFAULT NULL,
+  `mo_7_amount` double DEFAULT NULL,
+  `mo_8_amount` double DEFAULT NULL,
+  `mo_9_amount` double DEFAULT NULL,
+  `mo_10_amount` double DEFAULT NULL,
+  `mo_11_amount` double DEFAULT NULL,
+  `mo_12_amount` double DEFAULT NULL,
+  `quarter_one_amount` double DEFAULT NULL,
+  `quarter_two_amount` double DEFAULT NULL,
+  `quarter_three_amount` double DEFAULT NULL,
+  `quarter_four_amount` double DEFAULT NULL,
+  `total_amount` double DEFAULT NULL,
   `mo_1_actual` double DEFAULT NULL,
   `mo_2_actual` double DEFAULT NULL,
   `mo_3_actual` double DEFAULT NULL,
+  `mo_4_actual` double DEFAULT NULL,
+  `mo_5_actual` double DEFAULT NULL,
+  `mo_6_actual` double DEFAULT NULL,
+  `mo_7_actual` double DEFAULT NULL,
+  `mo_8_actual` double DEFAULT NULL,
+  `mo_9_actual` double DEFAULT NULL,
+  `mo_10_actual` double DEFAULT NULL,
+  `mo_11_actual` double DEFAULT NULL,
+  `mo_12_actual` double DEFAULT NULL,
   `status` int NOT NULL,
   `cost_centre_id` int unsigned DEFAULT NULL,
   `camp_id` int unsigned DEFAULT NULL,
@@ -332,24 +367,12 @@ CREATE TABLE `awpb_actual_input` (
   KEY `indicator_id` (`indicator_id`),
   KEY `created_by` (`created_by`),
   KEY `updated_by` (`updated_by`),
-  KEY `awpb_actual_input_ibfk_1` (`budget_id`),
+  KEY `awpb_input_ibfk_1` (`budget_id`),
   KEY `camp_id` (`camp_id`),
   KEY `cost_centre_id` (`cost_centre_id`),
   KEY `component_id` (`component_id`),
-  KEY `output_id` (`output_id`),
-  CONSTRAINT `awpb_actual_input_ibfk_1` FOREIGN KEY (`budget_id`) REFERENCES `awpb_budget` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_10` FOREIGN KEY (`cost_centre_id`) REFERENCES `awpb_cost_centre` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_11` FOREIGN KEY (`component_id`) REFERENCES `awpb_component` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_12` FOREIGN KEY (`output_id`) REFERENCES `awpb_output` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_2` FOREIGN KEY (`awpb_template_id`) REFERENCES `awpb_template` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_3` FOREIGN KEY (`activity_id`) REFERENCES `awpb_activity` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_4` FOREIGN KEY (`indicator_id`) REFERENCES `awpb_indicator` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_5` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_6` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_7` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_8` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),
-  CONSTRAINT `awpb_actual_input_ibfk_9` FOREIGN KEY (`camp_id`) REFERENCES `camp` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `output_id` (`output_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -358,6 +381,7 @@ CREATE TABLE `awpb_actual_input` (
 
 LOCK TABLES `awpb_actual_input` WRITE;
 /*!40000 ALTER TABLE `awpb_actual_input` DISABLE KEYS */;
+INSERT INTO `awpb_actual_input` VALUES (71,44,NULL,118,32,NULL,80,NULL,'Flip',12,120,5,5,10,0,20,2,24,2,2,0,0,0,20,22,28,0,70,600,600,1200,0,2400,240,2880,240,240,0,0,0,2400,2640,3360,0,8400,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1629988122,1629988122,1,1),(72,44,NULL,118,32,NULL,80,NULL,'Fuel Petrol',4,17.62,100,100,500,50,52,0,0,0,0,0,0,0,700,102,0,0,802,1762,1762,8810,881,916.24,0,0,0,0,0,0,0,12334,1797.24,0,0,14131.24,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1629988206,1629988206,1,1),(73,42,NULL,95,32,NULL,75,NULL,'Test 1',12,50.02,1,1,1,1,1,1,1,1,1,12,0,2,3,3,3,14,23,50.02,50.02,50.02,50.02,50.02,50.02,50.02,50.02,50.02,600.24,0,100.04,150.06,150.06,150.06,700.28,1150.46,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,1630859856,1630859856,1,1),(74,42,NULL,95,32,NULL,75,NULL,'My Test',11,150,1,1,1,1,1,1,1,1,1,1,1,15,3,3,3,17,26,150,150,150,150,150,150,150,150,150,150,150,2250,450,450,450,2550,3900,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,1630859889,1630859889,1,1),(75,42,NULL,99,32,NULL,78,NULL,'DSA Members',11,650,2,2,2,2,2,2,2,2,22,256,2,2,6,6,26,260,298,1300,1300,1300,1300,1300,1300,1300,1300,14300,166400,1300,1300,3900,3900,16900,169000,193700,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,1630861131,1630861146,1,1),(76,42,NULL,102,32,NULL,77,NULL,'Venue Hire',12,569.66,50,20,20,2,2,22,2,2,2,4,4,4,90,26,6,12,134,28483,11393.2,11393.2,1139.32,1139.32,12532.52,1139.32,1139.32,1139.32,2278.64,2278.64,2278.64,51269.4,14811.16,3417.96,6835.92,76334.44,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,1630861248,1630861248,1,1),(77,44,NULL,117,38,NULL,81,NULL,'Car Hire and Fuel',11,600,1,0,0,1,0,0,1,0,0,1,0,0,1,1,1,1,4,600,0,0,600,0,0,600,0,0,600,0,0,600,600,600,600,2400,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1631643969,1631643969,1,1),(78,44,NULL,117,38,NULL,81,NULL,'Meeting Allowance',11,750,50,0,0,40,0,0,30,0,0,20,0,0,50,40,30,20,140,37500,0,0,30000,0,0,22500,0,0,15000,0,0,37500,30000,22500,15000,105000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1631644122,1631644122,1,1),(80,44,NULL,117,38,NULL,82,NULL,'Test 1',11,588.88,1,0,2,0,0,0,0,0,0,0,1,0,3,0,0,1,4,588.88,0,1177.76,0,0,0,0,0,0,0,588.88,0,1766.64,0,0,588.88,2355.52,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1631829010,1631829010,1,1),(83,44,NULL,117,40,NULL,87,NULL,'Fuel Petrol',4,17.15,50,0,0,0,0,100,50,0,0,0,0,0,50,100,50,0,200,857.5,0,0,0,0,1715,857.5,0,0,0,0,0,857.5,1715,857.5,0,3430,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1632232817,1632232817,1,1),(84,44,NULL,95,40,NULL,88,NULL,'Fuel Petrol',12,17.55,585,58,8,5,0,0,0,0,0,0,0,0,651,5,0,0,656,10266.75,1017.9,140.4,87.75,0,0,0,0,0,0,0,0,11425.05,87.75,0,0,11512.8,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1632234186,1632234186,1,1),(85,42,NULL,99,40,NULL,89,NULL,'test',12,5663.33,6,3,3,2,0,0,0,0,0,0,0,0,12,2,0,0,14,33979.98,16989.99,16989.99,11326.66,0,0,0,0,0,0,0,0,67959.96,11326.66,0,0,79286.62,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,NULL,NULL,NULL,1632234724,1632234724,1,1),(87,44,NULL,118,40,NULL,86,NULL,'Test',11,58.88,5,5,5,5,5,5,5,5,5,0,0,0,15,15,15,0,45,294.4,294.4,294.4,294.4,294.4,294.4,294.4,294.4,294.4,0,0,0,883.2,883.2,883.2,0,2649.6,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1632416806,1632425780,1,1),(88,44,NULL,101,40,NULL,86,NULL,'Test',12,75450.04,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,75450.04,0,0,0,0,0,0,0,0,0,0,0,75450.04,0,0,0,75450.04,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,2,1,1632416945,1632416945,1,1);
 /*!40000 ALTER TABLE `awpb_actual_input` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -486,7 +510,7 @@ CREATE TABLE `awpb_budget` (
   CONSTRAINT `awpb_budget_ibfk_7` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
   CONSTRAINT `awpb_budget_ibfk_8` FOREIGN KEY (`camp_id`) REFERENCES `camp` (`id`),
   CONSTRAINT `awpb_budget_ibfk_9` FOREIGN KEY (`cost_centre_id`) REFERENCES `awpb_cost_centre` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -495,7 +519,6 @@ CREATE TABLE `awpb_budget` (
 
 LOCK TABLES `awpb_budget` WRITE;
 /*!40000 ALTER TABLE `awpb_budget` DISABLE KEYS */;
-INSERT INTO `awpb_budget` VALUES (72,44,NULL,117,33,NULL,'VC innovation  multi-stakeholder  engagement meetings',2,NULL,4,4,4,4,4,4,4,4,4,4,4,4,12,12,12,12,48,1577,157.7,189.24,78.85,78.85,31.54,820.04,851.58,1182.75,914.66,1387.76,1214.29,1923.94,189.24,2854.37,3516.71,8484.26,481.51,0,0,8484.26,0,0,0,0,0,0,0,0,1923.94,189.24,2854.37,3516.71,8484.26,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,4,4,4,4,4,4,8,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,2,1,1626210122,1626737325,18,18),(73,44,NULL,101,33,NULL,'Stakeholder Engagement for Phase 2 and 3 Cat. A farmers',2,NULL,0,0,0,55,0,0,0,0,0,0,0,0,0,55,0,0,55,787.5,945,0,31.5,0,0,0,0,0,0,0,0,1732.5,31.5,0,0,1764,787.5,945,0,31.5,0,0,0,0,0,0,0,0,1732.5,31.5,0,0,1764,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,2,1,1626257412,1626260101,18,18),(74,44,NULL,101,32,NULL,'Stakeholder Engagement for Phase 2 and 3 Cat. A farmers',3,NULL,5,5,5,5,55,5,5,5,5,5,5,5,15,65,15,15,110,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,30000,30000,30000,30000,120000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,1,1,1,1,1,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,2,1,1627861187,1628109128,18,18),(75,42,NULL,95,32,NULL,'Provincial Validation of the ZNAD',0,NULL,5,5,5,5,5,0,5,5,5,5,0,5,15,10,15,10,50,2988.06,1139.91,996.56,996.56,979.91,1163.06,1619.91,1619.91,979.91,979.91,979.91,979.91,5124.53,3139.53,4219.73,2939.73,15423.52,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,0,0,17,17),(76,42,NULL,95,32,NULL,'Drafting of the ZNADS',0,NULL,4,4,4,4,4,4,4,4,4,4,4,4,12,12,12,12,48,2.75,2.75,2.75,2.75,2.75,0,0,0,0,0,0,0,8.25,5.5,0,0,13.75,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,NULL,NULL,NULL,0,0,17,17),(77,42,NULL,95,32,NULL,'ZNADS launch',0,NULL,4,4,4,4,4,4,4,4,4,4,0,4,12,12,12,8,44,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,0,0,17,17),(78,42,NULL,99,32,NULL,'Dissemination of the Strategy    ',0,NULL,44,5,5,5,55,5,0,0,0,0,0,0,54,65,0,0,119,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,3,NULL,NULL,NULL,0,0,17,17);
 /*!40000 ALTER TABLE `awpb_budget` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -516,8 +539,9 @@ CREATE TABLE `awpb_comment` (
   `updated_at` int unsigned NOT NULL,
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
+  `activity_id` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=323 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -526,7 +550,6 @@ CREATE TABLE `awpb_comment` (
 
 LOCK TABLES `awpb_comment` WRITE;
 /*!40000 ALTER TABLE `awpb_comment` DISABLE KEYS */;
-INSERT INTO `awpb_comment` VALUES (177,33,42,NULL,'Include indicator 3',1625094518,1625094518,12,12),(178,33,42,NULL,'Include indicator B',1625094558,1625094558,12,12),(179,33,NULL,5,'b',1625101377,1625101377,12,12),(180,33,NULL,5,'n',1625101617,1625101617,12,12),(181,33,NULL,5,'11',1625101832,1625101832,12,12),(182,33,NULL,5,'11',1625102043,1625102043,12,12),(183,33,NULL,5,'25',1625102148,1625102148,12,12),(184,33,NULL,5,'55',1625104747,1625104747,12,12),(185,33,NULL,5,'566',1625104864,1625104864,12,12),(186,33,NULL,5,'566',1625104960,1625104960,12,12),(187,33,NULL,5,'555',1625105048,1625105048,12,12),(188,33,NULL,5,'566',1625105070,1625105070,12,12),(189,33,NULL,5,'566',1625105300,1625105300,12,12),(190,33,NULL,5,'666',1625105316,1625105316,12,12),(191,33,NULL,5,'bbb',1625147144,1625147144,12,12),(192,33,NULL,5,'555',1625147958,1625147958,12,12),(193,33,NULL,5,'mm',1625148394,1625148394,12,12),(194,33,NULL,5,'55',1625148547,1625148547,12,12),(195,33,NULL,5,'bbb',1625152080,1625152080,12,12),(196,33,42,NULL,'bbb',1625152787,1625152787,12,12),(197,33,NULL,5,'mm',1625169317,1625169317,12,12),(198,33,NULL,5,'mm',1625169472,1625169472,12,12),(199,33,NULL,5,'mm',1625169617,1625169617,12,12),(200,33,NULL,5,'mm',1625169671,1625169671,12,12),(201,33,NULL,5,'mm',1625169705,1625169705,12,12),(202,33,NULL,5,'mm',1625169729,1625169729,12,12),(203,33,NULL,5,'mmm',1625169740,1625169740,12,12),(204,33,NULL,5,'mmm',1625169927,1625169927,12,12),(205,33,NULL,5,'mmc',1625170074,1625170074,12,12),(206,33,NULL,5,'mmm',1625170177,1625170177,12,12),(207,33,NULL,5,'mmm',1625170257,1625170257,12,12),(208,33,NULL,5,'mmm',1625170447,1625170447,12,12),(209,33,NULL,5,'mmm',1625170472,1625170472,12,12),(210,33,NULL,5,'mmm',1625170493,1625170493,12,12),(211,33,NULL,5,'mmm',1625170546,1625170546,12,12),(212,33,NULL,5,'mmm',1625170858,1625170858,12,12),(213,33,NULL,5,'mmm',1625170928,1625170928,12,12),(214,33,42,5,'mmm',1625186707,1625186707,12,12),(215,33,42,5,'mmm',1625187493,1625187493,12,12),(216,33,42,5,'mmn',1625196745,1625196745,12,12),(217,33,2,1,'Include budget',1625516855,1625516855,12,12),(218,33,42,5,'Include budget',1625516900,1625516900,12,12),(219,33,2,1,'Add more inputs',1625518183,1625518183,12,12),(220,33,2,1,'Twst',1625585467,1625585467,12,12),(221,33,2,1,'Twst',1625585613,1625585613,12,12),(222,33,2,1,'Twst',1625585906,1625585906,12,12),(223,33,2,1,'Twst',1625586001,1625586001,12,12),(224,33,2,1,'Twst',1625586057,1625586057,12,12),(225,33,2,1,'Twst',1625586397,1625586397,12,12),(226,33,2,1,'Twst',1625586420,1625586420,12,12),(227,33,2,1,'Twst',1625586452,1625586452,12,12),(228,33,2,1,'nnnn',1625586555,1625586555,12,12),(229,33,2,1,'nnnn',1625586734,1625586734,12,12),(230,33,2,1,'nnnn',1625586976,1625586976,12,12),(231,33,2,1,'tetet',1625587836,1625587836,12,12),(232,33,2,1,'Tetst',1625588085,1625588085,12,12),(233,33,NULL,0,'Gsgsg',1625697978,1625697978,15,15),(234,33,NULL,0,'Gsgsg',1625698138,1625698138,15,15),(235,33,NULL,0,'Gsgsg',1625698249,1625698249,15,15),(236,32,NULL,1,'nnnnnnnnnnnnnnnn',1627872812,1627872812,12,12),(237,32,NULL,1,',mmmmmmmmmmmmm',1627872955,1627872955,12,12),(238,32,2,1,'mmmm',1627875163,1627875163,12,12),(239,32,2,1,'mmmm',1628098113,1628098113,12,12),(240,32,2,1,'mmmm',1628098318,1628098318,12,12),(241,32,2,1,'mmm',1628098339,1628098339,12,12),(242,32,2,1,'mmm',1628098349,1628098349,12,12),(243,32,NULL,0,'mcmcm',1628100846,1628100846,15,15),(244,32,NULL,0,'mvmvmv',1628100865,1628100865,15,15),(245,32,NULL,0,'mmmm',1628101776,1628101776,15,15),(246,32,NULL,0,'mm',1628102116,1628102116,15,15),(247,32,NULL,0,'mm',1628102144,1628102144,15,15),(248,32,NULL,0,'mm',1628102154,1628102154,15,15),(249,32,NULL,0,'mm',1628102265,1628102265,15,15),(250,32,49,49,'Test Test',1628106726,1628106726,15,15),(251,32,49,49,'Test Test',1628106767,1628106767,15,15),(252,32,49,1,'Test test',1628106891,1628106891,15,15),(253,32,49,1,'Test test',1628107019,1628107019,15,15),(254,32,49,1,'Test test',1628107074,1628107074,15,15),(255,32,49,1,'Test test',1628107173,1628107173,15,15),(256,32,49,1,'Test test',1628107253,1628107253,15,15),(257,32,49,1,'Test test',1628107356,1628107356,15,15),(258,32,49,1,'Test test',1628108066,1628108066,15,15),(259,32,49,1,'Test test',1628108123,1628108123,15,15),(260,32,49,1,'Test test',1628108175,1628108175,15,15),(261,32,49,1,'Test test',1628108234,1628108234,15,15),(262,32,49,1,'Test test',1628108279,1628108279,15,15),(263,32,49,1,'Ministry',1628109340,1628109340,16,16),(264,32,49,1,'Ministry',1628154042,1628154042,16,16),(265,32,49,1,'Ministry',1628154109,1628154109,16,16),(266,32,49,1,'Ministry',1628154205,1628154205,16,16),(267,32,49,1,'Ministry',1628154287,1628154287,16,16),(268,32,49,1,'Ministry',1628154402,1628154402,16,16),(269,32,49,1,'PCO',1628154517,1628154517,15,15),(270,32,49,1,'PCO',1628154566,1628154566,15,15),(271,32,49,2,'mmm',1628155777,1628155777,12,12),(272,32,49,2,'nnn',1628158282,1628158282,12,12),(273,32,49,2,'nnn',1628160018,1628160018,12,12),(274,32,49,2,'nnn',1628160050,1628160050,12,12),(275,32,49,2,'nnn',1628160112,1628160112,12,12),(276,32,49,2,'mm',1628160267,1628160267,12,12),(277,32,49,2,'mm',1628160389,1628160389,12,12),(278,32,49,2,'MM',1628160593,1628160593,12,12),(279,32,49,2,'Mnanan',1628161241,1628161241,12,12),(280,32,49,2,'mmmm',1628161432,1628161432,12,12),(281,32,49,2,'mmm',1628161517,1628161517,12,12),(282,32,49,2,'bb',1628161662,1628161662,12,12),(283,32,49,2,'bb',1628161824,1628161824,12,12),(284,32,49,2,'mcmcm',1628161870,1628161870,12,12),(285,32,49,2,'mcmcm',1628161969,1628161969,12,12),(286,32,49,2,'nnanan',1628163174,1628163174,12,12),(287,32,49,2,',,,,,,,,,,,vvvvvvvvvvvvvv',1628163290,1628163290,12,12),(288,32,49,2,'mm',1628163452,1628163452,12,12),(289,32,49,2,'mm',1628163514,1628163514,12,12),(290,32,49,2,'mmc',1628164200,1628164200,12,12),(291,32,49,2,'mmm',1628164440,1628164440,12,12),(292,32,49,2,'mmm',1628164595,1628164595,12,12),(293,32,49,2,'mmm',1628164672,1628164672,12,12),(294,32,49,2,'mmm',1628164750,1628164750,12,12),(295,32,49,2,'mmm',1628164923,1628164923,12,12),(296,32,49,2,'mmm',1628164930,1628164930,12,12),(297,32,49,2,'mmm',1628164956,1628164956,12,12),(298,32,49,2,'nmmmm',1628164968,1628164968,12,12),(299,32,49,2,'mmm',1628166119,1628166119,12,12),(300,32,49,2,'mmm',1628166308,1628166308,12,12),(301,32,49,2,'nsnsn',1628166385,1628166385,12,12),(302,32,49,2,'nsnsn',1628166540,1628166540,12,12),(303,32,49,2,'bbb',1628166702,1628166702,12,12),(304,32,49,2,'mm',1628166773,1628166773,12,12),(305,32,49,2,'mccm',1628167313,1628167313,12,12),(306,32,49,2,'mdmd',1628167369,1628167369,12,12),(307,32,49,2,'mmc',1628167408,1628167408,12,12),(308,32,49,2,'mmcmc',1628167462,1628167462,12,12),(309,32,49,2,'mcmcm',1628167540,1628167540,12,12),(310,32,49,2,'mmccm',1628167578,1628167578,12,12),(311,32,49,2,'mmcm',1628167623,1628167623,12,12),(312,32,49,2,'mmm',1628167741,1628167741,12,12),(313,32,49,2,'mm,mm',1628167916,1628167916,12,12),(314,32,49,2,'mmc',1628168077,1628168077,12,12),(315,32,49,2,'mmd',1628168242,1628168242,12,12),(316,32,49,2,'mmd',1628168576,1628168576,12,12),(317,32,49,2,'mmd',1628168877,1628168877,12,12),(318,32,49,1,'nmmmmm',1628172932,1628172932,15,15),(319,32,49,1,'nmmmmm',1628172982,1628172982,15,15),(320,32,49,1,'nmmmmm',1628173180,1628173180,15,15),(321,32,49,1,'mmcmcmc',1628174620,1628174620,15,15),(322,32,49,1,'mcmcm',1628174875,1628174875,16,16);
 /*!40000 ALTER TABLE `awpb_comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -556,7 +579,7 @@ CREATE TABLE `awpb_commodity_type` (
 
 LOCK TABLES `awpb_commodity_type` WRITE;
 /*!40000 ALTER TABLE `awpb_commodity_type` DISABLE KEYS */;
-INSERT INTO `awpb_commodity_type` VALUES (1,3,'Maize',1607446739,1607447798,1,1),(2,3,'Soya beans',1607447814,1607447814,1,1),(3,3,'Groundnuts',1607447827,1607447827,1,1),(4,3,'Rice',1607447871,1607447871,1,1),(5,4,'Mealie meal',1607447890,1607447952,1,1),(6,4,'Roller meal',1607447902,1607447956,1,1),(7,2,'Maize Seed',1607447971,1607447971,1,1),(8,2,'Groundnut seed',1607447992,1607447992,1,1),(9,2,'Rice seed',1607448004,1607448004,1,1),(10,2,'D-Compound',1607448021,1607448021,1,1),(11,2,'Urea',1607448041,1607448041,1,1),(12,NULL,'Multiple',1607182013,1607362711,14,14);
+INSERT INTO `awpb_commodity_type` VALUES (1,3,'Maize',1607446739,1607447798,1,1),(2,3,'Soya beans',1607447814,1607447814,1,1),(3,3,'Groundnuts',1607447827,1607447827,1,1),(4,3,'Rice',1607447871,1607447871,1,1),(5,4,'Mealie meal',1607447890,1607447952,1,1),(6,4,'Roller meal',1607447902,1607447956,1,1),(7,2,'Maize Seed',1607447971,1607447971,1,1),(8,2,'Groundnut seed',1607447992,1607447992,1,1),(9,2,'Rice seed',1607448004,1607448004,1,1),(10,2,'D-Compound',1607448021,1607448021,1,1),(11,2,'Urea',1607448041,1607448041,1,1),(12,NULL,'Multiple',1607182013,1607362711,1,1);
 /*!40000 ALTER TABLE `awpb_commodity_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -606,7 +629,7 @@ CREATE TABLE `awpb_component` (
 
 LOCK TABLES `awpb_component` WRITE;
 /*!40000 ALTER TABLE `awpb_component` DISABLE KEYS */;
-INSERT INTO `awpb_component` VALUES (41,'1',NULL,'Enabling Environment for Agribusiness Development Growth','Enabling Environment for Agribusiness Development Growth','','',0,2,'Component',NULL,NULL,NULL,0,NULL,1,0,0,14,14),(42,'1.1',41,'Agribusiness Policy Development','Agribusiness Policy Development','dd','dd',1,2,'Subcomponent',NULL,NULL,'0700',0,0,1,0,0,14,14),(43,'2',NULL,'Sustainable Agribusiness Partnerships ','COMPONENT 2: Sustainable Agribusiness Partnerships   \r\n',NULL,NULL,0,0,'Component',NULL,NULL,NULL,1,0,0,0,0,14,14),(44,'2.1',43,'Strategic Linkages of Graduating Subsistence Farmers to Markets','Sub-Component 2.1 Strategic Linkages of Graduating Subsistence Farmers to Markets',NULL,NULL,1,0,'Subcomponent',NULL,NULL,'0900',1,0,0,0,0,14,14),(45,'1.2',41,'Institutional Strengthening For Agribusiness','Institutional Strengthening For Agribusiness',NULL,NULL,1,2,'Subcomponent',NULL,NULL,'0800',0,0,1,0,0,14,14),(46,'3',NULL,'Programme Implementation.','Programme Implementation',NULL,NULL,0,0,'Component',NULL,NULL,NULL,0,0,1,0,0,14,14),(47,'2.2',43,' Enhancing Agro-Micro, Small and Medium Enterprises (MSME)',' Enhancing Agro-Micro, Small and Medium Enterprises (MSME)',NULL,NULL,1,0,'Subcomponent',NULL,NULL,'1000',1,0,0,0,0,14,14),(48,'2.3',43,'Facilitating Pro-Smallholder Market-Pull Agribusiness Partnerships','Facilitating Pro-Smallholder Market-Pull Agribusiness Partnerships',NULL,NULL,1,0,'Subcomponent',NULL,NULL,'2300',1,0,0,0,0,14,14),(50,'3.1',46,'Programme Implementation','Programme Implementation.',NULL,NULL,1,1,'SubComponent',NULL,NULL,'3000',0,0,1,0,0,14,14);
+INSERT INTO `awpb_component` VALUES (41,'1',NULL,'Enabling Environment for Agribusiness Development Growth','Enabling Environment for Agribusiness Development Growth','','',0,2,'Component',NULL,NULL,NULL,0,NULL,1,0,0,1,1),(42,'1.1',41,'Agribusiness Policy Development','Agribusiness Policy Development','dd','dd',1,2,'Subcomponent',NULL,NULL,'0700',0,0,1,0,0,1,1),(43,'2',NULL,'Sustainable Agribusiness Partnerships ','COMPONENT 2: Sustainable Agribusiness Partnerships   \r\n',NULL,NULL,0,0,'Component',NULL,NULL,NULL,1,0,0,0,0,1,1),(44,'2.1',43,'Strategic Linkages of Graduating Subsistence Farmers to Markets','Sub-Component 2.1 Strategic Linkages of Graduating Subsistence Farmers to Markets',NULL,NULL,1,0,'Subcomponent',NULL,NULL,'0900',1,1,0,0,0,1,1),(45,'1.2',41,'Institutional Strengthening For Agribusiness','Institutional Strengthening For Agribusiness',NULL,NULL,1,2,'Subcomponent',NULL,NULL,'0800',0,0,1,0,0,1,1),(46,'3',NULL,'Programme Implementation.','Programme Implementation',NULL,NULL,0,0,'Component',NULL,NULL,NULL,0,0,1,0,0,1,1),(47,'2.2',43,' Enhancing Agro-Micro, Small and Medium Enterprises (MSME)',' Enhancing Agro-Micro, Small and Medium Enterprises (MSME)',NULL,NULL,1,0,'Subcomponent',NULL,NULL,'1000',1,1,0,0,0,1,1),(48,'2.3',43,'Facilitating Pro-Smallholder Market-Pull Agribusiness Partnerships','Facilitating Pro-Smallholder Market-Pull Agribusiness Partnerships',NULL,NULL,1,0,'Subcomponent',NULL,NULL,'2300',1,1,0,0,0,1,1),(50,'3.1',46,'Programme Implementation','Programme Implementation.',NULL,NULL,1,1,'SubComponent',NULL,NULL,'3000',0,0,1,0,0,1,1);
 /*!40000 ALTER TABLE `awpb_component` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -650,7 +673,7 @@ CREATE TABLE `awpb_cost_centre` (
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -659,7 +682,7 @@ CREATE TABLE `awpb_cost_centre` (
 
 LOCK TABLES `awpb_cost_centre` WRITE;
 /*!40000 ALTER TABLE `awpb_cost_centre` DISABLE KEYS */;
-INSERT INTO `awpb_cost_centre` VALUES (1,'Agribusiness',1625512639,1625512727,14,14),(2,'Finance',1607182013,1607362711,14,14),(3,'Human Resource',1611002803,1611002803,14,14);
+INSERT INTO `awpb_cost_centre` VALUES (1,'Agribusiness',1625512639,1625512727,1,1),(2,'Finance',1607182013,1607362711,1,1),(3,'Human Resource',1611002803,1611002803,1,1);
 /*!40000 ALTER TABLE `awpb_cost_centre` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -704,7 +727,7 @@ CREATE TABLE `awpb_district` (
   CONSTRAINT `awpb_district_ibfk_2` FOREIGN KEY (`cost_centre_id`) REFERENCES `awpb_cost_centre` (`id`),
   CONSTRAINT `awpb_district_ibfk_3` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
   CONSTRAINT `awpb_district_ibfk_4` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=236 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -713,7 +736,6 @@ CREATE TABLE `awpb_district` (
 
 LOCK TABLES `awpb_district` WRITE;
 /*!40000 ALTER TABLE `awpb_district` DISABLE KEYS */;
-INSERT INTO `awpb_district` VALUES (107,33,26,NULL,3,'Chadiza',0,0,1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(108,33,2,NULL,1,'Chibombo',1,0,1,0,0,1,1000,NULL,2071.96,1589.07,NULL,NULL,NULL,NULL,0,0,14,16),(109,33,40,NULL,4,'Chipili',0,0,1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(110,33,89,NULL,10,'Kaoma',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(111,33,100,NULL,10,'Shangombo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(112,33,49,NULL,5,'Lusaka',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(113,33,NULL,1,NULL,'Agribusiness',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(114,32,50,NULL,6,'Chama',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(115,32,108,NULL,3,'Chasefu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(116,32,66,NULL,8,'Chavuma',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(117,32,38,NULL,4,'Chembe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(118,32,31,NULL,4,'Chiengi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(119,32,109,NULL,4,'Chifunabuli',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(120,32,75,NULL,9,'Chikankata',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(121,32,42,NULL,5,'Chilanga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(122,32,15,NULL,2,'Chililabombwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(123,32,110,NULL,6,'Chilinda',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(124,32,57,NULL,7,'Chilubi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(125,32,20,NULL,2,'Chingola',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(126,32,51,NULL,6,'Chinsali',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(127,32,107,NULL,3,'Chipangali',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(128,32,23,NULL,3,'Chipata',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(129,32,43,NULL,5,'Chirundu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(130,32,1,NULL,1,'Chisamba',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(131,32,3,NULL,1,'Chitambo',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(132,32,86,NULL,9,'Choma',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(133,32,44,NULL,5,'Chongwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(134,32,76,NULL,9,'Gwembe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(135,32,67,NULL,8,'Ikelenge',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(136,32,52,NULL,6,'Isoka',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(137,32,4,NULL,1,'Itezhi-Tezhi',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(138,32,68,NULL,8,'Kabompo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(139,32,7,NULL,1,'Kabwe',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(140,32,45,NULL,5,'Kafue',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(141,32,88,NULL,10,'Kalabo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(142,32,77,NULL,9,'Kalomo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(143,32,16,NULL,2,'Kalulushi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(144,32,117,NULL,8,'Kalumbila',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(145,32,112,NULL,6,'Kanchibiya',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(146,32,8,NULL,1,'Kapiri Mposhi',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(147,32,58,NULL,7,'Kaputa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(148,32,59,NULL,7,'Kasama',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(149,32,69,NULL,8,'Kasempa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(150,32,104,NULL,3,'Kasenengwa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(151,32,22,NULL,3,'Katete',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(152,32,33,NULL,4,'Kawambwa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(153,32,78,NULL,9,'Kazungula',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(154,32,14,NULL,2,'Kitwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(155,32,113,NULL,6,'Lavushimanda',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(156,32,90,NULL,10,'Limulunga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(157,32,85,NULL,9,'Livingstone',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(158,32,91,NULL,10,'Luampa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(159,32,46,NULL,5,'Luangwa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(160,32,9,NULL,1,'Luano',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(161,32,18,NULL,2,'Luanshya',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(162,32,12,NULL,2,'Lufwanyama',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(163,32,92,NULL,10,'Lukulu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(164,32,105,NULL,3,'Lumezi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(165,32,25,NULL,3,'Lundazi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(166,32,39,NULL,4,'Lunga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(167,32,114,NULL,7,'Lunte',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(168,32,115,NULL,7,'Lupososhi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(169,32,60,NULL,7,'Luwingu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(170,32,53,NULL,6,'Mafinga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(171,32,27,NULL,3,'Mambwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(172,32,35,NULL,4,'Mansa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(173,32,70,NULL,8,'Manyinga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(174,32,21,NULL,2,'Masaiti',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(175,32,87,NULL,9,'Mazabuka',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(176,32,61,NULL,7,'Mbala',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(177,32,37,NULL,4,'Milenge',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(178,32,93,NULL,10,'Mitete',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(179,32,5,NULL,1,'Mkushi',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(180,32,103,NULL,10,'Mongu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(181,32,79,NULL,9,'Monze',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(182,32,54,NULL,6,'Mpika',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(183,32,19,NULL,2,'Mpongwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(184,32,62,NULL,7,'Mporokoso',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(185,32,63,NULL,7,'Mpulungu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(186,32,106,NULL,3,'Msanzala',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(187,32,13,NULL,2,'Mufulira',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(188,32,71,NULL,8,'Mufumbwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(189,32,94,NULL,10,'Mulobezi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(190,32,6,NULL,1,'Mumbwa',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(191,32,64,NULL,7,'Mungwi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(192,32,118,NULL,8,'Mushindamo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(193,32,95,NULL,10,'Mwandi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(194,32,41,NULL,4,'Mwansabombwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(195,32,34,NULL,4,'Mwense',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(196,32,72,NULL,8,'Mwinilunga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(197,32,55,NULL,6,'Nakonde',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(198,32,96,NULL,10,'Nalolo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(199,32,80,NULL,9,'Namwala',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(200,32,32,NULL,4,'Nchelenge',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(201,32,17,NULL,2,'Ndola',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(202,32,11,NULL,1,'Ngabwe',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(203,32,97,NULL,10,'Nkeyema',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(204,32,65,NULL,7,'Nsama',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(205,32,28,NULL,3,'Nyimba',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(206,32,81,NULL,9,'Pemba',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(207,32,24,NULL,3,'Petauke',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(208,32,47,NULL,5,'Rufunsa',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(209,32,36,NULL,4,'Samfya',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(210,32,98,NULL,10,'Senanga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(211,32,116,NULL,7,'Senga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(212,32,10,NULL,1,'Serenje',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(213,32,99,NULL,10,'Sesheke',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(214,32,48,NULL,5,'Shibuyunji',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(215,32,56,NULL,6,'Shiwang\'andu',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(216,32,82,NULL,9,'Siavonga',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(217,32,101,NULL,10,'Sikongo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(218,32,83,NULL,9,'Sinazongwe',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(219,32,30,NULL,3,'Sinda',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(220,32,102,NULL,10,'Sioma',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(221,32,74,NULL,8,'Solwezi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(222,32,29,NULL,3,'Vubwi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(223,32,73,NULL,8,'Zambezi',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(224,32,84,NULL,9,'Zimba',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(225,32,26,NULL,3,'Chadiza',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(226,32,2,NULL,1,'Chibombo',4,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(227,32,40,NULL,4,'Chipili',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(228,32,89,NULL,10,'Kaoma',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(229,32,49,NULL,5,'Lusaka',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(230,32,100,NULL,10,'Shangombo',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(231,32,NULL,1,NULL,'Agribusiness',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,14,14),(232,33,NULL,2,NULL,'Finance',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1607182013,1607362711,14,14),(233,33,NULL,3,NULL,'Human Resource',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1611002803,1611002803,14,14),(234,32,NULL,2,NULL,'Finance',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1607182013,1607362711,14,14),(235,32,NULL,3,NULL,'Human Resource',0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1611002803,1611002803,14,14);
 /*!40000 ALTER TABLE `awpb_district` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -743,7 +765,7 @@ CREATE TABLE `awpb_expense_category` (
 
 LOCK TABLES `awpb_expense_category` WRITE;
 /*!40000 ALTER TABLE `awpb_expense_category` DISABLE KEYS */;
-INSERT INTO `awpb_expense_category` VALUES (1,'I',1,'Consultancy',0,0,14,14),(2,'II',1,'Equipment and Material',0,0,14,14),(8,'IV',1,'Training',0,0,NULL,11),(9,'IV',1,'Goods, Services and Inputs',0,0,NULL,14),(10,'V',1,'Grants ad Subsides',0,0,NULL,14),(11,'VI',1,'Salaries and Allowances',0,0,NULL,14);
+INSERT INTO `awpb_expense_category` VALUES (1,'I',1,'Consultancy',0,0,1,1),(2,'II',1,'Equipment and Material',0,0,1,1),(8,'IV',1,'Training',0,0,NULL,1),(9,'IV',1,'Goods, Services and Inputs',0,0,NULL,1),(10,'V',1,'Grants ad Subsides',0,0,NULL,1),(11,'VI',1,'Salaries and Allowances',0,0,NULL,1);
 /*!40000 ALTER TABLE `awpb_expense_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -774,7 +796,7 @@ CREATE TABLE `awpb_funder` (
 
 LOCK TABLES `awpb_funder` WRITE;
 /*!40000 ALTER TABLE `awpb_funder` DISABLE KEYS */;
-INSERT INTO `awpb_funder` VALUES (1,'1','IFAD','IFAD',1,1612809613,1627086002,14,14),(2,'2','GRZ','GRZ',1,1612810868,1612810868,14,14),(3,'3','Private Sector','Private Sector',1,1627057243,1627057243,14,14),(4,'4','IAPRI','IAPRI',1,1627057282,1627057282,14,14),(5,'5','PARM','PARM',1,1627057313,1627057313,14,14),(6,'6','Beneficiaries','Beneficiaries',1,1627057343,1627057343,14,14),(7,'7','IFAD Grant','IFAD Grant',1,1627057388,1627057388,14,14);
+INSERT INTO `awpb_funder` VALUES (1,'1','IFAD','IFAD',1,1612809613,1627086002,1,1),(2,'2','GRZ','GRZ',1,1612810868,1612810868,1,1),(3,'3','Private Sector','Private Sector',1,1627057243,1627057243,1,1),(4,'4','IAPRI','IAPRI',1,1627057282,1627057282,1,1),(5,'5','PARM','PARM',1,1627057313,1627057313,1,1),(6,'6','Beneficiaries','Beneficiaries',1,1627057343,1627057343,1,1),(7,'7','IFAD Grant','IFAD Grant',1,1627057388,1627057388,1,1);
 /*!40000 ALTER TABLE `awpb_funder` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -816,78 +838,29 @@ DROP TABLE IF EXISTS `awpb_funds_requisition`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `awpb_funds_requisition` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `component_id` int DEFAULT NULL,
+  `component_id` int NOT NULL,
   `output_id` int DEFAULT NULL,
-  `activity_id` int DEFAULT NULL,
+  `activity_id` int NOT NULL,
   `awpb_template_id` int NOT NULL,
   `indicator_id` int DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `unit_cost` double DEFAULT NULL,
+  `budget_id` int NOT NULL,
+  `input_id` int DEFAULT NULL,
+  `quarter_number` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `unit_of_measure_id` int DEFAULT NULL,
+  `unit_cost` double NOT NULL,
   `mo_1` double DEFAULT NULL,
   `mo_2` double DEFAULT NULL,
   `mo_3` double DEFAULT NULL,
-  `mo_4` double DEFAULT NULL,
-  `mo_5` double DEFAULT NULL,
-  `mo_6` double DEFAULT NULL,
-  `mo_7` double DEFAULT NULL,
-  `mo_8` double DEFAULT NULL,
-  `mo_9` double DEFAULT NULL,
-  `mo_10` double DEFAULT NULL,
-  `mo_11` double DEFAULT NULL,
-  `mo_12` double DEFAULT NULL,
-  `quarter_one_quantity` double DEFAULT NULL,
-  `quarter_two_quantity` double DEFAULT NULL,
-  `quarter_three_quantity` double DEFAULT NULL,
-  `quarter_four_quantity` double DEFAULT NULL,
-  `total_quantity` double NOT NULL,
+  `quarter_quantity` double DEFAULT NULL,
+  `quarter_amount` double DEFAULT NULL,
   `mo_1_amount` double DEFAULT NULL,
   `mo_2_amount` double DEFAULT NULL,
   `mo_3_amount` double DEFAULT NULL,
-  `mo_4_amount` double DEFAULT NULL,
-  `mo_5_amount` double DEFAULT NULL,
-  `mo_6_amount` double DEFAULT NULL,
-  `mo_7_amount` double DEFAULT NULL,
-  `mo_8_amount` double DEFAULT NULL,
-  `mo_9_amount` double DEFAULT NULL,
-  `mo_10_amount` double DEFAULT NULL,
-  `mo_11_amount` double DEFAULT NULL,
-  `mo_12_amount` double DEFAULT NULL,
-  `quarter_one_amount` double DEFAULT NULL,
-  `quarter_two_amount` double DEFAULT NULL,
-  `quarter_three_amount` double DEFAULT NULL,
-  `quarter_four_amount` double DEFAULT NULL,
-  `total_amount` double DEFAULT NULL,
   `mo_1_actual` double DEFAULT NULL,
   `mo_2_actual` double DEFAULT NULL,
   `mo_3_actual` double DEFAULT NULL,
-  `mo_4_actual` double DEFAULT NULL,
-  `mo_5_actual` double DEFAULT NULL,
-  `mo_6_actual` double DEFAULT NULL,
-  `mo_7_actual` double DEFAULT NULL,
-  `mo_8_actual` double DEFAULT NULL,
-  `mo_9_actual` double DEFAULT NULL,
-  `mo_10_actual` double DEFAULT NULL,
-  `mo_11_actual` double DEFAULT NULL,
-  `mo_12_actual` double DEFAULT NULL,
-  `quarter_one_actual` double DEFAULT NULL,
-  `quarter_two_actual` double DEFAULT NULL,
-  `quarter_three_actual` double DEFAULT NULL,
-  `quarter_four_actual` double DEFAULT NULL,
   `status` int NOT NULL,
-  `number_of_females` int DEFAULT NULL,
-  `number_of_males` int DEFAULT NULL,
-  `number_of_young_people` int DEFAULT NULL,
-  `number_of_not_young_people` int DEFAULT NULL,
-  `number_of_women_headed_households` int DEFAULT NULL,
-  `number_of_non_women_headed_households` int DEFAULT NULL,
-  `number_of_household_members` int DEFAULT NULL,
-  `number_of_females_actual` double DEFAULT NULL,
-  `number_of_males_actual` double DEFAULT NULL,
-  `number_of_young_people_actual` double DEFAULT NULL,
-  `number_of_not_young_people_actual` double DEFAULT NULL,
-  `number_of_women_headed_households_actual` double DEFAULT NULL,
-  `number_of_non_women_headed_households_actual` double DEFAULT NULL,
-  `number_of_household_members_actual` double DEFAULT NULL,
   `cost_centre_id` int unsigned DEFAULT NULL,
   `camp_id` int unsigned DEFAULT NULL,
   `district_id` int unsigned DEFAULT NULL,
@@ -902,13 +875,13 @@ CREATE TABLE `awpb_funds_requisition` (
   KEY `province_id` (`province_id`),
   KEY `awpb_template_id` (`awpb_template_id`),
   KEY `indicator_id` (`indicator_id`),
-  KEY `component_id` (`component_id`),
-  KEY `output_id` (`output_id`),
+  KEY `created_by` (`created_by`),
+  KEY `updated_by` (`updated_by`),
+  KEY `awpb_actual_input_ibfk_1` (`budget_id`),
   KEY `camp_id` (`camp_id`),
   KEY `cost_centre_id` (`cost_centre_id`),
-  CONSTRAINT `awpb_funds_requisition_ibfk_1` FOREIGN KEY (`awpb_template_id`) REFERENCES `awpb_template` (`id`),
-  CONSTRAINT `awpb_funds_requisition_ibfk_2` FOREIGN KEY (`cost_centre_id`) REFERENCES `awpb_cost_centre` (`id`),
-  CONSTRAINT `awpb_funds_requisition_ibfk_3` FOREIGN KEY (`district_id`) REFERENCES `awpb_district` (`id`)
+  KEY `component_id` (`component_id`),
+  KEY `output_id` (`output_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -962,7 +935,7 @@ CREATE TABLE `awpb_general_ledger` (
   KEY `awpb_template_id` (`awpb_template_id`),
   KEY `activity_code` (`activity_id`) USING BTREE,
   KEY `funder_id` (`funder_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -971,7 +944,6 @@ CREATE TABLE `awpb_general_ledger` (
 
 LOCK TABLES `awpb_general_ledger` WRITE;
 /*!40000 ALTER TABLE `awpb_general_ledger` DISABLE KEYS */;
-INSERT INTO `awpb_general_ledger` VALUES (1,'0955/0900/IV/01',117,44,33,1,8,157.7,15.77,18.924,7.885,7.885,3.154,82.004,85.158,118.275,91.466,138.776,121.429,192.394,18.924,285.437,351.671,1627138331,1627138331,14,14),(2,'0955/0900/IV/02',117,44,33,2,8,315.4,31.54,37.848,15.77,15.77,6.308,164.008,170.316,236.55,182.932,277.552,242.858,384.788,37.848,570.874,703.342,1627138332,1627138332,14,14),(3,'0955/0900/IV/03',117,44,33,3,8,157.7,15.77,18.924,7.885,7.885,3.154,82.004,85.158,118.275,91.466,138.776,121.429,192.394,18.924,285.437,351.671,1627138332,1627138332,14,14),(4,'0955/0900/IV/04',117,44,33,4,8,315.4,31.54,37.848,15.77,15.77,6.308,164.008,170.316,236.55,182.932,277.552,242.858,384.788,37.848,570.874,703.342,1627138332,1627138332,14,14),(5,'0955/0900/IV/05',117,44,33,5,8,315.4,31.54,37.848,15.77,15.77,6.308,164.008,170.316,236.55,182.932,277.552,242.858,384.788,37.848,570.874,703.342,1627138332,1627138332,14,14),(6,'0955/0900/IV/06',117,44,33,6,8,157.7,15.77,18.924,7.885,7.885,3.154,82.004,85.158,118.275,91.466,138.776,121.429,192.394,18.924,285.437,351.671,1627138332,1627138332,14,14),(7,'0955/0900/IV/07',117,44,33,7,8,157.7,15.77,18.924,7.885,7.885,3.154,82.004,85.158,118.275,91.466,138.776,121.429,192.394,18.924,285.437,351.671,1627138332,1627138332,14,14);
 /*!40000 ALTER TABLE `awpb_general_ledger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1115,7 +1087,7 @@ CREATE TABLE `awpb_input` (
   CONSTRAINT `awpb_input_ibfk_7` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
   CONSTRAINT `awpb_input_ibfk_8` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),
   CONSTRAINT `awpb_input_ibfk_9` FOREIGN KEY (`camp_id`) REFERENCES `camp` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1157,7 +1129,7 @@ CREATE TABLE `awpb_outcome` (
 
 LOCK TABLES `awpb_outcome` WRITE;
 /*!40000 ALTER TABLE `awpb_outcome` DISABLE KEYS */;
-INSERT INTO `awpb_outcome` VALUES (1,'',42,'Policy and institutional environment enh','Policy and institutional environment enhanced for agribusiness development',14,14,14,14);
+INSERT INTO `awpb_outcome` VALUES (1,'',42,'Policy and institutional environment enh','Policy and institutional environment enhanced for agribusiness development',14,14,1,1);
 /*!40000 ALTER TABLE `awpb_outcome` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1185,7 +1157,7 @@ CREATE TABLE `awpb_output` (
   KEY `component_id` (`component_id`),
   CONSTRAINT `awpb_output_ibfk_1` FOREIGN KEY (`outcome_id`) REFERENCES `awpb_outcome` (`id`),
   CONSTRAINT `awpb_output_ibfk_2` FOREIGN KEY (`component_id`) REFERENCES `awpb_component` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1194,7 +1166,7 @@ CREATE TABLE `awpb_output` (
 
 LOCK TABLES `awpb_output` WRITE;
 /*!40000 ALTER TABLE `awpb_output` DISABLE KEYS */;
-INSERT INTO `awpb_output` VALUES (1,'1.1.1',42,1,'Strategic framework that supports agribusiness developed and implementated','Strategic framework that supports agribusiness developed and implementated',14,1625652958,14,14),(2,'2.1.1',44,NULL,'Capacity of  smallholder farmers to produce a surplus for the market increased','Capacity of  smallholder farmers to produce a surplus for the market increased',0,1625652923,NULL,NULL),(4,'1.2.1',45,NULL,' Capacity of government and private sector to support smallholders and agribusiness partnerships str',' Capacity of government and private sector to support smallholders and agribusiness partnerships strengthened.',1625652567,1625653059,14,14),(5,'2.1.2',44,NULL,'Number of households with targeted support to improve their nutrition','Number of households with targeted support to improve their nutrition',1625652777,1625652886,14,14);
+INSERT INTO `awpb_output` VALUES (1,'1.1.1',42,1,'Strategic framework that supports agribusiness developed and implementated','Strategic framework that supports agribusiness developed and implementated',14,1625652958,1,1),(2,'2.1.1',44,NULL,'Capacity of  smallholder farmers to produce a surplus for the market increased','Capacity of  smallholder farmers to produce a surplus for the market increased',0,1625652923,NULL,NULL),(4,'1.2.1',45,NULL,' Capacity of government and private sector to support smallholders and agribusiness partnerships str',' Capacity of government and private sector to support smallholders and agribusiness partnerships strengthened.',1625652567,1625653059,1,1),(5,'2.1.2',44,NULL,'Number of households with targeted support to improve their nutrition','Number of households with targeted support to improve their nutrition',1625652777,1625652886,1,1);
 /*!40000 ALTER TABLE `awpb_output` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1220,7 +1192,7 @@ CREATE TABLE `awpb_province` (
   KEY `awpb_template_id` (`awpb_template_id`),
   KEY `cost_centre_id` (`cost_centre_id`),
   KEY `province_id` (`province_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1229,7 +1201,6 @@ CREATE TABLE `awpb_province` (
 
 LOCK TABLES `awpb_province` WRITE;
 /*!40000 ALTER TABLE `awpb_province` DISABLE KEYS */;
-INSERT INTO `awpb_province` VALUES (4,33,NULL,1,NULL,4,0,0,14,14),(5,33,NULL,3,NULL,0,0,0,14,14),(6,33,NULL,4,NULL,0,0,0,14,14),(7,33,NULL,10,NULL,0,0,0,14,14),(8,33,NULL,5,NULL,0,0,0,14,14),(9,32,NULL,1,NULL,4,0,0,14,14),(10,32,NULL,6,NULL,0,0,0,14,14),(11,32,NULL,7,NULL,0,0,0,14,14),(12,32,NULL,8,NULL,0,0,0,14,14),(13,32,NULL,9,NULL,0,0,0,14,14),(14,32,NULL,2,NULL,0,0,0,14,14);
 /*!40000 ALTER TABLE `awpb_province` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1258,7 +1229,7 @@ CREATE TABLE `awpb_status` (
   KEY `awpb_template_id` (`awpb_template_id`),
   KEY `camp_id` (`camp_id`),
   KEY `cost_centre_id` (`cost_centre_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1267,7 +1238,6 @@ CREATE TABLE `awpb_status` (
 
 LOCK TABLES `awpb_status` WRITE;
 /*!40000 ALTER TABLE `awpb_status` DISABLE KEYS */;
-INSERT INTO `awpb_status` VALUES (59,33,0,NULL,5,2,1,0,1624269646,14,14),(60,33,0,NULL,5,2,1,1623538161,1624269646,14,14),(68,33,0,NULL,7,42,5,0,0,18,18);
 /*!40000 ALTER TABLE `awpb_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1282,33 +1252,33 @@ CREATE TABLE `awpb_template` (
   `id` int NOT NULL AUTO_INCREMENT,
   `fiscal_year` int NOT NULL,
   `budget_theme` text NOT NULL,
-  `comment` text NOT NULL,
+  `comment` text,
   `guideline_file` varchar(255) DEFAULT NULL,
   `status` int NOT NULL COMMENT '0 Closed, 1 open, 2 Blocked, 4 current',
   `quarter` int DEFAULT NULL,
   `status_activities` int DEFAULT NULL,
   `status_users` int DEFAULT NULL,
   `status_district` int DEFAULT NULL,
-  `preparation_deadline_first_draft` date NOT NULL,
+  `preparation_deadline_first_draft` date DEFAULT NULL,
   `submission_deadline` date NOT NULL,
-  `consolidation_deadline` date NOT NULL,
-  `review_deadline` date NOT NULL,
-  `preparation_deadline_second_draft` date NOT NULL,
-  `review_deadline_pco` date NOT NULL,
-  `finalisation_deadline_pco` date NOT NULL,
-  `submission_deadline_moa_mfl` date NOT NULL,
-  `approval_deadline_jpsc` date NOT NULL,
+  `consolidation_deadline` date DEFAULT NULL,
+  `review_deadline` date DEFAULT NULL,
+  `preparation_deadline_second_draft` date DEFAULT NULL,
+  `review_deadline_pco` date DEFAULT NULL,
+  `finalisation_deadline_pco` date DEFAULT NULL,
+  `submission_deadline_moa_mfl` date DEFAULT NULL,
+  `approval_deadline_jpsc` date DEFAULT NULL,
   `incorpation_deadline_pco_moa_mfl` date NOT NULL,
-  `submission_deadline_ifad` date NOT NULL,
-  `comment_deadline_ifad` date NOT NULL,
-  `distribution_deadline` date NOT NULL,
+  `submission_deadline_ifad` date DEFAULT NULL,
+  `comment_deadline_ifad` date DEFAULT NULL,
+  `distribution_deadline` date DEFAULT NULL,
   `created_at` int unsigned NOT NULL,
   `updated_at` int unsigned NOT NULL,
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fiscal_year` (`fiscal_year`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1317,7 +1287,7 @@ CREATE TABLE `awpb_template` (
 
 LOCK TABLES `awpb_template` WRITE;
 /*!40000 ALTER TABLE `awpb_template` DISABLE KEYS */;
-INSERT INTO `awpb_template` VALUES (1,2001,'nnnn 56666','Hi Hi Googogo','2001-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609964565,1627761589,14,14),(2,2000,'Tetstst','Testst7778',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609964703,1621939469,14,14),(3,2004,'2002','2002','',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609965221,1621939469,14,14),(4,2003,'bb','bb',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609968491,1621939469,14,14),(5,2005,'bb','bb',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609968527,1621939469,14,14),(6,2006,'ffff','fff',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609968637,1621939469,14,14),(7,1980,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610000838,1621939469,14,14),(8,1981,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610000993,1621939469,14,14),(9,1983,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001015,1621939469,14,14),(10,1982,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001129,1621939469,14,14),(11,1984,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001215,1621939469,14,14),(12,1985,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001405,1621939469,14,14),(13,1986,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001587,1621939469,14,14),(14,1987,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001883,1621939469,14,14),(15,1988,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001985,1621939469,14,14),(16,1989,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610002209,1621939469,14,14),(17,1910,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610002266,1621939469,14,14),(18,1911,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610002642,1621939469,14,14),(19,1912,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610007825,1621939469,14,14),(21,1915,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008326,1621939469,14,14),(22,1916,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008412,1621939469,14,14),(23,1917,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008552,1621939469,14,14),(24,1918,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008748,1621939469,14,14),(25,1803,'1803666','180366','1803-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610039971,1621939469,14,14),(26,1804,'25666','2566','',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610040425,1621939470,14,14),(27,1805,'lllll','llllll','1805-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610040775,1621939470,14,14),(28,1856,'nsnsn','nnnnn','1856-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610968426,1621939470,14,14),(29,2020,'Farming as a Business','Business is the way to go','2020-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610986059,1621939470,14,14),(31,1970,'1970','1970','1970-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1611785873,1611786373,10,10),(32,2022,'2022','2022','2022-AWPB-Guidelines.pdf',1,1,1,1,1,'2021-11-28','2021-12-15','2021-12-31','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1611786373,1628395654,10,14),(33,2021,'2021','2021','2021-AWPB-Guidelines.pdf',2,1,1,1,1,'2021-07-09','2021-07-16','2021-07-30','2021-08-30','2021-09-15','2021-09-30','2021-10-14','2021-11-01','2021-11-08','2021-11-15','2021-11-29','2021-10-21','2021-10-28',1621939470,1627767618,14,14);
+INSERT INTO `awpb_template` VALUES (1,2001,'nnnn 56666','Hi Hi Googogo','2001-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-09-14','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-09-16','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609964565,1627761589,14,14),(2,2000,'Tetstst','Testst7778',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609964703,1621939469,14,14),(3,2004,'2002','2002','',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609965221,1621939469,14,14),(4,2003,'bb','bb',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609968491,1621939469,14,14),(5,2005,'bb','bb',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609968527,1621939469,14,14),(6,2006,'ffff','fff',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1609968637,1621939469,14,14),(7,1980,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610000838,1621939469,14,14),(8,1981,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610000993,1621939469,14,14),(9,1983,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001015,1621939469,14,14),(10,1982,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001129,1621939469,14,14),(11,1984,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001215,1621939469,14,14),(12,1985,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001405,1621939469,14,14),(13,1986,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001587,1621939469,14,14),(14,1987,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001883,1621939469,14,14),(15,1988,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610001985,1621939469,14,14),(16,1989,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610002209,1621939469,14,14),(17,1910,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610002266,1621939469,14,14),(18,1911,'ttt','gg',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610002642,1621939469,14,14),(19,1912,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610007825,1621939469,14,14),(21,1915,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008326,1621939469,14,14),(22,1916,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008412,1621939469,14,14),(23,1917,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008552,1621939469,14,14),(24,1918,'2','2',NULL,3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610008748,1621939469,14,14),(25,1803,'1803666','180366','1803-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610039971,1621939469,14,14),(26,1804,'25666','2566','',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610040425,1621939470,14,14),(27,1805,'lllll','llllll','1805-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610040775,1621939470,14,14),(28,1856,'nsnsn','nnnnn','1856-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610968426,1621939470,14,14),(29,2020,'Farming as a Business','Business is the way to go','2020-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1610986059,1621939470,14,14),(31,1970,'1970','1970','1970-AWPB-Guidelines.pdf',3,NULL,NULL,NULL,NULL,'2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1611785873,1611786373,10,10),(32,2022,'2022','2022','2022-AWPB-Guidelines.pdf',3,1,1,1,1,'2021-11-28','2021-12-15','2021-12-31','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12','2021-06-12',1611786373,1630915967,10,22),(33,2021,'2021','2021','2021-AWPB-Guidelines.pdf',3,1,1,1,1,'2021-07-09','2021-07-16','2021-07-30','2021-08-30','2021-09-15','2021-09-30','2021-10-14','2021-11-01','2021-11-08','2021-11-15','2021-11-29','2021-10-21','2021-10-28',1621939470,1630915967,14,22),(36,2023,'Year of the youth','Test','2023-AWPB-Guidelines.pdf',3,NULL,1,1,1,'2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28',1630936143,1630936789,22,22),(37,2024,'Year of the youth nn','Test',NULL,3,NULL,1,1,1,'2021-11-12','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28',1630936212,1631639550,22,15),(38,2025,'2025','Test','2025-AWPB-Guidelines.pdf',3,NULL,1,1,1,'2021-11-28','2021-09-14','2021-11-28','2021-09-16','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-09-21','2021-11-28','2021-11-28','2021-11-28',1631640141,1632236978,15,22),(39,2027,'Test','Test',NULL,3,NULL,NULL,NULL,NULL,'2021-09-22','2021-09-22','2021-09-23','2021-09-22','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-23',1632231210,1632231210,22,22),(40,2026,'Test','Test','2026-AWPB-Guidelines.pdf',2,2,1,1,1,'2021-09-22','2021-09-23','2021-09-23','2021-09-22','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-23','2021-09-24','2021-09-23','2021-09-23','2021-09-23',1632231408,1633044271,22,22),(41,2019,'Last Test','Test','2019-AWPB-Guidelines.pdf',1,NULL,1,1,1,'2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28','2021-11-28',1633023193,1633033420,15,15);
 /*!40000 ALTER TABLE `awpb_template` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1389,7 +1359,7 @@ CREATE TABLE `awpb_template_activity` (
   CONSTRAINT `awpb_template_activity_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `awpb_activity` (`id`),
   CONSTRAINT `awpb_template_activity_ibfk_2` FOREIGN KEY (`awpb_template_id`) REFERENCES `awpb_template` (`id`),
   CONSTRAINT `awpb_template_activity_ibfk_3` FOREIGN KEY (`component_id`) REFERENCES `awpb_component` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=257 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1398,7 +1368,6 @@ CREATE TABLE `awpb_template_activity` (
 
 LOCK TABLES `awpb_template_activity` WRITE;
 /*!40000 ALTER TABLE `awpb_template_activity` DISABLE KEYS */;
-INSERT INTO `awpb_template_activity` VALUES (184,95,'1.1.A2','Provincial Validation of the ZNAD',42,NULL,1,33,NULL,NULL,1,10,10,10,10,10,10,40,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1626257224,1626257224,NULL,14),(185,96,'1.1.A1','Drafting of the ZNADS',42,NULL,1,33,NULL,NULL,0,10,20,10,10,10,10,30,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1626257225,1626257225,NULL,NULL),(186,102,'1.1.A3','ZNADS launch',42,NULL,1,33,NULL,NULL,0,50,10,40,NULL,NULL,NULL,NULL,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1626257225,1626257225,NULL,NULL),(187,99,'1.1.B1','Dissemination of the Strategy    ',42,NULL,1,33,NULL,NULL,0,60,10,10,10,10,NULL,NULL,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1626257225,1626257225,NULL,NULL),(188,101,'2.1.A1','Stakeholder Engagement for Phase 2 and 3 Cat. A farmers',44,NULL,2,33,NULL,NULL,0,40,10,10,10,10,10,10,705.6,176.4,176.4,176.4,176.4,176.4,176.4,787.5,945,0,31.5,0,0,0,0,0,0,0,0,1732.5,31.5,0,0,1764,1,0,0,1626257225,1626257225,NULL,NULL),(189,117,'2.1.A2','VC innovation  multi-stakeholder  engagement meetings',44,NULL,NULL,33,NULL,NULL,0,10,10,20,10,10,20,20,848.426,848.426,1696.852,848.426,848.426,1696.852,1696.852,1577,157.7,189.24,78.85,78.85,31.54,820.04,851.58,1182.75,914.66,1387.76,1214.29,1923.94,189.24,2854.37,3516.71,8484.26,1,0,0,1626257225,1626257225,NULL,NULL),(190,118,'2.1.A3','Technical support(training and mentorship) facilitation  in specialised production ',44,NULL,NULL,33,NULL,NULL,0,20,20,20,10,10,10,10,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,1626257225,1626257225,NULL,NULL),(191,119,'2.2.A2','District Review of Applications and PCNs',47,NULL,NULL,33,NULL,NULL,0,20,50,25,2,2,0.8,0.2,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,1626257225,1626257225,NULL,NULL),(249,95,'1.1.A2','Provincial Validation of the ZNAD',42,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1628395213,1628395213,NULL,NULL),(250,96,'1.1.A1','Drafting of the ZNADS',42,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1628395214,1628395214,NULL,NULL),(251,102,'1.1.A3','ZNADS launch',42,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1628395218,1628395218,NULL,NULL),(252,99,'1.1.B1','Dissemination of the Strategy    ',42,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,1,1628395218,1628395218,NULL,NULL),(253,101,'2.1.A1','Stakeholder Engagement for Phase 2 and 3 Cat. A farmers',44,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,1628395218,1628395218,NULL,NULL),(254,117,'2.1.A2','VC innovation  multi-stakeholder  engagement meetings',44,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,1628395218,1628395218,NULL,NULL),(255,118,'2.1.A3','Technical support(training and mentorship) facilitation  in specialised production ',44,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,1628395218,1628395218,NULL,NULL),(256,119,'2.2.A2','District Review of Applications and PCNs',47,NULL,NULL,32,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,1628395218,1628395218,NULL,NULL);
 /*!40000 ALTER TABLE `awpb_template_activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1421,7 +1390,7 @@ CREATE TABLE `awpb_template_component` (
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `awpb_template_id` (`awpb_template_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1430,7 +1399,6 @@ CREATE TABLE `awpb_template_component` (
 
 LOCK TABLES `awpb_template_component` WRITE;
 /*!40000 ALTER TABLE `awpb_template_component` DISABLE KEYS */;
-INSERT INTO `awpb_template_component` VALUES (1,32,42,NULL,4,0,0,14,14),(2,32,44,NULL,4,0,0,14,14),(3,32,47,NULL,4,0,0,14,14);
 /*!40000 ALTER TABLE `awpb_template_component` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1459,7 +1427,7 @@ CREATE TABLE `awpb_template_users` (
   KEY `awpb_template_id` (`awpb_template_id`),
   CONSTRAINT `awpb_template_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `awpb_template_users_ibfk_2` FOREIGN KEY (`awpb_template_id`) REFERENCES `awpb_template` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1497,7 +1465,7 @@ CREATE TABLE `awpb_unit_of_measure` (
 
 LOCK TABLES `awpb_unit_of_measure` WRITE;
 /*!40000 ALTER TABLE `awpb_unit_of_measure` DISABLE KEYS */;
-INSERT INTO `awpb_unit_of_measure` VALUES (1,'Number',1,0,0,0,0),(2,'Kilograms',1,0,0,0,0),(3,'Percentage',1,0,0,0,0),(4,'Litre',0,0,0,0,0),(10,'US$',1,1625094518,1625094518,2,2),(11,'ZMW',1,1625094518,1625094518,2,2),(12,'Various',1,1625094518,1625094518,2,2),(13,'Night',1,1625094518,1625094518,2,2);
+INSERT INTO `awpb_unit_of_measure` VALUES (1,'Number',1,0,0,1,1),(2,'Kilograms',1,0,0,1,1),(3,'Percentage',1,0,0,1,1),(4,'Litre',0,0,0,1,1),(10,'US$',1,1625094518,1625094518,1,1),(11,'ZMW',1,1625094518,1625094518,1,1),(12,'Various',1,1625094518,1625094518,1,1),(13,'Night',1,1625094518,1625094518,1,1);
 /*!40000 ALTER TABLE `awpb_unit_of_measure` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1531,7 +1499,7 @@ CREATE TABLE `camp` (
 
 LOCK TABLES `camp` WRITE;
 /*!40000 ALTER TABLE `camp` DISABLE KEYS */;
-INSERT INTO `camp` VALUES (5,2,'Camp two','','-14.624586674161693','28.13769210937501',1607263313,1625074357,1,1),(6,2,'Camp three','','-14.663616632630394','28.091343537597666',1607263313,1625075081,1,1),(7,2,'Camp four','','-14.47571105850427','28.41235031250001',1607263313,1625090266,1,1),(8,42,'Chila one group','','-15.569439292403246','28.28154434326173',1625092685,1625092685,1,1),(9,44,'Camp 5','','-15.330186863675754','28.680657044677744',1626339665,1626339665,1,1);
+INSERT INTO `camp` VALUES (5,2,'Camp two','','-14.624586674161693','28.13769210937501',1607263313,1625074357,1,1),(6,2,'Camp three','','-14.663616632630394','28.091343537597666',1607263313,1625075081,1,1),(7,2,'Camp four','','-14.47571105850427','28.41235031250001',1607263313,1625090266,1,1),(8,42,'Chila one group','','-15.569439292403246','28.28154434326173',1625092685,1625092685,1,1),(9,44,'Camp 5','','-15.330186863675754','28.680657044677744',1626339665,1632852240,1,1);
 /*!40000 ALTER TABLE `camp` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1595,7 +1563,7 @@ CREATE TABLE `commodity_price_collection` (
   CONSTRAINT `fk_commodity_price_collection_2` FOREIGN KEY (`price_level_id`) REFERENCES `commodity_price_level` (`id`),
   CONSTRAINT `fk_commodity_price_collection_3` FOREIGN KEY (`market_id`) REFERENCES `market` (`id`),
   CONSTRAINT `fk_commodity_price_collection_4` FOREIGN KEY (`commodity_type_id`) REFERENCES `commodity_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1604,6 +1572,7 @@ CREATE TABLE `commodity_price_collection` (
 
 LOCK TABLES `commodity_price_collection` WRITE;
 /*!40000 ALTER TABLE `commodity_price_collection` DISABLE KEYS */;
+INSERT INTO `commodity_price_collection` VALUES (1,2,4,9,3,'10KG',10.00,NULL,'8','2021',1629977569,1629977569,10,10),(2,2,4,2,2,'25KG',50.00,NULL,'8','2021',1629977569,1629986488,10,10),(3,2,4,3,3,'TIN',45.00,NULL,'8','2021',1629986462,1629986462,10,10),(4,2,4,9,3,'50KG',800.00,NULL,'8','2021',1629986462,1629986462,10,10);
 /*!40000 ALTER TABLE `commodity_price_collection` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1765,7 +1734,7 @@ CREATE TABLE `lkm_storyofchange` (
   PRIMARY KEY (`id`),
   KEY `fk_lkm_storyofchange_1_idx` (`category_id`),
   CONSTRAINT `fk_lkm_storyofchange_1` FOREIGN KEY (`category_id`) REFERENCES `lkm_storyofchange_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1774,7 +1743,7 @@ CREATE TABLE `lkm_storyofchange` (
 
 LOCK TABLES `lkm_storyofchange` WRITE;
 /*!40000 ALTER TABLE `lkm_storyofchange` DISABLE KEYS */;
-INSERT INTO `lkm_storyofchange` VALUES (2,3,'Test','Upendo Chulu','Francis Chulu','2021-01-11','<p><strong>My story introduction<br></strong></p><p>Yes this is my introduction of this story</p>','<p>The challenges</p>','<p>Story Actions</p>','<p><strong>The results</strong></p>','<p>The conclusions</p>','<p><strong>The sequel</strong></p>',0,0,NULL,1,'Story accepted',1610388925,1614019554,1,1,NULL,NULL,NULL),(3,4,'From subsistence to commercial farming-Case of Mr. Chulu','Francis Chulu','Edson Chulu','2021-01-12','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.<span class=\"redactor-invisible-space\"></span></p>',0,0,NULL,1,'',1610472852,1614020092,10,1,NULL,2,1),(5,3,'From subsistence to commercial farming-Case of Chulu','Francis Chulu','Test names','2021-02-16','<p>Introduction</p>','<p>Challenges<br></p>','<p>The actions<br></p>','The results','Conclusion','Sequel',0,0,NULL,0,NULL,1614019196,1614019397,10,10,NULL,2,1),(6,4,'From subsistence to commercial farming-Case of Mr Chulu Francis','Francis Chulu','Edson Chulu','2021-02-09','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',1,0,NULL,1,'',1614070456,1624898204,10,1,NULL,2,1),(7,3,'From subsistence to commercial farming test','Upendo Chulu','Francis Chulu','2021-03-10','<p>test</p>','<p>test</p>','<p>action</p>','<p>results</p>','<p>test<br></p>','<p>sequel</p>',1,0,NULL,1,'',1618996486,1618996726,10,1,NULL,2,1),(8,3,'Farming story','Farmer names','My names','2021-05-29','<p>Test introduction</p>','<p>Challenge one</p>','<p>Actions</p>','<p>Result</p>','<p>Conclusions</p>','<p>Next steps</p><p><br></p>',1,0,NULL,1,'',1622279337,1622279541,10,1,NULL,2,1);
+INSERT INTO `lkm_storyofchange` VALUES (2,3,'Test','Upendo Chulu','Francis Chulu','2021-01-11','<p><strong>My story introduction<br></strong></p><p>Yes this is my introduction of this story</p>','<p>The challenges</p>','<p>Story Actions</p>','<p><strong>The results</strong></p>','<p>The conclusions</p>','<p><strong>The sequel</strong></p>',0,0,NULL,1,'Story accepted',1610388925,1614019554,1,1,NULL,NULL,NULL),(3,4,'From subsistence to commercial farming-Case of Mr. Chulu','Francis Chulu','Edson Chulu','2021-01-12','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.<span class=\"redactor-invisible-space\"></span></p>',0,0,NULL,1,'',1610472852,1614020092,10,1,NULL,2,1),(5,3,'From subsistence to commercial farming-Case of Chulu','Francis Chulu','Test names','2021-02-16','<p>Introduction</p>','<p>Challenges<br></p>','<p>The actions<br></p>','The results','Conclusion','Sequel',1,0,NULL,1,'',1614019196,1629987194,10,1,NULL,2,1),(6,4,'From subsistence to commercial farming-Case of Mr Chulu Francis','Francis Chulu','Edson Chulu','2021-02-09','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>','<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',1,0,NULL,1,'',1614070456,1624898204,10,1,NULL,2,1),(7,3,'From subsistence to commercial farming test','Upendo Chulu','Francis Chulu','2021-03-10','<p>test</p>','<p>test</p>','<p>action</p>','<p>results</p>','<p>test<br></p>','<p>sequel</p>',1,0,NULL,1,'',1618996486,1618996726,10,1,NULL,2,1),(8,3,'Farming story','Farmer names','My names','2021-05-29','<p>Test introduction</p>','<p>Challenge one</p>','<p>Actions</p>','<p>Result</p>','<p>Conclusions</p>','<p>Next steps</p><p><br></p>',1,0,NULL,1,'',1622279337,1622279541,10,1,NULL,2,1),(9,3,'Test story','Farmer names','My names','2021-08-26','<p> <b>The introduction (2-3 sentences summary of the case study or success story):</b> Offering a brief insight into the ‘story’ that will be told, including information such as the name of the person or group, the location, the date, the moment in the timeline of the programme, and where the story fits within the programme objective </p>','<p> <b>The challenge (what problem was being addressed):</b> Outlining the situation/problem that was being faced (which could be before the programme began). </p>','<p> <b>The action (what was done, how, by and with who etc):</b> Describing the activities undertaken and outputs delivered by the programme to address the challenge and bring about change, and mapping the sequence of events before, during and after the key ‘change points </p>','<p> <b>The result (what changed – what difference was made):</b> Setting out the change resulting from the programme’s actions; as well as any areas where the programme appears to be stuck. It also gives a sense of the likely route of the programme, and its impacts, in the longer term. </p>','<p> <b>The conclusions:</b> Examining the factors that seemed to be critical to achieving the outcomes, but written in a reflective rather than a self-promoting way that outlines difficulties and failures as well as successes. </p>','<p> <b>The sequel:</b> Examining the factors that seemed to be critical to achieving the outcomes, but written in a reflective rather than a self-promoting way that outlines difficulties and failures as well as successes. </p>',1,0,NULL,1,'',1629978180,1629978517,10,1,NULL,2,1),(10,3,'Test story1','Farmer names','My names','2021-08-18','<p><b>The introduction (2-3 sentences summary of the case study or success story):</b> Offering a brief insight into the ‘story’ that will be told, including information such as the name of the person or group, the location, the date, the moment in the timeline of the programme, and where the story fits within the programme objectives:</p>',NULL,NULL,NULL,NULL,NULL,0,0,NULL,0,NULL,1629986952,1629987020,10,10,NULL,2,1),(11,5,'Rice farming in chisama a case of Mr. B','Farmer names','Francis Chulu','2021-06-22','<p>Offering a brief insight into the ‘story’ that will be told, including information such as the name of the person or group, the location, the date, the moment in the timeline of the programme, and where the story fits within the programme objectives:<br></p>','<p>Outlining the situation/problem that was being faced (which could be before the programme began).</p>','<p>Describing the activities undertaken and outputs delivered by the programme to address the challenge and bring about change, and mapping the sequence of events before, during and after the key ‘change points</p>','Setting out the change resulting from the programme’s actions; as well as any areas where the programme appears to be stuck. It also gives a sense of the likely route of the programme, and its impacts, in the longer term. ','<p>Examining the factors that seemed to be critical to achieving the outcomes, but written in a reflective rather than a self-promoting way that outlines difficulties and failures as well as successes.</p>','<p>Examining the factors that seemed to be critical to achieving the outcomes, but written in a reflective rather than a self-promoting way that outlines difficulties and failures as well as successes.</p>',1,0,NULL,1,'',1632736595,1632737121,9,1,NULL,2,1);
 /*!40000 ALTER TABLE `lkm_storyofchange` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1797,7 +1766,7 @@ CREATE TABLE `lkm_storyofchange_article` (
   `updated_by` int DEFAULT NULL,
   `file_name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1806,6 +1775,7 @@ CREATE TABLE `lkm_storyofchange_article` (
 
 LOCK TABLES `lkm_storyofchange_article` WRITE;
 /*!40000 ALTER TABLE `lkm_storyofchange_article` DISABLE KEYS */;
+INSERT INTO `lkm_storyofchange_article` VALUES (1,9,NULL,'','plngxPbJXObTlkXJawIT7M9H_l2vvl3j.pdf',1629978634,1629978634,1,1,'my sample.pdf'),(2,5,NULL,'','tAtdI-FYTjEGjdEtG3mScpvJ0_HSM0ze.pdf',1629987262,1629987262,1,1,'my sample.pdf'),(3,11,NULL,'','oZCihzKD-hj0kOGvOLQiHdhWmx0Ekh-B.pdf',1632737179,1632737179,1,1,'my sample.pdf');
 /*!40000 ALTER TABLE `lkm_storyofchange_article` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1825,7 +1795,7 @@ CREATE TABLE `lkm_storyofchange_category` (
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1834,7 +1804,7 @@ CREATE TABLE `lkm_storyofchange_category` (
 
 LOCK TABLES `lkm_storyofchange_category` WRITE;
 /*!40000 ALTER TABLE `lkm_storyofchange_category` DISABLE KEYS */;
-INSERT INTO `lkm_storyofchange_category` VALUES (3,'Livestock farming','',1610361550,1610378652,1,1),(4,'Subsistence farming','Subsistence farming',1610361568,1610361592,1,1);
+INSERT INTO `lkm_storyofchange_category` VALUES (3,'Livestock farming','',1610361550,1610378652,1,1),(4,'Subsistence farming','Subsistence farming',1610361568,1610361592,1,1),(5,'Rice farming','',1632736505,1632736505,1,1);
 /*!40000 ALTER TABLE `lkm_storyofchange_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1855,7 +1825,7 @@ CREATE TABLE `lkm_storyofchange_interview_guide_template_questions` (
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1864,7 +1834,7 @@ CREATE TABLE `lkm_storyofchange_interview_guide_template_questions` (
 
 LOCK TABLES `lkm_storyofchange_interview_guide_template_questions` WRITE;
 /*!40000 ALTER TABLE `lkm_storyofchange_interview_guide_template_questions` DISABLE KEYS */;
-INSERT INTO `lkm_storyofchange_interview_guide_template_questions` VALUES (1,'Introduction','1','Please introduce yourself and tell me a bit about yourself?',1609956950,1609956950,1,1),(2,'The Problem','2','What Challenges were you experiencing before the E-SAPP and why?',1609958624,1609958624,1,1),(3,'The Problem','3','Did you do anything to solve the problem before E-SAPP? If yes, what did you do?',1609958658,1609958658,1,1),(4,'The Action','4','What interventions did E-SAPP put in place to resolve the problem?  <b>Probe: Detail them according to the different steps taken</b>.',1609958714,1610358307,1,1),(5,'The Action','5','Did the interventions by E-SAPP resolve the problem? Give a reason for your answer.',1609958980,1609958980,1,1),(6,'The Action','6','In your opinion, do you think this problem was going to be addressed if it was not for the intervention from E-SAPP? Give a reason?',1609958996,1609958996,1,1),(7,'The Action','7','What are the key areas of change that you noticed as a result of the intervention? Give examples. ',1609959016,1609959016,1,1),(8,'The Action','8','What are some of the lessons that you have learnt from the intervention?',1609959038,1609959038,1,1),(9,'Recommendations','9',' In terms of how the E-SAPP could improve its intervention delivery, do you have any recommendations/ suggestions? What do you think needs to be done?',1609959055,1609959055,1,1),(10,'Introduction','10','Test question another',1614019009,1614070301,1,1),(11,'Recommendations','11','Another recommendation',1614070268,1614070268,1,1);
+INSERT INTO `lkm_storyofchange_interview_guide_template_questions` VALUES (1,'Introduction','1','Please introduce yourself and tell me a bit about yourself?',1609956950,1609956950,1,1),(2,'The Problem','2','What Challenges were you experiencing before the E-SAPP and why?',1609958624,1609958624,1,1),(3,'The Problem','3','Did you do anything to solve the problem before E-SAPP? If yes, what did you do?',1609958658,1609958658,1,1),(4,'The Action','4','What interventions did E-SAPP put in place to resolve the problem?  <b>Probe: Detail them according to the different steps taken</b>.',1609958714,1610358307,1,1),(5,'The Action','5','Did the interventions by E-SAPP resolve the problem? Give a reason for your answer.',1609958980,1609958980,1,1),(6,'The Action','6','In your opinion, do you think this problem was going to be addressed if it was not for the intervention from E-SAPP? Give a reason?',1609958996,1609958996,1,1),(7,'The Action','7','What are the key areas of change that you noticed as a result of the intervention? Give examples. ',1609959016,1609959016,1,1),(8,'The Action','8','What are some of the lessons that you have learnt from the intervention?',1609959038,1609959038,1,1),(9,'Recommendations','9',' In terms of how the E-SAPP could improve its intervention delivery, do you have any recommendations/ suggestions? What do you think needs to be done?',1609959055,1609959055,1,1);
 /*!40000 ALTER TABLE `lkm_storyofchange_interview_guide_template_questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1888,7 +1858,7 @@ CREATE TABLE `lkm_storyofchange_media` (
   PRIMARY KEY (`id`),
   KEY `fk_lkm_storyofchange_media_1_idx` (`story_id`),
   CONSTRAINT `fk_lkm_storyofchange_media_1` FOREIGN KEY (`story_id`) REFERENCES `lkm_storyofchange` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1897,7 +1867,727 @@ CREATE TABLE `lkm_storyofchange_media` (
 
 LOCK TABLES `lkm_storyofchange_media` WRITE;
 /*!40000 ALTER TABLE `lkm_storyofchange_media` DISABLE KEYS */;
+INSERT INTO `lkm_storyofchange_media` VALUES (1,11,'Completed Interview guide','my sample.pdf','komDvTvECFEq2e2TLwKefxNPYiNYK2MIP86RYD_Lxzstk.pdf',1632736841,1632736841,9,9),(2,11,'Picture','user1.jpg','E-JZagGrMkGPX10UHTH8aoa2TM3oPjHYNqblz0P2HEMUY.jpg',1632736892,1632736892,9,9);
 /*!40000 ALTER TABLE `lkm_storyofchange_media` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_deve_objectives_household_profitableproject_support`
+--
+
+DROP TABLE IF EXISTS `logframe_deve_objectives_household_profitableproject_support`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_deve_objectives_household_profitableproject_support` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `category` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_deve_objectives_household_profitableproject_support`
+--
+
+LOCK TABLES `logframe_deve_objectives_household_profitableproject_support` WRITE;
+/*!40000 ALTER TABLE `logframe_deve_objectives_household_profitableproject_support` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_deve_objectives_household_profitableproject_support` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outcome_households_improved_access_to_markets`
+--
+
+DROP TABLE IF EXISTS `logframe_outcome_households_improved_access_to_markets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outcome_households_improved_access_to_markets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `category` varchar(45) NOT NULL COMMENT 'Category A, B, C',
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outcome_households_improved_access_to_markets`
+--
+
+LOCK TABLES `logframe_outcome_households_improved_access_to_markets` WRITE;
+/*!40000 ALTER TABLE `logframe_outcome_households_improved_access_to_markets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_outcome_households_improved_access_to_markets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outcome_proposed_existingnew_laws_policies`
+--
+
+DROP TABLE IF EXISTS `logframe_outcome_proposed_existingnew_laws_policies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outcome_proposed_existingnew_laws_policies` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `name` text NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outcome_proposed_existingnew_laws_policies`
+--
+
+LOCK TABLES `logframe_outcome_proposed_existingnew_laws_policies` WRITE;
+/*!40000 ALTER TABLE `logframe_outcome_proposed_existingnew_laws_policies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_outcome_proposed_existingnew_laws_policies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outcome_rural_producers_in_formal_partnerships`
+--
+
+DROP TABLE IF EXISTS `logframe_outcome_rural_producers_in_formal_partnerships`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outcome_rural_producers_in_formal_partnerships` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outcome_rural_producers_in_formal_partnerships`
+--
+
+LOCK TABLES `logframe_outcome_rural_producers_in_formal_partnerships` WRITE;
+/*!40000 ALTER TABLE `logframe_outcome_rural_producers_in_formal_partnerships` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_outcome_rural_producers_in_formal_partnerships` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_agribusiness_studies`
+--
+
+DROP TABLE IF EXISTS `logframe_output_agribusiness_studies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_agribusiness_studies` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `study_name` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_agribusiness_studies`
+--
+
+LOCK TABLES `logframe_output_agribusiness_studies` WRITE;
+/*!40000 ALTER TABLE `logframe_output_agribusiness_studies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_agribusiness_studies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_annual_gross_value_farm_sales`
+--
+
+DROP TABLE IF EXISTS `logframe_output_annual_gross_value_farm_sales`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_annual_gross_value_farm_sales` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `category` varchar(45) NOT NULL COMMENT 'Category A, B, C',
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_annual_gross_value_farm_sales`
+--
+
+LOCK TABLES `logframe_output_annual_gross_value_farm_sales` WRITE;
+/*!40000 ALTER TABLE `logframe_output_annual_gross_value_farm_sales` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_annual_gross_value_farm_sales` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_investment_supported_agribusiness_matchinggrants`
+--
+
+DROP TABLE IF EXISTS `logframe_output_investment_supported_agribusiness_matchinggrants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_investment_supported_agribusiness_matchinggrants` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_investment_supported_agribusiness_matchinggrants`
+--
+
+LOCK TABLES `logframe_output_investment_supported_agribusiness_matchinggrants` WRITE;
+/*!40000 ALTER TABLE `logframe_output_investment_supported_agribusiness_matchinggrants` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_investment_supported_agribusiness_matchinggrants` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_markets_facilities_constructed_rehabilitated`
+--
+
+DROP TABLE IF EXISTS `logframe_output_markets_facilities_constructed_rehabilitated`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_markets_facilities_constructed_rehabilitated` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_markets_facilities_constructed_rehabilitated`
+--
+
+LOCK TABLES `logframe_output_markets_facilities_constructed_rehabilitated` WRITE;
+/*!40000 ALTER TABLE `logframe_output_markets_facilities_constructed_rehabilitated` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_markets_facilities_constructed_rehabilitated` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_people_receiving_services_4p_matchinggrant`
+--
+
+DROP TABLE IF EXISTS `logframe_output_people_receiving_services_4p_matchinggrant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_people_receiving_services_4p_matchinggrant` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_people_receiving_services_4p_matchinggrant`
+--
+
+LOCK TABLES `logframe_output_people_receiving_services_4p_matchinggrant` WRITE;
+/*!40000 ALTER TABLE `logframe_output_people_receiving_services_4p_matchinggrant` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_people_receiving_services_4p_matchinggrant` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_people_receiving_services_msme_matching_grants`
+--
+
+DROP TABLE IF EXISTS `logframe_output_people_receiving_services_msme_matching_grants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_people_receiving_services_msme_matching_grants` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_people_receiving_services_msme_matching_grants`
+--
+
+LOCK TABLES `logframe_output_people_receiving_services_msme_matching_grants` WRITE;
+/*!40000 ALTER TABLE `logframe_output_people_receiving_services_msme_matching_grants` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_people_receiving_services_msme_matching_grants` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_people_trained_climate_sensitive_services`
+--
+
+DROP TABLE IF EXISTS `logframe_output_people_trained_climate_sensitive_services`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_people_trained_climate_sensitive_services` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `people_type` varchar(45) NOT NULL COMMENT 'People-women or People-men',
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_people_trained_climate_sensitive_services`
+--
+
+LOCK TABLES `logframe_output_people_trained_climate_sensitive_services` WRITE;
+/*!40000 ALTER TABLE `logframe_output_people_trained_climate_sensitive_services` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_people_trained_climate_sensitive_services` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_policies_relevant_products_completed`
+--
+
+DROP TABLE IF EXISTS `logframe_output_policies_relevant_products_completed`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_policies_relevant_products_completed` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `policy_name` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_policies_relevant_products_completed`
+--
+
+LOCK TABLES `logframe_output_policies_relevant_products_completed` WRITE;
+/*!40000 ALTER TABLE `logframe_output_policies_relevant_products_completed` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_policies_relevant_products_completed` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_production_marketing_infrastructure`
+--
+
+DROP TABLE IF EXISTS `logframe_output_production_marketing_infrastructure`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_production_marketing_infrastructure` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_production_marketing_infrastructure`
+--
+
+LOCK TABLES `logframe_output_production_marketing_infrastructure` WRITE;
+/*!40000 ALTER TABLE `logframe_output_production_marketing_infrastructure` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_production_marketing_infrastructure` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_output_value_investments_msme_matching_grants`
+--
+
+DROP TABLE IF EXISTS `logframe_output_value_investments_msme_matching_grants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_output_value_investments_msme_matching_grants` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_output_value_investments_msme_matching_grants`
+--
+
+LOCK TABLES `logframe_output_value_investments_msme_matching_grants` WRITE;
+/*!40000 ALTER TABLE `logframe_output_value_investments_msme_matching_grants` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_output_value_investments_msme_matching_grants` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outreach_householdsreached_household_members`
+--
+
+DROP TABLE IF EXISTS `logframe_outreach_householdsreached_household_members`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outreach_householdsreached_household_members` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outreach_householdsreached_household_members`
+--
+
+LOCK TABLES `logframe_outreach_householdsreached_household_members` WRITE;
+/*!40000 ALTER TABLE `logframe_outreach_householdsreached_household_members` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_outreach_householdsreached_household_members` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outreach_householdsreached_typeof_headed`
+--
+
+DROP TABLE IF EXISTS `logframe_outreach_householdsreached_typeof_headed`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outreach_householdsreached_typeof_headed` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `headed_type` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outreach_householdsreached_typeof_headed`
+--
+
+LOCK TABLES `logframe_outreach_householdsreached_typeof_headed` WRITE;
+/*!40000 ALTER TABLE `logframe_outreach_householdsreached_typeof_headed` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_outreach_householdsreached_typeof_headed` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outreach_persons_gender`
+--
+
+DROP TABLE IF EXISTS `logframe_outreach_persons_gender`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outreach_persons_gender` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `gender` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outreach_persons_gender`
+--
+
+LOCK TABLES `logframe_outreach_persons_gender` WRITE;
+/*!40000 ALTER TABLE `logframe_outreach_persons_gender` DISABLE KEYS */;
+INSERT INTO `logframe_outreach_persons_gender` VALUES (3,'2018','Persons receiving services promoted or supported by the project','7603','1506','males','1506','0',1632654274,1632654310,9,9),(4,'2019','Persons receiving services promoted or supported by the project','8000','4052','females','5502','0',1632654871,1632654871,9,9),(5,'2018','Persons receiving services promoted or supported by the project','7087','1450','females','1450','0',1632687386,1632687386,9,9),(6,'2019','Persons receiving services promoted or supported by the project','12000','3144','males','4650','0',1632687447,1632687447,9,9),(7,'2020','Persons receiving services promoted or supported by the project','5100','16627','females','22129','0',1632687544,1632687544,9,9),(8,'2020','Persons receiving services promoted or supported by the project','11900','14774','males','19424','0',1632687614,1632688026,9,9),(9,'2021','Persons receiving services promoted or supported by the project','720','557','females','22686','0',1632688079,1632688079,9,9),(10,'2021','Persons receiving services promoted or supported by the project','1680','1194','males','20618','0',1632688130,1632688130,9,9);
+/*!40000 ALTER TABLE `logframe_outreach_persons_gender` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_outreach_persons_young`
+--
+
+DROP TABLE IF EXISTS `logframe_outreach_persons_young`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_outreach_persons_young` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `young_not_young` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_outreach_persons_young`
+--
+
+LOCK TABLES `logframe_outreach_persons_young` WRITE;
+/*!40000 ALTER TABLE `logframe_outreach_persons_young` DISABLE KEYS */;
+INSERT INTO `logframe_outreach_persons_young` VALUES (1,'2018','Persons receiving services promoted or supported by the project','3032','959','Young','959','0',1632664106,1632664374,9,9),(2,'2018','Persons receiving services promoted or supported by the project','11658','1997','Not Young','1997','0',1632664362,1632664362,9,9),(5,'2019','Persons receiving services promoted or supported by the project','4000','1648','Young','2607','0',1632688277,1632688277,9,9),(6,'2019','Persons receiving services promoted or supported by the project','16000','5548','Not Young','7545','0',1632688398,1632688398,9,9),(7,'2020','Persons receiving services promoted or supported by the project','3400','13412','Young','16019','0',1632688466,1632688466,9,9),(8,'2020','Persons receiving services promoted or supported by the project','13600','17989','Not Young','25534','0',1632688503,1632688503,9,9),(9,'2021','Persons receiving services promoted or supported by the project','480','394','Young','16413','0',1632688534,1632688534,9,9),(10,'2021','Persons receiving services promoted or supported by the project','1920','1357','Not Young','26891','0',1632688575,1632688575,9,9);
+/*!40000 ALTER TABLE `logframe_outreach_persons_young` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_programme_targets`
+--
+
+DROP TABLE IF EXISTS `logframe_programme_targets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_programme_targets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `baseline` varchar(45) NOT NULL,
+  `mid_term` varchar(45) NOT NULL,
+  `end_target` varchar(45) DEFAULT NULL,
+  `record_type` varchar(255) NOT NULL,
+  `indicator` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_programme_targets`
+--
+
+LOCK TABLES `logframe_programme_targets` WRITE;
+/*!40000 ALTER TABLE `logframe_programme_targets` DISABLE KEYS */;
+INSERT INTO `logframe_programme_targets` VALUES (1,'0','9150','18300','Females - Number','Persons receiving services promoted or supported by the project','Outreach females number',1,1632661690,1,1),(2,'0','21350','42700','Males - Number','Persons receiving services promoted or supported by the project','Outreach males number',1,1,1,1),(3,'0','6100','12200','Young - Number','Persons receiving services promoted or supported by the project','Outreach Young number',1,1,1,1),(4,'0','24400','48800','Not Young - Number','Persons receiving services promoted or supported by the project','Outreach not Young number',1,1,1,1);
+/*!40000 ALTER TABLE `logframe_programme_targets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_project_goals_food_secure_household`
+--
+
+DROP TABLE IF EXISTS `logframe_project_goals_food_secure_household`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_project_goals_food_secure_household` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_project_goals_food_secure_household`
+--
+
+LOCK TABLES `logframe_project_goals_food_secure_household` WRITE;
+/*!40000 ALTER TABLE `logframe_project_goals_food_secure_household` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_project_goals_food_secure_household` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_project_goals_household_assets`
+--
+
+DROP TABLE IF EXISTS `logframe_project_goals_household_assets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_project_goals_household_assets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `asset` varchar(45) NOT NULL,
+  `category` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_project_goals_household_assets`
+--
+
+LOCK TABLES `logframe_project_goals_household_assets` WRITE;
+/*!40000 ALTER TABLE `logframe_project_goals_household_assets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_project_goals_household_assets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logframe_project_goals_women_improved_diet`
+--
+
+DROP TABLE IF EXISTS `logframe_project_goals_women_improved_diet`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logframe_project_goals_women_improved_diet` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year` varchar(5) NOT NULL,
+  `indicator` text NOT NULL,
+  `yr_target` varchar(45) NOT NULL,
+  `yr_results` varchar(45) NOT NULL,
+  `cumulative` varchar(45) NOT NULL,
+  `cumulative_percentage` varchar(45) NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  `updated_at` int unsigned NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logframe_project_goals_women_improved_diet`
+--
+
+LOCK TABLES `logframe_project_goals_women_improved_diet` WRITE;
+/*!40000 ALTER TABLE `logframe_project_goals_women_improved_diet` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logframe_project_goals_women_improved_diet` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1987,7 +2677,7 @@ CREATE TABLE `me_back_to_office_report` (
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1996,7 +2686,7 @@ CREATE TABLE `me_back_to_office_report` (
 
 LOCK TABLES `me_back_to_office_report` WRITE;
 /*!40000 ALTER TABLE `me_back_to_office_report` DISABLE KEYS */;
-INSERT INTO `me_back_to_office_report` VALUES (1,'2021-03-10','2021-03-12','test  Test','Francis  Chulu','<p>Partners</p>','<p>Purpose</p>','<p>Summary</p>','<p>Findings</p>','<p>Recommedations</p>',NULL,'',1,'',1615321516,1625578272,10,1),(2,'2021-03-09','2021-03-12','test  Test','Chulu  Francis, Test  Test','<p>Partners</p>','<p>Lorem ipsum</p>','<p>Lorem ipsum</p>','<p>Lorem ipsum</p>','<p>Lorem ipsum</p>',NULL,'',0,'',1617129037,1617129133,10,1),(3,'2021-03-24','2021-03-27','test  Test','Francis  Chulu, test test','<p>lorem ipsum</p>','<p>lorem ipsum</p>','<p>lorem ipsum</p>','<p>lorem ipsum</p>','<p>lorem ipsum</p>',NULL,'',0,'',1617178995,1617179107,10,1);
+INSERT INTO `me_back_to_office_report` VALUES (1,'2021-03-10','2021-03-12','test  Test','Francis  Chulu','<p>Partners</p>','<p>Purpose</p>','<p>Summary</p>','<p>Findings</p>','<p>Recommedations</p>',NULL,'',1,'',1615321516,1625578272,10,1),(2,'2021-03-09','2021-03-12','test  Test','Chulu  Francis, Test  Test','<p>Partners</p>','<p>Lorem ipsum</p>','<p>Lorem ipsum</p>','<p>Lorem ipsum</p>','<p>Lorem ipsum</p>',NULL,'',0,'',1617129037,1617129133,10,1),(3,'2021-03-24','2021-03-27','test  Test','Francis  Chulu, test test','<p>lorem ipsum</p>','<p>lorem ipsum</p>','<p>lorem ipsum</p>','<p>lorem ipsum</p>','<p>lorem ipsum</p>',NULL,'',0,'',1617178995,1617179107,10,1),(4,'2021-09-08','2021-09-17','test  Test','Chulu  Francis','<p>Partners</p>','<p><label>Purpose of assignment</label></p>','<p><label>Summary of assignment outcomes</label></p>','<p><label>Key findings</label></p>','<p><label>Key recommendations</label></p>',NULL,NULL,1,'',1630920138,1630920268,10,1),(5,'2021-09-08','2021-09-16','Test  Test','Francis  Chulu, test  Test, Chulu one','<p>Partner one</p>','<p>purpose</p>','<p>Summary</p>','<p>Key findings</p>','<p>recommendations</p>',NULL,NULL,1,'',1632307492,1632308034,9,1);
 /*!40000 ALTER TABLE `me_back_to_office_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2022,7 +2712,7 @@ CREATE TABLE `me_camp_subproject_records_awpb_objectives` (
   PRIMARY KEY (`id`),
   KEY `fk_me_camp_subproject_records_awpb_objectives_1_idx` (`camp_id`),
   CONSTRAINT `fk_me_camp_subproject_records_awpb_objectives_1` FOREIGN KEY (`camp_id`) REFERENCES `camp` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2031,7 +2721,6 @@ CREATE TABLE `me_camp_subproject_records_awpb_objectives` (
 
 LOCK TABLES `me_camp_subproject_records_awpb_objectives` WRITE;
 /*!40000 ALTER TABLE `me_camp_subproject_records_awpb_objectives` DISABLE KEYS */;
-INSERT INTO `me_camp_subproject_records_awpb_objectives` VALUES (1,5,1,'Not set','Not set','0','2021',1615474709,1615489186,10,10),(2,5,2,'Not set','Not set','0','2021',1615474709,1615489186,10,10),(3,5,3,'Not set','Not set','0','2021',1615474709,1615489186,10,10),(4,5,4,'Not set','Not set','0','2021',1615474709,1615489186,10,10),(5,6,1,'Not set','Not set','0','2021',1615474709,1615487999,10,10),(6,6,2,'Not set','Not set','0','2021',1615474709,1615487999,10,10),(7,6,3,'Not set','Not set','0','2021',1615474709,1615487999,10,10),(8,6,4,'Not set','Not set','0','2021',1615474709,1615487999,10,10),(9,7,1,'- Train 10 farmers\r\n- Indicator two\r\n','12','10','2021',1615474709,1615486522,10,10),(10,7,2,'- Issue out 5 commodity sacks','20','5','2021',1615474709,1615486522,10,10),(11,7,3,'- Indicator one\r\n- Indicator two','1','1','2021',1615474709,1615486629,10,10),(12,7,4,'- Indicator one\r\n- Indicator two','3','2','2021',1615474709,1615486522,10,10);
 /*!40000 ALTER TABLE `me_camp_subproject_records_awpb_objectives` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2094,7 +2783,7 @@ CREATE TABLE `me_camp_subproject_records_monthly_planned_activities` (
   KEY `fk_me_camp_subproject_records_monthly_planned_activities_2_idx` (`work_effort_id`),
   CONSTRAINT `fk_me_camp_subproject_records_monthly_planned_activities_1` FOREIGN KEY (`faabs_id`) REFERENCES `me_faabs_groups` (`id`),
   CONSTRAINT `fk_me_camp_subproject_records_monthly_planned_activities_2` FOREIGN KEY (`work_effort_id`) REFERENCES `me_camp_subproject_records_planned_work_effort` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2103,7 +2792,7 @@ CREATE TABLE `me_camp_subproject_records_monthly_planned_activities` (
 
 LOCK TABLES `me_camp_subproject_records_monthly_planned_activities` WRITE;
 /*!40000 ALTER TABLE `me_camp_subproject_records_monthly_planned_activities` DISABLE KEYS */;
-INSERT INTO `me_camp_subproject_records_monthly_planned_activities` VALUES (14,14,37,3,'Zone','1',7,'1','3','3',1616679511,1616679511,10,10),(15,14,39,3,'Zone','1',7,'2','2','3',1617179520,1617179520,10,10),(16,13,37,3,'Zone','1',3,'1','1','1',1618423737,1618423737,10,10),(17,15,1,3,'Zone','2',10,'2','2','6',1621772200,1621772200,10,10),(19,17,99,1,'Zone','99',25,'10','9','6',1625591437,1625591437,10,10);
+INSERT INTO `me_camp_subproject_records_monthly_planned_activities` VALUES (14,14,37,3,'Zone','1',7,'1','3','3',1616679511,1616679511,10,10),(15,14,39,3,'Zone','1',7,'2','2','3',1617179520,1617179520,10,10),(16,13,37,3,'Zone','1',3,'1','1','1',1618423737,1618423737,10,10),(17,15,1,3,'Zone','2',10,'2','2','6',1621772200,1621772200,10,10),(19,17,99,1,'Zone','99',25,'10','9','6',1625591437,1625591437,10,10),(20,19,117,1,'Zone','4',12,'4','4','4',1629979416,1629979416,10,10),(21,18,117,3,'Zone','4',12,'4','4','4',1629979456,1629979456,10,10),(22,20,117,1,'Zone','4',12,'4','4','4',1630921359,1630921359,10,10),(26,22,117,3,'Zone','4',12,'4','4','4',1632735082,1632735082,9,9);
 /*!40000 ALTER TABLE `me_camp_subproject_records_monthly_planned_activities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2135,7 +2824,7 @@ CREATE TABLE `me_camp_subproject_records_monthly_planned_activities_actual` (
   PRIMARY KEY (`id`),
   KEY `fk_new_table_2_idx` (`planned_activity_id`),
   CONSTRAINT `fk_new_table_2` FOREIGN KEY (`planned_activity_id`) REFERENCES `me_camp_subproject_records_monthly_planned_activities` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2144,7 +2833,7 @@ CREATE TABLE `me_camp_subproject_records_monthly_planned_activities_actual` (
 
 LOCK TABLES `me_camp_subproject_records_monthly_planned_activities_actual` WRITE;
 /*!40000 ALTER TABLE `me_camp_subproject_records_monthly_planned_activities_actual` DISABLE KEYS */;
-INSERT INTO `me_camp_subproject_records_monthly_planned_activities_actual` VALUES (1,14,'1','1','2','1','31','18','5','8','',NULL,NULL,1617129988,1617129988,10,10),(2,15,'1','10','11','1','12','4','4','4','',NULL,NULL,1617179689,1617179689,10,10),(3,16,'1','1','2','1','3','1','1','1','',NULL,NULL,1618423751,1618423751,10,10),(7,19,'6','5','11','50','27','18','2','7','',NULL,NULL,1625594530,1625594530,10,10);
+INSERT INTO `me_camp_subproject_records_monthly_planned_activities_actual` VALUES (1,14,'1','1','2','1','31','18','5','8','',NULL,NULL,1617129988,1617129988,10,10),(2,15,'1','10','11','1','12','4','4','4','',NULL,NULL,1617179689,1617179689,10,10),(3,16,'1','1','2','1','3','1','1','1','',NULL,NULL,1618423751,1618423751,10,10),(7,19,'6','5','11','50','27','18','2','7','',NULL,NULL,1625594530,1625594530,10,10),(8,21,'1','2','3','4','13','2','5','6','',NULL,NULL,1629979625,1629979625,10,10),(9,22,'1','1','2','1','3','1','1','1','',NULL,NULL,1630921474,1630921474,10,10),(11,26,'1','2','3','4','37','20','10','7','',NULL,NULL,1632735157,1632735157,9,9);
 /*!40000 ALTER TABLE `me_camp_subproject_records_monthly_planned_activities_actual` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2195,7 +2884,7 @@ CREATE TABLE `me_camp_subproject_records_planned_work_effort` (
   PRIMARY KEY (`id`),
   KEY `fk_me_camp_subproject_records_planned_work_effort_1_idx` (`camp_id`),
   CONSTRAINT `fk_me_camp_subproject_records_planned_work_effort_1` FOREIGN KEY (`camp_id`) REFERENCES `camp` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2204,7 +2893,7 @@ CREATE TABLE `me_camp_subproject_records_planned_work_effort` (
 
 LOCK TABLES `me_camp_subproject_records_planned_work_effort` WRITE;
 /*!40000 ALTER TABLE `me_camp_subproject_records_planned_work_effort` DISABLE KEYS */;
-INSERT INTO `me_camp_subproject_records_planned_work_effort` VALUES (13,6,2021,'3',31,12,12,24,2,1616678720,1616678720,10,10),(14,5,2021,'3',31,6,4,10,7,1616678740,1616751023,10,10),(15,5,2021,'5',31,2,2,4,3,1621770811,1621770811,10,10),(16,7,2021,'5',31,3,2,5,12,1622286786,1622286786,10,10),(17,7,2021,'7',31,15,10,25,6,1625561338,1625561338,10,10),(18,7,2021,'8',31,1,20,21,1,1628104985,1628104985,10,10);
+INSERT INTO `me_camp_subproject_records_planned_work_effort` VALUES (13,6,2021,'3',31,12,12,24,2,1616678720,1616678720,10,10),(14,5,2021,'3',31,6,4,10,7,1616678740,1616751023,10,10),(15,5,2021,'5',31,2,2,4,3,1621770811,1621770811,10,10),(16,7,2021,'5',31,3,2,5,12,1622286786,1622286786,10,10),(17,7,2021,'7',31,15,10,25,6,1625561338,1625561338,10,10),(18,7,2021,'8',31,1,20,21,1,1628104985,1628104985,10,10),(19,6,2021,'8',31,3,2,5,5,1629979362,1629979362,10,10),(20,7,2021,'9',30,10,10,20,NULL,1630921316,1630921316,10,10),(22,5,2021,'9',30,10,10,20,5,1632734899,1632734899,9,9);
 /*!40000 ALTER TABLE `me_camp_subproject_records_planned_work_effort` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2281,7 +2970,7 @@ CREATE TABLE `me_faabs_category_a_farmers` (
   PRIMARY KEY (`id`),
   KEY `fk_me_faabs_farmer_register_1_idx` (`faabs_group_id`),
   CONSTRAINT `fk_me_faabs_category_a_farmers` FOREIGN KEY (`faabs_group_id`) REFERENCES `me_faabs_groups` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2290,7 +2979,7 @@ CREATE TABLE `me_faabs_category_a_farmers` (
 
 LOCK TABLES `me_faabs_category_a_farmers` WRITE;
 /*!40000 ALTER TABLE `me_faabs_category_a_farmers` DISABLE KEYS */;
-INSERT INTO `me_faabs_category_a_farmers` VALUES (1,3,'Francis','','Chulu','Male','1990-06-05','1828672/12/34','Married','+260978981455','','2021-03-03',1,10,'Village one','Chiefdom','Block','Zone','Commodity',1615132100,1616709828,10,10,'Mr.',30,'Male headed',NULL,NULL),(2,3,'Francis','','test','Male','1989-07-19','1828672/12/00','Single','','','2021-03-25',1,NULL,'','','','','',1616709481,1616709903,10,10,'Mr.',31,'Male headed',NULL,NULL),(3,1,'First ','','Last name','Female','1980-07-23','1828672/12/09','Married','','','2021-03-26',1,6,'Village one','Chiefdom','Block','Zone','Commodity',1616764476,1616764476,10,10,'Mrs.',40,'Male headed',NULL,NULL),(4,3,'Francis','','Other name','Male','1981-07-30','1828672/12/1','Married','','','2020-03-11',1,NULL,'','','','','',1621769681,1621769895,10,10,'Mr.',39,'Male headed',NULL,NULL);
+INSERT INTO `me_faabs_category_a_farmers` VALUES (1,3,'Francis','','Chulu','Male','1990-06-05','1828672/12/34','Married','+260978981455','','2021-03-03',1,10,'Village one','Chiefdom','Block','Zone','Commodity',1615132100,1616709828,10,10,'Mr.',30,'Male headed',NULL,NULL),(2,3,'Francis','','test','Male','1989-07-19','1828672/12/00','Single','','','2021-03-25',1,NULL,'','','','','',1616709481,1616709903,10,10,'Mr.',31,'Male headed',NULL,NULL),(3,1,'First ','','Last name','Female','1980-07-23','1828672/12/09','Married','','','2021-03-26',1,6,'Village one','Chiefdom','Block','Zone','Commodity',1616764476,1616764476,10,10,'Mrs.',40,'Male headed',NULL,NULL),(4,3,'Francis','','Other name','Male','1981-07-30','1828672/12/1','Married','','','2020-03-11',1,NULL,'','','','','',1621769681,1621769895,10,10,'Mr.',39,'Male headed',NULL,NULL),(5,5,'First','','Other name','Male','1991-06-05','1828672/12/3','Single','','','2019-09-03',1,NULL,'','','','','',1632304736,1632304775,9,9,'Mr.',30,'Male headed',NULL,NULL);
 /*!40000 ALTER TABLE `me_faabs_category_a_farmers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2317,7 +3006,7 @@ CREATE TABLE `me_faabs_groups` (
   PRIMARY KEY (`id`),
   KEY `fk_me_faabs_groups_1_idx` (`camp_id`),
   CONSTRAINT `fk_me_faabs_groups_1` FOREIGN KEY (`camp_id`) REFERENCES `camp` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2326,7 +3015,7 @@ CREATE TABLE `me_faabs_groups` (
 
 LOCK TABLES `me_faabs_groups` WRITE;
 /*!40000 ALTER TABLE `me_faabs_groups` DISABLE KEYS */;
-INSERT INTO `me_faabs_groups` VALUES (1,5,'FaaBS One','FO',1,1607263313,'-14.72048826007502','28.090678349761973',1625092460,1,10,1),(3,5,'Come together Group',NULL,1,1615123711,'-13.889884','28.368405',1625084332,10,10,2),(4,7,'Come together group 3',NULL,1,1626339487,'-13.978395513644172','28.68148316505433',1626339487,10,10,5);
+INSERT INTO `me_faabs_groups` VALUES (1,5,'FaaBS One','FO',1,1607263313,'-14.72048826007502','28.090678349761973',1625092460,1,10,1),(3,5,'Come together Group',NULL,1,1615123711,'-13.889884','28.368405',1625084332,10,10,2),(4,7,'Come together group 3',NULL,1,1626339487,'-13.978395513644172','28.68148316505433',1626339487,10,10,5),(5,7,'Another group',NULL,1,1632302062,'-13.980769237159098','28.682888642578135',1633070534,9,9,2);
 /*!40000 ALTER TABLE `me_faabs_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2400,7 +3089,7 @@ CREATE TABLE `me_faabs_training_attendance_sheet` (
   KEY `fk_me_faabs_training_attendance_sheet_2_idx` (`faabs_group_id`),
   CONSTRAINT `fk_me_faabs_training_attendance_sheet_1` FOREIGN KEY (`farmer_id`) REFERENCES `me_faabs_category_a_farmers` (`id`),
   CONSTRAINT `fk_me_faabs_training_attendance_sheet_2` FOREIGN KEY (`faabs_group_id`) REFERENCES `me_faabs_groups` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2409,7 +3098,6 @@ CREATE TABLE `me_faabs_training_attendance_sheet` (
 
 LOCK TABLES `me_faabs_training_attendance_sheet` WRITE;
 /*!40000 ALTER TABLE `me_faabs_training_attendance_sheet` DISABLE KEYS */;
-INSERT INTO `me_faabs_training_attendance_sheet` VALUES (9,3,1,'','3','Facilitator names','','2021-04-06','12:30',1618397385,1618398329,10,10,NULL,'Non Youth',NULL,'Male',NULL,'2','Number of smallholders trained in the use of improved production technologies & best practices to enhance productivity that allow production to comply with market requirements (at least 3 improved production technologies facilitated)','Sub-component 2.2','Participants under non-Direct/Other Training [Stream 2]'),(10,3,1,'Male headed','5','Facilitator names','','2021-04-12','13:00',1618917211,1621769908,10,10,NULL,'Non Youth',NULL,'Male',NULL,'2','Number of local service providers (farm & non-farm) strengthened and/or trained to provide services that allow production to meet market requirements [Strengthening of coordination & business models] ','Sub-component 2.1','Participants under Direct/Intensive Training [Stream 1]');
 /*!40000 ALTER TABLE `me_faabs_training_attendance_sheet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2430,7 +3118,7 @@ CREATE TABLE `me_faabs_training_topic_enrolment` (
   KEY `fk_me_faabs_training_topic_enrolment_2_idx` (`topic_id`),
   CONSTRAINT `fk_me_faabs_training_topic_enrolment_1` FOREIGN KEY (`faabs_id`) REFERENCES `me_faabs_groups` (`id`),
   CONSTRAINT `fk_me_faabs_training_topic_enrolment_2` FOREIGN KEY (`topic_id`) REFERENCES `me_faabs_training_topics` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2439,7 +3127,6 @@ CREATE TABLE `me_faabs_training_topic_enrolment` (
 
 LOCK TABLES `me_faabs_training_topic_enrolment` WRITE;
 /*!40000 ALTER TABLE `me_faabs_training_topic_enrolment` DISABLE KEYS */;
-INSERT INTO `me_faabs_training_topic_enrolment` VALUES (14,1,'Participants under non-Direct/Other Training [Stream 2]',2),(15,1,'Participants under non-Direct/Other Training [Stream 2]',3),(16,1,'Participants under non-Direct/Other Training [Stream 2]',4),(28,3,'Participants under Direct/Intensive Training [Stream 1]',2),(29,3,'Participants under Direct/Intensive Training [Stream 1]',3),(30,3,'Participants under Direct/Intensive Training [Stream 1]',4),(31,3,'Participants under Direct/Intensive Training [Stream 1]',5),(32,3,'Participants under Direct/Intensive Training [Stream 1]',6);
 /*!40000 ALTER TABLE `me_faabs_training_topic_enrolment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2457,7 +3144,7 @@ CREATE TABLE `me_faabs_training_topics` (
   `category` text NOT NULL,
   `subcomponent` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2466,7 +3153,6 @@ CREATE TABLE `me_faabs_training_topics` (
 
 LOCK TABLES `me_faabs_training_topics` WRITE;
 /*!40000 ALTER TABLE `me_faabs_training_topics` DISABLE KEYS */;
-INSERT INTO `me_faabs_training_topics` VALUES (2,'Production enhancing technologies: early planting','Number of smallholders trained in the use of improved production technologies & best practices to enhance productivity that allow production to comply with market requirements (at least 3 improved production technologies facilitated)','Crops','Sub-component 2.1'),(3,'Production enhancing technologies: row planting,','Number of smallholders trained in the use of improved production technologies & best practices to enhance productivity that allow production to comply with market requirements (at least 3 improved production technologies facilitated)','Crops','Sub-component 2.2'),(4,'Production enhancing technologies: construct and use improved livestock housing','Number of smallholders trained in improved Post-harvest technologies (at least 2 improved post-harvest technologies)','Livestock','Sub-component 2.2'),(5,'Test topic 1','Number of local service providers (farm & non-farm) strengthened and/or trained to provide services that allow production to meet market requirements [Strengthening of coordination & business models] ','Aquaculture','Sub-component 2.1'),(6,'Test topic 2','Number of smallholder producers (desegregated by gender) in organizations/cooperatives/marketing groups trained in crucial aspects for inclusion in VC i.e. identification of partnership opportunities, negotiation, market linkages, business management, governance etc [Strengthening of coordination & business models] ','Livestock','Sub-component 2.2'),(7,'Test topic 3','Number of smallholders trained in improved Post-harvest technologies (at least 2 improved post-harvest technologies)','Crops','Sub-component 2.1'),(8,'test topic','Number of smallholders trained in the use of improved production technologies & best practices to enhance productivity that allow production to comply with market requirements (at least 3 improved production technologies facilitated)','Crops','Sub-component 2.1');
 /*!40000 ALTER TABLE `me_faabs_training_topics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2588,7 +3274,7 @@ CREATE TABLE `me_quarterly_outreach_records` (
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2597,7 +3283,6 @@ CREATE TABLE `me_quarterly_outreach_records` (
 
 LOCK TABLES `me_quarterly_outreach_records` WRITE;
 /*!40000 ALTER TABLE `me_quarterly_outreach_records` DISABLE KEYS */;
-INSERT INTO `me_quarterly_outreach_records` VALUES (3,'Component 2: Sustainable Agribusiness Partnerships','2.1: Strategic Linkages of Graduating Subsistence Farmers',1,2,'2021',1,10,20,15,15,10,0,20,50,1625654301,1625655308,10,10),(4,'Component 2: Sustainable Agribusiness Partnerships','2.2: Enhancing Agro-Micro, Small & Medium Enterprises',1,2,'2021',2,10,12,9,13,10,0,30,40,1625655366,1625655366,10,10),(5,'Component 2: Sustainable Agribusiness Partnerships','2.3: Facilitating Pro-Smallholder Market-Pull Agribusiness',1,2,'2021',3,5,5,3,7,5,0,10,20,1625655406,1625655406,10,10),(6,'Component 2: Sustainable Agribusiness Partnerships','2.1: Strategic Linkages of Graduating Subsistence Farmers',1,2,'2021',4,20,10,10,20,20,0,40,90,1625655454,1625655454,10,10),(7,'Component 2: Sustainable Agribusiness Partnerships','2.1: Strategic Linkages of Graduating Subsistence Farmers',1,2,'2017',1,10,20,10,10,5,6,0,20,1625679617,1625679617,10,10),(8,'Component 2: Sustainable Agribusiness Partnerships','2.2: Enhancing Agro-Micro, Small & Medium Enterprises',1,2,'2017',2,12,10,10,12,10,10,0,30,1625679648,1625679648,10,10),(9,'Component 2: Sustainable Agribusiness Partnerships','2.3: Facilitating Pro-Smallholder Market-Pull Agribusiness',1,2,'2017',4,10,10,10,10,10,10,0,20,1625679675,1625679675,10,10),(10,'Component 2: Sustainable Agribusiness Partnerships','2.3: Facilitating Pro-Smallholder Market-Pull Agribusiness',1,2,'2017',3,5,5,5,5,5,5,0,15,1625679718,1625679718,10,10);
 /*!40000 ALTER TABLE `me_quarterly_outreach_records` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2659,7 +3344,7 @@ CREATE TABLE `mgf_activity` (
   KEY `componet_id` (`componet_id`),
   CONSTRAINT `mgf_activity_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
   CONSTRAINT `mgf_activity_ibfk_2` FOREIGN KEY (`componet_id`) REFERENCES `mgf_component` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2696,8 +3381,11 @@ CREATE TABLE `mgf_applicant` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `fk_applicant_province` (`province_id`),
-  KEY `fk_applicant_district` (`district_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
+  KEY `fk_applicant_district` (`district_id`),
+  CONSTRAINT `fk_applicant_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
+  CONSTRAINT `fk_applicant_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `mgf_applicant_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2730,7 +3418,7 @@ CREATE TABLE `mgf_application` (
   KEY `organisation_id` (`organisation_id`),
   CONSTRAINT `mgf_application_ibfk_1` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`),
   CONSTRAINT `mgf_application_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2760,9 +3448,9 @@ CREATE TABLE `mgf_approval` (
   `certify_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `certify_submission` timestamp NULL DEFAULT NULL,
   `certified_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `review2_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `review2_submission` timestamp NULL DEFAULT NULL,
-  `reviewed2_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `district_minutes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `province_minutes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `pco_minutes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `approval_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `approve_submittion` timestamp NULL DEFAULT NULL,
   `approved_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -2771,7 +3459,7 @@ CREATE TABLE `mgf_approval` (
   KEY `application_id` (`application_id`),
   CONSTRAINT `mgf_approval_ibfk_1` FOREIGN KEY (`conceptnote_id`) REFERENCES `mgf_concept_note` (`id`),
   CONSTRAINT `mgf_approval_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2800,7 +3488,7 @@ CREATE TABLE `mgf_approval_status` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `mgf_approval_status_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2809,6 +3497,7 @@ CREATE TABLE `mgf_approval_status` (
 
 LOCK TABLES `mgf_approval_status` WRITE;
 /*!40000 ALTER TABLE `mgf_approval_status` DISABLE KEYS */;
+INSERT INTO `mgf_approval_status` VALUES (1,'Accepted','100','100',1,'2021-03-07 16:23:51'),(2,'On-Hold','69.9','40',1,'2021-03-07 16:23:51'),(3,'Rejected','0','99',1,'2021-03-07 16:24:34'),(4,'Not Recommended','0','49.9',1,'2021-03-18 07:14:15'),(5,'Recommended','70','90',1,'2021-03-18 07:14:15'),(6,'Strongly Recommended','90.01','100',1,'2021-03-18 07:15:01'),(7,'Deferred','50','69.9',1,'2021-03-31 17:07:35');
 /*!40000 ALTER TABLE `mgf_approval_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2835,7 +3524,7 @@ CREATE TABLE `mgf_attachements` (
   KEY `application_id` (`application_id`),
   CONSTRAINT `mgf_attachements_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
   CONSTRAINT `mgf_attachements_ibfk_2` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2858,8 +3547,9 @@ CREATE TABLE `mgf_bpi_categories` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `category_id` int DEFAULT NULL,
   `category_description` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2868,6 +3558,7 @@ CREATE TABLE `mgf_bpi_categories` (
 
 LOCK TABLES `mgf_bpi_categories` WRITE;
 /*!40000 ALTER TABLE `mgf_bpi_categories` DISABLE KEYS */;
+INSERT INTO `mgf_bpi_categories` VALUES (1,1,'Structure of the firm'),(2,2,'Inputs into Processing/Value Addition'),(3,3,'Outputs from Processing/Value Addition'),(4,4,'Business / Financial performance');
 /*!40000 ALTER TABLE `mgf_bpi_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2884,7 +3575,7 @@ CREATE TABLE `mgf_bpi_categories_indicators` (
   `indicator_id` int DEFAULT NULL,
   `indicator_description` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2893,6 +3584,7 @@ CREATE TABLE `mgf_bpi_categories_indicators` (
 
 LOCK TABLES `mgf_bpi_categories_indicators` WRITE;
 /*!40000 ALTER TABLE `mgf_bpi_categories_indicators` DISABLE KEYS */;
+INSERT INTO `mgf_bpi_categories_indicators` VALUES (1,1,1,'Size (number of employees)'),(2,1,2,'Capital structure (equity vs debt)'),(3,1,3,'Types of operations (list all relevant)'),(4,1,4,'Age of business'),(5,2,1,'List major inputs with annual volumes and sources'),(6,3,1,'Annual production volumes and markets'),(7,4,1,'Annual Turnover (last FY)'),(8,4,2,'Gross/Trading Profit (last FY)'),(9,4,3,'Profit before Interest and Taxes'),(10,4,4,'Acid test ratio'),(11,4,5,'Debt ratio'),(12,4,6,'Fixed-asset turnover ratio'),(13,4,7,'Total assets turnover ratio'),(14,4,8,'Return on assets'),(15,4,9,'Internal Rate of Return');
 /*!40000 ALTER TABLE `mgf_bpi_categories_indicators` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2918,7 +3610,7 @@ CREATE TABLE `mgf_branch` (
   CONSTRAINT `fk_branch_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
   CONSTRAINT `fk_branch_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
   CONSTRAINT `mgf_branch_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2951,7 +3643,7 @@ CREATE TABLE `mgf_business_perfomance_indicator` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2990,7 +3682,7 @@ CREATE TABLE `mgf_checklist` (
   `project_submitted` int NOT NULL DEFAULT '0',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3023,7 +3715,7 @@ CREATE TABLE `mgf_component` (
   KEY `proposal_id` (`proposal_id`),
   CONSTRAINT `mgf_component_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
   CONSTRAINT `mgf_component_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3032,7 +3724,6 @@ CREATE TABLE `mgf_component` (
 
 LOCK TABLES `mgf_component` WRITE;
 /*!40000 ALTER TABLE `mgf_component` DISABLE KEYS */;
-INSERT INTO `mgf_component` VALUES (35,1,'Comp 1',67480.00,13,2,'2021-05-12 17:12:08',1),(36,2,'Comp 2',29450.00,13,2,'2021-05-12 17:12:13',1),(37,1,'Comp 1',0.00,14,0,'2021-05-14 00:10:58',1),(38,2,'Comp 2',0.00,14,0,'2021-05-14 00:11:05',1),(40,1,'Comp 1',0.00,15,0,'2021-05-23 10:37:28',1),(41,2,'Comp 2',0.00,15,1,'2021-05-23 10:44:11',1),(43,1,'Comp 1',0.00,17,0,'2021-06-09 21:27:00',1),(44,2,'Comp 2',5200.00,17,2,'2021-06-09 21:27:14',1);
 /*!40000 ALTER TABLE `mgf_component` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3062,7 +3753,7 @@ CREATE TABLE `mgf_concept_note` (
   CONSTRAINT `mgf_concept_note_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`),
   CONSTRAINT `mgf_concept_note_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
   CONSTRAINT `mgf_concept_note_ibfk_3` FOREIGN KEY (`operation_id`) REFERENCES `mgf_operation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3099,7 +3790,7 @@ CREATE TABLE `mgf_contact` (
   CONSTRAINT `mgf_contact_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
   CONSTRAINT `mgf_contact_ibfk_2` FOREIGN KEY (`position_id`) REFERENCES `mgf_position` (`id`),
   CONSTRAINT `mgf_contact_ibfk_3` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3136,11 +3827,8 @@ CREATE TABLE `mgf_costs_financing_plan` (
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `componentid` (`componentid`),
-  KEY `activityid` (`activityid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3203,7 +3891,7 @@ CREATE TABLE `mgf_cumulative_profit` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3213,6 +3901,43 @@ CREATE TABLE `mgf_cumulative_profit` (
 LOCK TABLES `mgf_cumulative_profit` WRITE;
 /*!40000 ALTER TABLE `mgf_cumulative_profit` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mgf_cumulative_profit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_declaration`
+--
+
+DROP TABLE IF EXISTS `mgf_declaration`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_declaration` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `declaration_parta` varchar(300) DEFAULT NULL,
+  `declaration_partb` varchar(300) DEFAULT NULL,
+  `declaration_partc` varchar(300) DEFAULT NULL,
+  `rep_name` varchar(100) DEFAULT NULL,
+  `rep_aproval` tinyint(1) DEFAULT NULL,
+  `approval_date` datetime DEFAULT NULL,
+  `rep_title` varchar(100) DEFAULT NULL,
+  `address` varchar(200) DEFAULT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `email` varchar(20) DEFAULT NULL,
+  `project_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_declaration`
+--
+
+LOCK TABLES `mgf_declaration` WRITE;
+/*!40000 ALTER TABLE `mgf_declaration` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_declaration` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3240,7 +3965,7 @@ CREATE TABLE `mgf_district_eligibility` (
   CONSTRAINT `fk_de_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
   CONSTRAINT `fk_de_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
   CONSTRAINT `fk_de_y` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3250,6 +3975,43 @@ CREATE TABLE `mgf_district_eligibility` (
 LOCK TABLES `mgf_district_eligibility` WRITE;
 /*!40000 ALTER TABLE `mgf_district_eligibility` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mgf_district_eligibility` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_district_pcn`
+--
+
+DROP TABLE IF EXISTS `mgf_district_pcn`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_district_pcn` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `approved` int DEFAULT '0',
+  `rejected` int DEFAULT '0',
+  `minutes` text,
+  `province_id` int unsigned DEFAULT NULL,
+  `district_id` int unsigned DEFAULT NULL,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_pcn_province_1` (`province_id`),
+  KEY `fk_pcn_district` (`district_id`),
+  KEY `fk_pcn_y` (`year_id`),
+  CONSTRAINT `fk_pcn_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
+  CONSTRAINT `fk_pcn_province_1` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `fk_pcn_y` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_district_pcn`
+--
+
+LOCK TABLES `mgf_district_pcn` WRITE;
+/*!40000 ALTER TABLE `mgf_district_pcn` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_district_pcn` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3272,7 +4034,7 @@ CREATE TABLE `mgf_eligibility` (
   KEY `organisation_id` (`organisation_id`),
   CONSTRAINT `mgf_eligibility_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`),
   CONSTRAINT `mgf_eligibility_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3311,7 +4073,7 @@ CREATE TABLE `mgf_eligibility_approval` (
   PRIMARY KEY (`id`),
   KEY `application_id` (`application_id`),
   CONSTRAINT `mgf_eligibility_approval_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `mgf_application` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3339,7 +4101,7 @@ CREATE TABLE `mgf_environmental_consideration` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3371,10 +4133,8 @@ CREATE TABLE `mgf_existing_facilities` (
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3408,9 +4168,7 @@ CREATE TABLE `mgf_expected_beneficiaries` (
   `created_at` int unsigned NOT NULL,
   `updated_at` int unsigned NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3443,10 +4201,8 @@ CREATE TABLE `mgf_expected_outputs_and_gross_revenue` (
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3476,7 +4232,7 @@ CREATE TABLE `mgf_experience` (
   PRIMARY KEY (`id`),
   KEY `organisation_id` (`organisation_id`),
   CONSTRAINT `mgf_experience_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3511,7 +4267,7 @@ CREATE TABLE `mgf_final_evaluation` (
   KEY `organisation_id` (`organisation_id`),
   CONSTRAINT `mgf_final_evaluation_ibfk_1` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
   CONSTRAINT `mgf_final_evaluation_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3540,12 +4296,9 @@ CREATE TABLE `mgf_implementation_arrangements_cooperating_partners` (
   `proposal_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
-  `created_at` int unsigned NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3575,9 +4328,7 @@ CREATE TABLE `mgf_implementation_arrangements_staff` (
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3610,9 +4361,7 @@ CREATE TABLE `mgf_implementation_arrangements_technical_assistance` (
   `created_at` int unsigned NOT NULL,
   `updated_at` int unsigned NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3633,8 +4382,9 @@ DROP TABLE IF EXISTS `mgf_implementation_schedule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_implementation_schedule` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `activity_id` int DEFAULT NULL,
+  `activity_name` varchar(100) NOT NULL,
   `yr1qtr1` tinyint(1) DEFAULT '0',
   `yr1qtr2` tinyint(1) DEFAULT '0',
   `yr1qtr3` tinyint(1) DEFAULT '0',
@@ -3657,7 +4407,7 @@ CREATE TABLE `mgf_implementation_schedule` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3667,6 +4417,39 @@ CREATE TABLE `mgf_implementation_schedule` (
 LOCK TABLES `mgf_implementation_schedule` WRITE;
 /*!40000 ALTER TABLE `mgf_implementation_schedule` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mgf_implementation_schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_implementation_schedule_short`
+--
+
+DROP TABLE IF EXISTS `mgf_implementation_schedule_short`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_implementation_schedule_short` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `activity` varchar(200) NOT NULL,
+  `implementation_year` int DEFAULT NULL,
+  `qtr1` tinyint(1) DEFAULT NULL,
+  `qtr2` tinyint(1) DEFAULT NULL,
+  `qtr3` tinyint(1) DEFAULT NULL,
+  `qtr4` tinyint(1) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_implementation_schedule_short`
+--
+
+LOCK TABLES `mgf_implementation_schedule_short` WRITE;
+/*!40000 ALTER TABLE `mgf_implementation_schedule_short` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_implementation_schedule_short` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3699,7 +4482,7 @@ CREATE TABLE `mgf_input_cost` (
   KEY `activity_id` (`activity_id`),
   CONSTRAINT `mgf_input_cost_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
   CONSTRAINT `mgf_input_cost_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `mgf_activity` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3742,7 +4525,7 @@ CREATE TABLE `mgf_input_item` (
   KEY `activity_id` (`activity_id`),
   CONSTRAINT `mgf_input_item_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
   CONSTRAINT `mgf_input_item_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `mgf_activity` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3762,7 +4545,7 @@ DROP TABLE IF EXISTS `mgf_interests_taxes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_interests_taxes` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `interest_tax_type` enum('Interest','Tax') DEFAULT NULL,
   `interest_tax_percent` double(9,2) DEFAULT '0.00',
   `interest_tax_name` varchar(50) DEFAULT NULL,
@@ -3776,7 +4559,7 @@ CREATE TABLE `mgf_interests_taxes` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3796,7 +4579,7 @@ DROP TABLE IF EXISTS `mgf_netprofit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_netprofit` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `netprofit_yr1_value` double(9,2) DEFAULT NULL,
   `netprofit_yr2_value` double(9,2) DEFAULT NULL,
   `netprofit_yr3_value` double(9,2) DEFAULT NULL,
@@ -3807,7 +4590,7 @@ CREATE TABLE `mgf_netprofit` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3895,7 +4678,7 @@ CREATE TABLE `mgf_organisation` (
   `acronym` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `registration_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `registration_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `trade_license_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trade_license_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `registration_date` date NOT NULL,
   `business_objective` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `email_address` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -3910,12 +4693,15 @@ CREATE TABLE `mgf_organisation` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `registration_no` (`registration_no`),
-  UNIQUE KEY `trade_license_no` (`trade_license_no`),
   UNIQUE KEY `email_address` (`email_address`),
+  UNIQUE KEY `trade_license_no` (`trade_license_no`),
   KEY `applicant_id` (`applicant_id`),
   KEY `fk_org_province` (`province_id`),
-  KEY `fk_org_district` (`district_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `fk_org_district` (`district_id`),
+  CONSTRAINT `fk_org_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
+  CONSTRAINT `fk_org_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `mgf_organisation_ibfk_1` FOREIGN KEY (`applicant_id`) REFERENCES `mgf_applicant` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3924,7 +4710,6 @@ CREATE TABLE `mgf_organisation` (
 
 LOCK TABLES `mgf_organisation` WRITE;
 /*!40000 ALTER TABLE `mgf_organisation` DISABLE KEYS */;
-INSERT INTO `mgf_organisation` VALUES (34,'Farmer A Cooperative','CAFO','Type 2','65768','45465768','2000-06-15','CBO','faco@essap.orgg','HPA',0,'36545768','',6,54,18,1,'2021-05-12 17:04:24'),(35,'Farmer B Cooperative','FBC','Type 1','65767','46576','2020-10-05','CBO','fbc@gmail.com','HPA',NULL,'57869534','',2,13,19,1,'2021-05-12 20:26:18'),(36,'VV Cooperative','VVC','Type 2','8758947','78789','2020-12-01','O','vv@email.com','A',NULL,'6576','',2,12,22,1,'2021-05-17 09:23:21'),(37,'Farmer D Cooperative','FDC','Type 1','7768756','58555','2019-07-31','hghk','fdc@fdc.com','gjhg',NULL,'57658','',1,7,21,1,'2021-05-17 23:55:06'),(38,'GG Cooperative','GGC','Type 3','7987987','77966','2020-07-07','CBO','ggc@gmail.com','HPA',NULL,'796856','',1,11,32,1,'2021-05-18 11:06:24'),(39,'Blessed Hope Cooperative','BHC','Type 2','380989','809990','2020-04-27','CBO','bh@email.com','HPA',NULL,'0987897989','',1,9,36,1,'2021-05-21 14:31:58'),(40,'Farmer First','FF','57687','98987','46575','2020-10-28','CBO','ff@ff.org','HPA',1,'757658','',1,1,39,1,'2021-06-08 20:20:35'),(41,'Kafala Cooperative','KC','5786876','8789898','76589767','2020-07-26','C\r\nB\r\nO','kafala@gmail.com','H\r\nP\r\nA',NULL,'2876857832','',2,17,40,1,'2021-06-30 11:46:21'),(42,'Kalanda Cooperative','KC','76557454','46548765','57658','2019-05-08','C\r\nB\r\nO','kalanda@gmail.com','H\r\nP\r\nA',NULL,'78976845','',2,14,41,1,'2021-06-30 13:12:47'),(43,'Mwango Cooperative','MCO','Type 2','768768','6876','2021-06-27','fgfh','mwango@gmail.com','fhfg',NULL,'576576','',2,17,42,1,'2021-07-08 13:15:44'),(44,'My Organisation','MO','6576','8787','57686','2020-10-26','CBO','mo@esapp.org','HPA',NULL,'657687879','',2,16,44,1,'2021-07-14 14:51:20'),(45,'tyugkhg','tuitgiu','hkuigkhg','t87r6u','yfuyf','2021-06-30','ghkgkhg','ygy@ujj.com','jfyyu',NULL,'76567','',2,16,45,1,'2021-07-14 21:14:41'),(46,'Kaduka Tradings','KT','354657','76868','576867','2021-07-13','CBO','kaduka@kmail.com','HPA',1,'324327','46577',4,39,46,1,'2021-07-21 20:33:20'),(47,'Farmer New','FN','3657','6879','','2021-06-28','CBO','fn@farmer.com','HPA',0,'4768976','47658769',1,6,47,1,'2021-07-29 20:10:05');
 /*!40000 ALTER TABLE `mgf_organisation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3949,8 +4734,9 @@ CREATE TABLE `mgf_organisational_details` (
   `organisation_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `organisation_id` (`organisation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `mgf_organisational_details_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3982,7 +4768,7 @@ CREATE TABLE `mgf_partnership` (
   PRIMARY KEY (`id`),
   KEY `organisation_id` (`organisation_id`),
   CONSTRAINT `mgf_partnership_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4016,7 +4802,7 @@ CREATE TABLE `mgf_pastproject` (
   KEY `experience_id` (`experience_id`),
   CONSTRAINT `mgf_pastproject_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`),
   CONSTRAINT `mgf_pastproject_ibfk_2` FOREIGN KEY (`experience_id`) REFERENCES `mgf_experience` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4026,6 +4812,96 @@ CREATE TABLE `mgf_pastproject` (
 LOCK TABLES `mgf_pastproject` WRITE;
 /*!40000 ALTER TABLE `mgf_pastproject` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mgf_pastproject` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_pco_eligibility`
+--
+
+DROP TABLE IF EXISTS `mgf_pco_eligibility`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_pco_eligibility` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `minutes` text,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_pco` (`year_id`),
+  CONSTRAINT `fk_pco` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_pco_eligibility`
+--
+
+LOCK TABLES `mgf_pco_eligibility` WRITE;
+/*!40000 ALTER TABLE `mgf_pco_eligibility` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_pco_eligibility` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_pco_pcn`
+--
+
+DROP TABLE IF EXISTS `mgf_pco_pcn`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_pco_pcn` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `minutes` text,
+  `province_id` int unsigned DEFAULT NULL,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_pco_pcn`
+--
+
+LOCK TABLES `mgf_pco_pcn` WRITE;
+/*!40000 ALTER TABLE `mgf_pco_pcn` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_pco_pcn` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_pco_proposal`
+--
+
+DROP TABLE IF EXISTS `mgf_pco_proposal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_pco_proposal` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `minutes` text,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_pco_proposal`
+--
+
+LOCK TABLES `mgf_pco_proposal` WRITE;
+/*!40000 ALTER TABLE `mgf_pco_proposal` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_pco_proposal` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -4062,7 +4938,7 @@ DROP TABLE IF EXISTS `mgf_product_market_marketing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_product_market_marketing` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `marketing` varchar(200) NOT NULL,
   `market_outlets` varchar(100) DEFAULT NULL,
   `sales_contract` varchar(100) DEFAULT NULL,
@@ -4075,10 +4951,8 @@ CREATE TABLE `mgf_product_market_marketing` (
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `proposal_id` (`proposal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4091,6 +4965,34 @@ LOCK TABLES `mgf_product_market_marketing` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `mgf_product_market_marketing1`
+--
+
+DROP TABLE IF EXISTS `mgf_product_market_marketing1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_product_market_marketing1` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `description` varchar(300) DEFAULT NULL,
+  `proposal_id` int NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_product_market_marketing1`
+--
+
+LOCK TABLES `mgf_product_market_marketing1` WRITE;
+/*!40000 ALTER TABLE `mgf_product_market_marketing1` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_product_market_marketing1` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `mgf_profit_before_interest_taxes`
 --
 
@@ -4098,7 +5000,7 @@ DROP TABLE IF EXISTS `mgf_profit_before_interest_taxes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_profit_before_interest_taxes` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `profit_yr1_value` double(9,2) DEFAULT '0.00',
   `profit_yr2_value` double(9,2) DEFAULT '0.00',
   `profit_yr3_value` double(9,2) DEFAULT '0.00',
@@ -4109,7 +5011,7 @@ CREATE TABLE `mgf_profit_before_interest_taxes` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4150,7 +5052,7 @@ CREATE TABLE `mgf_project_evaluation` (
   CONSTRAINT `mgf_project_evaluation_ibfk_1` FOREIGN KEY (`reviewedby`) REFERENCES `users` (`id`),
   CONSTRAINT `mgf_project_evaluation_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
   CONSTRAINT `mgf_project_evaluation_ibfk_3` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4184,11 +5086,7 @@ CREATE TABLE `mgf_project_facilities` (
   `created_by` int NOT NULL,
   `created_at` int unsigned NOT NULL,
   `updated_at` int unsigned NOT NULL,
-  `updated_by` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
-  KEY `organisation_id` (`organisation_id`),
-  KEY `proposal_id` (`proposal_id`)
+  `updated_by` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4209,7 +5107,7 @@ DROP TABLE IF EXISTS `mgf_project_risks_and_mitigation_measures`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_project_risks_and_mitigation_measures` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `expected_risks` varchar(200) DEFAULT NULL,
   `consequences_of_risk` varchar(200) DEFAULT NULL,
   `mitigation_measures_planned` varchar(200) DEFAULT NULL,
@@ -4217,8 +5115,9 @@ CREATE TABLE `mgf_project_risks_and_mitigation_measures` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
-  `updated_by` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4257,6 +5156,7 @@ CREATE TABLE `mgf_proposal` (
   `problem_statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `overall_objective` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` int DEFAULT '0',
+  `is_concept` int NOT NULL DEFAULT '0',
   `totalcost` decimal(15,2) DEFAULT '0.00',
   `province_id` int unsigned DEFAULT NULL,
   `district_id` int unsigned DEFAULT NULL,
@@ -4267,7 +5167,7 @@ CREATE TABLE `mgf_proposal` (
   CONSTRAINT `fk_prop_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
   CONSTRAINT `fk_prop_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
   CONSTRAINT `mgf_proposal_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4276,7 +5176,6 @@ CREATE TABLE `mgf_proposal` (
 
 LOCK TABLES `mgf_proposal` WRITE;
 /*!40000 ALTER TABLE `mgf_proposal` DISABLE KEYS */;
-INSERT INTO `mgf_proposal` VALUES (13,'Apple Project','1620846711',34,'Category-A','2021-06-04','2024-06-04',3,3,'Agric production','YES','EE','','Submitted','2021-05-12 17:11:51','2021-06-09 18:18:21','PS','OO',0,96930.00,6,54),(14,'Cassava Project','1623272844',35,'Category-B','2021-04-25','2023-04-25',2,0,'Agric production',NULL,NULL,NULL,'Created','2021-05-13 05:53:28',NULL,NULL,NULL,0,30000.00,2,13),(15,'Banana Project','1621705574',37,'Category-B','2021-05-29','2023-05-29',2,0,'Agric production',NULL,NULL,NULL,'Created','2021-05-22 17:46:14',NULL,NULL,NULL,0,5000.00,1,7),(16,'BHC project 1','1621705874',39,NULL,'2021-05-29','2024-05-29',3,0,'Trade Services',NULL,NULL,NULL,'Created','2021-05-22 17:51:15',NULL,NULL,NULL,0,40000.00,1,9),(17,'Orange Project','1623272852',40,'Category-B','2021-06-26','2023-06-26',2,1,'Processing Marketing','YES','Elaboration',NULL,'Under_Review','2021-06-09 21:07:32','2021-07-14 21:06:51','PS','OO',1,5200.00,1,1),(18,'Potato project','farmerA',34,'Category-A','2021-08-07','2023-08-07',2,0,'Processing Marketing','YES','tyutu',NULL,'Created','2021-07-19 16:52:53',NULL,'uyt','utyu',1,0.00,6,54);
 /*!40000 ALTER TABLE `mgf_proposal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4303,7 +5202,7 @@ CREATE TABLE `mgf_proposal_evaluation` (
   CONSTRAINT `mgf_proposal_evaluation_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
   CONSTRAINT `mgf_proposal_evaluation_ibfk_2` FOREIGN KEY (`proposal_id`) REFERENCES `mgf_proposal` (`id`),
   CONSTRAINT `mgf_proposal_evaluation_ibfk_3` FOREIGN KEY (`criterion_id`) REFERENCES `mgf_selection_criteria` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=620 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4313,6 +5212,72 @@ CREATE TABLE `mgf_proposal_evaluation` (
 LOCK TABLES `mgf_proposal_evaluation` WRITE;
 /*!40000 ALTER TABLE `mgf_proposal_evaluation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mgf_proposal_evaluation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_province_eligibility`
+--
+
+DROP TABLE IF EXISTS `mgf_province_eligibility`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_province_eligibility` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `minutes` text,
+  `province_id` int unsigned DEFAULT NULL,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_pe_province` (`province_id`),
+  KEY `fk_pe_y` (`year_id`),
+  CONSTRAINT `fk_pe_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`),
+  CONSTRAINT `fk_pe_y` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_province_eligibility`
+--
+
+LOCK TABLES `mgf_province_eligibility` WRITE;
+/*!40000 ALTER TABLE `mgf_province_eligibility` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_province_eligibility` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mgf_province_pcn`
+--
+
+DROP TABLE IF EXISTS `mgf_province_pcn`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mgf_province_pcn` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `year_id` int NOT NULL,
+  `total_submitted` int DEFAULT '0',
+  `compliant` int DEFAULT '0',
+  `non_compliant` int DEFAULT '0',
+  `minutes` text,
+  `province_id` int unsigned DEFAULT NULL,
+  `is_active` int DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_pcn_province` (`province_id`),
+  CONSTRAINT `fk_pcn_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mgf_province_pcn`
+--
+
+LOCK TABLES `mgf_province_pcn` WRITE;
+/*!40000 ALTER TABLE `mgf_province_pcn` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mgf_province_pcn` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -4340,7 +5305,7 @@ CREATE TABLE `mgf_reviewer` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_code` (`login_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4369,10 +5334,8 @@ CREATE TABLE `mgf_screening` (
   `verified_by` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `conceptnote_id` (`conceptnote_id`),
-  KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `mgf_screening_ibfk_1` FOREIGN KEY (`conceptnote_id`) REFERENCES `mgf_concept_note` (`id`),
-  CONSTRAINT `mgf_screening_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `mgf_organisation` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `organisation_id` (`organisation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=415 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4398,7 +5361,7 @@ CREATE TABLE `mgf_selection_category` (
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `createdby` (`createdby`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4425,10 +5388,8 @@ CREATE TABLE `mgf_selection_criteria` (
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `createdby` (`createdby`),
-  KEY `category_id` (`category_id`),
-  CONSTRAINT `mgf_selection_criteria_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
-  CONSTRAINT `mgf_selection_criteria_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `mgf_selection_category` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4456,10 +5417,8 @@ CREATE TABLE `mgf_selection_grade` (
   `createdby` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `createdby` (`createdby`),
-  KEY `criterion_id` (`criterion_id`),
-  CONSTRAINT `mgf_selection_grade_ibfk_1` FOREIGN KEY (`createdby`) REFERENCES `users` (`id`),
-  CONSTRAINT `mgf_selection_grade_ibfk_2` FOREIGN KEY (`criterion_id`) REFERENCES `mgf_selection_criteria` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `criterion_id` (`criterion_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4484,7 +5443,7 @@ CREATE TABLE `mgf_settings` (
   `max_reviewers` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4504,7 +5463,7 @@ DROP TABLE IF EXISTS `mgf_sustainability_scalability`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_sustainability_scalability` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `description` varchar(200) DEFAULT NULL,
   `proposal_id` int NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -4512,7 +5471,7 @@ CREATE TABLE `mgf_sustainability_scalability` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4539,9 +5498,8 @@ CREATE TABLE `mgf_unit` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unit` (`unit`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `mgf_unit_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4561,7 +5519,7 @@ DROP TABLE IF EXISTS `mgf_value_of_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_value_of_product` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `product_name` varchar(200) NOT NULL,
   `product_unit` varchar(11) DEFAULT NULL,
   `product_yr1_qty` decimal(9,2) DEFAULT '0.00',
@@ -4582,8 +5540,9 @@ CREATE TABLE `mgf_value_of_product` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
-  `updated_by` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4603,7 +5562,7 @@ DROP TABLE IF EXISTS `mgf_value_of_product_totals`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_value_of_product_totals` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `total_yr1_value` double(9,2) DEFAULT NULL,
   `total_yr2_value` double(9,2) DEFAULT NULL,
   `total_yr3_value` double(9,2) DEFAULT NULL,
@@ -4612,8 +5571,9 @@ CREATE TABLE `mgf_value_of_product_totals` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
-  `updated_by` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4633,7 +5593,7 @@ DROP TABLE IF EXISTS `mgf_variable_fixed_cost`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_variable_fixed_cost` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `cost_name` varchar(200) NOT NULL,
   `cost_type` enum('Variable','Fixed') DEFAULT NULL,
   `cost_yr1_value` double(9,2) DEFAULT NULL,
@@ -4645,8 +5605,9 @@ CREATE TABLE `mgf_variable_fixed_cost` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int NOT NULL,
-  `updated_by` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4666,7 +5627,7 @@ DROP TABLE IF EXISTS `mgf_variable_fixed_cost_totals`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mgf_variable_fixed_cost_totals` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `total_yr1_value` double(9,2) DEFAULT '0.00',
   `total_yr2_value` double(9,2) DEFAULT '0.00',
   `total_yr3_value` double(9,2) DEFAULT '0.00',
@@ -4677,7 +5638,7 @@ CREATE TABLE `mgf_variable_fixed_cost_totals` (
   `created_by` int NOT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4708,9 +5669,8 @@ CREATE TABLE `mgf_window` (
   `is_active` int DEFAULT '1',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `fk_wnd_y` (`year_id`),
-  CONSTRAINT `fk_wnd_y` FOREIGN KEY (`year_id`) REFERENCES `mgf_year` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_wnd_y` (`year_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4747,32 +5707,7 @@ CREATE TABLE `mgf_year` (
 
 LOCK TABLES `mgf_year` WRITE;
 /*!40000 ALTER TABLE `mgf_year` DISABLE KEYS */;
-INSERT INTO `mgf_year` VALUES (1,'2020',0,0,0,1,'2021-07-29 17:50:09');
 /*!40000 ALTER TABLE `mgf_year` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `migration`
---
-
-DROP TABLE IF EXISTS `migration`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `migration` (
-  `version` varchar(180) NOT NULL,
-  `apply_time` int DEFAULT NULL,
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `migration`
---
-
-LOCK TABLES `migration` WRITE;
-/*!40000 ALTER TABLE `migration` DISABLE KEYS */;
-INSERT INTO `migration` VALUES ('m000000_000000_base',1621726502),('m130524_201442_init',1621726752),('m190124_110200_add_verification_token_column_to_user_table',1621726752),('m210521_150431_001_create_table_awpb_comment',1621726752),('m210521_150431_002_create_table_awpb_commodity_type',1621726752),('m210521_150431_003_create_table_awpb_consolidated',1621726752),('m210521_150431_004_create_table_awpb_expense_category',1621726753),('m210521_150431_005_create_table_awpb_funder',1621726753),('m210521_150431_006_create_table_awpb_funding_type',1621726753),('m210521_150432_007_create_table_awpb_template',1621726791),('m210521_150432_008_create_table_awpb_unit_of_measure',1621726804),('m210521_150433_025_create_table_awpb_component',1621726806),('m210521_150433_026_create_table_awpb_indicator',1621726806),('m210521_150433_027_create_table_awpb_outcome',1621726807),('m210521_150433_028_create_table_awpb_output',1621726807),('m210521_150434_036_create_table_awpb_activity',1621726811),('m210521_150434_037_create_table_awpb_activity_funder',1621726812),('m210521_150434_038_create_table_awpb_activity_line',1621726812),('m210521_150434_039_create_table_awpb_template_activity',1621726814),('m210523_092652_024_create_table_mgf_operation',1621797277),('m210523_092653_025_create_table_mgf_position',1621797277),('m210523_092653_026_create_table_mgf_reviewer',1621797277),('m210523_092654_039_create_table_mgf_applicant',1621797278),('m210523_092654_040_create_table_mgf_approval_status',1621797279),('m210523_092654_041_create_table_mgf_organisation',1621797280),('m210523_092655_042_create_table_mgf_organisational_details',1621797280),('m210523_092655_043_create_table_mgf_partnership',1621797280),('m210523_092655_044_create_table_mgf_proposal',1621797281),('m210523_092655_045_create_table_mgf_selection_category',1621797281),('m210523_092655_046_create_table_mgf_selection_criteria',1621797281),('m210523_092655_047_create_table_mgf_selection_grade',1621797282),('m210523_092655_048_create_table_mgf_unit',1621797282),('m210523_092656_055_create_table_mgf_application',1621797283),('m210523_092656_056_create_table_mgf_attachements',1621797283),('m210523_092656_057_create_table_mgf_component',1621797284),('m210523_092656_058_create_table_mgf_concept_note',1621797284),('m210523_092656_059_create_table_mgf_contact',1621797285),('m210523_092656_060_create_table_mgf_experience',1621797285),('m210523_092656_061_create_table_mgf_final_evaluation',1621797286),('m210523_092656_062_create_table_mgf_offer',1621797286),('m210523_092656_063_create_table_mgf_pastproject',1621797287),('m210523_092657_064_create_table_mgf_project_evaluation',1621797287),('m210523_092657_065_create_table_mgf_proposal_evaluation',1621797288),('m210523_092657_066_create_table_mgf_screening',1621797289),('m210523_092658_072_create_table_mgf_activity',1621797289),('m210523_092658_073_create_table_mgf_approval',1621797290),('m210523_092658_074_create_table_mgf_input_cost',1621797290),('m210523_092658_075_create_table_mgf_input_item',1621797291);
-/*!40000 ALTER TABLE `migration` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -4788,7 +5723,7 @@ CREATE TABLE `permissions` (
   `definition` text,
   `active` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=171 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4797,7 +5732,7 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'Manage Users',NULL,1),(2,'View Users',NULL,1),(3,'Manage Roles',NULL,1),(4,'View Roles',NULL,1),(6,'View profile',NULL,1),(7,'View audit trail logs',NULL,1),(8,'Manage provinces',NULL,1),(9,'Manage districts',NULL,1),(10,'Manage camps',NULL,1),(11,'Remove provinces',NULL,1),(12,'Remove districts',NULL,1),(13,'Remove camps',NULL,1),(14,'Manage markets',NULL,1),(15,'Remove markets',NULL,1),(16,'Manage commodity configs',NULL,1),(17,'Remove commodity config',NULL,1),(18,'Collect commodity prices',NULL,1),(19,'View commodity prices',NULL,1),(20,'Remove commodity price',NULL,1),(21,'Manage interview guide template questions',NULL,1),(22,'View interview guide template',NULL,1),(23,'Remove interview guide template question',NULL,1),(24,'Manage story of change categories',NULL,1),(25,'Submit story of change',NULL,1),(26,'Review Story of change',NULL,1),(27,'View Story of change',NULL,1),(28,'Attach case study articles',NULL,1),(29,'Manage faabs groups',NULL,1),(30,'View faabs groups',NULL,1),(31,'Remove faabs groups',NULL,1),(32,'Manage category A farmers',NULL,1),(33,'View category A farmers',NULL,1),(34,'Remove category A farmers',NULL,1),(35,'Submit FaaBS training records',NULL,1),(36,'View FaaBS training records',NULL,1),(37,'Remove FaaBS training records',NULL,1),(38,'Submit back to office report',NULL,1),(39,'Review back to office report',NULL,1),(40,'View back to office report',NULL,1),(43,'Plan camp monthly activities',NULL,1),(44,'Remove planned camp monthly activities',NULL,1),(45,'View planned camp monthly activities',NULL,1),(46,'Manage FaaBS training topics',NULL,1),(47,'View FaaBS training topics',NULL,1),(48,'Remove FaaBS training topics',NULL,1),(49,'View facilitation of improved technologies/best practices report',NULL,1),(50,'View training attendance cumulative report',NULL,1),(55,'View physical tracking table report',NULL,1),(56,'Commodity-Specific AWPB','Commodity-Specific AWPB',1),(57,'View programmes','View programmes',1),(58,'Manage AWPB activities','',1),(59,'View AWPB activities','',1),(60,'Manage components','',1),(61,'View components','',1),(62,'Manage AWPB templates','',1),(63,'View AWPB templates','',1),(64,'View AWPB activity lines','',1),(65,'Manage AWPB activity lines','View AWPB activity lines',1),(66,'Submit District AWPB','',1),(67,'Approve AWPB - Provincial','Approve AWPB - Provincial',1),(68,'Submit programme-wide AWPB','Submit programme-wide AWPB',1),(69,'Manage province consolidated AWPB','Manage province consolidated AWPB',1),(70,'Manage programme-wide AWPB activity lines','Manage programme-wide AWPB activity lines',1),(71,'Approve AWPB - PCO','Approve AWPB - PCO',1),(72,'Manage AWPB funders','Manage AWPB funders',1),(73,'View AWPB funders','View AWPB funders',1),(74,'Setup AWPB','Setup AWPB',1),(75,'Approve AWPB - Ministry','Approve AWPB - Ministry',1),(76,'Manage programme-wide AWPB','Manage programme-wide AWPB',1),(77,'View PW AWPB','View PW AWPB',1),(78,'View MGF module','',1),(79,'View MGF Applicants','',1),(80,'View MGF Organisations','',1),(81,'View MGF Concept Note','',1),(82,'View MGF Application','',1),(83,'View MGF Approvals','',1),(84,'View MGF Proposals','',1),(85,'View MGF Evaluations','',1),(86,'Commodity-Specific AWPB','Commodity-Specific AWPB',1),(87,'View programmes','View programmes',1),(88,'Manage AWPB activities','',1),(89,'View AWPB activities','',1),(90,'Manage components','',1),(91,'View components','',1),(92,'Manage AWPB templates','',1),(93,'View AWPB templates','',1),(94,'View AWPB activity lines','',1),(95,'Manage AWPB activity lines','View AWPB activity lines',1),(96,'Submit District AWPB','',1),(97,'Approve AWPB - Provincial','Approve AWPB - Provincial',1),(98,'Submit programme-wide AWPB','Submit programme-wide AWPB',1),(99,'Manage province consolidated AWPB','Manage province consolidated AWPB',1),(100,'Manage programme-wide AWPB activity lines','Manage programme-wide AWPB activity lines',1),(101,'Approve AWPB - PCO','Approve AWPB - PCO',1),(102,'Manage AWPB funders','Manage AWPB funders',1),(103,'View AWPB funders','View AWPB funders',1),(104,'Setup AWPB','Setup AWPB',1),(105,'Approve AWPB - Ministry','Approve AWPB - Ministry',1),(106,'Manage programme-wide AWPB','Manage programme-wide AWPB',1),(107,'View PW AWPB','View PW AWPB',1),(108,'Manage Users','',1),(109,'View Users','',1),(110,'Manage Roles','',1),(111,'View Roles','',1),(112,'View profile','',1),(113,'View audit trail logs','',1),(114,'Manage provinces','',1),(115,'Manage districts','',1),(116,'Manage camps','',1),(117,'Remove provinces','',1),(118,'Remove districts','',1),(119,'Remove camps','',1),(120,'Manage markets','',1),(121,'Remove markets','',1),(122,'Manage commodity configs','',1),(123,'Remove commodity config','',1),(124,'Collect commodity prices','',1),(125,'View commodity prices','',1),(126,'Remove commodity price','',1),(127,'Manage interview guide template questions','',1),(128,'View interview guide template','',1),(129,'Remove interview guide template question','',1),(130,'Manage story of change categories','',1),(131,'Submit story of change','',1),(132,'Review Story of change','',1),(133,'View Story of change','',1),(134,'Attach case study articles','',1),(135,'Manage faabs groups','',1),(136,'View faabs groups','',1),(137,'Remove faabs groups','',1),(138,'Manage category A farmers','',1),(139,'View category A farmers','',1),(140,'Remove category A farmers','',1),(141,'Submit FaaBS training records','',1),(142,'View FaaBS training records','',1),(143,'Remove FaaBS training records','',1),(144,'Submit back to office report','',1),(145,'Review back to office report','',1),(146,'View back to office report','',1),(147,'Plan camp monthly activities','',1),(148,'Remove planned camp monthly activities','',1),(149,'View planned camp monthly activities','',1),(150,'Manage FaaBS training topics','',1),(151,'View FaaBS training topics','',1),(152,'Remove FaaBS training topics','',1),(153,'View facilitation of improved technologies/best practices report','',1),(154,'View training attendance cumulative report','',1),(155,'View physical tracking table report','View physical tracking table report',1),(156,'View MGF module','',1),(157,'View MGF Applicants','',1),(158,'View MGF Organisations','',1),(159,'View MGF Concept Note','',1),(160,'View MGF Application','',1),(161,'View MGF Approvals','',1),(162,'View MGF Proposals','',1),(163,'View MGF Evaluations','',1),(164,'Submit project outreach records','Can submit project outreach quarterly records',1),(165,'Remove project outreach records','Remove project outreach records',1),(166,'View project outreach reports','View project outreach reports',1),(167,'Manage staff hourly rates','Manage staff hourly rates',1),(168,'View staff hourly rates','View staff hourly rates',1),(169,'Submit timesheets','Submit timesheets',1),(170,'Review timesheets','Review timesheets',1);
+INSERT INTO `permissions` VALUES (1,'Manage Users',NULL,1),(2,'View Users',NULL,1),(3,'Manage Roles',NULL,1),(4,'View Roles',NULL,1),(6,'View profile',NULL,1),(7,'View audit trail logs',NULL,1),(8,'Manage provinces',NULL,1),(9,'Manage districts',NULL,1),(10,'Manage camps',NULL,1),(11,'Remove provinces',NULL,1),(12,'Remove districts',NULL,1),(13,'Remove camps',NULL,1),(14,'Manage markets',NULL,1),(15,'Remove markets',NULL,1),(16,'Manage commodity configs',NULL,1),(17,'Remove commodity config',NULL,1),(18,'Collect commodity prices',NULL,1),(19,'View commodity prices',NULL,1),(20,'Remove commodity price',NULL,1),(21,'Manage interview guide template questions',NULL,1),(22,'View interview guide template',NULL,1),(23,'Remove interview guide template question',NULL,1),(24,'Manage story of change categories',NULL,1),(25,'Submit story of change',NULL,1),(26,'Review Story of change',NULL,1),(27,'View Story of change',NULL,1),(28,'Attach case study articles',NULL,1),(29,'Manage faabs groups',NULL,1),(30,'View faabs groups',NULL,1),(31,'Remove faabs groups',NULL,1),(32,'Manage category A farmers',NULL,1),(33,'View category A farmers',NULL,1),(34,'Remove category A farmers',NULL,1),(35,'Submit FaaBS training records',NULL,1),(36,'View FaaBS training records',NULL,1),(37,'Remove FaaBS training records',NULL,1),(38,'Submit back to office report',NULL,1),(39,'Review back to office report',NULL,1),(40,'View back to office report',NULL,1),(43,'Plan camp monthly activities',NULL,1),(44,'Remove planned camp monthly activities',NULL,1),(45,'View planned camp monthly activities',NULL,1),(46,'Manage FaaBS training topics',NULL,1),(47,'View FaaBS training topics',NULL,1),(48,'Remove FaaBS training topics',NULL,1),(49,'View facilitation of improved technologies/best practices report',NULL,1),(50,'View training attendance cumulative report',NULL,1),(55,'View physical tracking table report',NULL,1),(56,'Commodity-Specific AWPB','Commodity-Specific AWPB',1),(57,'View programmes','View programmes',1),(58,'Manage AWPB activities','',1),(59,'View AWPB activities','',1),(60,'Manage components','',1),(61,'View components','',1),(62,'Manage AWPB templates','',1),(63,'View AWPB templates','',1),(64,'View AWPB activity lines','',1),(65,'Manage AWPB activity lines','View AWPB activity lines',1),(66,'Submit District AWPB','',1),(67,'Approve AWPB - Provincial','Approve AWPB - Provincial',1),(68,'Submit programme-wide AWPB','Submit programme-wide AWPB',1),(69,'Manage province consolidated AWPB','Manage province consolidated AWPB',1),(70,'Manage programme-wide AWPB activity lines','Manage programme-wide AWPB activity lines',1),(71,'Approve AWPB - PCO','Approve AWPB - PCO',1),(72,'Manage AWPB funders','Manage AWPB funders',1),(73,'View AWPB funders','View AWPB funders',1),(74,'Setup AWPB','Setup AWPB',1),(75,'Approve AWPB - Ministry','Approve AWPB - Ministry',1),(76,'Manage programme-wide AWPB','Manage programme-wide AWPB',1),(77,'View PW AWPB','View PW AWPB',1),(78,'View MGF module','',1),(79,'View MGF Applicants','',1),(80,'View MGF Organisations','',1),(81,'View MGF Concept Note','',1),(82,'View MGF Application','',1),(83,'View MGF Approvals','',1),(84,'View MGF Proposals','',1),(85,'View MGF Evaluations','',1),(86,'Commodity-Specific AWPB','Commodity-Specific AWPB',1),(87,'View programmes','View programmes',1),(88,'Manage AWPB activities','',1),(89,'View AWPB activities','',1),(90,'Manage components','',1),(91,'View components','',1),(92,'Manage AWPB templates','',1),(93,'View AWPB templates','',1),(94,'View AWPB activity lines','',1),(95,'Manage AWPB activity lines','View AWPB activity lines',1),(96,'Submit District AWPB','',1),(97,'Approve AWPB - Provincial','Approve AWPB - Provincial',1),(98,'Submit programme-wide AWPB','Submit programme-wide AWPB',1),(99,'Manage province consolidated AWPB','Manage province consolidated AWPB',1),(100,'Manage programme-wide AWPB activity lines','Manage programme-wide AWPB activity lines',1),(101,'Approve AWPB - PCO','Approve AWPB - PCO',1),(102,'Manage AWPB funders','Manage AWPB funders',1),(103,'View AWPB funders','View AWPB funders',1),(104,'Setup AWPB','Setup AWPB',1),(105,'Approve AWPB - Ministry','Approve AWPB - Ministry',1),(106,'Manage programme-wide AWPB','Manage programme-wide AWPB',1),(107,'View PW AWPB','View PW AWPB',1),(108,'Manage Users','',1),(109,'View Users','',1),(110,'Manage Roles','',1),(111,'View Roles','',1),(112,'View profile','',1),(113,'View audit trail logs','',1),(114,'Manage provinces','',1),(115,'Manage districts','',1),(116,'Manage camps','',1),(117,'Remove provinces','',1),(118,'Remove districts','',1),(119,'Remove camps','',1),(120,'Manage markets','',1),(121,'Remove markets','',1),(122,'Manage commodity configs','',1),(123,'Remove commodity config','',1),(124,'Collect commodity prices','',1),(125,'View commodity prices','',1),(126,'Remove commodity price','',1),(127,'Manage interview guide template questions','',1),(128,'View interview guide template','',1),(129,'Remove interview guide template question','',1),(130,'Manage story of change categories','',1),(131,'Submit story of change','',1),(132,'Review Story of change','',1),(133,'View Story of change','',1),(134,'Attach case study articles','',1),(135,'Manage faabs groups','',1),(136,'View faabs groups','',1),(137,'Remove faabs groups','',1),(138,'Manage category A farmers','',1),(139,'View category A farmers','',1),(140,'Remove category A farmers','',1),(141,'Submit FaaBS training records','',1),(142,'View FaaBS training records','',1),(143,'Remove FaaBS training records','',1),(144,'Submit back to office report','',1),(145,'Review back to office report','',1),(146,'View back to office report','',1),(147,'Plan camp monthly activities','',1),(148,'Remove planned camp monthly activities','',1),(149,'View planned camp monthly activities','',1),(150,'Manage FaaBS training topics','',1),(151,'View FaaBS training topics','',1),(152,'Remove FaaBS training topics','',1),(153,'View facilitation of improved technologies/best practices report','',1),(154,'View training attendance cumulative report','',1),(155,'View physical tracking table report','View physical tracking table report',1),(156,'View MGF module','',1),(157,'View MGF Applicants','',1),(158,'View MGF Organisations','',1),(159,'View MGF Concept Note','',1),(160,'View MGF Application','',1),(161,'View MGF Approvals','',1),(162,'View MGF Proposals','',1),(163,'View MGF Evaluations','',1),(164,'Submit project outreach records','Can submit project outreach quarterly records',1),(165,'Remove project outreach records','Remove project outreach records',1),(166,'View project outreach reports','View project outreach reports',1),(167,'Manage staff hourly rates','Manage staff hourly rates',1),(168,'View staff hourly rates','View staff hourly rates',1),(169,'Submit timesheets','Submit timesheets',1),(170,'Review timesheets','Review timesheets',1),(171,'Submit logframe data','Submit logframe data',1),(172,'View logframe data','View logframe data',1),(173,'View logframe report','View logframe report',1),(174,'Manage logframe programe targets','Manage logframe programe targets',1);
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4845,7 +5780,7 @@ CREATE TABLE `right_to_role` (
   PRIMARY KEY (`id`),
   KEY `fk_right_to_role_1_idx` (`role`),
   CONSTRAINT `fk_right_to_role_1` FOREIGN KEY (`role`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1865 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2135 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4854,7 +5789,7 @@ CREATE TABLE `right_to_role` (
 
 LOCK TABLES `right_to_role` WRITE;
 /*!40000 ALTER TABLE `right_to_role` DISABLE KEYS */;
-INSERT INTO `right_to_role` VALUES (608,4,'View Users',1),(1284,5,'View Roles',1),(1293,10,'Manage Users',1),(1294,10,'Manage Roles',1),(1295,10,'View Roles',1),(1296,10,'View Users',1),(1785,3,'View profile',1),(1786,3,'Collect commodity prices',1),(1787,3,'View commodity prices',1),(1788,3,'Submit story of change',1),(1789,3,'Manage faabs groups',1),(1790,3,'View faabs groups',1),(1791,3,'Remove faabs groups',1),(1792,3,'Manage category A farmers',1),(1793,3,'View category A farmers',1),(1794,3,'Remove category A farmers',1),(1795,3,'Submit FaaBS training records',1),(1796,3,'View FaaBS training records',1),(1797,3,'Remove FaaBS training records',1),(1798,3,'Submit back to office report',1),(1799,3,'Plan camp monthly activities',1),(1800,3,'Remove planned camp monthly activities',1),(1801,3,'View facilitation of improved technologies/best practices report',1),(1802,3,'View training attendance cumulative report',1),(1803,3,'Submit project outreach records',1),(1804,3,'Remove project outreach records',1),(1805,3,'View project outreach reports',1),(1806,3,'Submit timesheets',1),(1807,1,'Manage Users',1),(1808,1,'View Users',1),(1809,1,'Manage Roles',1),(1810,1,'View Roles',1),(1811,1,'View profile',1),(1812,1,'View audit trail logs',1),(1813,1,'Manage provinces',1),(1814,1,'Manage districts',1),(1815,1,'Manage camps',1),(1816,1,'Remove provinces',1),(1817,1,'Remove districts',1),(1818,1,'Remove camps',1),(1819,1,'Manage markets',1),(1820,1,'Remove markets',1),(1821,1,'Manage commodity configs',1),(1822,1,'Remove commodity config',1),(1823,1,'View commodity prices',1),(1824,1,'Remove commodity price',1),(1825,1,'Manage interview guide template questions',1),(1826,1,'View interview guide template',1),(1827,1,'Remove interview guide template question',1),(1828,1,'Manage story of change categories',1),(1829,1,'Review Story of change',1),(1830,1,'Attach case study articles',1),(1831,1,'Manage faabs groups',1),(1832,1,'View faabs groups',1),(1833,1,'View category A farmers',1),(1834,1,'View FaaBS training records',1),(1835,1,'Review back to office report',1),(1836,1,'Manage FaaBS training topics',1),(1837,1,'View FaaBS training topics',1),(1838,1,'Remove FaaBS training topics',1),(1839,1,'View facilitation of improved technologies/best practices report',1),(1840,1,'View training attendance cumulative report',1),(1841,1,'View physical tracking table report',1),(1842,1,'View programmes',1),(1843,1,'Manage AWPB activities',1),(1844,1,'View AWPB activities',1),(1845,1,'Manage components',1),(1846,1,'View components',1),(1847,1,'Manage AWPB templates',1),(1848,1,'View AWPB templates',1),(1849,1,'View AWPB activity lines',1),(1850,1,'Manage AWPB activity lines',1),(1851,1,'Submit District AWPB',1),(1852,1,'Approve AWPB - Provincial',1),(1853,1,'Submit programme-wide AWPB',1),(1854,1,'Manage province consolidated AWPB',1),(1855,1,'Approve AWPB - PCO',1),(1856,1,'Manage AWPB funders',1),(1857,1,'Setup AWPB',1),(1858,1,'Approve AWPB - Ministry',1),(1859,1,'Manage programme-wide AWPB',1),(1860,1,'View PW AWPB',1),(1861,1,'View MGF module',1),(1862,1,'View MGF Concept Note',1),(1863,1,'Manage staff hourly rates',1),(1864,1,'Review timesheets',1);
+INSERT INTO `right_to_role` VALUES (1284,5,'View Roles',1),(1293,10,'Manage Users',1),(1294,10,'Manage Roles',1),(1295,10,'View Roles',1),(1296,10,'View Users',1),(1934,12,'View profile',1),(1935,12,'Manage story of change categories',1),(1936,12,'Submit story of change',1),(1937,12,'View Story of change',1),(2047,1,'Manage Users',1),(2048,1,'View Users',1),(2049,1,'Manage Roles',1),(2050,1,'View Roles',1),(2051,1,'View profile',1),(2052,1,'View audit trail logs',1),(2053,1,'Manage provinces',1),(2054,1,'Manage districts',1),(2055,1,'Manage camps',1),(2056,1,'Remove provinces',1),(2057,1,'Remove districts',1),(2058,1,'Remove camps',1),(2059,1,'Manage markets',1),(2060,1,'Remove markets',1),(2061,1,'Manage commodity configs',1),(2062,1,'Remove commodity config',1),(2063,1,'View commodity prices',1),(2064,1,'Remove commodity price',1),(2065,1,'Manage interview guide template questions',1),(2066,1,'View interview guide template',1),(2067,1,'Remove interview guide template question',1),(2068,1,'Manage story of change categories',1),(2069,1,'Review Story of change',1),(2070,1,'Attach case study articles',1),(2071,1,'Manage faabs groups',1),(2072,1,'View faabs groups',1),(2073,1,'View category A farmers',1),(2074,1,'View FaaBS training records',1),(2075,1,'Review back to office report',1),(2076,1,'Manage FaaBS training topics',1),(2077,1,'View FaaBS training topics',1),(2078,1,'Remove FaaBS training topics',1),(2079,1,'View facilitation of improved technologies/best practices report',1),(2080,1,'View training attendance cumulative report',1),(2081,1,'View physical tracking table report',1),(2082,1,'View programmes',1),(2083,1,'Manage AWPB activities',1),(2084,1,'View AWPB activities',1),(2085,1,'Manage components',1),(2086,1,'View components',1),(2087,1,'Manage AWPB templates',1),(2088,1,'View AWPB templates',1),(2089,1,'View AWPB activity lines',1),(2090,1,'Manage AWPB activity lines',1),(2091,1,'Submit District AWPB',1),(2092,1,'Approve AWPB - Provincial',1),(2093,1,'Submit programme-wide AWPB',1),(2094,1,'Manage province consolidated AWPB',1),(2095,1,'Approve AWPB - PCO',1),(2096,1,'Manage AWPB funders',1),(2097,1,'Setup AWPB',1),(2098,1,'Approve AWPB - Ministry',1),(2099,1,'Manage programme-wide AWPB',1),(2100,1,'View PW AWPB',1),(2101,1,'View MGF module',1),(2102,1,'View MGF Concept Note',1),(2103,1,'View project outreach reports',1),(2104,1,'Manage staff hourly rates',1),(2105,1,'Review timesheets',1),(2106,1,'View logframe report',1),(2107,1,'Manage logframe programe targets',1),(2108,4,'View Users',1),(2109,4,'Manage logframe programe targets',1),(2110,3,'View profile',1),(2111,3,'Collect commodity prices',1),(2112,3,'View commodity prices',1),(2113,3,'Submit story of change',1),(2114,3,'Manage faabs groups',1),(2115,3,'View faabs groups',1),(2116,3,'Remove faabs groups',1),(2117,3,'Manage category A farmers',1),(2118,3,'View category A farmers',1),(2119,3,'Remove category A farmers',1),(2120,3,'Submit FaaBS training records',1),(2121,3,'View FaaBS training records',1),(2122,3,'Remove FaaBS training records',1),(2123,3,'Submit back to office report',1),(2124,3,'Plan camp monthly activities',1),(2125,3,'Remove planned camp monthly activities',1),(2126,3,'View facilitation of improved technologies/best practices report',1),(2127,3,'View training attendance cumulative report',1),(2128,3,'Submit project outreach records',1),(2129,3,'Remove project outreach records',1),(2130,3,'View project outreach reports',1),(2131,3,'Submit timesheets',1),(2132,3,'Submit logframe data',1),(2133,3,'View logframe data',1),(2134,3,'View logframe report',1);
 /*!40000 ALTER TABLE `right_to_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4874,7 +5809,7 @@ CREATE TABLE `roles` (
   `updated_by` int DEFAULT NULL,
   `created_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4883,7 +5818,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'Administrator',1,1222,1603902498,1,1),(3,'User',1,1603902583,1603902583,1,1),(4,'test',1,1614068089,1614068089,1,1),(5,'Test 2',1,1619185146,1619185146,1,1),(10,'Admin',1,1621730405,1621730405,NULL,NULL);
+INSERT INTO `roles` VALUES (1,'Administrator',1,1222,1603902498,1,1),(3,'User',1,1603902583,1603902583,1,1),(4,'test',1,1614068089,1614068089,1,1),(5,'Test 2',1,1619185146,1619185146,1,1),(10,'Admin',1,1621730405,1621730405,NULL,NULL),(12,'LKM',1,1632210897,1632210897,1,1);
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4959,7 +5894,7 @@ CREATE TABLE `users` (
   KEY `fk_users_3_idx` (`district_id`),
   KEY `fk_users_4_idx` (`province_id`),
   CONSTRAINT `fk_users_1` FOREIGN KEY (`role`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4968,7 +5903,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,'Francis','Chulu','','Mr.','Male','+260978981234','123454/21/23','chulu1francis@gmail.com','chulu1francis@gmail.com',1,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO','-GDPDTEgVpbCySh94TqY4hRrma_XkSty_1616662153',NULL,0,0,0,1,NULL,11,1616662153,'Other user'),(5,3,'Chulu','Francis','','Mr.','Male','+260978981345','123454/21/23','francis.chulu@unza.zm','francis.chulu@unza.zm',1,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO',NULL,NULL,NULL,NULL,NULL,1,1,1604659275,1604660233,'Other user'),(6,1,'test','Test','','','Male','','','francis.chulu1@unza.zm','francis.chulu@unza.zm',2,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO','LZ-pePN17FJB7Mg1CtyYyRsNH5tohaz6_1607174006',NULL,NULL,NULL,NULL,1,1,1607174006,1607174024,'Other user'),(9,3,'Test','Test','','Mr.','Female','','','test@unza.zm','chulu1francis@gmail.com',1,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO','PF4j04-lRuOClA4gXY-oTX_95V6Ap-2-_1607181915',NULL,0,0,0,1,1,1607181915,1607186786,'Other user'),(10,3,'test','Test','','Mr.','Female','','','test1@unza.zm','francis.chulu@unza.zm',1,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO','VlfAXnPz_XY_5s6E7x2Qi_SpPhIEl9I0_1607181970',NULL,NULL,2,1,1,1,1607181970,1616772648,'District user'),(11,3,'test','Test 3','','Mr.','Male','','','test2@unza.zm','francis.chulu@unza.zm',0,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO','pFOgJWyUKdULYoTNxXctPhB4CEv8LpzB_1607182013',NULL,NULL,NULL,1,1,1,1607182013,1614016783,'Provincial user'),(14,10,'Please','me','delete','','Male',NULL,NULL,'admin@emis.com','admin@emis.com',1,'CpmiIyoNtGGkHX0meoIJU7sGcRqQcXm5','$2y$13$AYj8JnzR1i0DDTQ5OYerHek8g5.Ch9ZrKjpg4ZJtAchchVGwVIWhy',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1621730406,1621730406,'Other user');
+INSERT INTO `users` VALUES (1,1,'Francis','Chulu','','Mr.','Male','+260978981234','123454/21/23','chulu1francis@gmail.com','chulu1francis@gmail.com',1,'gB_PJTElMSxW^IfiNmpYT^7qva3?Hy:a','$2y$13$/igl4SBKySwX9QQc352pKef5YX6gRSI8nx/8vkTvyD0RYNDXIjIvO','-GDPDTEgVpbCySh94TqY4hRrma_XkSty_1616662153',NULL,0,0,0,1,NULL,11,1616662153,'Other user'),(23,1,'Elemson','Muyanga','','Mr.','Male','','','mgf@sapp.gov.zm','mgf@sapp.gov.zm',1,'mtsWAXPLvisW_s0xgOej1B6Xw7BlwMdx','$2y$13$5u6w6uBgRd.8iTXCLMU19Olfz92Ek79CkQWmZWK2vTeeSVghK7KB6',NULL,NULL,NULL,NULL,NULL,23,1,1632296258,1632298234,'Other user'),(24,1,'Francis','Cellulant','','Mr.','Male','','','francis.chulu@cellulant.io','francis.chulu@cellulant.io',1,'f7s-tbnc8azuXB5Xf0GiDeg4iWKw-_Gk','$2y$13$ZfFjM0MqdohudkYmTxdm5.lBwZ8gIAmRvAzGXGwxGdQ2iumReCeha',NULL,NULL,NULL,NULL,NULL,1,1,1632296389,1632297089,'Other user'),(25,1,'Mofya','Phiri','','Mr.','Male','','','mofya.phiri@cs.unza.zm','mofya.phiri@cs.unza.zm',1,'S6U3VawATDLfjLvqvGz-GPmpM9fPTSv7','$2y$13$W/1B/LUvGwFxkv.ThrKDcucxWyo4wc.UOdeO/SPRpDsooiFxFkvfK',NULL,NULL,NULL,NULL,NULL,14,14,1632492430,1632492515,'Other user'),(26,10,'Emmanuel','Mulenga','','Mr.','Male','','','Mulenga_e@yahoo.com','Mulenga_e@yahoo.com',1,'BSLJfWJbAaMkS9zWjvGgGRpNqaxS8rLF','$2y$13$KOQfUT0C3EvmkpyiApMKSelOx9WHu3CmM7aAusjrD/rLxdb.L000e',NULL,NULL,NULL,NULL,NULL,23,14,1632492646,1632729344,'Other user'),(27,12,'Christopher','Kambole','','Mr.','Male','','','Kambolechris5@gmail.com','Kambolechris5@gmail.com',1,'rUzybUePFATGgh9gmD3OJ7CkLLojEf-B','$2y$13$i/.hBM3oo0IieSDOqaHhqeRWS6owVJIWhtNCabFMd9R2dKT4lt48i','Bwss-tVB0t6u25Zuls1K37RYBgvE2hoT_1632492694',NULL,NULL,NULL,NULL,23,14,1632492694,1632753922,'Other user'),(28,12,'Miyanda','Sakala','Munkombwe','Mrs.','Female','','','miyamunkombwe@yahoo.com','miyamunkombwe@yahoo.com',1,'wSDCOgkMMqTmd91n1M_Jjau_hfB6okH-','$2y$13$kr0yEtg.U/MpttMZiYIRpe2vUl4a9AEtiMW4nVaE72CjqTJ.76z9e','7b7yb9LPKDrR1iB9Mk-XJ7pIzlY_bc7z_1632492775',NULL,NULL,NULL,NULL,23,14,1632492775,1632753986,'Other user'),(29,12,'Danny','Munsanje','','Mr.','Male','','','dmunsanje@sapp.gov.zm','dmunsanje@sapp.gov.zm',1,'f2GxLOHYNcctPyyjxVVsFpeioceebZoS','$2y$13$I.sLINzJ.AerUy7CMK/EDe1IsWiAYtbu/GEGzgtzpFeX94n9K5M4u',NULL,NULL,NULL,NULL,NULL,29,14,1632492819,1632833326,'Other user'),(30,12,'Mainza','Chibomba','','Mrs.','Female','','','msyafunko@gmail.com','msyafunko@gmail.com',1,'7AQlu2qHKHNc1kW1jznd3aVtMXKM93bV','$2y$13$Ee42/2Mb9bXEHi.opjWNSePrIkuhuQRaKioXOsdKhiniALv54lAhy',NULL,NULL,NULL,NULL,NULL,23,14,1632492858,1632754034,'Other user'),(31,12,'Patrick','Masamba','','','Male','','','Masamba.patrick@yahoo.com','Masamba.patrick@yahoo.com',1,'vyGrk92t5iVHpafnlpmk-Pasllnt3yyl','$2y$13$iJl3s8sIK3zB/LMACUbk0en66DjZRzibSoLNgoyY4N/jqjkZpjZrW','CNCS-rOaNJzkcB3BfwXWbtF-clviG900_1632492912',NULL,NULL,NULL,NULL,23,14,1632492912,1632754059,'Other user'),(32,12,'Nalukui','Sakala','Mukubesa','Mrs.','Female','','','nsakala@sapp.gov.zm','nsakala@sapp.gov.zm',1,'f6OOtstxJpzZ9AMkhyow-tjyWobbQR-q','$2y$13$JjxO2FO1Lz8b9MRGcOb5OOUtlJgbG2jPxmFzJG205XQ5SNulw447W','b9_HMIQv4mUP5sD0ZZtTTdX7IsbMIoFS_1632492958',NULL,NULL,NULL,NULL,23,14,1632492958,1633001362,'Other user'),(33,12,'Mutiyo','Namwinga','','Ms.','Female','+260967364178','443966/67/1','mnamwinga@sapp.gov.zm','mnamwinga@sapp.gov.zm',1,'C7N3jJZW7kMd0xQRSKlxTAmnQowj8ffM','$2y$13$/RVZ3a0EKvid8ZbvrfrRJOonEOgwqjuvBaQHTDQoiuDwIku2qWDAe',NULL,NULL,NULL,NULL,NULL,23,14,1632493000,1632816491,'Other user'),(34,3,'Edward','Mushota','','Mr.','Male','','','edward.mushota@szi.gov.zm','edward.mushota@szi.gov.zm',1,'bbss7v5MSeNh4118QJsXEzmIADEJ8uLZ','$2y$13$JDgLCZoMgc5XjoLWcNn4hOR9afeGyGyrt03odzIOiuV0hjHqCOVpq','6-f2ffcZzBITymvzPCGzeBc--7J7cdrf_1632493035',NULL,NULL,NULL,NULL,23,14,1632493035,1632727674,'Other user'),(35,3,'Stanley','Phiri','','Mr.','Male','','','stanley.phiri@szi.gov.zm','stanley.phiri@szi.gov.zm',1,'NqUqpsh5azAtl6R3A0pjVEJKviTWA8vt','$2y$13$CUQD5eC717cqtkQ/LljmF.S4jPIyk7d9wy4/ki2VlhAxJ2Cn/ApUS','6sUVorYSaHhXghMb5j32jua4b0Ql45Az_1632493082',NULL,NULL,NULL,NULL,23,14,1632493082,1632727685,'Other user'),(36,3,'Robert','Zulu','','Mr.','Male','','','zulurobert1995@gmail.com','zulurobert1995@gmail.com',1,'JlqXr33puqiBuOzSA-UuOCdxe8UXqer1','$2y$13$Xj69zl0LStY83Kmyagd4PuGm0.3efai8asS1sxGZS85eocGcA8m5e','1Ncg-ciOp6HZ4pZWaBCGjxuSibef0guN_1632493128',NULL,NULL,NULL,NULL,23,14,1632493128,1632727636,'Other user'),(37,3,'Tristar','Chibuye','','Ms.','Female','+260978418127','308569/31/1','tristarchibuye@gmail.com','tristarchibuye@gmail.com',1,'uLPVBrcq4irZWp8u2UW-hlC1seVuSAkg','$2y$13$exDwiPRexqbriKPoB5Hzq.yK8QiywQ.zbuEuA7ZACV.yI3A5wT5Ka',NULL,NULL,NULL,NULL,NULL,23,14,1632493165,1632728954,'Other user'),(38,3,'Benaiah','Sondashi','','','','','','Benaiah.s@gmail.com','Benaiah.s@gmail.com',1,'K6xGYejHnpn1DevYGNp9XHbir4mLIHIK','$2y$13$ZtKdZnGgW8MeFC8xvPI7lOzdt4YMcwXB2rfvX8DUuiQiojTIXCEwq',NULL,NULL,NULL,NULL,NULL,23,14,1632493207,1632832321,'Other user'),(39,3,'Emmanuel','Lipalile','','','','','','ellipalile@gmail.com','ellipalile@gmail.com',1,'NV54s_jGH_a4CRLffAeUCP1-QEPLXgJ5','$2y$13$Vv0FXkoGCWBrUxCgqzmE3O.drfpr8ERNMcd4Exylz0xKxHVty.HTO','kBQsaC_wfRXu5MTY3wQ5kUbJzEBmyZFE_1632493248',NULL,NULL,NULL,NULL,23,14,1632493248,1632727666,'Other user'),(40,1,'Kayula','Mwila','','','Female','','','mwilakayula@ymail.com','mwilakayula@ymail.com',1,'-1BWVlgyVjKpP0Dgk39Lm8sEKgs6CnI2','$2y$13$XcIdA/VctupkD4fvAYuR7eaUN0d9ouAUpV5dmEFsnrFF7H8OUeKQK','LIKgxThtg62pBwV22hrY2P1rSiqPyB84_1632493457',NULL,NULL,NULL,NULL,23,14,1632493457,1632727581,'Other user'),(41,1,'Monde','Kabemba','','','Female','+260955833133','','mkabemba@gmail.com','mkabemba@gmail.com',1,'j53VuZR5uQUMm_HKGv8ZJFH8djf_XB1o','$2y$13$9w2nV5MCblHwfMNMYJ.T/.k7yCbAr0ABzF8tjKyqJUI6ZLQb1iF6i',NULL,NULL,0,NULL,NULL,41,14,1632746328,1632746673,'District user'),(42,1,'Monde','Kabemba','','','Female','','','monica.kalumbilo@cs.unza.zm','monica.kalumbilo@cs.unza.zm',1,'-gIvWt52OqMbW84Ejgz-evPvw8v-zxdo','$2y$13$lgU269KkHOqydBdkVRQ/7ujSIqKYYaXoxid.q91AxHnWlpMWbHqnW',NULL,NULL,NULL,2,1,14,14,1632747138,1632747188,'District user');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -4981,4 +5916,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-16 18:37:54
+-- Dump completed on 2021-10-01 10:33:18
