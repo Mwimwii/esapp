@@ -964,6 +964,7 @@ $session = Yii::$app->session;
                                 if (Yii::$app->controller->id == "faabs-category-a-farmers" ||
                                         Yii::$app->controller->id == "faabs-training-attendance" ||
                                         Yii::$app->controller->id == "faabs-groups" ||
+                                    Yii::$app->controller->id == "time-sheets" ||
                                         //Yii::$app->controller->id == "quarterly-work-plan" ||
                                         Yii::$app->controller->id == "back-to-office-report" ||
                                         Yii::$app->controller->id == "camp-monthly-schedule" ||
