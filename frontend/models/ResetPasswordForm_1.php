@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace frontend\models;
 
 use kartik\password\StrengthValidator;
 use yii\base\Model;
