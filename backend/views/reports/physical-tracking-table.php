@@ -28,7 +28,7 @@ if (isset($_GET['AwbpActivitySearch'])) {
             <li>Apply a filter below to view 'The Physical tracking table' for the previous years and/or province/district</li>
         </ol>
         <?php
-        echo $this->render('_search_physical_tracking_table', ['model' => $searchModel]);
+        echo $this->render('_search_physical_tracking_table', ['model' => $searchModel,"year"=>$fiscal_year]);
         ?>
 
         <hr class="dotted short">
@@ -160,8 +160,8 @@ if (isset($_GET['AwbpActivitySearch'])) {
                             $q_total = 0;
                             if (!empty($awpb_template)) {
                                 //Get all activity lines that belongs to this subactivity
-                                $activity_lines = \backend\models\AwpbActivityLine::find()
-                                        ->where(['activity_id' => $model->id])
+                                $activity_lines = \backend\models\AwpbActivity::find()
+                                        ->where(['id' => $model->id])
                                         ->andWhere(['awpb_template_id' => $awpb_template->id])
                                         ->all();
                                 if (!empty($activity_lines)) {

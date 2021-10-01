@@ -1994,7 +1994,7 @@ class ReportsController extends Controller {
     }
 
     public function actionDownloadPhysicalTrackingTable() {
-        $searchModel = new \backend\models\AwbpActivitySearch();
+        $searchModel = new \backend\models\AwpbBudgetSearch();
 
         $province_id = Yii::$app->request->post('province_id', null);
         $district_id = Yii::$app->request->post('district_id', null);

@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'adminEmail' => 'esappmis@noreply.gov.zm',
-    'senderEmail' => 'esappmis@noreply.gov.zm',
+    'adminEmail' => 'mis@sapp.gov.zm',
+    'senderEmail' => 'mis@sapp.gov.zm',
     'senderName' => 'E-SAPP MIS',
-    'supportEmail' => 'esappmis@noreply.gov.zm',
-    'senderEmail' => 'esappmis@noreply.gov.zm',
+    'supportEmail' => 'mis@sapp.gov.zm',
+    'senderEmail' => 'mis@sapp.gov.zm',
     'bsVersion' => '4.x',
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 7,
