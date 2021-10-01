@@ -19,6 +19,7 @@ use backend\models\AwpbActualInput;
 use backend\models\AwpbActualInputSearch;
 
 use backend\models\AwpbDistrict;
+use yii\data\ActiveDataProvider;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
@@ -52,6 +53,31 @@ $status=1;
 //                );
             //  echo Html::a('<i class="fa fa-plus"></i> Add AWPB Input', ['awpb-actual-input/create', 'id'=>$model->id], ['class' => 'btn btn-success btn-sm']);
              }
+             
+             
+                 $mo1="";
+           $mo2="";
+              $mo3="";
+          if ($template_model->quarter==1 ){
+              $mo1="Jan";
+           $mo2="Feb";
+              $mo3="Mar";
+          }
+             if ($template_model->quarter==2 ){
+              $mo1="Apr";
+           $mo2="May";
+              $mo3="Jun";
+          }
+               if ($template_model->quarter==3 ){
+              $mo1="Jul";
+           $mo2="Aug";
+              $mo3="Sep";
+          }  
+             if ($template_model->quarter==2 ){
+              $mo1="Oct";
+           $mo2="Nov";
+              $mo3="Dec";
+          }
 
                   $gridColumns = [
           [
@@ -66,20 +92,20 @@ $status=1;
     
 ],
 
-      [
-                            'class' => 'kartik\grid\EditableColumn',
-                            'label' => 'Quarter',
-                            'attribute' => 'quarter_number',
-                            'readonly' => true,
-                            'filter' => false,
-                            'editableOptions' => [
-                                'header' => 'Name',
-                                'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                            ],
-                            'hAlign' => 'left',
-                            'vAlign' => 'left',
-                         'width' => '7%',
-                        ],
+//      [
+//                            'class' => 'kartik\grid\EditableColumn',
+//                            'label' => 'Quarter',
+//                            'attribute' => 'quarter_number',
+//                            'readonly' => true,
+//                            'filter' => false,
+//                            'editableOptions' => [
+//                                'header' => 'Name',
+//                                'inputType' => \kartik\editable\Editable::INPUT_TEXT,
+//                            ],
+//                            'hAlign' => 'left',
+//                            'vAlign' => 'left',
+//                         'width' => '7%',
+//                        ],
                         [
                             'class' => 'kartik\grid\EditableColumn',
                             'label' => 'Input Description',
@@ -129,7 +155,7 @@ $status=1;
                             'readonly' => true,
                             'refreshGrid' => true,'filter' => false,
                             'editableOptions' => [
-                                'header' => 'Month 1 Quantity',
+                                'header' => $mo1 .' Quantity',
                                 'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                                 'options' => [
                                     'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
@@ -148,7 +174,7 @@ $status=1;
 
                             'refreshGrid' => true,'filter' => false,
                             'editableOptions' => [
-                                'header' => 'Month 2 Quantity',
+                                'header' => $mo2 .' Quantity',
                                 'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                                 'options' => [
                                     'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
@@ -166,7 +192,7 @@ $status=1;
                             'readonly' => true,
                             'refreshGrid' => true,'filter' => false,
                             'editableOptions' => [
-                                'header' => 'Month 3 Quantity',
+                                'header' => $mo1 .' Quantity',
                                 'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                                 'options' => [
                                     'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
@@ -181,11 +207,11 @@ $status=1;
                         
                         [
                             'class' => 'kartik\grid\EditableColumn',
-                            'attribute' => 'quarter_quantity',
+                            'attribute' => 'quarter_one_quantity',
                             'readonly' => true,
                             'refreshGrid' => true,'filter' => false,
                             'editableOptions' => [
-                                'header' => 'Q4 Quantity',
+                                'header' => 'Q'.$template_model->quarter.' Quantity',
                                 'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                                 'options' => [
                                     'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
@@ -199,12 +225,12 @@ $status=1;
                         ],
                          [
                             'class' => 'kartik\grid\EditableColumn',
-                            'attribute' => 'quarter_amount',
-                             'label' => 'Quarter Budget',
+                            'attribute' => 'quarter_one_amount',
+                             'label' => 'Q'.$template_model->quarter.' Budget',
                             'readonly' => true,
                             'refreshGrid' => true,'filter' => false,
                             'editableOptions' => [
-                                'header' => 'Quarter Budget',
+                                'header' =>  'Q'.$template_model->quarter.' Budget',
                                 'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                                 'options' => [
                                     'pluginOptions' => ['min' => 0, 'max' => 999999999999999999999]
@@ -217,60 +243,7 @@ $status=1;
                             'pageSummary' => true
                         ],
                         
-                                    
-                               
-//                    ['class' => 'yii\grid\ActionColumn',
-//                    'options' => ['style' => 'width:150px;'],
-//                    'template' => '{view}{update}{delete}',
-//                    'buttons' => [
-//                        'view' => function ($url, $model) {
-//                            if ( User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Request Funds') ) {
-//                                return Html::a(
-//                                                '<span class="fa fa-eye"></span>', ['awpb-actual-input/view', 'id' => $model->id], [
-//                                            'title' => 'View input',
-//                                            'data-toggle' => 'tooltip',
-//                                            'data-placement' => 'top',
-//                                            'data-pjax' => '0',
-//                                            'style' => "padding:5px;",
-//                                            'class' => 'bt btn-lg'
-//                                                ]
-//                                );
-//                            }
-//                        },
-//                        'update' => function ($url, $model) use ($user) {
-// if (User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '')) {  
-//                return Html::a(
-//                                                '<span class="fas fa-edit"></span>', ['awpb-actual-input/update', 'id' => $model->id,], [
-//                                            'title' => 'Update input',
-//                                            'data-toggle' => 'tooltip',
-//                                            'data-placement' => 'top',
-//                                            // 'target' => '_blank',)
-//                                            'data-pjax' => '0',
-//                                            'style' => "padding:5px;",
-//                                            'class' => 'bt btn-lg'
-//                                                ]
-//                                );
-//                            }
-//                        },
-//                        'delete' => function ($url, $model) use ($user) {
-//                          if ( User::userIsAllowedTo('Request Funds') && ($user->district_id > 0 || $user->district_id != '')) {
-//          return Html::a(
-//                                                '<span class="fa fa-trash"></span>', ['awpb-actual-input/delete', 'id' => $model->id], [
-//                                            'title' => 'delete input',
-//                                            'data-toggle' => 'tooltip',
-//                                            'data-placement' => 'top',
-//                                            'data' => [
-//                                                'confirm' => 'Are you sure you want to delete this input?',
-//                                                'method' => 'post',
-//                                            ],
-//                                            'style' => "padding:5px;",
-//                                            'class' => 'bt btn-lg'
-//                                                ]
-//                                );
-//                            }
-//                        },
-//                    ]
-//                ]
+             
                     ];
                  
                   
@@ -279,15 +252,134 @@ $status=1;
             $budget = \backend\models\AwpbBudget::findOne(['id' => $id]);
           
             if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_NOT_REQUESTED]);
+                $searchModel = new AwpbActualInput();
+               if ($template_model->quarter ==1 )
+                {
+                  
+                   
+                   
+                $query = $searchModel::find();
+                $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_1) as mo_1',
+                    'SUM(awpb_actual_input.mo_2) as mo_2',  
+                    'SUM(awpb_actual_input.mo_3) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_1_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_2_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_3_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_one_amount) as quarter_one_amount']);
+                
+                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
+               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
+                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
+                //$query->groupBy('camp_id');
+               // $query->groupBy('budget_id'); 
+
+               
+                $query->all();     
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                }
+                elseif ($template_model->quarter ==2 )
+                    {
+                $query = $searchModel::find();
+                  $query = $searchModel::find();
+                 $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_4) as mo_1',
+                    'SUM(awpb_actual_input.mo_5) as mo_2',  
+                    'SUM(awpb_actual_input.mo_6) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_4_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_5_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_6_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_two_amount) as quarter_one_amount']);
+                
+                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
+               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
+                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
+                //$query->groupBy('camp_id');
+               // $query->groupBy('budget_id'); 
+
+                $query->all();     
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                }
+                   elseif ($template_model->quarter ==3 )
+                    {
+                $query = $searchModel::find();
+           $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_7) as mo_1',
+                    'SUM(awpb_actual_input.mo_8) as mo_2',  
+                    'SUM(awpb_actual_input.mo_9) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_7_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_8_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_9_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_three_amount) as quarter_one_amount']);
+                
+                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
+               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
+                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
+                //$query->groupBy('camp_id');
+               // $query->groupBy('budget_id'); 
+
+                $query->all();     
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                }
+                  elseif ($template_model->quarter ==4 )
+                    {
+                $query = $searchModel::find();
+              $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_10) as mo_1',
+                    'SUM(awpb_actual_input.mo_11) as mo_2',  
+                    'SUM(awpb_actual_input.mo_12) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_10_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_11_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_12_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_four_amount) as quarter_one_amount']);
+                
+                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
+               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
+                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
+                //$query->groupBy('camp_id');
+               // $query->groupBy('budget_id'); 
+
+                $query->all();     
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                }
                   
                     
            
            } 
             elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
                 $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
 
@@ -295,14 +387,14 @@ $status=1;
              
             } 
             elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
                 $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
 
                
             } 
             elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
                 $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
 
@@ -310,7 +402,7 @@ $status=1;
             }  else {
                 $searchModel = new \backend\models\AwpbActualInputSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', 10]);
+                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'status', 10]);
                
             }
 

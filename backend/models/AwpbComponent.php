@@ -8,7 +8,7 @@ use yii\web\IdentityInterface;
 use common\models\Role;
 use backend\models\AwpbActivity;
 use backend\models\AwpbActivitySearch;
-
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "awpb_component".
  *
@@ -90,7 +90,18 @@ class AwpbComponent extends \yii\db\ActiveRecord {
             [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
         ];
     }
-
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -235,6 +246,18 @@ class AwpbComponent extends \yii\db\ActiveRecord {
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
     }
+    
+         public static function getAwpbSubComponentsListProvincial() {
+
+        $components = self::find()
+        ->select(["CONCAT(code,' ',name) as name", 'id'])
+                        ->where(['type' => self::TYPE_SUB])
+                        ->andWhere(['access_level_province' => self::TYPE_SUB])
+                        ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
+    }
+
      public static function getAwpbSubComponentsListPW() {
 
         $components = self::find()

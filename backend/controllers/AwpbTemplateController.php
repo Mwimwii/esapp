@@ -329,6 +329,7 @@ class AwpbTemplateController extends Controller {
     }
 
     public function actionTemplateDistricts($id) {
+        $test="";
         if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
             if (Yii::$app->request->isAjax) {
@@ -376,28 +377,46 @@ class AwpbTemplateController extends Controller {
                             }
                         }
 
-                        $awpbTemplateProvince = new AwpbProvince();
-                        //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
-                        $_awpbTemplateProvinces = \backend\models\AwpbDistrict::find()->select('province_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
-                        // var_dump($_awpbTemplateProvinces );
-                        //$_awpbTemplateProvinces = \backend\models\AwpbDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
-                        //  $_awpbTemplateProvinces = $awpbTemplateDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
-                        if (!empty($_awpbTemplateProvinces)) {
-                            foreach ($_awpbTemplateProvinces as $province) {
-                                //check if the right was already assigned to this role
-                                $prov = \backend\models\AwpbProvince::findOne(['province_id' => $province->province_id]);
-                                if (empty($prov->id)) {
-                                    $awpbTemplateProvince->awpb_template_id = $id;
-                                    $awpbTemplateProvince->province_id = $province->province_id;
-                                    $awpbTemplateProvince->id = NULL; //primary key(auto increment id) id
-                                    $awpbTemplateProvince->isNewRecord = true;
-                                    $awpbTemplateProvince->updated_by = Yii::$app->user->id;
-                                    $awpbTemplateProvince->created_by = Yii::$app->user->id;
-                                    $awpbTemplateProvince->status = AwpbTemplate::STATUS_DRAFT;
-                                    $awpbTemplateProvince->save();
-                                }
-                            }
-                        }
+//                       // $awpbTemplateProvince = new AwpbProvince();
+//                        //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
+//                        $_awpbTemplateProvinces = \backend\models\AwpbDistrict::find()->select('province_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
+//                        // var_dump($_awpbTemplateProvinces );
+//                        //$_awpbTemplateProvinces = \backend\models\AwpbDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
+//                        //  $_awpbTemplateProvinces = $awpbTemplateDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
+//                        if (!empty($_awpbTemplateProvinces)) {
+//                            foreach ($_awpbTemplateProvinces as $province) {
+//                                $awpbTemplateProvince = new AwpbProvince();
+//                                 $prov = \backend\models\AwpbProvince::findOne(['province_id' => $province->province_id,'awpb_template_id'=>$id]);
+//                                //check if the right was already assigned to this role
+//                               // $prov = \backend\models\AwpbProvince::findOne(['province_id' => $provinceprovince_id,'awpb_template_id'=>$id]);
+//                                if (empty($prov->id)) {
+//                                    //$provi = \backend\models\Provinces::findOne(['id' => $province->province_id]);
+//                                     $provi = \backend\models\Provinces::findOne($province->province_id);
+//                                    $awpbTemplateProvince->awpb_template_id = $id;
+//                                    $awpbTemplateProvince->province_id = $province->province_id;
+//                                 // $awpbTemplateProvince->name =  $provi->id;
+//                                    $awpbTemplateProvince->id = NULL; //primary key(auto increment id) id
+//                                    $awpbTemplateProvince->isNewRecord = true;
+//                                    $awpbTemplateProvince->updated_by = Yii::$app->user->id;
+//                                    $awpbTemplateProvince->created_by = Yii::$app->user->id;
+//                                    $awpbTemplateProvince->status = AwpbTemplate::STATUS_DRAFT;
+//                                    if($awpbTemplateProvince->save())
+//                                    {
+//                                        Yii::$app->session->setFlash('error', 'Error occured while uploading'.$province->province_id);
+//                                    }
+//                                    else {
+//                    $message = '';
+//                    foreach ($awpbTemplateProvince->getErrors() as $error) {
+//                        $message .= $error[0];
+//                    }
+//                    Yii::$app->session->setFlash('error', 'Error occured while saving.Error:' . $message);
+//                    var_dump($province);
+//                }
+//                                    
+//                                }
+//                                 
+//                            }
+//                        }
                         //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
                         // if (Yii::$app->getUser()->identity->role == $model->id) {
                         //     $rightsArray = \common\models\RightAllocation::getRights(Yii::$app->getUser()->identity->role);
@@ -618,6 +637,22 @@ class AwpbTemplateController extends Controller {
                     $model->guideline_file = $file_name;
                     //$up_file = 1;
                 }
+                $model->status=AwpbTemplate::STATUS_DRAFT;
+                
+                $model->preparation_deadline_first_draft=$model->submission_deadline;
+
+                $model->consolidation_deadline = $model->incorpation_deadline_pco_moa_mfl;
+                $model->review_deadline = $model->submission_deadline;
+                $model->preparation_deadline_second_draft = $model->incorpation_deadline_pco_moa_mfl;
+                $model->review_deadline_pco = $model->incorpation_deadline_pco_moa_mfl;
+                $model->finalisation_deadline_pco = $model->incorpation_deadline_pco_moa_mfl;
+                $model->submission_deadline_moa_mfl = $model->incorpation_deadline_pco_moa_mfl;
+                $model->approval_deadline_jpsc = $model->incorpation_deadline_pco_moa_mfl;
+
+                $model->submission_deadline_ifad = $model->incorpation_deadline_pco_moa_mfl;
+                $model->comment_deadline_ifad = $model->incorpation_deadline_pco_moa_mfl;
+                $model->distribution_deadline = $model->incorpation_deadline_pco_moa_mfl;
+                        
                 $model->created_by = Yii::$app->user->id;
                 $model->updated_by = Yii::$app->user->id;
 
@@ -644,7 +679,7 @@ class AwpbTemplateController extends Controller {
                                 $awpbTemplateDistrict = new AwpbDistrict();
                                 foreach ($cost_centres as $cost_centre) {
 
-                                    $awpbTemplateDistrict->awpb_template_id = $id;
+                                    $awpbTemplateDistrict->awpb_template_id = $model->id;
                                     $awpbTemplateDistrict->cost_centre_id = $cost_centre->id;
 
                                     $awpbTemplateDistrict->name = $cost_centre->name;
@@ -782,8 +817,9 @@ class AwpbTemplateController extends Controller {
     }
 
     public function actionUpdate($id) {
-        if (User::userIsAllowedTo('Setup AWPB')) {
+         if (User::userIsAllowedTo('Setup AWPB') ) {
             $model = $this->findModel($id);
+                      
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
@@ -843,7 +879,7 @@ class AwpbTemplateController extends Controller {
     }
 
     public function actionUpdate4($id) {
-        if (User::userIsAllowedTo('Manage AWPB templates')) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
             $model->updated_by = Yii::$app->user->identity->id;
 
@@ -1026,8 +1062,9 @@ class AwpbTemplateController extends Controller {
         //  $model = $this->findModel($id);
         $old_quarter = $model->quarter;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
+            
             Yii::$app->session->setFlash('success', 'Quarter changed from Q' . $old_quarter . ' to Q' . $model->quarter . ' successfully.');
+             return $this->redirect(['site/home']);
         }
 
         return $this->render('cq', [

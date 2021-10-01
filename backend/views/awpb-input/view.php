@@ -16,17 +16,21 @@ use backend\models\User;
 /* @var $model backend\models\AwpbBudget */
 
 //$this->title = $model->id;
-$this->title = 'AWPB Input : '. $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'AWPB Input', 'url' => ['index']];
+$this->title = 'AWPB Activity Input : '. $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'AWPB Activity Input', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
  $user = User::findOne(['id' => Yii::$app->user->id]);
+ 
+ $time = new \DateTime('now');
+$today = $time->format('Y-m-d');
+
 $tem="";
-$template= \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
+$template_model= \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
 	
-if (!empty($template)) {
-    $tem=  $template->fiscal_year;
+if (!empty($template_model)) {
+    $tem=  $template_model->fiscal_year;
     }
 
     
@@ -85,12 +89,14 @@ if (!empty($camp)) {
         }
 $model_budget =new  \backend\models\AwpbBudget();
          $_model =  $model_budget::findOne(['id'=>$model->budget_id]);
+         $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+
 ?>
 
 <div class="card card-success card-outline">
     <div class="card-body">
-    <h1><?= Html::encode($this->title) ?></h1>
-
+    <h1><?= Html::encode($tem) ?> <?= Html::encode($this->title) ?></h1>
+ 
     <p>
     
             <?php
@@ -114,7 +120,9 @@ $model_budget =new  \backend\models\AwpbBudget();
        }
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if ($status ==0 && \backend\models\User::userIsAllowedTo('Manage AWPB')) {
+if (\backend\models\User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today))
+{
+ 
 
         echo Html::a(
                 '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id], [

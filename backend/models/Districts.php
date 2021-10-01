@@ -132,4 +132,10 @@ class Districts extends \yii\db\ActiveRecord {
       public function getAwpbDistricts() {
         return $this->hasMany(Camp::className(), ['district_id' => 'id']);
     }
+     public static function getDistrictList($id) {
+        $district= self::find()->where(['province_id' => $id])->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($district, 'id', 'name');
+        return $list;
+    }
+
 }

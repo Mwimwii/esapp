@@ -257,10 +257,10 @@ class AwpbInputController extends Controller {
         if ($user->province_id == 0 || $user->province_id == ''){
 
             // $model_budget = new \backend\models\AwpbBudget_1();
-             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $model->budget_id]);
+             $_model = \backend\models\AwpbBudget_2::findOne(['id' => $model->budget_id]);
             
         } else {
-                $_model = \backend\models\AwpbBudget::findOne(['id' => $model->budget_id]);
+                $_model = \backend\models\AwpbBudget_2::findOne(['id' => $model->budget_id]);
         }
 
         
@@ -354,162 +354,54 @@ class AwpbInputController extends Controller {
                     if ($model->validate()) {
 
                         if ($model->save()) {
+ $model_actual_input = new AwpbActualInput();
+ $model_actual_input->input_id= $model->id;
+                            $model_actual_input->mo_1 = $total_q_mo1;
+                    $model_actual_input->mo_2 = $total_q_mo2;
+                    $model_actual_input->mo_3 = $total_q_mo3;
+                    $model_actual_input->mo_4 = $total_q_mo4;
+                    $model_actual_input->mo_5 = $total_q_mo5;
+                    $model_actual_input->mo_6 = $total_q_mo6;
+                    $model_actual_input->mo_7 = $total_q_mo7;
+                    $model_actual_input->mo_8 = $total_q_mo8;
+                    $model_actual_input->mo_9 = $total_q_mo9;
+                    $model_actual_input->mo_10 = $total_q_mo10;
+                    $model_actual_input->mo_11 = $total_q_mo11;
+                    $model_actual_input->mo_12 = $total_q_mo12;
+                    $model_actual_input->quarter_one_quantity = $total_q1;
+                    $model_actual_input->quarter_two_quantity = $total_q2;
+                    $model_actual_input->quarter_three_quantity = $total_q3;
+                    $model_actual_input->quarter_four_quantity = $total_q4;
+                    $model_actual_input->total_quantity = $total_q;
 
-                            $_model_actual_input = new \backend\models\AwpbActualInput();
-                            $model_actual_input = $_model_actual_input::findOne(['input_id' => $model->id]);
-                            if ($model_actual_input === null) {
-                                $x = 1;
+                    $model_actual_input->mo_1_amount = $total_q_mo1 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_2_amount = $total_q_mo2 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_3_amount = $total_q_mo3 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_4_amount = $total_q_mo4 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_5_amount = $total_q_mo5 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_6_amount = $total_q_mo6 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_7_amount = $total_q_mo7 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_8_amount = $total_q_mo8 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_9_amount = $total_q_mo9 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_10_amount = $total_q_mo10 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_11_amount = $total_q_mo11 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_12_amount = $total_q_mo12 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_one_amount = $total_q1 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_two_amount = $total_q2 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_three_amount = $total_q3 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_four_amount = $total_q4 * $model_actual_input->unit_cost;
+                    $model_actual_input->total_amount = $total_amt;
 
-                                while ($x <= 4) {
+                    $model_actual_input->total_amount = $total_amt;
 
-
-                                    $model_actual_input_1 = new AwpbActualInput();
-                                    $model_actual_input_1->component_id = $model->component_id;
-                                    $model_actual_input_1->budget_id = $model->budget_id;
-                                    $model_actual_input_1->input_id = $model->id;
-                                    $model_actual_input_1->name = $model->name;
-                                    $model_actual_input_1->unit_of_measure_id = $model->unit_of_measure_id;
-                                    $model_actual_input_1->unit_cost = $model->unit_cost;
-                                    if ($x == 1) {
-                                        $model_actual_input_1->quarter_number = \backend\models\AwpbBudget::STATUS_SUBMITTED;
-
-                                        $model_actual_input_1->mo_1 = $total_q_mo1;
-                                        $model_actual_input_1->mo_2 = $total_q_mo2;
-                                        $model_actual_input_1->mo_3 = $total_q_mo3;
-                                        $model_actual_input_1->quarter_quantity = $total_q1;
-                                        $model_actual_input_1->mo_1_amount = $total_q_mo1 * $model->unit_cost;
-                                        $model_actual_input_1->mo_2_amount = $total_q_mo2 * $model->unit_cost;
-                                        $model_actual_input_1->mo_3_amount = $total_q_mo3 * $model->unit_cost;
-                                        $model_actual_input_1->quarter_amount = $total_q1 * $model->unit_cost;
-                                    }
-                                    if ($x == 2) {
-                                        $model_actual_input_1->quarter_number = \backend\models\AwpbBudget::STATUS_REVIEWED;
-                                        $model_actual_input_1->mo_1 = $total_q_mo4;
-                                        $model_actual_input_1->mo_2 = $total_q_mo5;
-                                        $model_actual_input_1->mo_3 = $total_q_mo6;
-                                        $model_actual_input_1->quarter_quantity = $total_q2;
-
-                                        $model_actual_input_1->mo_1_amount = $total_q_mo4 * $model->unit_cost;
-                                        $model_actual_input_1->mo_2_amount = $total_q_mo5 * $model->unit_cost;
-                                        $model_actual_input_1->mo_3_amount = $total_q_mo6 * $model->unit_cost;
-                                        $model_actual_input_1->quarter_amount = $total_q2 * $model->unit_cost;
-                                    }
-                                    if ($x == 3) {
-                                        $model_actual_input_1->quarter_number = \backend\models\AwpbBudget::STATUS_APPROVED;
-                                        $model_actual_input_1->mo_1 = $total_q_mo7;
-                                        $model_actual_input_1->mo_2 = $total_q_mo8;
-                                        $model_actual_input_1->mo_3 = $total_q_mo9;
-                                        $model_actual_input_1->quarter_quantity = $total_q3;
-                                        $model_actual_input_1->mo_1_amount = $total_q_mo7 * $model->unit_cost;
-                                        $model_actual_input_1->mo_2_amount = $total_q_mo8 * $model->unit_cost;
-                                        $model_actual_input_1->mo_3_amount = $total_q_mo9 * $model->unit_cost;
-                                        $model_actual_input_1->quarter_amount = $total_q3 * $model->unit_cost;
-                                    }
-                                    if ($x == 4) {
-
-                                        $model_actual_input_1->quarter_number = \backend\models\AwpbBudget::STATUS_MINISTRY;
-                                        $model_actual_input_1->mo_1 = $total_q_mo10;
-                                        $model_actual_input_1->mo_2 = $total_q_mo11;
-                                        $model_actual_input_1->mo_3 = $total_q_mo12;
-                                        $model_actual_input_1->quarter_quantity = $total_q4;
-                                        $model_actual_input_1->mo_1_amount = $total_q_mo11 * $model->unit_cost;
-                                        $model_actual_input_1->mo_2_amount = $total_q_mo11 * $model->unit_cost;
-                                        $model_actual_input_1->mo_3_amount = $total_q_mo12 * $model->unit_cost;
-                                        $model_actual_input_1->quarter_amount = $total_q4 * $model->unit_cost;
-                                    }
-
-                                    $model_actual_input_1->status = AwpbInput::STATUS_DRAFT;
-//  $model_actual_input_1->camp_id = $_model->camp_id;
-                                    $model_actual_input_1->updated_by = Yii::$app->user->identity->id;
-                                    $model_actual_input_1->created_by = Yii::$app->user->identity->id;
-                                    $model_actual_input_1->district_id = $_model->district_id;
-                                    $model_actual_input_1->province_id = $_model->province_id;
-                                    $model_actual_input_1->awpb_template_id = $_model->awpb_template_id;
-                                    $model_actual_input_1->activity_id = $_model->activity_id;
-                                    $model_actual_input_1->budget_id = $_model->id;
-                                    $model_actual_input_1->component_id = $_model->component_id;
-                                    $model_actual_input_1->input_id = $model->id;
-                                    $model_actual_input_1->save();
-                                    $x++;
-                                }
-                            } else {
-
-                                $x = 1;
-
-                                while ($x <= 4) {
-
-
-                                    $model_actual_input->component_id = $model->component_id;
-                                    $model_actual_input->budget_id = $model->budget_id;
-                                    $model_actual_input->input_id = $model->id;
-                                    $model_actual_input->name = $model->name;
-                                    $model_actual_input->unit_of_measure_id = $model->unit_of_measure_id;
-                                    $model_actual_input->unit_cost = $model->unit_cost;
-                                    if ($x == 1) {
-                                        $model_actual_input->quarter_number = \backend\models\AwpbBudget::STATUS_SUBMITTED;
-                                        $model_actual_input->mo_1 = $total_q_mo1;
-                                        $model_actual_input->mo_2 = $total_q_mo2;
-                                        $model_actual_input->mo_3 = $total_q_mo3;
-                                        $model_actual_input->quarter_quantity = $total_q1;
-                                        $model_actual_input->mo_1_amount = $total_q_mo1 * $model->unit_cost;
-                                        $model_actual_input->mo_2_amount = $total_q_mo2 * $model->unit_cost;
-                                        $model_actual_input->mo_3_amount = $total_q_mo3 * $model->unit_cost;
-                                        $model_actual_input->quarter_amount = $total_q1 * $model->unit_cost;
-                                    }
-                                    if ($x == 2) {
-                                        $model_actual_input->quarter_number = \backend\models\AwpbBudget::STATUS_REVIEWED;
-                                        $model_actual_input->mo_1 = $total_q_mo4;
-                                        $model_actual_input->mo_2 = $total_q_mo5;
-                                        $model_actual_input->mo_3 = $total_q_mo6;
-                                        $model_actual_input->quarter_quantity = $total_q2;
-
-                                        $model_actual_input->mo_1_amount = $total_q_mo4 * $model->unit_cost;
-                                        $model_actual_input->mo_2_amount = $total_q_mo5 * $model->unit_cost;
-                                        $model_actual_input->mo_3_amount = $total_q_mo6 * $model->unit_cost;
-                                        $model_actual_input->quarter_amount = $total_q2 * $model->unit_cost;
-                                    }
-                                    if ($x == 3) {
-                                        $model_actual_input->quarter_number = \backend\models\AwpbBudget::STATUS_APPROVED;
-                                        $model_actual_input->mo_1 = $total_q_mo7;
-                                        $model_actual_input->mo_2 = $total_q_mo8;
-                                        $model_actual_input->mo_3 = $total_q_mo9;
-                                        $model_actual_input->quarter_quantity = $total_q3;
-                                        $model_actual_input->mo_1_amount = $total_q_mo7 * $model->unit_cost;
-                                        $model_actual_input->mo_2_amount = $total_q_mo8 * $model->unit_cost;
-                                        $model_actual_input->mo_3_amount = $total_q_mo9 * $model->unit_cost;
-                                        $model_actual_input->quarter_amount = $total_q3 * $model->unit_cost;
-                                    }
-                                    if ($x == 4) {
-
-                                        $model_actual_input->quarter_number = \backend\models\AwpbBudget::STATUS_MINISTRY;
-                                        $model_actual_input->mo_1 = $total_q_mo10;
-                                        $model_actual_input->mo_2 = $total_q_mo11;
-                                        $model_actual_input->mo_3 = $total_q_mo12;
-                                        $model_actual_input->quarter_quantity = $total_q4;
-                                        $model_actual_input->mo_1_amount = $total_q_mo11 * $model->unit_cost;
-                                        $model_actual_input->mo_2_amount = $total_q_mo11 * $model->unit_cost;
-                                        $model_actual_input->mo_3_amount = $total_q_mo12 * $model->unit_cost;
-                                        $model_actual_input->quarter_amount = $total_q4 * $model->unit_cost;
-                                    }
-
-                                    $model_actual_input->status = AwpbInput::STATUS_DRAFT;
-//  $model_actual_input->camp_id = $_model->camp_id;
-                                    $model_actual_input->updated_by = Yii::$app->user->identity->id;
-                                    $model_actual_input->created_by = Yii::$app->user->identity->id;
-                                    $model_actual_input->district_id = $_model->district_id;
-                                    $model_actual_input->province_id = $_model->province_id;
-                                    $model_actual_input->awpb_template_id = $_model->awpb_template_id;
-                                    $model_actual_input->activity_id = $_model->activity_id;
-                                    $model_actual_input->budget_id = $_model->id;
-                                    $model_actual_input->component_id = $_model->component_id;
-                                    $model_actual_input->input_id = $model->id;
-                                    $model_actual_input->save();
-                                    $x++;
-                                }
-                            }
-
-
-
+// $model_actual_input->camp_id = $_model->camp_id;
+                    $model_actual_input->updated_by = Yii::$app->user->identity->id;
+// $model_actual_input->created_by = Yii::$app->user->identity->id;
+                    $model_actual_input->district_id = $_model->district_id;
+                    $model_actual_input->province_id = $_model->province_id;
+                    $model_actual_input->component_id = $_model->component_id;
+                    $model_actual_input->output_id = $_model->output_id;
+$model_actual_input->save();
 
                             $_model->mo_1_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_1_amount');
                             $_model->mo_2_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_2_amount');
@@ -599,10 +491,10 @@ class AwpbInputController extends Controller {
     if ($user->province_id == 0 || $user->province_id == ''){
 
             // $model_budget = new \backend\models\AwpbBudget_1();
-             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $id]);
+             $_model = \backend\models\AwpbBudget_2::findOne(['id' => $id]);
             
         } else {
-                $_model = \backend\models\AwpbBudget::findOne(['id' => $id]);
+                $_model = \backend\models\AwpbBudget_2::findOne(['id' => $id]);
         }
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
@@ -693,91 +585,54 @@ class AwpbInputController extends Controller {
 
                         if ($model->save()) {
 
-                            $x = 1;
+                           $model_actual_input = new AwpbActualInput();
+ $model_actual_input->input_id= $model->id;
+                            $model_actual_input->mo_1 = $total_q_mo1;
+                    $model_actual_input->mo_2 = $total_q_mo2;
+                    $model_actual_input->mo_3 = $total_q_mo3;
+                    $model_actual_input->mo_4 = $total_q_mo4;
+                    $model_actual_input->mo_5 = $total_q_mo5;
+                    $model_actual_input->mo_6 = $total_q_mo6;
+                    $model_actual_input->mo_7 = $total_q_mo7;
+                    $model_actual_input->mo_8 = $total_q_mo8;
+                    $model_actual_input->mo_9 = $total_q_mo9;
+                    $model_actual_input->mo_10 = $total_q_mo10;
+                    $model_actual_input->mo_11 = $total_q_mo11;
+                    $model_actual_input->mo_12 = $total_q_mo12;
+                    $model_actual_input->quarter_one_quantity = $total_q1;
+                    $model_actual_input->quarter_two_quantity = $total_q2;
+                    $model_actual_input->quarter_three_quantity = $total_q3;
+                    $model_actual_input->quarter_four_quantity = $total_q4;
+                    $model_actual_input->total_quantity = $total_q;
 
-                            while ($x <= 4) {
+                    $model_actual_input->mo_1_amount = $total_q_mo1 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_2_amount = $total_q_mo2 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_3_amount = $total_q_mo3 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_4_amount = $total_q_mo4 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_5_amount = $total_q_mo5 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_6_amount = $total_q_mo6 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_7_amount = $total_q_mo7 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_8_amount = $total_q_mo8 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_9_amount = $total_q_mo9 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_10_amount = $total_q_mo10 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_11_amount = $total_q_mo11 * $model_actual_input->unit_cost;
+                    $model_actual_input->mo_12_amount = $total_q_mo12 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_one_amount = $total_q1 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_two_amount = $total_q2 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_three_amount = $total_q3 * $model_actual_input->unit_cost;
+                    $model_actual_input->quarter_four_amount = $total_q4 * $model_actual_input->unit_cost;
+                    $model_actual_input->total_amount = $total_amt;
 
-                                $model_actual_input = new AwpbActualInput();
-                                $model_actual_input->component_id = $model->component_id;
-                                $model_actual_input->budget_id = $model->budget_id;
-                                $model_actual_input->input_id = $model->id;
-                                $model_actual_input->name = $model->name;
-                                $model_actual_input->unit_of_measure_id = $model->unit_of_measure_id;
-                                $model_actual_input->unit_cost = $model->unit_cost;
-                                if ($x == 1) {
-                                    $model_actual_input->quarter_number = 1;
+                    $model_actual_input->total_amount = $total_amt;
 
-                                    $model_actual_input->mo_1 = $total_q_mo1;
-                                    $model_actual_input->mo_2 = $total_q_mo2;
-                                    $model_actual_input->mo_3 = $total_q_mo3;
-                                    $model_actual_input->quarter_quantity = $total_q1;
-                                    $model_actual_input->mo_1_amount = $total_q_mo1 * $model->unit_cost;
-                                    $model_actual_input->mo_2_amount = $total_q_mo2 * $model->unit_cost;
-                                    $model_actual_input->mo_3_amount = $total_q_mo3 * $model->unit_cost;
-                                    $model_actual_input->quarter_amount = $total_q1 * $model->unit_cost;
-                                }
-                                if ($x == 2) {
-                                    $model_actual_input->quarter_number = 2;
-                                    $model_actual_input->mo_1 = $total_q_mo4;
-                                    $model_actual_input->mo_2 = $total_q_mo5;
-                                    $model_actual_input->mo_3 = $total_q_mo6;
-                                    $model_actual_input->quarter_quantity = $total_q2;
-
-                                    $model_actual_input->mo_1_amount = $total_q_mo4 * $model->unit_cost;
-                                    $model_actual_input->mo_2_amount = $total_q_mo5 * $model->unit_cost;
-                                    $model_actual_input->mo_3_amount = $total_q_mo6 * $model->unit_cost;
-                                    $model_actual_input->quarter_amount = $total_q2 * $model->unit_cost;
-                                }
-                                if ($x == 3) {
-                                    $model_actual_input->quarter_number = 3;
-                                    $model_actual_input->mo_1 = $total_q_mo7;
-                                    $model_actual_input->mo_2 = $total_q_mo8;
-                                    $model_actual_input->mo_3 = $total_q_mo9;
-                                    $model_actual_input->quarter_quantity = $total_q3;
-                                    $model_actual_input->mo_1_amount = $total_q_mo7 * $model->unit_cost;
-                                    $model_actual_input->mo_2_amount = $total_q_mo8 * $model->unit_cost;
-                                    $model_actual_input->mo_3_amount = $total_q_mo9 * $model->unit_cost;
-                                    $model_actual_input->quarter_amount = $total_q3 * $model->unit_cost;
-                                }
-                                if ($x == 4) {
-
-                                    $model_actual_input->quarter_number = 4;
-                                    $model_actual_input->mo_1 = $total_q_mo10;
-                                    $model_actual_input->mo_2 = $total_q_mo11;
-                                    $model_actual_input->mo_3 = $total_q_mo12;
-                                    $model_actual_input->quarter_quantity = $total_q4;
-                                    $model_actual_input->mo_1_amount = $total_q_mo11 * $model->unit_cost;
-                                    $model_actual_input->mo_2_amount = $total_q_mo11 * $model->unit_cost;
-                                    $model_actual_input->mo_3_amount = $total_q_mo12 * $model->unit_cost;
-                                    $model_actual_input->quarter_amount = $total_q4 * $model->unit_cost;
-                                }
-
-                                $model_actual_input->status = AwpbInput::STATUS_DRAFT;
-//  $model_actual_input->camp_id = $_model->camp_id;
-                                $model_actual_input->updated_by = Yii::$app->user->identity->id;
-                                $model_actual_input->created_by = Yii::$app->user->identity->id;
-                                $model_actual_input->district_id = $_model->district_id;
-                                $model_actual_input->province_id = $_model->province_id;
-                                $model_actual_input->awpb_template_id = $_model->awpb_template_id;
-                                $model_actual_input->activity_id = $_model->activity_id;
-                                $model_actual_input->budget_id = $_model->id;
-                                $model_actual_input->component_id = $_model->component_id;
-                                $model_actual_input->input_id = $model->id;
-                           // $model_actual_input->save();
-                                if($model_actual_input->save()){
-                                  Yii::$app->session->setFlash('success', 'AWPB actual input was successfully added.');
-                              } else {
-                                $message = "";
-                                foreach ($model_actual_input->getErrors() as $error) {
-                                    $message .= $error[0];
-                                }
-
-                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
-                                //  return $this->redirect(['home/home']);
-                            }
-                                $x++;
-                            }
-
+// $model_actual_input->camp_id = $_model->camp_id;
+                    $model_actual_input->updated_by = Yii::$app->user->identity->id;
+// $model_actual_input->created_by = Yii::$app->user->identity->id;
+                    $model_actual_input->district_id = $_model->district_id;
+                    $model_actual_input->province_id = $_model->province_id;
+                    $model_actual_input->component_id = $_model->component_id;
+                    $model_actual_input->output_id = $_model->output_id;
+$model_actual_input->save();
                             $_model->mo_1_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('mo_1_amount');
                             $_model->mo_2_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_2_amount');
                             $_model->mo_3_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->budget_id])->sum('mo_3_amount');
@@ -802,7 +657,7 @@ class AwpbInputController extends Controller {
                                     $message .= $error[0];
                                 }
 
-                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                                Yii::$app->session->setFlash('error', 'Error occured while updating the :' . $message);
                                 //  return $this->redirect(['home/home']);
                             }
 //                       
@@ -836,7 +691,7 @@ class AwpbInputController extends Controller {
 
                             if (($_model->province_id == 0 || $_model->province_id == '') && ($_model->cost_centre_id != 0 || $_model->cost_centre_id != '')) {
 
-                                return $this->redirect(['awpb-budget/viewpw', 'id' => $_model->id, 'status' => $_model->status]);
+                                return $this->redirect(['awpb-budget/viewpw', 'id' => $_model->activity_id, 'status' => $_model->status]);
                             } else {
                                 return $this->redirect(['awpb-budget/view', 'id' => $_model->id, 'status' => $_model->status]);
                             }
@@ -851,7 +706,7 @@ class AwpbInputController extends Controller {
                         }
                         if (($_model->province_id == 0 || $_model->province_id == '') && ($_model->cost_centre_id != 0 || $_model->cost_centre_id != '')) {
 
-                            return $this->redirect(['awpb-budget/viewpw', 'id' => $_model->id, 'status' => $_model->status]);
+                            return $this->redirect(['awpb-budget/viewpw', 'id' => $_model->activity_id, 'status' => $_model->status]);
                         } else {
                             return $this->redirect(['awpb-budget/view', 'id' => $_model->id, 'status' => $_model->status]);
                         }
@@ -888,10 +743,10 @@ class AwpbInputController extends Controller {
             if ($user->province_id == 0 || $user->province_id == ''){
 
             // $model_budget = new \backend\models\AwpbBudget_1();
-             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $model->budget_id]);
+             $_model = \backend\models\AwpbBudget_2::findOne(['id' => $model->budget_id]);
             
         } else {
-                $_model = \backend\models\AwpbBudget::findOne(['id' => $model->budget_id]);
+                $_model = \backend\models\AwpbBudget_2::findOne(['id' => $model->budget_id]);
         }
 
             
@@ -974,7 +829,7 @@ class AwpbInputController extends Controller {
 //            
 //  $_model->save();
   if ($user->province_id == 0 || $user->province_id == ''){
-            return $this->redirect(['awpb-budget/viewpw', 'id' => $model->budget_id, 'status' => $status]);
+            return $this->redirect(['awpb-budget/viewpw', 'id' => $model->activity_id, 'status' => $status]);
             
   }
   else

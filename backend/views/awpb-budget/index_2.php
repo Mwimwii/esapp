@@ -21,7 +21,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'AWPB';
+$this->title =$fiscal_year. ' AWPB Input Variation';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -30,48 +30,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 $user = User::findOne(['id' => Yii::$app->user->id]);
-$role = \common\models\Role::findOne(['id' => $user->role])->role;
+//$role = \common\models\Role::findOne(['id' => $user->role])->role;
 $access_level =1;
 $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
-$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
 
-//$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id'=> $id,'district_id'=>$user->district_id]);
-//$_awpb_district = new \backend\models\AwpbDistrict();
-$awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$id, 'district_id'=>$user->district_id]);
-$status=100;
-
- 
+ $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
  //$awpb_district->status=0;
 ?>
 <div class="card card-success card-outline">
-    <div class="card-body" style="overflow: auto;">
-   <p>
+  <div class="card-body" style="overflow: auto;">
+     <h3><?= Html::encode($this->title) ?></h3>
+<h5>Instructions</h5>
+        <ol>
            
-            <?php
-   
-          
-  //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
-     
-  if (User::userIsAllowedTo("Request Funds")) 
-       {
-                                 
-        
-
-                       
-$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$user->district_id]);
-$awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $id, 'province_id'=>$user->province_id]);
-//$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
-//$budget = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
+            <li>Click the 
+                <span class="badge badge-primary"><span class="fa fa-eye fa-1x"></span></span> 
+                icon to the activity budget and vary the inputs
+            </li>
            
-       
-  if($awpb_province->status== \backend\models\AwpbBudget::STATUS_MINISTRY && $awpb_district->status== \backend\models\AwpbBudget::STATUS_MINISTRY ) 
-  {
-            ?>
-
-        </p>
-
-
+        </ol>
 
         <?php
       $gridColumns = [
@@ -80,7 +58,7 @@ $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $i
     'contentOptions'=>['class'=>'kartik-sheet-style'],
     'width'=>'36px',
     'pageSummary'=>'Total',
-    'pageSummaryOptions' => ['colspan' => 5],
+    'pageSummaryOptions' => ['colspan' => 4],
     'header'=>'',
     'headerOptions'=>['class'=>'kartik-sheet-style']
 ],
@@ -133,8 +111,8 @@ $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $i
 ],
             [
     'class' => 'kartik\grid\EditableColumn',
-    'attribute' => 'budget_id',
-     'header' => 'Activity Name', 
+    'attribute' => 'id',
+     'header' => 'Activity', 
     'pageSummary' => 'Total',
     'vAlign' => 'middle',
     'width' => '450px',
@@ -145,7 +123,28 @@ $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $i
       },
 
 ],
+                                [
+            'attribute' => 'camp_id',
+            'label' => 'Camp', 
+            'vAlign' => 'middle',
+            'width' => '180px',
 
+            'value' => function ($model) {
+               
+            
+             return !empty($model->camp_id) && $model->camp_id > 0 ? \backend\models\Camps::findOne(['id' => $model->camp_id])->name : "";
+             
+            },
+           
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' =>  \backend\models\Camps::getListByDistrictId($user->district_id), 
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+                'options' => ['multiple' => true]
+            ],
+            'filterInputOptions' => ['placeholder' => 'Filter by camp'],
+            'format' => 'raw'
+        ],
 //[
 //    'class' => 'kartik\grid\EditableColumn',
 //    'attribute' => 'district_id',
@@ -266,11 +265,11 @@ $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $i
                          'header' => 'Action', 
                     'template' => '{view}',
                     'buttons' => [
-                        'view' => function ($url, $model) use ($status){
-                            if (  User::userIsAllowedTo('View AWPB')) {
+                        'view' => function ($url, $model) {
+                            if (  User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo("Request Funds")) {
                                 return Html::a(
-                                                '<span class="fa fa-eye"></span>', ['view_1', 'id' =>$model->budget_id], [
-                                            'title' => 'View AWPB',
+                                                '<span class="fa fa-eye"></span>', ['viewactualinput', 'id' =>$model->id], [
+                                            'title' => 'View AWPB Input',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data-pjax' => '0',
@@ -315,16 +314,16 @@ $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $i
           <?php
            
         //  $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
-            $searchModel = new \backend\models\AwpbInput();
+            $searchModel = new \backend\models\AwpbBudget();
             $query = $searchModel::find();
             
-            $query->select(['awpb_template_id',  'component_id','activity_id','budget_id','SUM(quarter_one_amount) as quarter_one_amount',  'SUM(quarter_two_amount) as quarter_two_amount',  'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['awpb_template_id',  'component_id','activity_id','camp_id','id','SUM(quarter_one_amount) as quarter_one_amount',  'SUM(quarter_two_amount) as quarter_two_amount',  'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
             //$query->join('LEFT JOIN', 'awpb_district', 'awpb_district.district_id = districk.id');
-            $query->where(['awpb_template_id' => $id]);
+            $query->where(['awpb_template_id' =>  $template_model->id]);
             $query->where(['district_id' => $user->district_id]);
            // $query->andWhere(['>', 'district_id', 0]);
           //  $query->andWhere(['=', 'status', $status]);
-            $query->groupBy('budget_id'); 
+            $query->groupBy('id'); 
             $query->all();
 
             $dataProvider = new ActiveDataProvider([
@@ -363,20 +362,20 @@ if ($dataProvider->getCount() > 0) {
                 //     'type' => GridView::TYPE_PRIMARY
                 // ],
         ]);
-  }
-   else
-            {
-               
-            Yii::$app->session->setFlash('error', 'No budget to request funds from.');
-           
-            }
-
- } else {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
- return $this->redirect(['site/home']);
-
-            }
- ?>
+//  }
+//   else
+//            {
+//               
+//            Yii::$app->session->setFlash('error', 'No budget to request funds from.');
+//           
+//            }
+//
+// } else {
+//            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+// return $this->redirect(['site/home']);
+//
+//            }
+// ?>
 
 <div class="row">
 		<div class="col-md-12">

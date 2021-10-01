@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model backend\models\AwpbActivity */
 
 $this->title = 'Create AWPB Activity';
-$this->params['breadcrumbs'][] = ['label' => 'Awpb Activities', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'AWPB Activities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="card card-success card-outline">

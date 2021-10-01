@@ -10,20 +10,50 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Awpb Outputs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
+    $comp="";
+$component = \backend\models\AWPBComponent::findOne(['id' => $model->component_id]);
+	
+if (!empty($component)) {
+    $comp=   $component->code. ' '.$component->name;
+    }
 ?>
-<div class="awpb-output-view">
+<div class="card card-success card-outline">
+    <div class="card-body">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
+         <?php  if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
+        echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->id], [
+            'title' => 'back',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+        ]);
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      
+        echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
+            'title' => 'Update component',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+        ]);
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        
+            echo Html::a(
+                '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
+            'title' => 'delete component',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'Are you sure you want to remove this activitiy?',
                 'method' => 'post',
             ],
-        ]) ?>
+            'style' => "padding:5px;",
+            'class' => 'bt btn-lg'
+                ]
+);
+        
+    }?>
     </p>
 
     <?= DetailView::widget([
@@ -31,15 +61,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'code',
-            'component_id',
-            'outcome_id',
+             [
+                'attribute'=>'component_id',
+                'format' => 'raw',
+                'label' => 'Component',
+                'value' => $comp
+                
+            ],
+           // 'outcome_id',
             'name',
             'description',
-            'created_at',
-            'updated_at',
-            'created_by',
-            'updated_by',
+//            'created_at',
+//            'updated_at',
+//            'created_by',
+//            'updated_by',
         ],
     ]) ?>
 
-</div>
+    </div></div>

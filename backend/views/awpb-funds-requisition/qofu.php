@@ -4,6 +4,8 @@ use backend\models\AwpbInput;
 use backend\models\AwpbInputSearch;
 use backend\models\AwpbActualInput;
 use backend\models\AwpbActualInputSearch;
+use backend\models\AwpbFundsRequisition;
+use backend\models\AwpbAwpbFundsRequisitionSearch;
 use backend\models\AuditTrail;
 use backend\models\User;
 use backend\models\AwpbDistrict;
@@ -287,7 +289,7 @@ $gridColumns = [
           <?php
          
 
-            $searchModel = new AwpbActualInput();
+            $searchModel = new AwpbFundsRequisition();
                     
                
             if (User::userIsAllowedTo('View Funds Utilisation') && ( $user->district_id != 0 || $user->district_id != ''))

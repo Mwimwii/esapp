@@ -39,10 +39,10 @@ if (!empty($activity)) {
 }
 
 $tem = "";
-$template = \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
+$template_model = \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
 
-if (!empty($template)) {
-    $tem = $template->fiscal_year;
+if (!empty($template_model)) {
+    $tem = $template_model->fiscal_year;
 }
 
 $dist = "";
@@ -66,13 +66,18 @@ if (!empty($camp)) {
 }
 $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
-$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
 
  $awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$model->awpb_template_id, 'district_id'=>$user->district_id]);
 $status=100;
 if (!empty($awpb_district)) {
   $status= $awpb_district->status;
    
+}
+$cost_centre = "";
+$cc = \backend\models\AwpbCostCentre::findOne(['id' => $model->cost_centre_id]);
+
+if (!empty($cc)) {
+    $cost_centre = $cc->name;
 }
 ?>
 
@@ -81,7 +86,7 @@ if (!empty($awpb_district)) {
 
 <div class="card card-success card-outline">
     <div class="card-body">
-        <h1><?= Html::encode($this->title) ?></h1>
+        <h1><?= Html::encode($tem) ?> <?= Html::encode($this->title) ?></h1>
 
         <p>
 
@@ -98,11 +103,85 @@ if (!empty($awpb_district)) {
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
 
-if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT){
- 
- 
+
+    
+     if ((\backend\models\User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='')|| 
+             (User::userIsAllowedTo("Approve AWPB - Provincial")  && ($user->province_id > 0 || $user->province_id !== ''))||
+          (User::userIsAllowedTo('Approve AWPB - Ministry') && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo('Approve AWPB - PCO') && ( $user->province_id == 0 || $user->province_id == ''))) {
+          
+
+
+           if(User::userIsAllowedTo('Approve AWPB - PCO')&&($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) &&
+                   ( $user->province_id == 0 || $user->province_id == '')) {
+            
+            
+        echo Html::a(
+                '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id,'status'=>$status], [
+            'title' => 'Update AWPB',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            'data-pjax' => '0',
+            'style' => "padding:20px;",
+            'class' => 'bt btn-lg'
+                ]
+        );
+
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+  if ($model->total_amount<= 0)
+        {
+        echo Html::a(
+                '<span class="fa fa-trash"></span>', ['delete',  'id' => $model->id,'id2'=>$model->awpb_template_id,'status'=>$status], [
+            'title' => 'Delete AWPB',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this AWPB?',
+                'method' => 'post',
+            ],
+            'style' => "padding:5px;",
+            'class' => 'bt btn-lg'
+                ]
+        );}
+           }
+           elseif (User::userIsAllowedTo("Approve AWPB - Provincial") &&  !empty($template_model)&& strtotime($template_model->review_deadline) >= strtotime($today) && 
+                   ($user->province_id > 0 || $user->province_id !== '')){
+         
+                
+        echo Html::a(
+                '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id,'status'=>$status], [
+            'title' => 'Update AWPB',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            'data-pjax' => '0',
+            'style' => "padding:20px;",
+            'class' => 'bt btn-lg'
+                ]
+        );
+
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+  if ($model->total_amount<= 0)
+        {
+        echo Html::a(
+                '<span class="fa fa-trash"></span>', ['delete',  'id' => $model->id,'id2'=>$model->awpb_template_id,'status'=>$status], [
+            'title' => 'Delete AWPB',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this AWPB?',
+                'method' => 'post',
+            ],
+            'style' => "padding:5px;",
+            'class' => 'bt btn-lg'
+                ]
+        );}
+           }
+           
+elseif (\backend\models\User::userIsAllowedTo('Manage AWPB')&&strtotime($template_model->submission_deadline) >= strtotime($today)&&
+        $user->district_id>0 ||$user->district_id!='') {
+    
+   
         echo Html::a(
                 '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id,'status'=>$status], [
             'title' => 'Update AWPB',
@@ -131,7 +210,10 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 ]
         );}
     
-}}
+}
+ else {
+    
+}
 ?>
         <div clas="row">
             <div class="col-lg-12">
@@ -143,34 +225,42 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                     'columns' => [
                         [
                             'attribute' => 'province_id',
-                            'label' => 'Province Name',
+                            'label' => 'Province',
                             'displayOnly' => true,
-                            'labelColOptions' => ['style' => 'width:10%'],
+                            'labelColOptions' => ['style' => 'width:7%'],
                             'valueColOptions' => ['style' => 'width:15%'],
                             'value' => $pro,
                         ],
                         [
                             'attribute' => 'district_id',
-                            'label' => 'District Name',
+                            'label' => 'District',
                             'displayOnly' => true,
-                            'labelColOptions' => ['style' => 'width:10%'],
+                            'labelColOptions' => ['style' => 'width:7%'],
                             'valueColOptions' => ['style' => 'width:15%'],
                             'value' => $dist,
                         ],
                            [
                             'attribute' => 'camp_id',
-                            'label' => 'Camp Name',
+                            'label' => 'Camp',
+                            'displayOnly' => true,
+                            'labelColOptions' => ['style' => 'width:6%'],
+                            'valueColOptions' => ['style' => 'width:10%'],
+                            'value' => $cam,
+                        ],
+                         [
+                            'attribute' => 'cost_centre_id',
+                            'label' => 'Cost Centre',
                             'displayOnly' => true,
                             'labelColOptions' => ['style' => 'width:10%'],
                             'valueColOptions' => ['style' => 'width:20%'],
-                            'value' => $cam,
+                            'value' => $cost_centre,
                         ],
                         [
                             'label' => 'Fiscal Year',
                             'format' => 'raw',
                             'value' => $tem,
-                            'labelColOptions' => ['style' => 'width:10%'],
-                            'valueColOptions' => ['style' => 'width:10%'],
+                            'labelColOptions' => ['style' => 'width:5%'],
+                            'valueColOptions' => ['style' => 'width:5%'],
                         ],
                     ],
                 ],
@@ -440,14 +530,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                     
                          [
                     'columns' => [
-//                        [
-//                            'attribute' => 'unit_cost',
-//                            'label' => 'Unit Cost',
-//                            'displayOnly' => true,
-//                            'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:10%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
+
                         [
                             'attribute' => 'total_quantity',
                             'label' => 'Total Quantity',
@@ -501,14 +584,15 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 <?php
                 if (!empty($model->name)) {
                     
-   if ($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT && User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')) {
-if(strtotime($template_model->submission_deadline) >= strtotime($today)){
- 
+                     if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
+         (User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))){
+  
                 echo Html::a('Add AWPB Input', ['awpb-input/create', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
            
-                  echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                  echo "<br \>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
              
-   }}
+   }
                     $searchModel = new \backend\models\AwpbInputSearch();
 
                     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -516,58 +600,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today)){
                     $dataProvider->query->andFilterWhere(['budget_id' =>$model->id]);
 
                     $gridColumns = [
-//                        [
-//                            'class' => 'kartik\grid\SerialColumn',
-//                            'contentOptions' => ['class' => 'kartik-sheet-style'],
-//                            'width' => '36px',
-//                            'pageSummary' => 'Total',
-//                            'pageSummaryOptions' => ['colspan' => 6],
-//                            'header' => '',
-//                            'headerOptions' => ['class' => 'kartik-sheet-style']
-//                        ],
-//                        [
-//                            'attribute' => 'activity_id',
-//                            'label' => 'Activity Code',
-//                            'vAlign' => 'middle',
-//                            'width' => '180px',
-//                            'value' => function ($model) {
-//                                $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id])->activity_code;
-//                                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-//                            },
-//                            'filterType' => GridView::FILTER_SELECT2,
-//                            'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
-//                            'filterWidgetOptions' => [
-//                                'pluginOptions' => ['allowClear' => true],
-//                                'options' => ['multiple' => true]
-//                            ],
-//                            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-//                            'format' => 'raw'
-//                        ],
-//                        [
-//                            'attribute' => 'awpb_template_id',
-//                            'label' => 'Fiscal Year',
-//                            'vAlign' => 'middle',
-//                            'width' => '180px',
-//                            'value' => function ($model) {
-//                                $name = \backend\models\AwpbTemplate::findOne(['id' => $model->awpb_template_id])->fiscal_year;
-//                                return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
-//                            },
-//                            'filterType' => GridView::FILTER_SELECT2,
-//                            'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
-//                            'filterWidgetOptions' => [
-//                                'pluginOptions' => ['allowClear' => true],
-//                                'options' => ['multiple' => true]
-//                            ],
-//                            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-//                            'format' => 'raw'
-//                        ],
-//                        [
-//                            'label' => 'Activity Name',
-//                            'value' => function ($model) {
-//                                $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id])->name;
-//                                return $name;
-//                            }
-//                        ],
+
                         [
                             'class' => 'kartik\grid\EditableColumn',
                             'label' => 'Input Description',
@@ -673,45 +706,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today)){
                             'format' => ['decimal', 2],
                             'pageSummary' => true
                         ],
-//                        [
-//                            'class' => 'kartik\grid\FormulaColumn',
-//                            'attribute' => 'total_quantity',
-//                            'header' => 'Total Qty',
-//                            // 'refreshGrid' => true,
-//                            'filter' => false,
-//                            'vAlign' => 'middle',
-//                            'value' => function ($model, $key, $index, $widget) {
-//                                $p = compact('model', 'key', 'index');
-//                                return $widget->col(6, $p) + $widget->col(7, $p) + $widget->col(8, $p) + $widget->col(9, $p);
-//                            },
-//                            'headerOptions' => ['class' => 'kartik-sheet-style'],
-//                            'hAlign' => 'right',
-//                            'width' => '7%',
-//                            'format' => ['decimal', 2],
-//                          //  'mergeHeader' => true,
-//                            'pageSummary' => true,
-//                            'footer' => true
-//                        ],
-                             
-//                            [
-//                            'class' => 'kartik\grid\FormulaColumn',
-//                            'attribute' => 'total_amount',
-//                            'header' => 'Total Amt',
-//                            'vAlign' => 'middle',
-//                            'hAlign' => 'right',
-//                            'width' => '7%',
-//                            'filter' => false,
-//                            'value' => function ($model, $key, $index, $widget) {
-//                                $p = compact('model', 'key', 'index');
-//                                return $widget->col(10, $p) != 0 ? $widget->col(5, $p) * $widget->col(10, $p) : 0;
-//                            },
-//                            'format' => ['decimal', 2],
-//                            'headerOptions' => ['class' => 'kartik-sheet-style'],
-//                          //  'mergeHeader' => true,
-//                            'pageSummary' => true,
-//                            'pageSummaryFunc' => GridView::F_SUM,
-//                            'footer' => true
-//                        ],
+
                                 [
                                     
                                          'class' => 'kartik\grid\EditableColumn',
@@ -771,8 +766,11 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today)){
                                 );
                             }
                         },
-                        'update' => function ($url, $model) use ($status, $user) {
- if ($status==0 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')) {  
+                        'update' => function ($url, $model) use ($status, $user,$template_model,$today) {
+ if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
+         (User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))){
+  
                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
                                             'title' => 'Update input',
@@ -786,8 +784,13 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today)){
                                 );
                             }
                         },
-                        'delete' => function ($url, $model) use ($status,$user) {
-                          if ($status==0 && User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')) {
+                        'delete' => function ($url, $model) use ($status,$user,$template_model,$today) {
+                          if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
+         (User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
+                                  
+                                  ){
+  
           return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [
                                             'title' => 'delete input',
@@ -807,20 +810,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today)){
                 ]
                     ];
 
-//                    if ($dataProvider->getCount() > 0) {
-//
-//                        // echo ' </p>';
-//                        echo ExportMenu::widget([
-//                            'dataProvider' => $dataProvider,
-//                            'columns' => $gridColumns,
-//                            'fontAwesome' => true,
-//                            'dropdownOptions' => [
-//                                'label' => 'Export All',
-//                                'class' => 'btn btn-default'
-//                            ],
-//                            'filename' => 'AWPB Input ' . date("YmdHis")
-//                        ]);
-//                    }
+
                     ?>
 
 
@@ -846,6 +836,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today)){
                                 } else {
                                     $content_user = "<p>No activities have been selected</p>";
                                 }
+         }
                                 ?>
                             </div>
                            

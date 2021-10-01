@@ -29,10 +29,10 @@ class AwpbCommentController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'declinep'],
+                'only' => ['index', 'create', 'createpw','update', 'delete', 'view', 'declinep'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'declinep'],
+                        'actions' => ['index', 'create','createpw', 'update', 'delete', 'view', 'declinep'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -72,7 +72,99 @@ class AwpbCommentController extends Controller {
                     'model' => $this->findModel($id),
         ]);
     }
+    
+    
+      public function actionCreate($id,$id2,$id3,$status) {
+        //if (User::userIsAllowedTo('Manage camps')) {
+            $user = User::findOne(['id' => Yii::$app->user->id]);
+          $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+          if(!empty($template_model)){
+            $model = new AwpbComment();
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
 
+            if ($model->load(Yii::$app->request->post())) {
+                
+                 $activity_model = \backend\models\AwpbActivity::find()->where(['id' =>$id])->one();
+              $model->awpb_template_id =  $template_model->id;
+                $model->activity_id = $id;
+                $model->district_id = $id2;
+                        $model->province_id = $id3;
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Added comment " . $model->description;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Comment :' . $model->description. ' was successfully added.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occured while adding comment ' . $model->decription);
+                }
+                if($user->province_id == 0 || $user->province_id == '')
+                {
+                    return $this->redirect(['awpb-budget/pwcasub', 'status' => $status, 'id' => $activity_model->parent_activity_id, 'id2' =>$id2]);
+                }
+                elseif ($user->province_id > 0 || $user->province_id !== ''){
+                
+            
+                    return $this->redirect(['awpb-budget/mpcd', 'status' => $status, 'id' => $id3, 'id2' =>$id2]);
+                }
+                //return $this->redirect(['pwcasub', 'id' => $model->activity_id,'status' => $status]);
+            }
+            return $this->render('create', [
+                        'model' => $model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'No AWPB Tempate has been published.');
+            return $this->redirect(['home/home']);
+        }
+    }
+           public function actionCreatepw2($id,$id2,$id3,$status) {
+        //if (User::userIsAllowedTo('Manage camps')) {
+          $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+          if(!empty($template_model)){
+            $model = new AwpbComment();
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+              $model->awpb_template_id =  $template_model->id;
+                $model->activity_id = $id;
+               // $model->district_id = $id2;
+                 //       $model->province_id = $id3;
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Added comment " . $model->description;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Comment :' . $model->description. ' was successfully added.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occured while adding comment ' . $model->decription);
+                }
+               // return $this->redirect(['awpb-budget/mpcd', 'status' => $status, 'id' => $id3, 'id2' =>$id2]);
+                return $this->redirect(['pwcasub', 'id' => $model->activity_id,'status' => $status]);
+            }
+            return $this->render('createpw', [
+                        'model' => $model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'No AWPB Tempate has been published.');
+            return $this->redirect(['home/home']);
+        }
+    }
+    
+   
     public function actionDeclinep($id) {
 
         $user = User::findOne(['id' => Yii::$app->user->id]);

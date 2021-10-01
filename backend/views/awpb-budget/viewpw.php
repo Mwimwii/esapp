@@ -106,11 +106,12 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (\backend\models\User::userIsAllowedTo('Manage PW AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
+//if (\backend\models\User::userIsAllowedTo('Manage PW AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
 
-if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbBudget::STATUS_DRAFT){
+ if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))){
  
- 
+   //  var_dump(strtotime($template_model->incorpation_deadline_pco_moa_mfl));
         echo Html::a(
                 '<span class="fa fa-edit"></span>', ['updatepw', 'id' => $model->id,'status'=>$status], [
             'title' => 'Update AWPB',
@@ -139,7 +140,7 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 ]
         );}
     
-}}
+}//}
 ?>
         <div clas="row">
             <div class="col-lg-12">
@@ -509,8 +510,8 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                 <?php
                 if (!empty($model->name)) {
                     
- if (User::userIsAllowedTo('Manage PW AWPB') && $status == \backend\models\AwpbBudget::STATUS_DRAFT && ($user->province_id==0 ||$user->province_id=='')) {
-    
+ if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))){
  
                 echo Html::a('Add AWPB Input', ['awpb-input/create', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
            
@@ -779,11 +780,10 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                                 );
                            // }
                         },
-                        'update' => function ($url, $model) use ($status, $user) {
- if (User::userIsAllowedTo('Manage PW AWPB') && $status == \backend\models\AwpbBudget::STATUS_DRAFT && ($user->province_id==0 ||$user->province_id=='')) {
-    
-   
-  
+                        'update' => function ($url, $model) use ($status, $user,$template_model,$today) {
+ if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))){
+ 
                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
                                             'title' => 'Update input',
@@ -797,10 +797,9 @@ if(strtotime($template_model->submission_deadline) >= strtotime($today) && $stat
                                 );
                             }
                         },
-                        'delete' => function ($url, $model) use ($status,$user) {
-  if (User::userIsAllowedTo('Manage PW AWPB') && $status == \backend\models\AwpbBudget::STATUS_DRAFT && ($user->province_id==0 ||$user->province_id=='')) {
-    
-    
+                        'delete' => function ($url, $model) use ($status,$user,$template_model,$today) {
+ if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id ==0 || $user->province_id == ''))){
  
           return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [

@@ -10,25 +10,34 @@ $this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="awpb-activity-line-update">
+<div class="card card-success card-outline">
+    <div class="card-body">
+<div class="awpb-activity-line-create">
+
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php
-    if (($model->cost_centre_id != 0 || $model->cost_centre_id != '') && ($model->province_id == 0 || $model->province_id == '')) {
-   echo $this->render('_form_1', [
+ 
+    $user = User::findOne(['id' => Yii::$app->user->id]);
+    if ($user->district_id >0 ||$user->district_id !='')
+    {
+   echo $this->render('_form', [
         'model' => $model,
          'template_id'=>$model->awpb_template_id,
         'status'=>$status
     ]) ;
     }
  else {
-        echo  $this->render('_form', [
+          echo $this->render('_form_2', [
         'model' => $model,
          'template_id'=>$model->awpb_template_id,
         'status'=>$status
     ]) ;
     }
-            ?>
 
+    // ($user->district_id > 0 || $user->district_id != '') 
+            ?>
+</div>
+</div>
 </div>

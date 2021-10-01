@@ -31,7 +31,7 @@ $months = [
     7 => "July", 8 => "August", 9 => "September", 10 => "October", 11 => "November", 12 => "December"
 ];
 $user = User::findOne(['id' => Yii::$app->user->id]);
-$budget = AwpbBudget::findOne(['id'=>$model->budget_id]);
+//$budget = AwpbBudget::findOne(['id'=>$model->budget_id]);
 $access_level = 1;
 ?>
 <div class="card card-success card-outline">

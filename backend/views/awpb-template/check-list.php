@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'bt btn-lg'
                         ]
                 );
-                if ($model->status == 0 || $model->status == 3) {
+                if ($model->status == AwpbTemplate::STATUS_DRAFT) {
                     echo Html::a('<i class="fas fa-trash fa-2x"></i>', ['delete', 'id' => $model->id], [
                         'title' => 'Delete Temaplate',
                         'data-placement' => 'top',
@@ -126,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </td>
                         </tr>
                         <tr>
-                            <td><b>Budget Committee</b> (Users allowed to conduct budgeting activities)&emsp;&emsp;
+                            <td><b>Budget Team</b> (Users allowed to conduct budgeting activities)&emsp;&emsp;
                                 <?php
                                 if ($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_PUBLISHED) {
                                     echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template/template-users', 'id' => $model->id]);

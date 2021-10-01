@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
         $form = ActiveForm::begin(['type' => ActiveForm::TYPE_VERTICAL, 'formConfig' => ['labelSpan' => 3, 'deviceSize' => ActiveForm::SIZE_SMALL],'options' => ['enctype' => 'multipart/form-data']]);
         //$form = ActiveForm::begin(); 
         echo $form->field($model, 'awpb_template_id')->hiddenInput(['value'=>'2022' ])->label(false);
+        echo $form->field($model, 'activity_id')->hiddenInput(['value'=> '49'])->label(false);
         echo $form->field($model, 'district_id')->hiddenInput(['value'=> '49'])->label(false);
         echo $form->field($model, 'province_id')->hiddenInput(['value'=> '49'])->label(false);
         ?>

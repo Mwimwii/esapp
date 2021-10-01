@@ -56,7 +56,7 @@ $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \back
 
 
             if (!empty($template_model)) {
-                if (strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbBudget::STATUS_DRAFT) {
+                if (strtotime($template_model->submission_deadline) >= strtotime($today)) {
 
 //                    echo Html::a('Add AWPB PW Activity', ['createpw'], ['class' => 'btn btn-success btn-sm']);
 //                    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
