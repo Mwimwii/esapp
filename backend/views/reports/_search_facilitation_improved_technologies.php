@@ -110,8 +110,4 @@ $form = ActiveForm::begin([
     </div>
 </div>
 
-<<<<<<< HEAD
 <?php ActiveForm::end(); ?>
-=======
-<?php ActiveForm::end(); ?>
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

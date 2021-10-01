@@ -13,15 +13,9 @@ use backend\models\User;
 $this->title = 'Physical tracking table';
 $this->params['breadcrumbs'][] = "Reports";
 $this->params['breadcrumbs'][] = $this->title;
-<<<<<<< HEAD
 $year = "";
 if (isset($_GET['AwbpActivitySearch'])) {
     $year = $_GET['AwbpActivitySearch']['year'];
-=======
-
-if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year'])) {
-    $year = $_GET['AwpbBudgetSearch']['year'];
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 } else {
     $year = date('Y');
 }
@@ -42,18 +36,11 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
             <?php
             $province_id = "";
             $district_id = "";
-<<<<<<< HEAD
             $year = "";
             if (isset($_GET['AwbpActivitySearch'])) {
                 $province_id = !empty($_GET['AwbpActivitySearch']['province_id']) ? $_GET['AwbpActivitySearch']['province_id'] : "";
                 $district_id = !empty($_GET['AwbpActivitySearch']['district_id']) ? $_GET['AwbpActivitySearch']['district_id'] : "";
                 $year = !empty($_GET['AwbpActivitySearch']['year']) ? $_GET['AwbpActivitySearch']['year'] : "";
-=======
-            if (isset($_GET['AwpbBudgetSearch'])) {
-                $province_id = !empty($_GET['AwpbBudgetSearch']['province_id']) ? $_GET['AwpbBudgetSearch']['province_id'] : "";
-                $district_id = !empty($_GET['AwpbBudgetSearch']['district_id']) ? $_GET['AwpbBudgetSearch']['district_id'] : "";
-                //  $year = !empty($_GET['AwpbBudgetSearch']['year']) ? $_GET['AwpbBudgetSearch']['year'] : "";
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             }
             if ($dataProvider->getCount() > 0) {
                 echo Html::a('<span class="fas fa-file-excel"></span> Export to Excel',
@@ -63,11 +50,7 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                         'province_id' => $province_id,
                         'district_id' => $district_id,
                         'year' => $year,
-<<<<<<< HEAD
                         //'data' => json_encode($dataProvider->getModels())
-=======
-                    //'data' => json_encode($dataProvider->getModels())
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                     ],
                     'title' => 'Download report in excel',
                     'data-toggle' => 'tooltip',
@@ -163,13 +146,7 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                         'label' => 'Unity',
                         'enableSorting' => true,
                         'value' => function ($model) {
-<<<<<<< HEAD
                             return !empty($model->unit_of_measure_id) ? backend\models\AwpbUnitOfMeasure::findOne($model->unit_of_measure_id)->name : "";
-=======
-                            $awpb_activity = \backend\models\AwpbActivity::findOne($model->activity_id);
-                            $unity_model = !empty($awpb_activity) ? backend\models\AwpbUnitOfMeasure::findOne($awpb_activity->unit_of_measure_id) : "";
-                            return !empty($unity_model) ? $unity_model->name : "";
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         }
                     ],
                     [
@@ -178,7 +155,6 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                         'enableSorting' => true,
                         'filter' => false,
                         'attribute' => 'total_quantity',
-<<<<<<< HEAD
                         'value' => function ($model) use($fiscal_year) {
                             $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $fiscal_year]);
                             $q_total = 0;
@@ -206,14 +182,6 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                                 }
                             }
 
-=======
-                        'value' => function ($model) {
-                            $q_total = 0;
-                            $q_total += $model->quarter_one_quantity;
-                            $q_total += $model->quarter_two_quantity;
-                            $q_total += $model->quarter_three_quantity;
-                            $q_total += $model->quarter_four_quantity;
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                             return $q_total;
                         }
                     ],
@@ -349,14 +317,8 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                         'label' => 'Cum Actual',
                         'enableSorting' => true,
                         'filter' => false,
-<<<<<<< HEAD
                         'value' => function ($model) use($fiscal_year) {
                             return !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
-=======
-                        'value' => function ($model) {
-                            $activity_model = \backend\models\AwpbActivity::findOne($model->activity_id);
-                            return !empty($activity_model) ? $activity_model->cumulative_actual : 0;
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         }
                     ],
                     [
@@ -367,12 +329,7 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                         'enableSorting' => true,
                         'filter' => false,
                         'value' => function ($model) {
-<<<<<<< HEAD
                             return !empty($model->programme_target) ? $model->programme_target : 0;
-=======
-                            $activity_model = \backend\models\AwpbActivity::findOne($model->activity_id);
-                            return !empty($activity_model) ? $activity_model->programme_target : 0;
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         }
                     ],
                     [
@@ -383,22 +340,11 @@ if (isset($_GET['AwpbBudgetSearch']) && !empty($_GET['AwpbBudgetSearch']['year']
                         'enableSorting' => true,
                         'filter' => false,
                         'value' => function ($model) {
-<<<<<<< HEAD
                             $appr_percentage = 0;
                             $appr = !empty($model->programme_target) ? $model->programme_target : 0;
                             $cum_actual = !empty($model->cumulative_actual) ? $model->cumulative_actual : 0;
                             if ($appr > 0) {
                                 $appr_percentage = round(($cum_actual / $appr) * 100, 2);
-=======
-                            $activity_model = \backend\models\AwpbActivity::findOne($model->activity_id);
-                            $appr_percentage = 0;
-                            if (!empty($activity_model)) {
-                                $appr = !empty($activity_model->programme_target) ? $activity_model->programme_target : 0;
-                                $cum_actual = !empty($activity_model->cumulative_actual) ? $activity_model->cumulative_actual : 0;
-                                if ($appr > 0) {
-                                    $appr_percentage = round(($cum_actual / $appr) * 100, 2);
-                                }
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                             }
                             return $appr_percentage;
                         }

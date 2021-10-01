@@ -41,11 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
             $year = !empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['year']) ? $_GET['MeFaabsTrainingAttendanceSheetSearch']['year'] : "";
             $quarter = !empty($_GET['MeFaabsTrainingAttendanceSheetSearch']['quarter']) ? $_GET['MeFaabsTrainingAttendanceSheetSearch']['quarter'] : "";
             ?>
-<<<<<<< HEAD
               <p class="float-right">
-=======
-            <p class="float-right">
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             <p>
                 <?php
                 echo Html::a('<span class="fas fa-file-excel"></span> Download report',

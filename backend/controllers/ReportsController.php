@@ -1994,11 +1994,7 @@ class ReportsController extends Controller {
     }
 
     public function actionDownloadPhysicalTrackingTable() {
-<<<<<<< HEAD
         $searchModel = new \backend\models\AwbpActivitySearch();
-=======
-        $searchModel = new \backend\models\AwpbBudgetSearch();
->>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
         $province_id = Yii::$app->request->post('province_id', null);
         $district_id = Yii::$app->request->post('district_id', null);
@@ -2730,7 +2726,7 @@ $year="";
         exit;
     }
 
-    public function actionDownloadBudget($id) {
+    public function actionDownloadBudget1($id) {
 
 // 	$user = User::findOne(['id' => Yii::$app->user->id]);
 //     $searchModel = new AwpbActivityLine();
