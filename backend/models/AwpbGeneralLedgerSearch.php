@@ -41,7 +41,7 @@ class AwpbTemplateActivitySearch extends AwpbTemplateActivity
      */
     public function search($params)
     {
-        $query = AwpbTemplateActivity::find();
+        $query = AwpbGeneralLedger::find();
 
         // add conditions that should always apply here
 

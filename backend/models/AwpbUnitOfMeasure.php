@@ -48,7 +48,18 @@ class AwpbUnitOfMeasure extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 40],
         ];
     }
-
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */

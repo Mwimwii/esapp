@@ -48,7 +48,7 @@ class AwpbCostCentreController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        if (User::userIsAllowedTo('Manage cost centre')) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
             $model = new AwpbCostCentre();
             $searchModel = new AwpbCostCentreSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -100,7 +100,7 @@ class AwpbCostCentreController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
-        if (User::userIsAllowedTo('Manage cost centre')) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
             $model = new AwpbCostCentre();
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
@@ -138,7 +138,7 @@ class AwpbCostCentreController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id) {
-        if (User::userIsAllowedTo('Remove cost centre')) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
             $name = $model->name;
             if ($model->delete()) {

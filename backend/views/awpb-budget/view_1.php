@@ -76,7 +76,7 @@ $awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $m
 //$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
 //$budget = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
     $funds_requested= 0.0;        
-  if (\backend\models\User::userIsAllowedTo('View AWPB')) {
+  //if (\backend\models\User::userIsAllowedTo('View AWPB')) {
      
   if($awpb_province->status== \backend\models\AwpbBudget::STATUS_MINISTRY && $awpb_district->status== \backend\models\AwpbBudget::STATUS_MINISTRY ) 
   {
@@ -411,6 +411,8 @@ $unsubmitted_input = \backend\models\AwpbActualInput::find()->where(['budget_id'
             if ($balance>0) {
                echo Html::a('<i class="fa fa-plus "></i> Add AWPB Input', ['awpb-actual-input/create', 'id'=>$model->id], ['class' => 'btn btn-success btn-sm float-right']);
            }
+            echo Html::a('<i class="fa fa-plus "></i> Add AWPB Input', ['awpb-actual-input/create', 'id'=>$model->id], ['class' => 'btn btn-success btn-sm float-right']);
+  
         ?>
             </div></div>
   <?php
@@ -647,11 +649,11 @@ $dataProvider->query->andFilterWhere(['=','budget_id',$model->id])->andFilterWhe
         ]);
  
 }                           
-}
-    else {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['site/home']);
-        }
+//}
+//    else {
+//            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+//            return $this->render(['site/home']);
+//        }
 ?>
                             </div>
                            

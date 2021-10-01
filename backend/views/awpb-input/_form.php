@@ -37,7 +37,7 @@ $indicator = \backend\models\AwpbBudget::findOne(['id' => $id]);
         ?>
             <div class="col-sm-3">
             <?=
-            $form->field($model, 'mo_1', ['enableAjaxValidation' => false])->textInput(['maxlength' => true, 'placeholder' => 'Enter quantity'])
+            $form->field($model, 'mo_1', ['enableAjaxValidation' => false])->textInput(['maxlength' => true, 'placeholder' => 'Enter quantity'])->label("Jan");
             //$form->field($model, 'from_date',['showLabels'=>false])->textInput(['placeholder'=>'From Date'])->hint('Enter begin date'); 
             ?>
 

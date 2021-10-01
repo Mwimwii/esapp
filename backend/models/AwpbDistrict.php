@@ -59,6 +59,18 @@ class AwpbDistrict extends \yii\db\ActiveRecord
             [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => Districts::className(), 'targetAttribute' => ['district_id' => 'id']],
         ];
     }
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -158,9 +170,23 @@ class AwpbDistrict extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AwpbInput::class, ['district_id' => 'district_id','awpb_template_id'=>'awpb_template_id']);
     }
-
+ public static function getAwpbDistrictList($id) {
+     $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+        $data = self::find()->where(['=', 'awpb_district.province_id', $id])->andWhere(['=', 'awpb_template_id',$template_model->id])->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($data, 'id', 'name');
+        return $list;
+    }
   
+// public static function getAwpbDistrictList($id) {
+//
+//        $data= self::find()
+//        ->select(['district.name as name', 'district.id as id'])
+//        ->join('LEFT JOIN', 'district', 'district.id = awpb_district.district_id')
+//        ->where(['=', 'awpb_district.province_id', $id])
+//         ->all();
+//
+// return $data;
+//}
 
 
-
-}
+ }

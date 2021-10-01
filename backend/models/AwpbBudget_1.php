@@ -138,6 +138,17 @@ class AwpbBudget_1 extends \yii\db\ActiveRecord
             [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
             [['cost_centre_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbCostCentre::className(), 'targetAttribute' => ['cost_centre_id' => 'id']],
         ];
+    }        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
     }
 
     /**

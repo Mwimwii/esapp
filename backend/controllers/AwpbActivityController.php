@@ -246,7 +246,7 @@ class AwpbActivityController extends Controller
 
     public function actionView($id)
     {
-        if (User::userIsAllowedTo('View AWPB activities')) {
+        if (User::userIsAllowedTo('View AWPB')) {
      
         return $this->render('view', [
             'model' => $this->findModel($id),
@@ -268,7 +268,7 @@ class AwpbActivityController extends Controller
 	$number_of_activities='';
         $number_of_subactivities='';
         $sub="";
-		if (User::userIsAllowedTo('Manage AWPB activities')) 
+		if (User::userIsAllowedTo('Setup AWPB')) 
 		{
 			$model = new AwpbActivity();
 			if (Yii::$app->request->isAjax) 
@@ -385,7 +385,7 @@ class AwpbActivityController extends Controller
     public function actionUpdate($id)
     { 
         $sub="";
-        if (User::userIsAllowedTo('Manage AWPB activities')) 
+        if (User::userIsAllowedTo('Setup AWPB')) 
 		{
         $model = $this->findModel($id);
 
@@ -445,7 +445,7 @@ class AwpbActivityController extends Controller
      */
     public function actionDelete($id)
     {
-        if (User::userIsAllowedTo('Manage AWPB activities')) 
+        if (User::userIsAllowedTo('Setup AWPB')) 
 		{
         $this->findModel($id)->delete();
 

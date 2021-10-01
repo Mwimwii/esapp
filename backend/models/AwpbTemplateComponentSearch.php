@@ -40,7 +40,7 @@ class AwpbDistrictSearch extends AwpbDistrict
      */
     public function search($params)
     {
-        $query = AwpbDistrict::find();
+        $query = AwpbTemplateComponent::find();
 
         // add conditions that should always apply here
 

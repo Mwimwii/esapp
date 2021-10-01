@@ -69,7 +69,18 @@ class AwpbTemplateComponent extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
         ];
     }
-
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * Gets query for [[AwpbTemplate]].
      *

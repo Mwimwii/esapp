@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "awpb_input".
  *
@@ -87,6 +87,12 @@ class AwpbActualInput extends \yii\db\ActiveRecord
     const STATUS_REVIEWED = 2;
     const STATUS_APPROVED = 3;
     const STATUS_MINISTRY = 4;
+    
+    const STATUS_NOT_REQUESTED = 0;
+    const STATUS_DISTRICT = 1;
+    const STATUS_PROVINCIAL = 2;
+    const STATUS_SPECIALIST = 3;
+     const STATUS_DISBURSED = 4;
     public $quarter;
     public static function tableName()
     {
@@ -117,7 +123,18 @@ class AwpbActualInput extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
         ];
     }
-
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */

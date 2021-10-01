@@ -192,7 +192,7 @@ class AwpbInput extends \yii\db\ActiveRecord
             'quarter_three_amount' => 'Q3 Budget',
             'quarter_four_amount' => 'Q4 Budget',
 
-            'total_amount' => 'Activity Budget',
+            'total_amount' => 'Total Amount',
 
       
             'mo_1_actual' => 'Mo 1 Actual',

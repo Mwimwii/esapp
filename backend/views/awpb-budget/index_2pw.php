@@ -35,7 +35,7 @@ $role = \common\models\Role::findOne(['id' => $user->role])->role;
 $access_level = 1;
 $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
-$template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+$awpb_template =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
 
 //$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id'=> $id,'district_id'=>$user->district_id]);
 //$_awpb_district = new \backend\models\AwpbDistrict();
@@ -51,13 +51,15 @@ $status = 100;
         <p>
 
             <?php
-            //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
+   
+          
+  //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
+     
 
-            if (User::userIsAllowedTo("Request Funds") && ($user->province_id == 0 || $user->province_id == '')) { {
+                                 
+        
 
-
-
-
+                       
 //$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$user->district_id]);
 //$awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $id, 'province_id'=>$user->province_id]);
 //$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
@@ -342,8 +344,8 @@ $status = 100;
             }
             ?>
 
-            <div class="row">
-                <div class="col-md-12">
+
+ ?>
 
                 </div>
             </div>

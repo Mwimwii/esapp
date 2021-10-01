@@ -36,8 +36,8 @@ class AwpbComment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['awpb_template_id', 'description'], 'required'],
-            [['awpb_template_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['awpb_template_id', 'activity_id', 'description'], 'required'],
+            [['awpb_template_id', 'activity_id','district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['description'], 'string'],
         ];
     }
@@ -62,6 +62,7 @@ class AwpbComment extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'awpb_template_id' => 'Awpb Template ID',
+            'activity_id'=>'Activity',
             'district_id' => 'District ID',
             'province_id' => 'Province ID',
             'description' => 'Comment',

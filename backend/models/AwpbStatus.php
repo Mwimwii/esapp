@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "awpb_status".
  *
@@ -39,7 +39,18 @@ class AwpbStatus extends \yii\db\ActiveRecord
             [['awpb_template_id', 'status', 'cost_centre_id', 'camp_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
         ];
     }
-
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */

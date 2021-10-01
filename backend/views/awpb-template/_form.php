@@ -32,7 +32,7 @@ use backend\models\AwpbTemplate;
 
     <?php
         echo $form->field($model, 'budget_theme')->textarea(['rows' => 3]) ;
-        echo $form->field($model, 'status')->hiddenInput(['value'=>AwpbTemplate::STATUS_DRAFT])->label(false);
+        //echo $form->field($model, 'status')->hiddenInput(['value'=>AwpbTemplate::STATUS_DRAFT])->label(false);
         echo  $form->field($model, "fiscal_year" ,['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
              
             'options' => ['placeholder' => 'Enter AWPB fiscal year i.e. YYYY', 'maxlength' => true,],
@@ -44,132 +44,135 @@ use backend\models\AwpbTemplate;
                 'startView' => 'year',
                 'todayHighlight' => TRUE
             ],
-        ]);        echo$form->field($model, "preparation_deadline_first_draft", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter first draft preparation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
+        ]);       
+//        echo$form->field($model, "preparation_deadline_first_draft", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter first draft preparation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
         echo $form->field($model, "submission_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter submission dealine i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
-        echo  $form->field($model, "consolidation_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter consolidation deadline  i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
-        echo $form->field($model, "review_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter review deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
-        echo  $form->field($model, "preparation_deadline_second_draft", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter second draft preparation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
-        echo  $form->field($model, "review_deadline_pco", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter review deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]); 
-  
-        ?>
-        </div>
-        <div class="col-md-6">
-        <?php
-              echo  $form->field($model, "finalisation_deadline_pco", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-                'options' => ['placeholder' => 'Enter finalisation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'format' => 'yyyy-mm-dd',
-                    'startView' => 'year',
-                    'todayHighlight' => TRUE
-                ]
-            ]);
-     
-        echo  $form->field($model, "comment_deadline_ifad", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter comment deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]); 
-        echo  $form->field($model, "distribution_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter distribution deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
-        echo  $form->field($model, "submission_deadline_moa_mfl", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
             'options' => ['placeholder' => 'Enter submission deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
             'pluginOptions' => [
                 'autoclose' => true,
                 'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);  
-        echo $form->field($model, "approval_deadline_jpsc", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter approval deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
+                'startView' => 'month',
                 'todayHighlight' => TRUE
             ]
         ]);
+//        echo  $form->field($model, "consolidation_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter consolidation deadline  i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
+//        echo $form->field($model, "review_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter review deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
         echo  $form->field($model, "incorpation_deadline_pco_moa_mfl", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
             'options' => ['placeholder' => 'Enter deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
             'pluginOptions' => [
                 'autoclose' => true,
                 'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
+                'startView' => 'month',
                 'todayHighlight' => TRUE
             ]
         ]);
-        echo    $form->field($model, "submission_deadline_ifad", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Enter submission deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'startView' => 'year',
-                'todayHighlight' => TRUE
-            ]
-        ]);
+        echo $form->field($model, 'comment')->textarea(['rows' => 3]);
+//        echo  $form->field($model, "preparation_deadline_second_draft", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter second draft preparation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
+//        echo  $form->field($model, "review_deadline_pco", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter review deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]); 
+//  
+        ?>
+        </div>
+        <div class="col-md-6">
+        <?php
+//              echo  $form->field($model, "finalisation_deadline_pco", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//                'options' => ['placeholder' => 'Enter finalisation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//                'pluginOptions' => [
+//                    'autoclose' => true,
+//                    'format' => 'yyyy-mm-dd',
+//                    'startView' => 'year',
+//                    'todayHighlight' => TRUE
+//                ]
+//            ]);
+//     
+//        echo  $form->field($model, "comment_deadline_ifad", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter comment deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]); 
+//        echo  $form->field($model, "distribution_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter distribution deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
+//        echo  $form->field($model, "submission_deadline_moa_mfl", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter submission deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);  
+//        echo $form->field($model, "approval_deadline_jpsc", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter approval deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
+//        
+//        echo    $form->field($model, "submission_deadline_ifad", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+//            'options' => ['placeholder' => 'Enter submission deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+//            'pluginOptions' => [
+//                'autoclose' => true,
+//                'format' => 'yyyy-mm-dd',
+//                'startView' => 'year',
+//                'todayHighlight' => TRUE
+//            ]
+//        ]);
         
 
-   echo $form->field($model, 'comment')->textarea(['rows' => 3]);
+  // echo $form->field($model, 'comment')->textarea(['rows' => 3]);
     
     ?>
 

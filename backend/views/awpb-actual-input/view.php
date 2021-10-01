@@ -16,17 +16,21 @@ use backend\models\User;
 /* @var $model backend\models\AwpbBudget */
 
 //$this->title = $model->id;
-$this->title = 'AWPB Input : '. $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'AWPB Inputs', 'url' => ['index']];
+$this->title = 'AWPB Activity Input : '. $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'AWPB Activity Input', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
  $user = User::findOne(['id' => Yii::$app->user->id]);
+ 
+ $time = new \DateTime('now');
+$today = $time->format('Y-m-d');
+
 $tem="";
-$template= \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
+$template_model= \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
 	
-if (!empty($template)) {
-    $tem=  $template->fiscal_year;
+if (!empty($template_model)) {
+    $tem=  $template_model->fiscal_year;
     }
 
     
@@ -85,56 +89,68 @@ if (!empty($camp)) {
         }
 $model_budget =new  \backend\models\AwpbBudget();
          $_model =  $model_budget::findOne(['id'=>$model->budget_id]);
+         $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+
 ?>
 
 <div class="card card-success card-outline">
     <div class="card-body">
-    <h1><?= Html::encode($this->title) ?></h1>
-
+    <h1><?= Html::encode($tem) ?> <?= Html::encode($this->title) ?></h1>
+ 
     <p>
     
             <?php
-             echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', Yii::$app->request->referrer, [
-    'title' => 'back',
-    'data-toggle' => 'tooltip',
-    'data-placement' => 'top',
-]);
+       if (User::userIsAllowedTo('Approve AWPB - Provincial') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+
+      
+//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/viewp', 'id' => $model->budget_id,'status'=>$_model->status], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
+       }
+       else
+       {
+//           echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/view', 'id' => $model->budget_id,'status'=>$_model->status], [
+//    'title' => 'back',
+//    'data-toggle' => 'tooltip',
+//    'data-placement' => 'top',
+//]);
            
-       if (User::userIsAllowedTo('Request Funds')) {
-
-
-          
-   
+       }
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
-        echo Html::a(
-                '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id], [
-            'title' => 'Update input',
-            'data-toggle' => 'tooltip',
-            'data-placement' => 'top',
-            'data-pjax' => '0',
-            'style' => "padding:20px;",
-            'class' => 'bt btn-lg'
-                ]
-        );
-
-        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
-        echo Html::a(
-                '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
-            'title' => 'Delete input ',
-            'data-toggle' => 'tooltip',
-            'data-placement' => 'top',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this input?',
-                'method' => 'post',
-            ],
-            'style' => "padding:5px;",
-            'class' => 'bt btn-lg'
-                ]
-        );
-    }
+//if (\backend\models\User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today))
+//{
+//// 
+//
+//        echo Html::a(
+//                '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id], [
+//            'title' => 'Update input',
+//            'data-toggle' => 'tooltip',
+//            'data-placement' => 'top',
+//            'data-pjax' => '0',
+//            'style' => "padding:20px;",
+//            'class' => 'bt btn-lg'
+//                ]
+//        );
+//
+//        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+//
+//        echo Html::a(
+//                '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [
+//            'title' => 'Delete input ',
+//            'data-toggle' => 'tooltip',
+//            'data-placement' => 'top',
+//            'data' => [
+//                'confirm' => 'Are you sure you want to delete this input?',
+//                'method' => 'post',
+//            ],
+//            'style' => "padding:5px;",
+//            'class' => 'bt btn-lg'
+//                ]
+//        );
+    
 
             
             
@@ -208,18 +224,18 @@ $attributes = [
     ],
 	
   
-//     [
-//        'columns' => [
-//            [
-//                'attribute'=>'indicator_id',
-//                'value'=>$ind,
-//                 'label'=>'Indicator',
-//                'labelColOptions'=>['style'=>'width:15%'],
-//                'valueColOptions'=>['style'=>'width:85%'],
-//            ],
-//         
-//        ],
-//    ],
+     [
+        'columns' => [
+            [
+                'attribute'=>'indicator_id',
+                'value'=>$ind,
+                 'label'=>'Indicator',
+                'labelColOptions'=>['style'=>'width:15%'],
+                'valueColOptions'=>['style'=>'width:85%'],
+            ],
+         
+        ],
+    ],
 	
     [
             
@@ -253,23 +269,23 @@ $attributes = [
                 'valueColOptions'=>['style'=>'width:10%'],
             ],
 	
-//    [
-//        'attribute'=>'total_quantity',
-//        'label'=>'Total Quantity',
-//        'displayOnly'=>true,
-//        'format'=>['decimal', 2],
-//        'labelColOptions'=>['style'=>'width:10%'],
-//        'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//	   [
-//        'attribute'=>'total_amount',
-//        'label'=>'Total Budget',
-//        'displayOnly'=>true,
-//        'format'=>['decimal', 2],
-//        'labelColOptions'=>['style'=>'width:10%'],
-//                'valueColOptions'=>['style'=>'width:25%'],
-//    ],
-//  	
+    [
+        'attribute'=>'total_quantity',
+        'label'=>'Total Quantity',
+        'displayOnly'=>true,
+        'format'=>['decimal', 2],
+        'labelColOptions'=>['style'=>'width:10%'],
+        'valueColOptions'=>['style'=>'width:15%'],
+    ],
+	   [
+        'attribute'=>'total_amount',
+        'label'=>'Total Budget',
+        'displayOnly'=>true,
+        'format'=>['decimal', 2],
+        'labelColOptions'=>['style'=>'width:10%'],
+                'valueColOptions'=>['style'=>'width:25%'],
+    ],
+  	
 			
         ],
     ],
@@ -309,7 +325,7 @@ $attributes = [
                             'valueColOptions' => ['style' => 'width:10%'],
                         ],
                         [
-                            'attribute' => 'quarter_quantity',
+                            'attribute' => 'quarter_one_quantity',
                             'label' => 'Q1 Total Qty',
                             'format' => ['decimal', 2],
                             'labelColOptions' => ['style' => 'width:8%'],
@@ -322,133 +338,133 @@ $attributes = [
     
     
 
-//[
-//        'columns' => [
-//		// [
-//        //         'label'=>'Quarter Two', 
-//        //         'format'=>'raw', 
-//        //         'value'=>'',        
-//        //         'displayOnly'=>true,
-//        //         'inputContainer' => ['class'=>'col-sm-2'],
-//            
-//              
-//        //     ],
-//            
-//            
-//            [
-//                'attribute'=>'mo_4', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_5', 
-//               
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_6', 
-//               
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//		
-//			 [
-//        'attribute'=>'quarter_two_quantity',
-//        'label'=>'Q2 Total Qty',
-//        'format'=>['decimal', 2],
-//          'labelColOptions'=>['style'=>'width:8%'],
-//                'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//	
-//   
-//	
-//        ],
-//    ],
-//
-//[
-//        'columns' => [
-//	
-//            [
-//                'attribute'=>'mo_7', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_8', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_9', 
-//    
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//	
-//			 [
-//        'attribute'=>'quarter_three_quantity',
-//        'label'=>'Q3 Total Qty',
-//        'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:8%'],
-//                'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//	
-//   
-//        ],
-//    ],
-//	
-//[
-//        'columns' => [
-//
-//            [
-//                'attribute'=>'mo_10', 
-//               
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_11', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_12', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//	
-//			 [
-//        'attribute'=>'quarter_four_quantity',
-//        'label'=>'Q4 Total Qty',
-//        'displayOnly'=>true,
-//        'format'=>['decimal', 2],
-//        'labelColOptions'=>['style'=>'width:8%'],
-//                'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//	
+[
+        'columns' => [
+		// [
+        //         'label'=>'Quarter Two', 
+        //         'format'=>'raw', 
+        //         'value'=>'',        
+        //         'displayOnly'=>true,
+        //         'inputContainer' => ['class'=>'col-sm-2'],
+            
+              
+        //     ],
+            
+            
+            [
+                'attribute'=>'mo_4', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_5', 
+               
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_6', 
+               
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+		
+			 [
+        'attribute'=>'quarter_two_quantity',
+        'label'=>'Q2 Total Qty',
+        'format'=>['decimal', 2],
+          'labelColOptions'=>['style'=>'width:8%'],
+                'valueColOptions'=>['style'=>'width:15%'],
+    ],
+	
    
-//        ],
-//    ],
+	
+        ],
+    ],
+
+[
+        'columns' => [
+	
+            [
+                'attribute'=>'mo_7', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_8', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_9', 
+    
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+	
+			 [
+        'attribute'=>'quarter_three_quantity',
+        'label'=>'Q3 Total Qty',
+        'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:8%'],
+                'valueColOptions'=>['style'=>'width:15%'],
+    ],
+	
+   
+        ],
+    ],
+	
+[
+        'columns' => [
+
+            [
+                'attribute'=>'mo_10', 
+               
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_11', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_12', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+	
+			 [
+        'attribute'=>'quarter_four_quantity',
+        'label'=>'Q4 Total Qty',
+        'displayOnly'=>true,
+        'format'=>['decimal', 2],
+        'labelColOptions'=>['style'=>'width:8%'],
+                'valueColOptions'=>['style'=>'width:15%'],
+    ],
+	
+   
+        ],
+    ],
      [
          'group'=>true,
          'label'=>'Detailed Input Costings',
@@ -493,7 +509,7 @@ $attributes = [
 			  
 	
 			 [
-        'attribute'=>'quarter_amount',
+        'attribute'=>'quarter_one_amount',
         'label'=>'Q1 Total Budget',
         'format'=>['decimal', 2],
         'labelColOptions'=>['style'=>'width:8%'],
@@ -504,131 +520,131 @@ $attributes = [
         ]
     ],
 
-//
-//
-//[
-//        'columns' => [
-//		// [
-//        //         'label'=>'Q2', 
-//        //         'format'=>'raw', 
-//        //         'value'=>'',        
-//        //         'displayOnly'=>true,
-//        //         'inputContainer' => ['class'=>'col-sm-2'],
-//            
-//              
-//        //     ],
-//            [
-//                'attribute'=>'mo_4_amount', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_5_amount', 
-//               
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_6_amount', 
-//               
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//		
-//			 [
-//        'attribute'=>'quarter_two_amount',
-//        'label'=>'Q2 Total Budget',
-//        'format'=>['decimal', 2],
-//          'labelColOptions'=>['style'=>'width:8%'],
-//                'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//
-//        ],
-//    ],
-//
-//[
-//        'columns' => [
-//	
-//            [
-//                'attribute'=>'mo_7_amount', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_8_amount', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_9_amount', 
-//    
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//	
-//			 [
-//        'attribute'=>'quarter_three_amount',
-//        'label'=>'Q3 Total Budget',
-//        'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:8%'],
-//                'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//	
-//    
-//        ],
-//    ],
-//	
-//[
-//        'columns' => [
-//
-//            [
-//                'attribute'=>'mo_10_amount', 
-//               
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_11_amount', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//			   [
-//                'attribute'=>'mo_12_amount', 
-//                'displayOnly'=>true,
-//                'format'=>['decimal', 2],
-//                'labelColOptions'=>['style'=>'width:5%'],
-//                'valueColOptions'=>['style'=>'width:10%'],
-//            ],
-//	
-//			 
-//	
-//    [
-//        'attribute'=>'quarter_four_amount',
-//        'label'=>'Q4 Total Budget',
-//        'displayOnly'=>true,
-//        'format'=>['decimal', 2],
-//        'labelColOptions'=>['style'=>'width:8%'],
-//                'valueColOptions'=>['style'=>'width:15%'],
-//    ],
-//        ],
-//    ],
+
+
+[
+        'columns' => [
+		// [
+        //         'label'=>'Q2', 
+        //         'format'=>'raw', 
+        //         'value'=>'',        
+        //         'displayOnly'=>true,
+        //         'inputContainer' => ['class'=>'col-sm-2'],
+            
+              
+        //     ],
+            [
+                'attribute'=>'mo_4_amount', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_5_amount', 
+               
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_6_amount', 
+               
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+		
+			 [
+        'attribute'=>'quarter_two_amount',
+        'label'=>'Q2 Total Budget',
+        'format'=>['decimal', 2],
+          'labelColOptions'=>['style'=>'width:8%'],
+                'valueColOptions'=>['style'=>'width:15%'],
+    ],
+
+        ],
+    ],
+
+[
+        'columns' => [
+	
+            [
+                'attribute'=>'mo_7_amount', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_8_amount', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_9_amount', 
+    
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+	
+			 [
+        'attribute'=>'quarter_three_amount',
+        'label'=>'Q3 Total Budget',
+        'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:8%'],
+                'valueColOptions'=>['style'=>'width:15%'],
+    ],
+	
+    
+        ],
+    ],
+	
+[
+        'columns' => [
+
+            [
+                'attribute'=>'mo_10_amount', 
+               
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_11_amount', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+			   [
+                'attribute'=>'mo_12_amount', 
+                'displayOnly'=>true,
+                'format'=>['decimal', 2],
+                'labelColOptions'=>['style'=>'width:5%'],
+                'valueColOptions'=>['style'=>'width:10%'],
+            ],
+	
+			 
+	
+    [
+        'attribute'=>'quarter_four_amount',
+        'label'=>'Q4 Total Budget',
+        'displayOnly'=>true,
+        'format'=>['decimal', 2],
+        'labelColOptions'=>['style'=>'width:8%'],
+                'valueColOptions'=>['style'=>'width:15%'],
+    ],
+        ],
+    ],
     
 ];
 

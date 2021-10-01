@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplateActivity */
 
-$this->title = 'Update Awpb Template Activity: ' . $model->name;
+$this->title = 'Update Funding Profile for ' . $model->name .' Activity';
 $this->params['breadcrumbs'][] = ['label' => 'Awpb Template Activities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

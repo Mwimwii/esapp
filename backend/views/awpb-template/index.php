@@ -120,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{view}{check-list}{delete}',
                 'buttons' => [
                     'view' => function ($url, $model) {
-                        if (User::userIsAllowedTo('View AWPB templates')) {
+                        if (User::userIsAllowedTo('View AWPB')|| User::userIsAllowedTo('Setup AWPB')) {
                             return Html::a(
                                             '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
                                         'title' => 'View AWPB template',
@@ -135,7 +135,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                    'check-list' => function ($url, $model) {
                        //  if (User::userIsAllowedTo('Setup AWPB') && $model->status==AwpbTemplate::STATUS_DRAFT){
-                          if (User::userIsAllowedTo('Setup AWPB') &&($model->status==AwpbTemplate::STATUS_DRAFT || $model->status==AwpbTemplate::STATUS_PUBLISHED)){
+                          if (User::userIsAllowedTo('Setup AWPB') && ($model->status==AwpbTemplate::STATUS_DRAFT || $model->status==AwpbTemplate::STATUS_PUBLISHED)){
                             return Html::a(
                                             '<span class="fas fa-edit"></span>', ['check-list', 'id' => $model->id], [
                                         'title' => 'Update template',

@@ -6,6 +6,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 use common\models\Role;
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "awpb_expense_category".
  *
@@ -39,6 +40,18 @@ class AwpbExpenseCategory extends \yii\db\ActiveRecord
             [['status','created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['code'], 'string', 'max' => 6],
             [['name'], 'string', 'max' => 255],
+        ];
+    }
+            
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
         ];
     }
 

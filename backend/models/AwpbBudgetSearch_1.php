@@ -4,7 +4,7 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AwpbBudget;
+use backend\models\AwpbBudget_1;
 
 /**
  * AwpbBudgetSearch represents the model behind the search form of `backend\models\AwpbBudget`.
@@ -73,7 +73,7 @@ class AwpbBudgetSearch_1 extends AwpbBudget_1
     
     public function search($params)
     {
-        $query = AwpbBudget::find();
+        $query = AwpbBudget_2::find();
 
         // add conditions that should always apply here
 

@@ -13,30 +13,15 @@ $form = ActiveForm::begin(['type' => ActiveForm::TYPE_HORIZONTAL]);
 //$form = ActiveForm::begin();
 ?>
 <div class="card">
-
     <div class="card-body">
      
-    
-        
 <?php
 echo $form->field($model, 'awpb_template_id')->hiddenInput(['value'=> $template_id])->label(false);
 echo $form->field($model,'component_id')->dropDownList((\backend\models\AwpbComponent::getAwpbSubComponentsListPW()),
 [
 'prompt'=>'Select component','id'=>'comp_id']);
 
-//echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->output_id, ['id' => 'selected_id']);
-//
-//
-//echo $form->field($model, 'output_id')->widget(DepDrop::classname(), [
-//  'options' => ['id' => 'output_id1', 'custom' => true, 'required' => TRUE],
-//  'pluginOptions' => [
-//    'depends' => ['comp_id'],
-//    'initialize' => $model->isNewRecord ? false : true,
-//    'placeholder' => 'Select an output',
-//    'url' => Url::to(['/awpb-component/outputs']),
-//    'params' => ['comp_id'],
-//  ]
-//]);
+
 
 
 echo Html::hiddenInput('selected_activity_id', $model->isNewRecord ? '' : $model->activity_id, ['id' => 'selected_activity_id']);
@@ -52,42 +37,7 @@ echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
     ]
     ]);
 
-
-//echo $form->field($model,'activity_id')->widget(DepDrop::classname(),[
-//    'options' => ['id' => 'parent_activity_id1', 'custom' => true, 'required' => TRUE],
-//    'pluginOptions' => [
-//    'depends' => ['output_id1'],
-//    'initialize' => $model->isNewRecord ? false : true,
-//    'placeholder' => 'Select a parent activity',
-//    'url' => Url::to(['/awpb-activity/templateactivities']),
-//    'params' => ['selected_id'],
-//    ]
-//    ]);
-
-
-// echo Html::hiddenInput('selected_indicator_id', $model->isNewRecord ? '' : $model->indicator_id, ['id' => 'selected_indicator_id']);
-//                   echo $form->field($model,'indicator_id')->widget(DepDrop::classname(),[
-//                   
-//                     'options'=>['id'=>'indicator_id1', 'custom' => true, 'required' => TRUE],
-//                     'pluginOptions'=>[
-//                       'depends'=>['parent_activity_id1'],
-//                     'placeholder'=>'Select indicator',
-//                     'url'=>Url::to(['awpb-activity/actvityindicators']),
-//                     'params' => ['selected_activity_id'],
-//                    
-//                     ]
-//                     ]);
-       
-       // echo $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => "form-control", 'placeholder' => 'Input description'])->label("Input description");
-      
-        /*echo  $form->field($model, 'unit_cost', ['enableAjaxValidation' => false])->widget(MaskMoney::classname(), [
-            'pluginOptions' => [
-                'allowZero' => false,
-                'allowNegative' => false,
-            ]
-        ])->label("Unit Cost");
-        */
-//                   
+                
           echo
                     $form->field($model, 'cost_centre_id', ['enableAjaxValidation' => true,])->label('Cost Centre')
                     ->dropDownList(

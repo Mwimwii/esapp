@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <p>
             <?php
-            if (User::userIsAllowedTo('Manage cost centre')) {
+            if (User::userIsAllowedTo('Setup AWPB')) {
                 echo '<button class="btn btn-success btn-sm" href="#" onclick="$(\'#addNewModal\').modal(); 
                     return false;"><i class="fa fa-plus"></i> Add Cost Centre</button>';
                 echo '<hr class="dotted short">';
@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'template' => '{delete}',
                     'buttons' => [
                         'delete' => function ($url, $model) {
-                            if (User::userIsAllowedTo('Remove cost centre')) {
+                            if (User::userIsAllowedTo('Setup AWPB')) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                             'title' => 'Remove cost centre',

@@ -2633,7 +2633,7 @@ class ReportsController extends Controller {
                 ->setDescription('Facilitation of Improved Technologies/Best Practices report for Office 2007 XLSX, generated using PHP classes.')
                 ->setKeywords('office 2007 openxml php')
                 ->setCategory('Report');
-        $year = "";
+$year="";
         if (!empty($budget_model)) {
             $row = 0;
             foreach ($budget_model as $_model) {
@@ -2701,7 +2701,7 @@ class ReportsController extends Controller {
         }
 
 
-        $spreadsheet->getActiveSheet()->setTitle($year . ' Budget');
+        $spreadsheet->getActiveSheet()->setTitle($year.' Budget');
 
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $spreadsheet->setActiveSheetIndex(0);

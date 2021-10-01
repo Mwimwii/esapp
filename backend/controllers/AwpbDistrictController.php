@@ -871,4 +871,30 @@ class AwpbDistrictController extends Controller {
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    
+     public function actionDistrict() {
+         $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            //  Yii::warning('**********************', var_export($_POST['depdrop_parents'],true));
+            //   $parents = $_POST['depdrop_all_params']['parent_id'];
+            $selected_id = $_POST['depdrop_params'];
+            if ($parents != null) {
+                $prov_id = $parents[0];
+                $out = \backend\models\AwpbDistrict::find()
+                       // ->select(['name', 'id'])
+                        ->select(["name", "district_id as id"])
+                        ->where(['province_id' => $prov_id])
+                         ->andWhere(['awpb_template_id' => $template_model->id])
+                        ->asArray()
+                        ->all();
+
+                return ['output' => $out, 'selected' => $selected_id[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+    
 }

@@ -47,7 +47,7 @@ $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \back
 
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-<h1><?= Html::encode($this->title) ?></h1>
+<h3><?= Html::encode($this->title) ?></h3>
         <p>
         <?php
         if ((User::userIsAllowedTo("Manage PW AWPB") || User::userIsAllowedTo('Approve AWPB - PCO') ) && ($user->province_id == 0 || $user->province_id == '')) {
@@ -56,14 +56,47 @@ $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \back
 
 
             if (!empty($template_model)) {
-                if (strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbBudget::STATUS_DRAFT) {
+                if (strtotime($template_model->submission_deadline) >= strtotime($today)) {
 
-                    echo Html::a('Add AWPB PW Activity', ['createpw'], ['class' => 'btn btn-success btn-sm']);
-                    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+//                    echo Html::a('Add AWPB PW Activity', ['createpw'], ['class' => 'btn btn-success btn-sm']);
+//                    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
-                    // echo  $template_model->submission_deadline ;
-                    // echo "<br /><br /><br /><br />";
-                    // echo  $today;
+                   echo Html::a(
+                                        '<span class="btn btn-success float-left">Add AWPB PW Activity</span>',['awpb-budget/createpw'], [ 
+                                    'title' => 'Add AWPB PW Activity',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                   // 'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );  
+    
+                    
+                    
+                }
+            }
+            if (!empty($template_model)) {
+                if (strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT) {
+                    if ($dataProvider->getCount() > 0) {
+
+                     //   echo Html::a('Submit District AWPB', ['submitpw', 'id' => $id, 'status' => AwpbBudget:: STATUS_SUBMITTED], ['class' => 'float-right btn btn-success btn-sm btn-space']);
+                    
+                         echo Html::a(
+                                        '<span class="btn btn-success float-right">Submit PW AWPB</span>',['submitpw', 'id' => $id, 'status' => AwpbBudget:: STATUS_SUBMITTED], [ 
+                                    'title' => 'Submit PW AWPB',
+                                    'data-toggle' => 'tooltip',
+                                    'data-placement' => 'top',
+                                    // 'target' => '_blank',
+                                    'data-pjax' => '0',
+                                   // 'style' => "padding:5px;",
+                                    'class' => 'bt btn-lg'
+                                        ]
+                        );  
+    
+                        
+                    }
                 }
             }
         }
@@ -359,14 +392,7 @@ $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \back
             <div class="row">
                 <div class="col-md-12">
             <?php
-            if (!empty($template_model)) {
-                if (strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT) {
-                    if ($dataProvider->getCount() > 0) {
-
-                        echo Html::a('Submit District AWPB', ['submitpw', 'id' => $id, 'status' => AwpbBudget:: STATUS_SUBMITTED], ['class' => 'float-right btn btn-success btn-sm btn-space']);
-                    }
-                }
-            }
+            
         
        
         ?>

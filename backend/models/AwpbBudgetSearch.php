@@ -46,36 +46,36 @@ class AwpbBudgetSearch extends AwpbBudget
      */
 
     
-    public function searchByYearProvinceDistrict($year, $province_id, $district_id) {
-
-        //Needed for a search filter
-        if (!empty($district_id) ||
-                !empty($province_id) ||
-                !empty($year)) {
-
-            if ((!empty($province_id) && empty($district_id)) || !empty($year)) {
-                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
-                $query = AwpbBudget::find()
-                        ->where(["awpb_template_id" => $awpb_template->id])
-                        ->andWhere(['province_id' => $province_id])
-                        ->andWhere(['district_id' => $district_id]);
-            }
-            if (!empty($district_id)) {
-                $query = AwpbBudget::find()
-                        ->Where(['province_id' => $province_id])
-                        ->andWhere(['district_id' => $district_id]);
-            }
-        }
-
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        return $dataProvider;
-    }
-    
+//    public function searchByYearProvinceDistrict($year, $province_id, $district_id) {
+//
+//        //Needed for a search filter
+//        if (!empty($district_id) ||
+//                !empty($province_id) ||
+//                !empty($year)) {
+//
+//            if ((!empty($province_id) && empty($district_id)) || !empty($year)) {
+//                $awpb_template = \backend\models\AwpbTemplate::findOne(['fiscal_year' => $year]);
+//                $query = AwpbBudget::find()
+//                        ->where(["awpb_template_id" => $awpb_template->id])
+//                        ->andWhere(['province_id' => $province_id])
+//                        ->andWhere(['district_id' => $district_id]);
+//            }
+//            if (!empty($district_id)) {
+//                $query = AwpbBudget::find()
+//                        ->Where(['province_id' => $province_id])
+//                        ->andWhere(['district_id' => $district_id]);
+//            }
+//        }
+//
+//        // add conditions that should always apply here
+//
+//        $dataProvider = new ActiveDataProvider([
+//            'query' => $query,
+//        ]);
+//
+//        return $dataProvider;
+//    }
+//    
     
     public function search($params)
     {

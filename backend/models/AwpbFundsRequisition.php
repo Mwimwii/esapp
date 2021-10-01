@@ -3,18 +3,21 @@
 namespace backend\models;
 
 use Yii;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
 
 /**
- * This is the model class for table "awpb_funds_requisition".
+ * This is the model class for table "awpb_input".
  *
  * @property int $id
- * @property int|null $component_id
- * @property int|null $output_id
- * @property int|null $activity_id
+ * @property int $activity_id
  * @property int $awpb_template_id
- * @property int|null $indicator_id
- * @property string|null $name
- * @property float|null $unit_cost
+ * @property int $indicator_id
+ * @property int $template_indicator_id
+ * @property string $name
+ * @property float $unit_cost
  * @property float|null $mo_1
  * @property float|null $mo_2
  * @property float|null $mo_3
@@ -31,7 +34,7 @@ use Yii;
  * @property float|null $quarter_two_quantity
  * @property float|null $quarter_three_quantity
  * @property float|null $quarter_four_quantity
- * @property float $total_quantity
+ * @property float|null $total_quantity
  * @property float|null $mo_1_amount
  * @property float|null $mo_2_amount
  * @property float|null $mo_3_amount
@@ -61,27 +64,7 @@ use Yii;
  * @property float|null $mo_10_actual
  * @property float|null $mo_11_actual
  * @property float|null $mo_12_actual
- * @property float|null $quarter_one_actual
- * @property float|null $quarter_two_actual
- * @property float|null $quarter_three_actual
- * @property float|null $quarter_four_actual
  * @property int $status
- * @property int|null $number_of_females
- * @property int|null $number_of_males
- * @property int|null $number_of_young_people
- * @property int|null $number_of_not_young_people
- * @property int|null $number_of_women_headed_households
- * @property int|null $number_of_non_women_headed_households
- * @property int|null $number_of_household_members
- * @property float|null $number_of_females_actual
- * @property float|null $number_of_males_actual
- * @property float|null $number_of_young_people_actual
- * @property float|null $number_of_not_young_people_actual
- * @property float|null $number_of_women_headed_households_actual
- * @property float|null $number_of_non_women_headed_households_actual
- * @property float|null $number_of_household_members_actual
- * @property int|null $cost_centre_id
- * @property int|null $camp_id
  * @property int|null $district_id
  * @property int|null $province_id
  * @property int $created_at
@@ -89,117 +72,109 @@ use Yii;
  * @property int|null $created_by
  * @property int|null $updated_by
  *
+ * @property AwpbActivityLine $templateIndicator
  * @property AwpbTemplate $awpbTemplate
- * @property AwpbCostCentre $costCentre
- * @property AwpbDistrict $district
+ * @property AwpbActivity $activity
+ * @property AwpbIndicator $indicator
+ * @property District $district
+ * @property Province $province
+ * @property Users $createdBy
+ * @property Users $updatedBy
  */
-class AwpbFundsRequisition extends \yii\db\ActiveRecord
-{
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'awpb_funds_requisition';
-    }
+class AwpbFundsRequisition extends \yii\db\ActiveRecord {
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    const STATUS_QUARTER_CLOSED = 0;
+    const STATUS_QUARTER_OPEN = 1;
+    const STATUS_QUARTER_REQUESTED = 2;
+    const STATUS_QUARTER_APPROVED = 3;
+     const STATUS_QUARTER_DISBURSED = 4;
+const STATUS_NOT_REQUESTED = 0;
+    const STATUS_DISTRICT = 1;
+    const STATUS_PROVINCIAL = 2;
+    const STATUS_SPECIALIST = 3;
+     const STATUS_DISBURSED = 4;
+    //const STATUS_MINISTRY = 4;
+
+    public $quarter;
+
+    public static function tableName() {
+        return 'awpb_funds_requisition';
+    }
+    
+//    public function behaviors() {
+//        return [
+//            'timestamp' => [
+//                'class' => 'yii\behaviors\TimestampBehavior',
+//                'attributes' => [
+//                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+//                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+//                ],
+//            ],
+//        ];
+//    }
+    /**
+     * {@inheritdoc}
+     */  
+    public function behaviors() {
         return [
-            [['component_id', 'output_id', 'activity_id', 'awpb_template_id', 'indicator_id', 'status', 'number_of_females', 'number_of_males', 'number_of_young_people', 'number_of_not_young_people', 'number_of_women_headed_households', 'number_of_non_women_headed_households', 'number_of_household_members', 'cost_centre_id', 'camp_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['awpb_template_id', 'total_quantity', 'status', 'created_at', 'updated_at'], 'required'],
-            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'mo_4', 'mo_5', 'mo_6', 'mo_7', 'mo_8', 'mo_9', 'mo_10', 'mo_11', 'mo_12', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'mo_4_amount', 'mo_5_amount', 'mo_6_amount', 'mo_7_amount', 'mo_8_amount', 'mo_9_amount', 'mo_10_amount', 'mo_11_amount', 'mo_12_amount', 'quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount', 'mo_1_actual', 'mo_2_actual', 'mo_3_actual', 'mo_4_actual', 'mo_5_actual', 'mo_6_actual', 'mo_7_actual', 'mo_8_actual', 'mo_9_actual', 'mo_10_actual', 'mo_11_actual', 'mo_12_actual', 'quarter_one_actual', 'quarter_two_actual', 'quarter_three_actual', 'quarter_four_actual', 'number_of_females_actual', 'number_of_males_actual', 'number_of_young_people_actual', 'number_of_not_young_people_actual', 'number_of_women_headed_households_actual', 'number_of_non_women_headed_households_actual', 'number_of_household_members_actual'], 'number'],
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
+
+    public function rules() {
+        return [
+            [['component_id', 'activity_id', 'quarter_number', 'budget_id', 'name', 'unit_of_measure_id', 'unit_cost'], 'required'],
+            [['activity_id', 'awpb_template_id', 'quarter_number', 'budget_id', 'input_id', 'status', 'unit_of_measure_id', 'cost_centre_id', 'camp_id', 'district_id', 'province_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['unit_cost', 'mo_1', 'mo_2', 'mo_3', 'quarter_quantity', 'mo_1_amount', 'mo_2_amount', 'mo_3_amount', 'quarter_amount'], 'number'],
             [['name'], 'string', 'max' => 255],
+            [['component_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbComponent::className(), 'targetAttribute' => ['component_id' => 'id']],
+            [['unit_of_measure_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbUnitOfMeasure::className(), 'targetAttribute' => ['unit_of_measure_id' => 'id']],
+            [['budget_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbBudget::className(), 'targetAttribute' => ['budget_id' => 'id']],
+            [['input_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbInput::className(), 'targetAttribute' => ['input_id' => 'id']],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
-            [['cost_centre_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbCostCentre::className(), 'targetAttribute' => ['cost_centre_id' => 'id']],
-            [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbDistrict::className(), 'targetAttribute' => ['district_id' => 'id']],
+            [['activity_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbActivity::className(), 'targetAttribute' => ['activity_id' => 'id']],
+            [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => Districts::className(), 'targetAttribute' => ['district_id' => 'id']],
+            [['province_id'], 'exist', 'skipOnError' => true, 'targetClass' => Provinces::className(), 'targetAttribute' => ['province_id' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
-            'component_id' => 'Component ID',
-            'output_id' => 'Output ID',
-            'activity_id' => 'Activity ID',
-            'awpb_template_id' => 'Awpb Template ID',
-            'indicator_id' => 'Indicator ID',
+            'component_id' => 'Component',
+            'activity_id' => 'Activity',
+            'awpb_template_id' => 'AWPB Template',
+            'budget_id' => 'Budget',
+            'input_id' => 'Input',
             'name' => 'Name',
+            'quarter' => "",
+            'quarter_number'=> "Quarter",
             'unit_cost' => 'Unit Cost',
-            'mo_1' => 'Mo 1',
-            'mo_2' => 'Mo 2',
-            'mo_3' => 'Mo 3',
-            'mo_4' => 'Mo 4',
-            'mo_5' => 'Mo 5',
-            'mo_6' => 'Mo 6',
-            'mo_7' => 'Mo 7',
-            'mo_8' => 'Mo 8',
-            'mo_9' => 'Mo 9',
-            'mo_10' => 'Mo 10',
-            'mo_11' => 'Mo 11',
-            'mo_12' => 'Mo 12',
-            'quarter_one_quantity' => 'Quarter One Quantity',
-            'quarter_two_quantity' => 'Quarter Two Quantity',
-            'quarter_three_quantity' => 'Quarter Three Quantity',
-            'quarter_four_quantity' => 'Quarter Four Quantity',
-            'total_quantity' => 'Total Quantity',
-            'mo_1_amount' => 'Mo 1 Amount',
-            'mo_2_amount' => 'Mo 2 Amount',
-            'mo_3_amount' => 'Mo 3 Amount',
-            'mo_4_amount' => 'Mo 4 Amount',
-            'mo_5_amount' => 'Mo 5 Amount',
-            'mo_6_amount' => 'Mo 6 Amount',
-            'mo_7_amount' => 'Mo 7 Amount',
-            'mo_8_amount' => 'Mo 8 Amount',
-            'mo_9_amount' => 'Mo 9 Amount',
-            'mo_10_amount' => 'Mo 10 Amount',
-            'mo_11_amount' => 'Mo 11 Amount',
-            'mo_12_amount' => 'Mo 12 Amount',
-            'quarter_one_amount' => 'Quarter One Amount',
-            'quarter_two_amount' => 'Quarter Two Amount',
-            'quarter_three_amount' => 'Quarter Three Amount',
-            'quarter_four_amount' => 'Quarter Four Amount',
-            'total_amount' => 'Total Amount',
-            'mo_1_actual' => 'Mo 1 Actual',
-            'mo_2_actual' => 'Mo 2 Actual',
-            'mo_3_actual' => 'Mo 3 Actual',
-            'mo_4_actual' => 'Mo 4 Actual',
-            'mo_5_actual' => 'Mo 5 Actual',
-            'mo_6_actual' => 'Mo 6 Actual',
-            'mo_7_actual' => 'Mo 7 Actual',
-            'mo_8_actual' => 'Mo 8 Actual',
-            'mo_9_actual' => 'Mo 9 Actual',
-            'mo_10_actual' => 'Mo 10 Actual',
-            'mo_11_actual' => 'Mo 11 Actual',
-            'mo_12_actual' => 'Mo 12 Actual',
-            'quarter_one_actual' => 'Quarter One Actual',
-            'quarter_two_actual' => 'Quarter Two Actual',
-            'quarter_three_actual' => 'Quarter Three Actual',
-            'quarter_four_actual' => 'Quarter Four Actual',
+            'mo_1' => 'Month 1 Qty',
+            'mo_2' => 'Month 2 Qty',
+            'mo_3' => 'Month 3 Qty',
+            'quarter_quantity' => 'Quarter Qty',
+            'mo_1_amount' => 'Month 1 Budget',
+            'mo_2_amount' => 'Month 3 Budget',
+            'mo_3_amount' => 'Month 3 Budget',
+            'quarter_amount' => 'Quarter Budget',
             'status' => 'Status',
-            'number_of_females' => 'Number Of Females',
-            'number_of_males' => 'Number Of Males',
-            'number_of_young_people' => 'Number Of Young People',
-            'number_of_not_young_people' => 'Number Of Not Young People',
-            'number_of_women_headed_households' => 'Number Of Women Headed Households',
-            'number_of_non_women_headed_households' => 'Number Of Non Women Headed Households',
-            'number_of_household_members' => 'Number Of Household Members',
-            'number_of_females_actual' => 'Number Of Females Actual',
-            'number_of_males_actual' => 'Number Of Males Actual',
-            'number_of_young_people_actual' => 'Number Of Young People Actual',
-            'number_of_not_young_people_actual' => 'Number Of Not Young People Actual',
-            'number_of_women_headed_households_actual' => 'Number Of Women Headed Households Actual',
-            'number_of_non_women_headed_households_actual' => 'Number Of Non Women Headed Households Actual',
-            'number_of_household_members_actual' => 'Number Of Household Members Actual',
-            'cost_centre_id' => 'Cost Centre ID',
-            'camp_id' => 'Camp ID',
+            'camp_id' => 'Camp',
+            'cost_centre_id' => 'Cost Centre',
             'district_id' => 'District ID',
             'province_id' => 'Province ID',
             'created_at' => 'Created At',
@@ -209,24 +184,44 @@ class AwpbFundsRequisition extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getAwpbActualInput() {
+        return $this->hasOne(AwpbActualInput::className(), ['id' => 'input_id']);
+    }
+
+    /**
+     * Gets query for [[TemplateIndicator]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTemplateIndicator() {
+        return $this->hasOne(AwpbActivityLine::className(), ['id' => 'template_indicator_id']);
+    }
+
     /**
      * Gets query for [[AwpbTemplate]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbTemplate()
-    {
+    public function getAwpbTemplate() {
         return $this->hasOne(AwpbTemplate::className(), ['id' => 'awpb_template_id']);
     }
 
     /**
-     * Gets query for [[CostCentre]].
+     * Gets query for [[Activity]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCostCentre()
-    {
-        return $this->hasOne(AwpbCostCentre::className(), ['id' => 'cost_centre_id']);
+    public function getActivity() {
+        return $this->hasOne(AwpbActivity::className(), ['id' => 'activity_id']);
+    }
+
+    /**
+     * Gets query for [[Indicator]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIndicator() {
+        return $this->hasOne(AwpbIndicator::className(), ['id' => 'indicator_id']);
     }
 
     /**
@@ -234,8 +229,39 @@ class AwpbFundsRequisition extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDistrict()
-    {
-        return $this->hasOne(AwpbDistrict::className(), ['id' => 'district_id']);
+    public function getDistrict() {
+        return $this->hasOne(District::className(), ['id' => 'district_id']);
     }
+
+    public function getAwpbDistrict() {
+        return $this->hasOne(AwpbDistrict::className(), ['district_id' => 'district_id', 'awpb_template_id' => 'awpb_template_id']);
+    }
+
+    /**
+     * Gets query for [[Province]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProvince() {
+        return $this->hasOne(Province::className(), ['id' => 'province_id']);
+    }
+
+    /**
+     * Gets query for [[CreatedBy]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy() {
+        return $this->hasOne(Users::className(), ['id' => 'created_by']);
+    }
+
+    /**
+     * Gets query for [[UpdatedBy]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy() {
+        return $this->hasOne(Users::className(), ['id' => 'updated_by']);
+    }
+
 }

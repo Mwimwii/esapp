@@ -71,11 +71,16 @@ class AwpbActualInputController extends Controller {
     public function actionIndex($id) {
 
         $user = User::findOne(['id' => Yii::$app->user->id]);
-        $searchModel = new AwpbInputSearch();
+        $searchModel = new AwpbActualInputSearch();
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        $dataProvider->query->andFilterWhere(['awpb_template_id' => $id, 'district_id' => $user->district_id, 'created_by' => $user->id, 'status' => AWPBActivityLine::STATUS_DRAFT,]);
+if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != '')){
+        $dataProvider->query->andFilterWhere(['awpb_template_id' => $id, 'district_id' => $user->district_id, 'created_by' => $user->id, 'status' => 0,]);
+}
+if (User::userIsAllowedTo('Request Funds') && ( $user->district_id == 0 || $user->district_id == '')){
+        $dataProvider->query->andFilterWhere(['awpb_template_id' => $id, 'district_id' => $user->district_id, 'created_by' => $user->id, 'status' => 0,]);
+}
+        
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -83,389 +88,8 @@ class AwpbActualInputController extends Controller {
                     'id' => $id
         ]);
     }
-
-    public function actionQofr($id, $id2) {
-        $quarter = "";
-        return $this->render('qofr', [
-                    // 'searchModel' => $searchModel,
-                    // 'dataProvider' => $dataProvider,
-                    'id' => $id,
-                    'id2' => $id2,
-                    'quarter' => $quarter
-        ]);
-
-//            $user = User::findOne(['id' => Yii::$app->user->id]);
-//            $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-//            $quarter=  $template_model->quarter;
-//            $searchModel = new AwpbActualInput();
-//                    
-//               
-//            if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != ''))
-//            {
-//                $query = $searchModel::find();
-//                $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-//                $query->where(['=','awpb_template_id', $template_model->id]);
-//                $query->andWhere(['=', 'district_id',$id2]);
-//                $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-//                $query->andWhere(['=','status', AwpbActualInput::STATUS_DISTRICT]);
-//                $query->groupBy('budget_id'); 
-//                $query->all();     
-//                $dataProvider = new ActiveDataProvider([
-//                    'query' => $query,
-//                ]);
-//                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-//                
-//                return $this->render('qofr', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                            'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//            }
-//            elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != ''))
-//            {
-//                $query = $searchModel::find();
-//                $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-//                $query->where(['=','awpb_template_id', $template_model->id]);
-//                $query->andWhere(['=', 'district_id',$id2]);
-//                $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-//                $query->andWhere(['=','status', AwpbActualInput::STATUS_DISTRICT]);
-//                $query->groupBy('budget_id'); 
-//                $query->all();
-//
-//                $dataProvider = new ActiveDataProvider([
-//                    'query' => $query,
-//                ]);
-//
-//                return $this->render('qofr', [
-//                        'searchModel' => $searchModel,
-//                        'dataProvider' => $dataProvider,
-//                        'id' => $id,
-//                        'id2' => $id2,
-//                        'quarter' => $quarter
-//                ]);
-//            } elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-//            $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-//            $query->where(['=','awpb_template_id', $template_model->id]);
-//            $query->andWhere(['=', 'district_id',$id2]);
-//            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-//            $query->andWhere(['=','status', AwpbActualInput::STATUS_PROVINCIAL]);
-//            $query->groupBy('budget_id'); 
-//            $query->all();
-//            
-//             $dataProvider = new ActiveDataProvider([
-//                'query' => $query,
-//            ]);
-//                
-//                return $this->render('qofr', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                            'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//                
-//            } 
-//            elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) 
-//            {
-//                $query = $searchModel::find();
-//                $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-//                $query->where(['=','awpb_template_id', $template_model->id]);
-//                $query->andWhere(['=', 'district_id',$id2]);
-//                $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-//                $query->andWhere(['=','status', AwpbActualInput::STATUS_SPECIALIST]);
-//                $query->groupBy('budget_id'); 
-//                $query->all();
-//
-//                 $dataProvider = new ActiveDataProvider([
-//                    'query' => $query,
-//                ]);
-//                
-//                return $this->render('qofr', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                            'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//            }
-//
-//            else 
-//            {
-//        
-//                Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-//                  return $this->redirect(['home/home']);
-//
-//            }  
-    }
-
-    public function actionQofu($id, $id2) {
-        $quarter = "";
-        return $this->render('qofu', [
-                    // 'searchModel' => $searchModel,
-                    // 'dataProvider' => $dataProvider,
-                    'id' => $id,
-                    'id2' => $id2,
-                    'quarter' => $quarter
-        ]);
-    }
-
-    public function actionQofri($id, $id2) {
-        $quarter = "";
-        return $this->render('qofri', [
-                    // 'searchModel' => $searchModel,
-                    // 'dataProvider' => $dataProvider,
-                    'id' => $id,
-                    'id2' => $id2,
-                    'quarter' => $quarter
-        ]);
-//        if ((User::userIsAllowedTo('Request Funds')&& ( $user->district_id != 0 || $user->district_id != ''))||
-//                (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) ||
-//                (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) ||
-//                (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == ''))
-////        ) {
-////        
-//            $user = User::findOne(['id' => Yii::$app->user->id]);
-//            $quarter="";
-//            $budget = \backend\models\AwpbBudget::findOne(['id' => $id]);
-//          
-//            if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != '')) {
-//                $searchModel = new \backend\models\AwpbActualInputSearch();
-//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_DRAFT]);
-//                  
-//                    
-//                return $this->render('qofri', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                            //'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//           } 
-//            elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
-//                $searchModel = new \backend\models\AwpbActualInputSearch();
-//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
-//
-//                
-//                return $this->render('qofri', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                            //'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//            } 
-//            elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-//                $searchModel = new \backend\models\AwpbActualInputSearch();
-//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
-//
-//                return $this->render('qofri', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                           // 'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//            } 
-//            elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-//                $searchModel = new \backend\models\AwpbActualInputSearch();
-//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
-//
-//                return $this->render('qofri', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                           // 'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//            }
-//
-// else {
-//            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-//       
-//                return $this->render('qofri', [
-//                            'searchModel' => $searchModel,
-//                            'dataProvider' => $dataProvider,
-//                            'id' => $id,
-//                            'id2' => $id2,
-//                            'quarter' => $quarter
-//                ]);
-//      }  
-    }
-
-    public function actionQofui($id, $id2) {
-        $quarter = "";
-        return $this->render('qofui', [
-                    // 'searchModel' => $searchModel,
-                    // 'dataProvider' => $dataProvider,
-                    'id' => $id,
-                    'id2' => $id2,
-                    'quarter' => $quarter
-        ]);
-    }
-
-    public function actionQofrd($id, $id2) {
-
-        $user = User::findOne(['id' => Yii::$app->user->id]);
-        $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-        $quarter = $template_model->quarter;
-        $searchModel = new AwpbActualInput();
-
-        if (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'province_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-            $query->andWhere(['=', 'province_id', $user->province_id]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
-            $query->groupBy('district_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-
-            return $this->render('qofrd', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'id' => $id,
-                        'id2' => $id2,
-                        'quarter' => $quarter
-            ]);
-        } elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-            //$query->join('LEFT JOIN', 'awpb_district', 'awpb_district.district_id = districk.id');
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-
-            // $query->andWhere(['=', 'district_id', $id2]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
-            $query->groupBy('district_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-
-            return $this->render('qofrd', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'id' => $id,
-                        'id2' => $id2,
-                        'quarter' => $quarter
-            ]);
-        } elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-            //$query->join('LEFT JOIN', 'awpb_district', 'awpb_district.district_id = districk.id');
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-
-            //$query->andWhere(['=', 'district_id', $id2]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
-            $query->groupBy('district_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-
-            return $this->render('qofrd', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'id' => $id,
-                        'id2' => $id2,
-                        'quarter' => $quarter
-            ]);
-        } else {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['home/home']);
-        }
-    }
-
-    public function actionQofud($id, $id2) {
-
-        $user = User::findOne(['id' => Yii::$app->user->id]);
-        $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-        $quarter = $template_model->quarter;
-        $searchModel = new \backend\models\AwpbDistrict();
-
-        if (User::userIsAllowedTo('View Funds Utilisation') && ( $user->province_id != 0 || $user->province_id != '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'province_id', 'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-            $query->andWhere(['=', 'province_id', $user->province_id]);
-            //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            // $query->andWhere(['=', 'status', AwpbActualInput::STATUS_DISBURSED]);
-            $query->groupBy('district_id');
-            $query->all();
-            //\backend\models\AwpbActualInput::STATUS_DISBURSED
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-
-            return $this->render('qofud', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'id' => $id,
-                        'id2' => $id2,
-                        'quarter' => $quarter
-            ]);
-        } elseif (User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id == 0 || $user->province_id == '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'province_id', 'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-
-            // $query->andWhere(['=', 'district_id', $id2]);
-            //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            //   $query->andWhere(['=', 'status', AwpbActualInput::STATUS_DISBURSED]);
-            $query->groupBy('district_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-
-            return $this->render('qofud', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'id' => $id,
-                        'id2' => $id2,
-                        'quarter' => $quarter
-            ]);
-        } elseif (User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id == 0 || $user->province_id == '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'province_id', 'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-
-            // $query->andWhere(['=', 'district_id', $id2]);
-            //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            //   $query->andWhere(['=', 'status', AwpbActualInput::STATUS_DISBURSED]);
-            $query->groupBy('district_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-
-            return $this->render('qofud', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'id' => $id,
-                        'id2' => $id2,
-                        'quarter' => $quarter
-            ]);
-        } else {
-            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
-            return $this->redirect(['home/home']);
-        }
-    }
+    
+   
 
     public function actionIndex_1($id, $id2) {
 
@@ -597,6 +221,168 @@ class AwpbActualInputController extends Controller {
     }
 
     public function actionUpdate($id) {
+        $model = $this->findModel($id);
+        // $_model="";
+         $user = \backend\models\User::findOne(['id' => Yii::$app->user->id]);
+        if ($user->province_id == 0 || $user->province_id == ''){
+
+            // $model_budget = new \backend\models\AwpbBudget_1();
+             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $model->budget_id]);
+            
+        } else {
+                $_model = \backend\models\AwpbBudget::findOne(['id' => $model->budget_id]);
+        }
+
+      
+        
+        if (User::userIsAllowedTo('Manage AWPB') ||User::userIsAllowedTo('Manage PW AWPB') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+
+
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                
+              
+
+                $total_q = 0;
+                $total_amt = 0.0;
+                $total_q_mo1 = !empty($model->mo_1) ? $model->mo_1 : 0;
+                $total_q_mo2 = !empty($model->mo_2) ? $model->mo_2 : 0;
+                $total_q_mo3 = !empty($model->mo_3) ? $model->mo_3 : 0;
+                $total_q_mo4 = !empty($model->mo_4) ? $model->mo_4 : 0;
+                $total_q_mo5 = !empty($model->mo_5) ? $model->mo_5 : 0;
+                $total_q_mo6 = !empty($model->mo_6) ? $model->mo_6 : 0;
+                $total_q_mo7 = !empty($model->mo_7) ? $model->mo_7 : 0;
+                $total_q_mo8 = !empty($model->mo_8) ? $model->mo_8 : 0;
+                $total_q_mo9 = !empty($model->mo_9) ? $model->mo_9 : 0;
+                $total_q_mo10 = !empty($model->mo_10) ? $model->mo_10 : 0;
+                $total_q_mo11 = !empty($model->mo_11) ? $model->mo_11 : 0;
+                $total_q_mo12 = !empty($model->mo_12) ? $model->mo_12 : 0;
+
+                $total_q1 = $total_q_mo1 + $total_q_mo2 + $total_q_mo3;
+                $total_q2 = $total_q_mo4 + $total_q_mo5 + $total_q_mo6;
+                $total_q3 = $total_q_mo7 + $total_q_mo8 + $total_q_mo9;
+                $total_q4 = $total_q_mo10 + $total_q_mo11 + $total_q_mo12;
+
+                $total_q = $total_q1 + $total_q2 + $total_q3 + $total_q4;
+
+               // $total_amt = $model->unit_cost != 0 && $total_q != 0 ? $total_q * $model->unit_cost : 0;
+
+                if ($total_q > 0) {
+                    
+                          $total_amt = $model->unit_cost != 0 && $total_q != 0 ? $total_q * $model->unit_cost : 0;
+                                        $actual_input_amount = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$model->budget_id])->sum('total_amount');
+                     $balance =   round($actual_input_amount,2) + round($total_amt,2);
+                     $balance2 =   round($_model->total_actual_amount,2) + round($total_amt,2);
+                       
+                    if (round($balance,2) <= round($_model->total_amount,2)  && round($balance2,2) <= round($_model->total_amount,2)){
+                      
+                    $model->mo_1 = $total_q_mo1;
+                    $model->mo_2 = $total_q_mo2;
+                    $model->mo_3 = $total_q_mo3;
+                    $model->mo_4 = $total_q_mo4;
+                    $model->mo_5 = $total_q_mo5;
+                    $model->mo_6 = $total_q_mo6;
+                    $model->mo_7 = $total_q_mo7;
+                    $model->mo_8 = $total_q_mo8;
+                    $model->mo_9 = $total_q_mo9;
+                    $model->mo_10 = $total_q_mo10;
+                    $model->mo_11 = $total_q_mo11;
+                    $model->mo_12 = $total_q_mo12;
+                    $model->quarter_one_quantity = $total_q1;
+                    $model->quarter_two_quantity = $total_q2;
+                    $model->quarter_three_quantity = $total_q3;
+                    $model->quarter_four_quantity = $total_q4;
+                    $model->total_quantity = $total_q;
+
+                    $model->mo_1_amount = $total_q_mo1 * $model->unit_cost;
+                    $model->mo_2_amount = $total_q_mo2 * $model->unit_cost;
+                    $model->mo_3_amount = $total_q_mo3 * $model->unit_cost;
+                    $model->mo_4_amount = $total_q_mo4 * $model->unit_cost;
+                    $model->mo_5_amount = $total_q_mo5 * $model->unit_cost;
+                    $model->mo_6_amount = $total_q_mo6 * $model->unit_cost;
+                    $model->mo_7_amount = $total_q_mo7 * $model->unit_cost;
+                    $model->mo_8_amount = $total_q_mo8 * $model->unit_cost;
+                    $model->mo_9_amount = $total_q_mo9 * $model->unit_cost;
+                    $model->mo_10_amount = $total_q_mo10 * $model->unit_cost;
+                    $model->mo_11_amount = $total_q_mo11 * $model->unit_cost;
+                    $model->mo_12_amount = $total_q_mo12 * $model->unit_cost;
+                    $model->quarter_one_amount = $total_q1 * $model->unit_cost;
+                    $model->quarter_two_amount = $total_q2 * $model->unit_cost;
+                    $model->quarter_three_amount = $total_q3 * $model->unit_cost;
+                    $model->quarter_four_amount = $total_q4 * $model->unit_cost;
+                    $model->total_amount = $total_amt;
+
+                    $model->total_amount = $total_amt;
+
+// $model->camp_id = $_model->camp_id;
+                    $model->updated_by = Yii::$app->user->identity->id;
+// $model->created_by = Yii::$app->user->identity->id;
+                    $model->district_id = $_model->district_id;
+                    $model->province_id = $_model->province_id;
+                    $model->component_id = $_model->component_id;
+                    $model->output_id = $_model->output_id;
+
+                    if ($model->validate()) {
+
+                        if ($model->save()) {
+
+                            $audit = new AuditTrail();
+                            $audit->user = Yii::$app->user->id;
+                            $audit->action = "Update AWPB Actual Input : " . $model->name;
+                            $audit->ip_address = Yii::$app->request->getUserIP();
+                            $audit->user_agent = Yii::$app->request->getUserAgent();
+                            $audit->save();
+                            Yii::$app->session->setFlash('success', 'AWPB actual input was successfully updated.'.$balance2." ".$balance." ".$_model->total_actual_amount ." ".$_model->total_amount);
+                           
+                                return $this->redirect(['awpb-budget/viewactualinput', 'id' => $model->budget_id, 'status' =>0]);
+                           
+                        } 
+                        
+                        else {
+                            $message = "";
+                            foreach ($model->getErrors() as $error) {
+                                $message .= $error[0];
+                            }
+                            Yii::$app->session->setFlash('error', 'Error occured while updating AWPB input.');
+                       }
+
+                    
+                                return $this->redirect(['awpb-budget/viewactualinput', 'id' => $model->budget_id, 'status' =>0]);
+                    }
+                    else {
+                            $message = "";
+                            foreach ($model->getErrors() as $error) {
+                                $message .= $error[0];
+                            }
+                            Yii::$app->session->setFlash('error', 'Error occured while updating AWPB input.');
+                       }
+                    }   else {
+                     
+     Yii::$app->session->setFlash('error', 'Your actual inputs are more than the budget.');
+ }
+     
+                
+                } else {
+                    Yii::$app->session->setFlash('error', 'Enter quantity for at least one month.');
+                }
+            }
+
+            return $this->render('update', [
+                        'model' => $model,
+                        'id' => $model->budget_id,
+                        'status' => 0
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+    
+    public function actionUpdateold($id) {
         $model = $this->findModel($id);
         $user = User::findOne(['id' => Yii::$app->user->id]);
         $model_budget = new \backend\models\AwpbBudget();
@@ -1016,8 +802,171 @@ class AwpbActualInputController extends Controller {
     public function actionFundrequisition() {
         
     }
-
+  
     public function actionCreate($id) {
+         $user = \backend\models\User::findOne(['id' => Yii::$app->user->id]);
+        if (User::userIsAllowedTo('Manage AWPB')||User::userIsAllowedTo('Manage PW AWPB')) {
+            $model = new AwpbActualInput();
+    if ($user->province_id == 0 || $user->province_id == ''){
+
+            // $model_budget = new \backend\models\AwpbBudget_1();
+             $_model = \backend\models\AwpbBudget_1::findOne(['id' => $id]);
+            
+        } else {
+                $_model = \backend\models\AwpbBudget::findOne(['id' => $id]);
+        }
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
+
+            if ($model->load(Yii::$app->request->post())) {
+                //$model_budget = new \backend\models\AwpbBudget();
+               //$_model = $model_budget::findOne(['id' => $id]);
+
+                
+                $total_q = 0;
+                $total_amt = 0.0;
+                $total_q_mo1 = !empty($model->mo_1) ? $model->mo_1 : 0;
+                $total_q_mo2 = !empty($model->mo_2) ? $model->mo_2 : 0;
+                $total_q_mo3 = !empty($model->mo_3) ? $model->mo_3 : 0;
+                $total_q_mo4 = !empty($model->mo_4) ? $model->mo_4 : 0;
+                $total_q_mo5 = !empty($model->mo_5) ? $model->mo_5 : 0;
+                $total_q_mo6 = !empty($model->mo_6) ? $model->mo_6 : 0;
+                $total_q_mo7 = !empty($model->mo_7) ? $model->mo_7 : 0;
+                $total_q_mo8 = !empty($model->mo_8) ? $model->mo_8 : 0;
+                $total_q_mo9 = !empty($model->mo_9) ? $model->mo_9 : 0;
+                $total_q_mo10 = !empty($model->mo_10) ? $model->mo_10 : 0;
+                $total_q_mo11 = !empty($model->mo_11) ? $model->mo_11 : 0;
+                $total_q_mo12 = !empty($model->mo_12) ? $model->mo_12 : 0;
+
+                $total_q1 = $total_q_mo1 + $total_q_mo2 + $total_q_mo3;
+                $total_q2 = $total_q_mo4 + $total_q_mo5 + $total_q_mo6;
+                $total_q3 = $total_q_mo7 + $total_q_mo8 + $total_q_mo9;
+                $total_q4 = $total_q_mo10 + $total_q_mo11 + $total_q_mo12;
+
+                $total_q = $total_q1 + $total_q2 + $total_q3 + $total_q4;
+
+               
+                if ($total_q > 0) {
+                     $total_amt = $model->unit_cost != 0 && $total_q != 0 ? $total_q * $model->unit_cost : 0;
+                                          $actual_input_amount = round(\backend\models\AwpbActualInput::find()->where(['budget_id'=>$id])->sum('total_amount'),2);
+                     $balance =   round($actual_input_amount,2) + round($total_amt,2);
+                     $balance2 =   round($_model->total_actual_amount,2) + round($total_amt,2);
+                       
+                    if (round($balance,2) <= round($_model->total_amount,2)  && round($balance2,2) <= round($_model->total_amount,2)){
+                       
+                    
+                    $model->mo_1 = $total_q_mo1;
+                    $model->mo_2 = $total_q_mo2;
+                    $model->mo_3 = $total_q_mo3;
+                    $model->mo_4 = $total_q_mo4;
+                    $model->mo_5 = $total_q_mo5;
+                    $model->mo_6 = $total_q_mo6;
+                    $model->mo_7 = $total_q_mo7;
+                    $model->mo_8 = $total_q_mo8;
+                    $model->mo_9 = $total_q_mo9;
+                    $model->mo_10 = $total_q_mo10;
+                    $model->mo_11 = $total_q_mo11;
+                    $model->mo_12 = $total_q_mo12;
+                    $model->quarter_one_quantity = $total_q1;
+                    $model->quarter_two_quantity = $total_q2;
+                    $model->quarter_three_quantity = $total_q3;
+                    $model->quarter_four_quantity = $total_q4;
+                    $model->total_quantity = $total_q;
+
+                    $model->mo_1_amount = $total_q_mo1 * $model->unit_cost;
+                    $model->mo_2_amount = $total_q_mo2 * $model->unit_cost;
+                    $model->mo_3_amount = $total_q_mo3 * $model->unit_cost;
+                    $model->mo_4_amount = $total_q_mo4 * $model->unit_cost;
+                    $model->mo_5_amount = $total_q_mo5 * $model->unit_cost;
+                    $model->mo_6_amount = $total_q_mo6 * $model->unit_cost;
+                    $model->mo_7_amount = $total_q_mo7 * $model->unit_cost;
+                    $model->mo_8_amount = $total_q_mo8 * $model->unit_cost;
+                    $model->mo_9_amount = $total_q_mo9 * $model->unit_cost;
+                    $model->mo_10_amount = $total_q_mo10 * $model->unit_cost;
+                    $model->mo_11_amount = $total_q_mo11 * $model->unit_cost;
+                    $model->mo_12_amount = $total_q_mo12 * $model->unit_cost;
+                    $model->quarter_one_amount = $total_q1 * $model->unit_cost;
+                    $model->quarter_two_amount = $total_q2 * $model->unit_cost;
+                    $model->quarter_three_amount = $total_q3 * $model->unit_cost;
+                    $model->quarter_four_amount = $total_q4 * $model->unit_cost;
+                    $model->total_amount = $total_amt;
+                    $model->status = AwpbActualInput::STATUS_DRAFT;
+                    $model->updated_by = Yii::$app->user->identity->id;
+                    $model->created_by = Yii::$app->user->identity->id;
+
+// $model->camp_id = $_model->camp_id;
+                    $model->updated_by = Yii::$app->user->identity->id;
+                    $model->created_by = Yii::$app->user->identity->id;
+                    $model->district_id = $_model->district_id;
+                    $model->province_id = $_model->province_id;
+                    $model->awpb_template_id = $_model->awpb_template_id;
+                    $model->activity_id = $_model->activity_id;
+
+                    $model->indicator_id = $_model->indicator_id;
+                    $model->component_id = $_model->component_id;
+                    $model->output_id = $_model->output_id;
+
+                    if ($model->validate()) {
+
+                        if ($model->save()) {
+
+
+                            $audit = new AuditTrail();
+                            $audit->user = Yii::$app->user->id;
+                            $audit->action = "Added AWPB input : " . $model->name . " # " . $model->id;
+                            $audit->ip_address = Yii::$app->request->getUserIP();
+                            $audit->user_agent = Yii::$app->request->getUserAgent();
+                            $audit->save();
+                            Yii::$app->session->setFlash('success', 'AWPB actual input was successfully added.');
+
+                           
+                                return $this->redirect(['awpb-budget/viewactualinput', 'id' => $_model->id, 'status' => $_model->status]);
+                            
+                        } else {
+                            $message = "";
+                            foreach ($model->getErrors() as $error) {
+                                $message .= $error[0];
+                            }
+
+                            Yii::$app->session->setFlash('error', 'Error occured while adding AWPB actual input::' . $message);
+//  return $this->redirect(['home/home']);
+                        }
+                       return $this->redirect(['awpb-budget/viewactualinput', 'id' => $_model->id, 'status' => $_model->status]);
+                    }
+               
+                       else {
+                            $message = "";
+                            foreach ($model->getErrors() as $error) {
+                                $message .= $error[0];
+                            }
+                       }
+                }
+                
+                 else {
+                     
+     Yii::$app->session->setFlash('error', 'Your actual inputs are more than the budget.');
+ }
+     
+                }    
+                else {
+                    Yii::$app->session->setFlash('error', 'Enter quantity for at least one month.');
+                }
+            }
+
+
+            return $this->render('create', [
+                        'model' => $model,
+                        'id' => $id
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+    }
+
+    public function actionCreateold($id) {
         $user = User::findOne(['id' => Yii::$app->user->id]);
         if (User::userIsAllowedTo('Request Funds')) {
             $model = new AwpbActualInput();
@@ -1188,26 +1137,12 @@ class AwpbActualInputController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id) {
+    public function actionDelete($id,$id2) {
         if (User::userIsAllowedTo('Request Funds')) {
             $budget_id = $this->findModel($id)->budget_id;
             $this->findModel($id)->delete();
-            $model_budget = new \backend\models\AwpbBudget();
-            $_model = $model_budget::findOne(['id' => $budget_id]);
 
-            $total_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $budget_id])->sum('total_amount');
-            $quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $budget_id])->sum('quarter_one_amount ');
-            $quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $budget_id])->sum('quarter_two_amount ');
-            $quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $budget_id])->sum('quarter_three_amount ');
-            $quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $budget_id])->sum('quarter_four_amount ');
-            $_model->total_actual_amount = !empty($total_amount) ? $total_amount : 0;
-            $_model->quarter_one_actual_amount = !empty($quarter_one_amount) ? $quarter_one_amount : 0;
-            $_model->quarter_two_actual_amount = !empty($quarter_two_amount) ? $quarter_two_amount : 0;
-            $_model->quarter_three_actual_amount = !empty($quarter_three_amount) ? $quarter_three_amount : 0;
-            $_model->quarter_four_actual_amount = !empty($quarter_four_amount) ? $quarter_four_amount : 0;
-            $_model->save();
-
-            return $this->redirect(['awpb-budget/view_1', 'id' => $budget_id, 'status' => $model_budget->status]);
+            return $this->redirect(['awpb-budget/viewactualinput', 'id' => $id2, 'status' => 0]);
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
         }

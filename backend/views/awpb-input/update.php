@@ -10,7 +10,9 @@ $this->params['breadcrumbs'][] = ['label' => 'AWPB Input', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="awpb-activity-line-update">
+<div class="card card-success card-outline">
+    <div class="card-body">
+<div class="awpb-activity-line-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -19,4 +21,6 @@ $this->params['breadcrumbs'][] = 'Update';
          'id'=>$model->budget_id
     ]) ?>
 
+</div></div>
 </div>
+

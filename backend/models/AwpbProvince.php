@@ -71,7 +71,18 @@ class AwpbProvince extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
         ];
     }
-
+        
+    public function behaviors() {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * Gets query for [[AwpbTemplate]].
      *
@@ -135,4 +146,29 @@ class AwpbProvince extends \yii\db\ActiveRecord
 
 
 
-}}
+}
+
+public static function getAwpbProvinceList($id) {
+    $id=33;
+       $provinces  = self::find()
+        //->select(['name, id as id'])
+        ->join('LEFT JOIN', 'province', 'province.id = awpb_province.province_id')
+        ->where(['=', 'awpb_province.awpb_template_id', $id])
+        ->orderBy(['name' => SORT_ASC])
+                ->all();
+        $list = ArrayHelper::map($provinces , 'id', 'name');
+        return $list;
+    }
+
+    
+    
+public static function getAwpbProvince1($id,$id2) {
+       $provinces  = self::find() ->select(['province_id as id', 'name'])
+               ->where(['province_id'=>$id,'awpb_template_id'=>$id2])
+               ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($provinces , 'id', 'name');
+        return $list;
+    }
+    
+    
+ }
