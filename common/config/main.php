@@ -28,8 +28,7 @@ return [
                 ],
             ]
         ],
-
-        /*' cache' => [ 
+        ' cache' => [
             'class' => 'yii\caching\MemCache',
             'servers' => [
                 [
@@ -44,7 +43,7 @@ return [
             'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-        ],*/
+        ],
 
     ],
     'modules' => [
@@ -57,4 +56,3 @@ return [
         'redactor' => 'yii\redactor\RedactorModule',
     ],
 ];
- 
