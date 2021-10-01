@@ -1,5 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use backend\models\Districts;
 use backend\models\Provinces;
 use backend\models\MgfApproval;
@@ -12,12 +15,21 @@ use yii\helpers\Html;
 
 use yii\widgets\DetailView;
 use kartik\form\ActiveForm;
+<<<<<<< HEAD
+use yii\helpers\Url;
+
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfOrganisation */
 yii\web\YiiAsset::register($this);
 $user = User::findOne(['id' => Yii::$app->user->id]);
 $fname=Yii::$app->user->identity->first_name;
 $lname=Yii::$app->user->identity->last_name;
+<<<<<<< HEAD
+$usertype=Yii::$app->user->identity->type_of_user;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $concept=MgfConceptNote::findOne($model->id);
 $model=MgfOrganisation::findOne($model->organisation_id);
 
@@ -35,8 +47,71 @@ $province=Provinces::findOne($model->province_id);
 <div class="panel with-nav-tabs panel-primary">
 <div class="panel-body">
 <h3>Project Title: <?=$concept->project_title; ?></h3>
+<<<<<<< HEAD
+<?=Html::a('<i class="fa fa-backward"></i>Back', ['mgf-proposal/submitted-concept-notes',], ['class' => 'btn btn-default']);?>
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <!-- TO DO List -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ion ion-clipboard mr-1"></i>
+                    Application Forms
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              
+                <ul class="todo-list" data-widget="todo-list">
+                    <li>
+                        <?php
+                        echo Html::a(
+                        '<div  class="icheck-primary d-inline ml-2"><i class="fa fa-file-pdf fa-1x"></i></div>
+                        <span class="text">Appendix 2a: Project Concept Note - Summary Sheet</span>
+                        <div class="tools"><i class="fas fa-download fa-1x"></i></div>',
+                        ['mgf-organisation/download-appendix-one','id'=>$model->id,],
+                          [
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                            ]
+                        );
+                        ?>
+
+                    </li>
+                    <li>
+                        <?php
+                        echo Html::a(
+                        '<div  class="icheck-primary d-inline ml-2"><i class="fa fa-file-pdf fa-1x"></i></div>
+                        <span class="text">Appendix 2b: MGF – Project Concept Note (Template)</span>
+                        <div class="tools"><i class="fas fa-download fa-1x"></i></div>',
+                        ['mgf-organisation/download-appendix-one','id'=>$model->id,],
+                        [
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                          ]
+                        );
+                        ?>
+                    </li>                 
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<?php if ($usertype=="District user"){ ?>
+=======
 <?php if ($status==0){ ?>
   <?=Html::a('<i class="fa fa-backward"></i>Back', ['index',], ['class' => 'btn btn-default']);?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <table class="table table-bordered border-primary">
   <thead>
     <tr>
@@ -77,6 +152,45 @@ $province=Provinces::findOne($model->province_id);
     <?php if (!boolval($unmarked)) {?>
     <tr>
         <td></td>
+<<<<<<< HEAD
+        <td>
+          <div class="row">
+            <div class="col-lg-4">
+              District Remarks<br/>
+              District: <label><?=$district->name;?></label><br/>
+              Reviewer: <label><?=$approval->reviewed_by;?></label><br/>
+              Date: <label><?=$approval->review_submission;?></label><br/>
+              Comment:<?=$approval->review_remark?>
+            </div>  
+
+            <div class="col-lg-4">
+              Province Remarks<br/>
+              Province: <label><?=$province->name;?></label><br/>
+              Reviewer: <label><?=$approval->certified_by;?></label><br/>
+              Date: <label><?=$approval->certify_submission;?></label><br/>
+              Comment:<?=$approval->certify_remark?>
+            </div>
+
+            <div class="col-lg-4">
+              PCO Remarks<br/>
+              Reviewer: <label><?=$approval->approved_by;?></label><br/>
+              Date: <label><?=$approval->approve_submittion;?></label><br/>
+              Comment:<?=$approval->approval_remark?>
+            </div>
+          </div>
+      </td>
+          
+        <td>
+            <?php if($application_status=="Accepted") {?>
+              <label class='btn btn-success'><?=$application_status?></label><br/>
+              <?php }else{ ?>
+                  <label class='btn btn-danger'><?=$application_status?></label>
+              <?php } ?>
+              </td>
+              <td>
+          <?=Html::a('<i class="fa fa-upload"></i>Upload Minutes', ['district-minutes','id'=>$concept->id], ['class' => 'btn btn-success']);?>
+              
+=======
         <td>Final Remarks
         <?php if($application_status=="Accepted") {?>
             <label class='btn btn-success'><?=$application_status?></label><br/>
@@ -101,6 +215,7 @@ $province=Provinces::findOne($model->province_id);
           <?php }else{ ?>
               <?= Html::button('<i class="fa fa-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#acceptProject\').modal();']);?>
           <?php } ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         </td>
     </tr>
     <?php } ?>
@@ -112,8 +227,12 @@ $province=Provinces::findOne($model->province_id);
   </tbody>
 </table>
 
+<<<<<<< HEAD
+<?php }elseif($usertype=="Provincial user"){ ?>
+=======
 <?php }elseif($status==1){ ?>
   <?=Html::a('<i class="fa fa-backward"></i>Back', ['applications','status'=>1], ['class' => 'btn btn-default']);?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
   <table class="table table-bordered border-primary">
   <thead>
@@ -144,6 +263,43 @@ $province=Provinces::findOne($model->province_id);
     <?php if (!boolval($unmarked)) {?>
     <tr>
         <td></td>
+<<<<<<< HEAD
+        <td>
+          <div class="row">
+            <div class="col-lg-4">
+              District Remarks<br/>
+              District: <label><?=$district->name;?></label><br/>
+              Reviewer: <label><?=$approval->reviewed_by;?></label><br/>
+              Date: <label><?=$approval->review_submission;?></label><br/>
+              Comment:<?=$approval->review_remark?>
+            </div>  
+
+            <div class="col-lg-4">
+              Province Remarks<br/>
+              Province: <label><?=$province->name;?></label><br/>
+              Reviewer: <label><?=$approval->certified_by;?></label><br/>
+              Date: <label><?=$approval->certify_submission;?></label><br/>
+              Comment:<?=$approval->certify_remark?>
+            </div>
+
+            <div class="col-lg-4">
+              PCO Remarks<br/>
+              Reviewer: <label><?=$approval->approved_by;?></label><br/>
+              Date: <label><?=$approval->approve_submittion;?></label><br/>
+              Comment:<?=$approval->approval_remark?>
+            </div>
+          </div>
+      </td>
+        <td>
+              <?php if($application_status=="Accepted") {?>
+                  <label class='btn btn-success'><?=$application_status?></label><br/>
+              <?php }else{ ?>
+                  <label class='btn btn-danger'><?=$application_status?></label>
+              <?php } ?>
+              <?=Html::a('<i class="fa fa-upload"></i>Upload Minutes', ['province-minutes','id'=>$concept->id], ['class' => 'btn btn-success']);?>
+
+              <?=Html::a('<i class="fa fa-upload"></i>Send back to District', ['province-minutes2','id'=>$concept->id], ['class' => 'btn btn-danger']);?>
+=======
         <td>Final Remarks
         <?php if($application_status=="Accepted") {?>
             <label class='btn btn-success'><?=$application_status?></label><br/>
@@ -230,6 +386,7 @@ $province=Provinces::findOne($model->province_id);
           <?php }else{ ?>
               <?= Html::button('<i class="fa fa-comment"></i>Add Final Comment', [ 'class' => 'btn btn-info', 'onclick' => '$(\'#addFinalComment\').modal();']);?>
           <?php } ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         </td>
     </tr>
     <?php } ?>
@@ -243,8 +400,11 @@ $province=Provinces::findOne($model->province_id);
 
 <?php }else{ ?>
 
+<<<<<<< HEAD
+=======
   <?=Html::a('<i class="fa fa-backward"></i>Back', ['applications','status'=>3], ['class' => 'btn btn-default']);?>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <table class="table table-bordered border-primary">
 <thead>
   <tr>
@@ -274,6 +434,63 @@ $province=Provinces::findOne($model->province_id);
   <?php if (!boolval($unmarked)) {?>
   <tr>
       <td></td>
+<<<<<<< HEAD
+      <td>
+          <div class="row">
+            <div class="col-lg-4">
+              District Remarks<br/>
+              District: <label><?=$district->name;?></label><br/>
+              Reviewer: <label><?=$approval->reviewed_by;?></label><br/>
+              Date: <label><?=$approval->review_submission;?></label><br/>
+              Comment:<?=$approval->review_remark?>
+            </div>  
+
+            <div class="col-lg-4">
+              Province Remarks<br/>
+              Province: <label><?=$province->name;?></label><br/>
+              Reviewer: <label><?=$approval->certified_by;?></label><br/>
+              Date: <label><?=$approval->certify_submission;?></label><br/>
+              Comment:<?=$approval->certify_remark?>
+            </div>
+
+            <div class="col-lg-4">
+              PCO Remarks<br/>
+              Reviewer: <label><?=$approval->approved_by;?></label><br/>
+              Date: <label><?=$approval->approve_submittion;?></label><br/>
+              Comment:<?=$approval->approval_remark?>
+            </div>
+          </div>
+      </td>
+      <td>
+          <?php if($application_status=="Accepted") {?>
+                <label class='btn btn-success'><?=$application_status?></label><br/>
+            <?php }else{ ?>
+                <label class='btn btn-danger'><?=$application_status?></label>
+            <?php } ?>
+      </td>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td>
+        <div class="row">
+            <div class="col-lg-4">
+            </div>
+
+            <div class="col-lg-4">
+    
+            <?=Html::a('<i class="fa fa-upload"></i>Upload Minutes', ['pco-minutes','id'=>$concept->id], ['class' => 'btn btn-success']);?>
+
+            </div>  
+
+            <div class="col-lg-4">
+            <?=Html::a('<i class="fa fa-upload"></i>Send Back to District', ['pco-minutes2','id'=>$concept->id], ['class' => 'btn btn-danger']);?>
+            
+            </div>
+          </div>
+        </td>
+      </tr>
+=======
       <td>Final Remarks
       <?php if($application_status=="Certified") {?>
           <label class='btn btn-success'><?=$application_status?></label><br/>
@@ -297,6 +514,7 @@ $province=Provinces::findOne($model->province_id);
         <?php } ?>
       </td>
   </tr>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
   <?php } ?>
     <?php else:?>
       <tr>
@@ -307,6 +525,10 @@ $province=Provinces::findOne($model->province_id);
 </table>
 <?php }?>
 
+<<<<<<< HEAD
+</div>
+</div>
+=======
 
   <?php if($application_status=="Accepted") {?>
     <?=Html::a('<i class="fa fa-open"></i><h5>Concept Note Screening</h5>', ['applications','status'=>3], ['class' => 'btn btn-link']);?>
@@ -539,3 +761,4 @@ $province=Provinces::findOne($model->province_id);
 </div>
 </div>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

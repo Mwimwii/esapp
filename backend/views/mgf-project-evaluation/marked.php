@@ -58,9 +58,15 @@ $this->title = $model->organisation->cooperative.": ".$model->project_title;
                 <td style="width:15%">
                     <?php if($post->grade!=NULL){ ?>
                         <?php $form = ActiveForm::begin(['method' => 'GET','action' => Url::to(['mgf-project-evaluation/addcomment', 'ppe' =>$post->id,'proposal'=>$model->id])]); ?>
+<<<<<<< HEAD
+                        <textarea type="text" name="comment" class="form-control" placeholder="Add Comment" required></textarea>
+                        <?= Html::submitButton('<i class="fa fa-comment"></i>Add Comment', ['class' => 'btn btn-primary']) ?>
+                        <?= Html::a('<i class="glyphicon glyphicon-refresh"></i>Reset', ['mgf-project-evaluation/resetgrade', 'ppe' =>$post->id,'proposal'=>$model->id], ['class' => 'btn btn-link']);?> 
+=======
                         <input type="text" name="comment" class="form-control" placeholder="Add Comment" required/>
                         <?= Html::a('<i class="glyphicon glyphicon-refresh"></i>Reset', ['mgf-project-evaluation/resetgrade', 'ppe' =>$post->id,'proposal'=>$model->id], ['class' => 'btn btn-link']);?>        
                         <?= Html::submitButton('<i class="glyphicon glyphicon-comment"></i>Save', ['class' => 'label label-primary']) ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                     <?php ActiveForm::end(); ?>
                     <?php } ?>
                 </td>
@@ -91,7 +97,11 @@ $this->title = $model->organisation->cooperative.": ".$model->project_title;
 
                 <?= $form->field($model, 'declaration')->textarea(['rows' => 4,'required'=>true]) ?>
 
+<<<<<<< HEAD
+                <!--<?= $form->field($model, 'signature')->textarea(['rows' => 4,'required'=>true]) ?>-->
+=======
                 <?= $form->field($model, 'signature')->textarea(['rows' => 4,'required'=>true]) ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             </div>
             <div class="modal-footer">
                 <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>Save ', ['class' => 'btn btn-success btn-sm']) ?>

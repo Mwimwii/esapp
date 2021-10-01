@@ -325,6 +325,36 @@ class AwpbActivity extends \yii\db\ActiveRecord {
         return $this->hasMany(AwpbTemplateActivity::className(), ['activity_id' => 'id']);
     }
 
+    public static function getMainAwpbActivities() {
+        $data = self::find()->orderBy(['name' => SORT_ASC])
+                ->where(['parent_activity_id' => null])
+                ->all();
+        $list = ArrayHelper::map($data, 'id', 'name');
+        return $list;
+    }
+
+    public function getAwpbFunders() {
+        return $this->hasMany(AwpbFunder::className(), ['activity_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbActivityLines]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbActivityLines() {
+        return $this->hasMany(AwpbActivityLine::className(), ['activity_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[AwpbTemplateActivities]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAwpbTemplateActivities() {
+        return $this->hasMany(AwpbTemplateActivity::className(), ['activity_id' => 'id']);
+    }
+
     public static function getAwpbActivitiesList($access_level) {
 
         $activties = self::find()
@@ -457,6 +487,30 @@ class AwpbActivity extends \yii\db\ActiveRecord {
                 ->orderBy(['parent_activity_id' => SORT_ASC])
                 ->all();
         $list = ArrayHelper::map($data, 'id', 'name');
+        return $list;
+    }
+
+    public static function getSubActivities() {
+        $data = self::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                //->where(['component_id'=>$id])
+                ->where(['type' => self::TYPE_SUB])
+                ->asArray()
+                ->all();
+        $list = ArrayHelper::map($data, 'name', 'name');
+        return $list;
+    }
+
+    public static function getSubActivityList() {
+        $data = self::find()
+                ->select(["CONCAT(activity_code,' ',name) as name", 'id'])
+                //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+                //->where(['component_id'=>$id])
+                ->where(['type' => self::TYPE_SUB])
+                ->orderBy(['parent_activity_id' => SORT_ASC])
+                ->all();
+        $list = ArrayHelper::map($data, 'name', 'name');
         return $list;
     }
 

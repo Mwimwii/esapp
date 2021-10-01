@@ -2,7 +2,12 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+<<<<<<< HEAD
+#use dosamigos\datepicker\DatePicker;
+use kartik\widgets\DatePicker;
+=======
 use dosamigos\datepicker\DatePicker;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfOrganisationalDetails */
@@ -30,6 +35,19 @@ $this->title = 'Form 2: Business Management Capacity, Governance and Financial S
             <?= $form->field($model, 'others')->textInput() ?>
 
             <strong>Governance:</strong>
+<<<<<<< HEAD
+
+            <?= $form->field($model, 'last_board')->widget(DatePicker::className(),
+                ['pluginOptions' => ['autoclose'=>true,'format' => 'yyyy-mm-dd']]);?> 
+
+            <?= $form->field($model, 'last_agm')->widget(DatePicker::className(),
+                            ['pluginOptions' => ['autoclose'=>true,'format' => 'yyyy-mm-dd']]);?> 
+
+
+            <?= $form->field($model, 'last_audit')->widget(DatePicker::className(),
+                            ['pluginOptions' => ['autoclose'=>true,'format' => 'yyyy-mm-dd']]);?> 
+                
+=======
             <?= $form->field($model, 'last_board')->widget(DatePicker::className(), 
                 ['clientOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd']]);?> 
                 
@@ -38,6 +56,7 @@ $this->title = 'Form 2: Business Management Capacity, Governance and Financial S
                 
             <?= $form->field($model, 'last_audit')->widget(DatePicker::className(), 
                 ['clientOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd']]);?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         
             <strong>Financial Status:</strong>
             <?= $form->field($model, 'has_finance')->dropDownList([ 'YES' => 'YES', 'NO' => 'NO', ], ['prompt' => 'SELECT']) ?>

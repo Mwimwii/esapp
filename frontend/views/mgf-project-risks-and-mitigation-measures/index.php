@@ -15,8 +15,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+<<<<<<< HEAD
+    <?= Html::a('Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-success']);?>
+    <?= Html::a('Create Project Risks And Mitigation Measures', ['create'], ['class' => 'btn btn-success']) ?>
+        
+=======
         <?= Html::a('Create Mgf Project Risks And Mitigation Measures', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('<i class="fa fa-Home"></i>Home', ['/mgf-applicant/profile',], ['class' => 'btn btn-default']);?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

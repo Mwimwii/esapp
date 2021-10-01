@@ -28,6 +28,7 @@ use Yii;
  * @property string|null $problem_statement
  * @property string|null $overall_objective
  * @property int|null $is_active
+ * @property int|null $is_concept
  * @property float|null $totalcost
  * @property int|null $province_id
  * @property int|null $district_id
@@ -57,7 +58,7 @@ class MgfProposal extends \yii\db\ActiveRecord
     public function rules(){
         return [
             [['mgf_no', 'organisation_id', 'starting_date'], 'required'],
-            [['organisation_id', 'project_length', 'is_active', 'province_id', 'district_id','number_reviewers'], 'integer'],
+            [['organisation_id', 'project_length', 'is_active', 'province_id', 'district_id','number_reviewers','is_concept'], 'integer'],
             [['applicant_type', 'project_operations', 'any_experience', 'experience_response', 'indicate_partnerships', 'problem_statement', 'overall_objective'], 'string'],
             [['starting_date', 'date_created', 'date_submitted','number_reviewers'], 'safe'],
             [['totalcost'], 'number'],

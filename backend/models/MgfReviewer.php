@@ -39,7 +39,6 @@ class MgfReviewer extends \yii\db\ActiveRecord
     public function rules(){
         return [
             [['title', 'reviewer_type','area_of_expertise'], 'string'],
-
             [['login_code','first_name', 'last_name', 'mobile', 'user_id', 'email'], 'required'],
             [['user_id', 'confirmed', 'createdBy', 'total_assigned_1', 'total_assigned_2'], 'integer'],
             [['date_created','area_of_expertise','reviewer_type'], 'safe'],

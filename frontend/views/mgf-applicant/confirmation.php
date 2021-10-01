@@ -4,7 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\Districts;
 use frontend\models\MgfApplicant;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfChecklist;
 
 /* @var $this yii\web\View */
@@ -12,7 +15,10 @@ use frontend\models\MgfChecklist;
 /* @var $form yii\widgets\ActiveForm */
 //include("check.php");
 $this->title = 'Form 5: Confirmation';
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 $userid=Yii::$app->user->identity->id;
 $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
 $userID=Yii::$app->user->identity->nrc;
@@ -55,7 +61,10 @@ $checlist=MgfChecklist::findOne(['applicant_id'=>$applicant->id]);
                 <input value=<?=date('Y-m-d H:i:s')?> disabled class="form-control"><br/>
 
                 <br/><br/>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 <?php if ($checlist->contacts_added==1 && $checlist->management_updated==1 && $checlist->experience_updated==1 && $checlist->attachements_uploaded==1) { ?>
                 <?= Html::a('<i class="glyphicon glyphicon-backward"></i>Back', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']),
                     Html::submitButton('Confirm and Submit Application for Eligibity', ['class' => 'btn btn-success']) ?>
@@ -88,7 +97,11 @@ $checlist=MgfChecklist::findOne(['applicant_id'=>$applicant->id]);
                 <input value=<?=date('Y-m-d H:i:s')?> disabled class="form-control"><br/>
 
                 <br/><br/>
+<<<<<<< HEAD
+                
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 <?= Html::a('<i class="fa fa-home"></i>Home', ['/mgf-applicant/profile'], ['class' => 'btn btn-default']) ?>
                 <?php ActiveForm::end(); ?>
 

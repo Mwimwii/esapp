@@ -72,4 +72,13 @@ $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one();
 <div class="col-md-2"></div>
 </div>
 </div>
+<<<<<<< HEAD
 </div>
+
+
+
+
+
+=======
+</div>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

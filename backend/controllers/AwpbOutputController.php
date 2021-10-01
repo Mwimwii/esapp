@@ -1,15 +1,11 @@
 <?php
-
 namespace backend\controllers;
-
 use Yii;
 use backend\models\AwpbOutput;
 use backend\models\AwpbOutputSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\models\User;
-use backend\models\AuditTrail;
 
 /**
  * AwpbOutputController implements the CRUD actions for AwpbOutput model.
@@ -65,6 +61,18 @@ class AwpbOutputController extends Controller
      * @return mixed
      */
     public function actionCreate()
+<<<<<<< HEAD
+    {
+        $model = new AwpbOutput();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+=======
     {        
            if (User::userIsAllowedTo('Setup AWPB')) {
               $model = new AwpbOutput();
@@ -108,6 +116,7 @@ class AwpbOutputController extends Controller
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     }
 
     /**
@@ -159,6 +168,8 @@ class AwpbOutputController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+<<<<<<< HEAD
+=======
     public function actionActivities() {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $out = [];
@@ -207,4 +218,5 @@ class AwpbOutputController extends Controller
     }
   
 	
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 }

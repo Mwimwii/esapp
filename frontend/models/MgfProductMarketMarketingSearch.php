@@ -4,6 +4,7 @@ namespace frontend\models;
 use frontend\models\MgfProposal;
 use frontend\models\MgfApplicant;
 use yii\base\Model;
+use yii;
 use yii\data\ActiveDataProvider;
 use frontend\models\MgfProductMarketMarketing;
 
@@ -41,7 +42,12 @@ class MgfProductMarketMarketingSearch extends MgfProductMarketMarketing
      */
     public function search($params)
     {
-        $query = MgfProductMarketMarketing::find();
+        //$query = MgfProductMarketMarketing::find();
+        $userid=Yii::$app->user->identity->id;
+        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+        $proposal=MgfProposal::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
+        $query = MgfProductMarketMarketing::find()->where(['proposal_id'=>$proposal->id]);
+        //$query = MgfImplementationSchedule::find();
 
         // add conditions that should always apply here
 

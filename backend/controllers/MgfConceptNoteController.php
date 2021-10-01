@@ -13,7 +13,10 @@ use backend\models\MgfApplication;
 use backend\models\MgfApproval;
 use backend\models\MgfApprovalStatus;
 use backend\models\MgfOrganisation;
+use backend\models\MgfProposal;
 use backend\models\MgfScreening;
+use frontend\models\MgfChecklist;
+use yii\web\UploadedFile;
 
 //include("findid.php");
 /**
@@ -66,37 +69,51 @@ class MgfConceptNoteController extends Controller
         ]);
     }
 
-
-    public function actionView($id){
+    public function actionView2($id){
         $model = $this->findModel($id);
-        $application=MgfApplication::find()->where(['organisation_id'=>$model->organisation_id,'application_status'=>'Submitted','is_active'=>1])->orWhere(['organisation_id'=>$model->organisation_id,'application_status'=>'Under_Review','is_active'=>1])->one();
-        $applicationid=$application->id;
-        $application->application_status='Under_Review';
-        if($application->save()){
-        $concept=MgfConceptNote::findOne(['application_id'=>$applicationid]);
-        $conceptid=$concept->id;
+        $concept=MgfConceptNote::findOne(['application_id'=>$model->application_id]);
+        $application=MgfApplication::findOne($model->application_id);
         $screening=MgfScreening::find()->where(['conceptnote_id'=>$id])->all();
-        $unmarked=MgfScreening::find()->where(['organisation_id'=>$model->organisation_id,'conceptnote_id'=>$conceptid,'satisfactory'=>null])->count();
-        $approval=MgfApproval::find()->where(['conceptnote_id'=>$conceptid,'application_id'=>$applicationid])->one();        
+        $unmarked=MgfScreening::find()->where(['organisation_id'=>$model->organisation_id,'conceptnote_id'=>$id,'satisfactory'=>null])->count();
+        $approval=MgfApproval::find()->where(['conceptnote_id'=>$id,'application_id'=>$application->id])->one();        
         $accepted=MgfApprovalStatus::findOne(['approval_status'=>'Accepted']);
-        $rejected=MgfApprovalStatus::findOne(['approval_status'=>'Rejected']);
         $application_status=$application->application_status;
         if (boolval($unmarked)==false) {
             if ($approval->scores>=$accepted->lowerlimit) {
                 $application_status="Accepted";
-            } elseif ($approval->scores<=$rejected->upperlimit) {
-                $application_status="Rejected";
             } else {
-                $application_status="On-Hold";
+                $application_status="Rejected";
             }
         }
 
         return $this->render('view', ['model' => $this->findModel($id),'criteria'=>$screening,'concept'=>$concept,
-        'unmarked'=>$unmarked,'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
-    }else{
-        Yii::$app->session->setFlash('error', 'This Application cannot be Reviewed');
-        return $this->redirect(['index',]);
+        'unmarked'=>$unmarked,'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$application->id,'status'=>0]);
+    
     }
+
+
+    public function actionView($id){
+        $model = MgfProposal::findOne($id);
+
+        #$application=MgfApplication::findOne(['organisation_id'=>$model->organisation_id,'application_status'=>'Compliant','is_active'=>1]);
+        $application=MgfApplication::findOne(['organisation_id'=>$model->organisation_id,'is_active'=>1]);
+        $concept=MgfConceptNote::findOne(['application_id'=>$application->id]);
+        $screening=MgfScreening::find()->where(['conceptnote_id'=>$concept->id])->all();
+        $unmarked=MgfScreening::find()->where(['organisation_id'=>$model->organisation_id,'conceptnote_id'=>$concept->id,'satisfactory'=>null])->count();
+        $approval=MgfApproval::find()->where(['conceptnote_id'=>$concept->id,'application_id'=>$application->id])->one();        
+        $accepted=MgfApprovalStatus::findOne(['approval_status'=>'Accepted']);
+        $application_status=$application->application_status;
+        if (boolval($unmarked)==false) {
+            if ($approval->scores>=$accepted->lowerlimit) {
+                $application_status="Accepted";
+            } else {
+                $application_status="Rejected";
+            }
+        }
+
+        return $this->render('view', ['model' => $concept,'criteria'=>$screening,'concept'=>$concept,
+        'unmarked'=>$unmarked,'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$application->id,'status'=>0]);
+    
     }
 
     /**
@@ -206,6 +223,203 @@ class MgfConceptNoteController extends Controller
             return $this->redirect(['/mgf-applicant/profile']);
         }
     }
+
+    public function actionAddcomment($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfApproval::updateAll(['review_remark'=>$comment,'review_submission'=>date('Y-m-d H:i:s'),'reviewed_by'=>$userid], 'application_id='.$applicationid);
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        //MgfProposal::updateAll(['proposal_status' => ''], 'id='.$model->id);
+        return $this->redirect(['index']);
+    }
+
+
+    public function actionAddcomment2($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfApproval::updateAll(['certify_remark'=>$comment,'certify_submission'=>date('Y-m-d H:i:s'),'certified_by'=>$userid], 'application_id='.$applicationid);
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['index']);
+    }
+
+    public function actionAddcomment22($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfApproval::updateAll(['certify_remark'=>$comment,'certify_submission'=>date('Y-m-d H:i:s'),'certified_by'=>$userid], 'application_id='.$applicationid);
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['index']);
+    }
+
+
+    public function actionAddcomment3($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfApproval::updateAll(['approval_remark'=>$comment,'approve_submittion'=>date('Y-m-d H:i:s'),'approved_by'=>$userid], 'application_id='.$applicationid);
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['index',]);
+    }
+
+    public function actionAddcomment33($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfApproval::updateAll(['approval_remark'=>$comment,'approve_submittion'=>date('Y-m-d H:i:s'),'approved_by'=>$userid], 'application_id='.$applicationid);
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['index',]);
+    }
+
+
+    public function actionDistrictMinutes($id){
+        $concept = $this->findModel($id);
+        $model = MgfApproval::findOne(['conceptnote_id'=>$concept->id,'application_id'=>$concept->application_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->district_minutes=UploadedFile::getInstance($model,'district_minutes');
+            $image_mminutes=$model->district_minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->district_minutes->saveAs($path);
+            $model->district_minutes=$path;
+
+            if ($model->save()) {
+           
+                $proposal=MgfProposal::findOne(['organisation_id'=>$concept->organisation_id,'is_active'=>1]);
+                if ($model->scores==100) {
+                    $proposal->proposal_status="Compliant";
+                }else{
+                    $proposal->proposal_status="Not-Compliant";
+                }
+                    $proposal->save();
+                
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['mgf-proposal/submitted-concept-notes']);
+        }
+
+        return $this->render('upload1', [
+            'model' => $model,
+        ]);
+    }
+
+
+
+    public function actionProvinceMinutes($id){
+        $concept = $this->findModel($id);
+        $model = MgfApproval::findOne(['conceptnote_id'=>$concept->id,'application_id'=>$concept->application_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->province_minutes=UploadedFile::getInstance($model,'province_minutes');
+            $image_mminutes=$model->province_minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->province_minutes->saveAs($path);
+            $model->province_minutes=$path;
+            if ($model->save()) {
+                //MgfApplication::updateAll(['application_status'=>"Confirmed"], 'id='.$concept->application_id);
+                $proposal=MgfProposal::findOne(['organisation_id'=>$concept->organisation_id,'is_active'=>1]);
+                if ($model->scores==100) {
+                    $proposal->proposal_status="Confirmed";
+                }else{
+                    $proposal->proposal_status="Not-Confirmed";
+                }
+                    $proposal->save();
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['mgf-proposal/submitted-concept-notes']);
+        }
+
+        return $this->render('upload2', [
+            'model' => $model,
+        ]);
+    }
+
+
+    public function actionProvinceMinutes2($id){
+        $concept = $this->findModel($id);
+        $model = MgfApproval::findOne(['conceptnote_id'=>$concept->id,'application_id'=>$concept->application_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->province_minutes=UploadedFile::getInstance($model,'province_minutes');
+            $image_mminutes=$model->province_minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->province_minutes->saveAs($path);
+            $model->province_minutes=$path;
+
+            if ($model->save()) {
+                //MgfApplication::updateAll(['application_status'=>"Sent-Back"], 'id='.$concept->application_id); 
+                $proposal=MgfProposal::findOne(['organisation_id'=>$concept->organisation_id,'is_active'=>1]);
+                $proposal->proposal_status="Sent-Back";
+                $proposal->save();
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['mgf-proposal/submitted-concept-notes']);
+        }
+
+        return $this->render('upload_2', [
+            'model' => $model,
+        ]);
+    }
+
+
+    public function actionPcoMinutes($id){ 
+        $concept = $this->findModel($id);
+        $model = MgfApproval::findOne(['conceptnote_id'=>$concept->id,'application_id'=>$concept->application_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->pco_minutes=UploadedFile::getInstance($model,'pco_minutes');
+            $image_mminutes=$model->pco_minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->pco_minutes->saveAs($path);
+            $model->pco_minutes=$path;
+
+            if ($model->save()) {
+                //MgfApplication::updateAll(['application_status'=>"Approved"], 'id='.$concept->application_id); 
+                $proposal=MgfProposal::findOne(['organisation_id'=>$concept->organisation_id,'is_active'=>1]);
+                if ($model->scores==100) {
+                    $proposal->proposal_status="Accepted";
+                    $proposal->is_concept=0;
+                    $application=MgfApplication::findOne($concept->application_id);
+                    MgfChecklist::updateAll(['proposal_created'=>1],'applicant_id='.$application->applicant_id);
+                }else{
+                    $proposal->proposal_status="Not-Approved";
+                }
+                    $proposal->save();
+                
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['mgf-proposal/submitted-concept-notes']);
+        }
+
+        return $this->render('upload3', [
+            'model' => $model,
+        ]);
+    }
+
+
+    public function actionPcoMinutes2($id){ 
+        $concept = $this->findModel($id);
+        $model = MgfApproval::findOne(['conceptnote_id'=>$concept->id,'application_id'=>$concept->application_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->pco_minutes=UploadedFile::getInstance($model,'pco_minutes');
+            $image_mminutes=$model->pco_minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->pco_minutes->saveAs($path);
+            $model->pco_minutes=$path;
+
+            if ($model->save()) {
+                //MgfApplication::updateAll(['application_status'=>"Sent-Back"], 'id='.$concept->application_id); 
+                $proposal=MgfProposal::findOne(['organisation_id'=>$concept->organisation_id,'is_active'=>1]);
+                $proposal->proposal_status="Sent-Back";
+                $proposal->save();
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['mgf-proposal/submitted-concept-notes']);
+        }
+
+        return $this->render('upload_3', [
+            'model' => $model,
+        ]);
+    }
+
+
 
 
     /**

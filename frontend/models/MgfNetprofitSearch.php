@@ -1,7 +1,7 @@
 <?php
 
 namespace frontend\models;
-
+use yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\MgfNetprofit;
@@ -41,7 +41,12 @@ class MgfNetprofitSearch extends MgfNetprofit
      */
     public function search($params)
     {
-        $query = MgfNetprofit::find();
+       // $query = MgfNetprofit::find();
+       $userid=Yii::$app->user->identity->id;
+        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+        $proposal=MgfProposal::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
+        $query = MgfNetprofit::find()->where(['proposal_id'=>$proposal->id]);
+        //$query = MgfImplementationSchedule::find();
 
         // add conditions that should always apply here
 

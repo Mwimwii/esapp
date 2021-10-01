@@ -31,6 +31,10 @@ $usertype=Yii::$app->user->identity->type_of_user;
             'starting_date',
             'ending_date',
             'date_submitted',
+<<<<<<< HEAD
+            'experience_response:ntext',
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'problem_statement:ntext',
             'overall_objective:ntext',
             'province.name',

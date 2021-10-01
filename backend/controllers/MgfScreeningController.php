@@ -2,7 +2,8 @@
 
 namespace backend\controllers;
 
-
+use backend\models\MgfApplication;
+use backend\models\MgfConceptNote;
 use backend\models\MgfEligibilityApproval;
 use Yii;
 use frontend\models\MgfProposalSearch;
@@ -117,6 +118,7 @@ class MgfScreeningController extends Controller{
     public function actionApprove($id,$orgid,$conceptid){
         $userid=Yii::$app->user->identity->username;
         $model = $this->findModel($id);
+        $proposal=MgfProposal::findOne(['organisation_id'=>$orgid,'is_active'=>1]);
         if(MgfScreening::updateAll(['satisfactory' => 'YES','verified_by'=>$userid], 'id='.$id)){
             $scores=MgfScreening::find()->where(['organisation_id'=>$orgid,'conceptnote_id'=>$conceptid,'satisfactory'=>'YES'])->count();
             $total_marks=MgfScreening::find()->where(['organisation_id'=>$orgid,'conceptnote_id'=>$conceptid])->count();
@@ -126,9 +128,11 @@ class MgfScreeningController extends Controller{
                 $total=0;
             }
             Yii::$app->session->setFlash('success', 'Saved successfully.');
+            $concept=MgfConceptNote::findOne($conceptid);
+            //MgfApplication::updateAll(['application_status' => 'Under_Review'], 'id='.$concept->application_id);
+            MgfProposal::updateAll(['is_concept'=>1], 'id='.$proposal->id);
             MgfApproval::updateAll(['scores' => $total], 'conceptnote_id='.$conceptid);
-
-            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
+            return $this->redirect(['mgf-concept-note/view','id'=>$proposal->id]);
         }else{
             $scores=MgfScreening::find()->where(['organisation_id'=>$orgid,'conceptnote_id'=>$conceptid,'satisfactory'=>'YES'])->count();
             $message = '';
@@ -137,16 +141,16 @@ class MgfScreeningController extends Controller{
             }
             Yii::$app->session->setFlash('error', "Error::" . $message);
             #Yii::$app->session->setFlash('error', 'NOT Saved!'.$id.'-'.$orgid.'-'.$conceptid.'-'.$scores);
-            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
+            return $this->redirect(['mgf-concept-note/view','id'=>$proposal->id]);
         }
     }
-
 
 
 
     public function actionDisapprove($id,$orgid,$conceptid){
         $userid=Yii::$app->user->identity->username;
         $model = $this->findModel($id);
+        $proposal=MgfProposal::findOne(['organisation_id'=>$orgid,'is_active'=>1]);
         if(MgfScreening::updateAll(['satisfactory' => 'NO','verified_by'=>$userid], 'id='.$id)){
             $scores=MgfScreening::find()->where(['organisation_id'=>$orgid,'conceptnote_id'=>$conceptid,'satisfactory'=>'YES'])->count();
             $total_marks=MgfScreening::find()->where(['organisation_id'=>$orgid,'conceptnote_id'=>$conceptid])->count();
@@ -155,11 +159,13 @@ class MgfScreeningController extends Controller{
             } else {
                 $total=0;
             }
+            $concept=MgfConceptNote::findOne($conceptid);
+            //MgfApplication::updateAll(['application_status' => 'Under_Review'], 'id='.$concept->application_id);
             MgfApproval::updateAll(['scores' => $total], 'conceptnote_id='.$conceptid);
-
+            MgfProposal::updateAll(['is_concept'=>1], 'id='.$proposal->id);
             Yii::$app->session->setFlash('success', 'Saved successfully.');
 
-            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
+            return $this->redirect(['mgf-concept-note/view','id'=>$proposal->id]);
         }else{
             $message = '';
             foreach ($model->getErrors() as $error) {
@@ -167,7 +173,7 @@ class MgfScreeningController extends Controller{
             }
             Yii::$app->session->setFlash('error', "Error:" . $message);
             //Yii::$app->session->setFlash('error', 'NOT Saved!');
-            return $this->redirect(['mgf-concept-note/view','id'=>$conceptid]);
+            return $this->redirect(['mgf-concept-note/view','id'=>$proposal->id]);
         }
     }
     
@@ -186,6 +192,7 @@ class MgfScreeningController extends Controller{
             }
             Yii::$app->session->setFlash('success', 'Saved successfully.');
             MgfEligibilityApproval::updateAll(['scores' => $total], 'application_id='.$applicationid);
+            MgfApplication::updateAll(['application_status'=>"Under_Review"], 'id='.$applicationid); 
             return $this->redirect(['mgf-organisation/open','id'=>$orgid]);
         }else{
             $scores=MgfScreening::find()->where(['organisation_id'=>$orgid,'application_id'=>$applicationid,'satisfactory'=>'YES'])->count();
@@ -212,6 +219,7 @@ class MgfScreeningController extends Controller{
                 $total=0;
             }
             MgfEligibilityApproval::updateAll(['scores' => $total], 'application_id='.$applicationid);
+            MgfApplication::updateAll(['application_status'=>"Under_Review"], 'id='.$applicationid); 
             Yii::$app->session->setFlash('success', 'Saved successfully.');
 
             return $this->redirect(['mgf-organisation/open','id'=>$orgid]);

@@ -5,7 +5,7 @@ namespace backend\controllers;
 use backend\models\User;
 use common\models\Role;
 use Yii;
-use frontend\models\MgfProposalSearch;
+use backend\models\MgfProposalSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,11 +14,14 @@ use backend\models\MgfProposal;
 use backend\models\MgfApplicant;
 use backend\models\MgfOffer;
 use backend\models\MgfSelectionCategory;
-
 use backend\models\MgfProjectEvaluation;
 use backend\models\MgfReviewer;
 use backend\models\MgfApplication;
+use backend\models\MgfApproval;
+use backend\models\MgfApprovalStatus;
+use backend\models\MgfConceptNote;
 use backend\models\MgfEligibilityApproval;
+use backend\models\MgfScreening;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -104,6 +107,28 @@ class MgfProposalController extends Controller
     }
 
 
+    public function actionSubmittedConceptNotes(){
+        $searchModel = new MgfProposalSearch();
+        $dataProvider = $searchModel->searchConceptNotes(Yii::$app->request->queryParams);
+        
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+
+
+    public function actionRejectedConcepts(){
+        $searchModel = new MgfProposalSearch();
+        $dataProvider = $searchModel->searchConceptNotesRejected(Yii::$app->request->queryParams);
+        
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
 
     /**
      * Displays a single MgfProposal model.
@@ -121,6 +146,16 @@ class MgfProposalController extends Controller
         return $this->render('view', ['model' => $this->findModel($id),'components'=>$components,'categories'=>$categories,'categories'=>$categories,'reviewers'=>$reviewers,'count'=>$count]);
     }
 
+
+    public function actionViewConcept($id){
+        $userid=Yii::$app->user->identity->id;
+        $components=MgfComponent::find()->where(['proposal_id'=>$id])->all();
+        $reviewers=MgfProjectEvaluation::find()->joinWith('reviewedby0')->where(['proposal_id'=>$id,'reviewedby'=>$userid])->andWhere(['NOT',['mgf_project_evaluation.status'=>0]])->all();
+        $count=sizeof($reviewers);
+        $categories=MgfSelectionCategory::find()->all();
+        return $this->render('viewconcept', ['model' => $this->findModel($id),'components'=>$components,'categories'=>$categories,'categories'=>$categories,'reviewers'=>$reviewers,'count'=>$count]);
+    }
+    
 
     public function actionReviewers(){
         $reviewers=MgfReviewer::find()->all();
@@ -156,6 +191,7 @@ class MgfProposalController extends Controller
             $model->province_id=$applicant->province_id;
             $model->district_id=$applicant->district_id;
             $model->mgf_no=''.time();
+            $model->is_concept=0;
             $model->is_active=1;
             if($model->save()){
                 $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
@@ -262,7 +298,6 @@ class MgfProposalController extends Controller
         if ($model->proposal_status=="Prepared" || $model->proposal_status=="Cancelled") {
             $model->proposal_status="Submitted";
             $model->date_submitted=date('Y-m-d H:i:s');
-
             if (MgfApplication::find()->where(['organisation_id'=>$model->organisation_id,'status'=>1])->exists()) {
                 if ($model->save()) {
                     $application=MgfApplication::find()->where(['organisation_id'=>$model->organisation_id,'status'=>1])->one();

@@ -1,4 +1,7 @@
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 <?php
 
 namespace frontend\models;
@@ -32,7 +35,10 @@ use Yii;
  * @property float|null $totalcost
  * @property int|null $province_id
  * @property int|null $district_id
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
  * @property MgfComponent[] $mgfComponents
  * @property MgfFinalEvaluation $mgfFinalEvaluation
  * @property MgfOffer[] $mgfOffers
@@ -42,7 +48,10 @@ use Yii;
  * @property MgfOrganisation $organisation
  * @property MgfProposalEvaluation[] $mgfProposalEvaluations
  */
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 class MgfProposal extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
@@ -180,4 +189,7 @@ class MgfProposal extends \yii\db\ActiveRecord{
         return $this->hasMany(MgfProposalEvaluation::className(), ['proposal_id' => 'id']);
     }
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

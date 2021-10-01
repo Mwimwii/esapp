@@ -1,16 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-//use kartik\grid\GridView;;
-//use kartik\editable\Editable;
-use backend\models\User;
-use backend\models\AwpbUnitOfMeasure;
-
-
-use kartik\grid\EditableColumn;
-use kartik\grid\GridView;
-use kartik\editable\Editable;
-use yii\helpers\ArrayHelper;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\AwpbTemplateActivitySearch */
@@ -19,6 +10,45 @@ use yii\helpers\ArrayHelper;
                                     'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
                         ]);
 $this->title = $awpb_template->fiscal_year.' Activity Funding Profile';
+
+$this->title = 'Awpb Template Activities';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="awpb-template-activity-index">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <p>
+        <?= Html::a('Create Awpb Template Activity', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            'id',
+            'activity_id',
+            'component_id',
+            'outcome_id',
+            'output_id',
+            //'awpb_template_id',
+            //'funder_id',
+            //'expense_category_id',
+            //'created_at',
+            //'updated_at',
+            //'created_by',
+            //'updated_by',
+
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
+
+
+</div>
 $this->params['breadcrumbs'][] = $this->title;
 
 if (isset(Yii::$app->session['fiscal_year']))
@@ -348,17 +378,8 @@ if (isset(Yii::$app->session['fiscal_year']))
            
     ?>
 
-
-
-
-
-
-
-
-
-
-
 </div>
 <?php
 $this->registerCss('.popover-x {display:none}');
 ?>
+

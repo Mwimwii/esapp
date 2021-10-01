@@ -19,6 +19,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'activity_id') ?>
 
+<<<<<<< HEAD
+    <?= $form->field($model, 'component_id') ?>
+
+    <?= $form->field($model, 'outcome_id') ?>
+
+    <?= $form->field($model, 'output_id') ?>
+=======
     <?= $form->field($model, 'activity_code') ?>
 
     <?= $form->field($model, 'name') ?>
@@ -28,6 +35,7 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'outcome_id') ?>
 
     <?php // echo $form->field($model, 'output_id') ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     <?php // echo $form->field($model, 'awpb_template_id') ?>
 
@@ -35,6 +43,8 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'expense_category_id') ?>
 
+<<<<<<< HEAD
+=======
     <?php // echo $form->field($model, 'ifad') ?>
 
     <?php // echo $form->field($model, 'ifad_grant') ?>
@@ -55,6 +65,7 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'access_level_programme') ?>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <?php // echo $form->field($model, 'created_at') ?>
 
     <?php // echo $form->field($model, 'updated_at') ?>

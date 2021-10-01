@@ -8,6 +8,11 @@ use frontend\models\MgfSustainabilityScalabilitySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+<<<<<<< HEAD
+use frontend\models\MgfApplicant;
+use frontend\models\MgfProposal;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /**
  * MgfSustainabilityScalabilityController implements the CRUD actions for MgfSustainabilityScalability model.

@@ -19,7 +19,10 @@ $this->title = $model->component_name;
           <tr>
             <th scope="col">#</th>
             <th scope="col">Activity Name</th>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             <th scope="col"><span><?=Html::a('<i class="fa fa-plus"></i>New Activity',['mgf-activity/create','id'=>$model->id],['class'=>'btn btn-success btn-sm'])?></th>
         </tr>
         </thead>
@@ -41,7 +44,10 @@ $this->title = $model->component_name;
                         <th scope="col">Year 3</th>
                         <th scope="col">Year 4</th>
                         <th scope="col">Unit Cost(ZMK)</th>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         <th scope="col"><span><?=Html::a('<i class="fa fa-plus"></i>New Item',['mgf-input-item/create','id'=>$act->id],['class'=>'btn btn-success btn-sm'])?></th>
                     </tr>
                     </thead>
@@ -61,10 +67,15 @@ $this->title = $model->component_name;
                         <td><?=$post->project_year_4; ?></td>
                         <td><?=$post->unit_cost; ?></td>
                         <td>
+<<<<<<< HEAD
+                        <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-input-item/update','id'=>$post->id],['class'=>'label label-primary'])?></span> 
+                        <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-input-item/delete', 'id' => $post->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+=======
 
                         <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-input-item/update','id'=>$post->id],['class'=>'label label-primary'])?></span> 
                         <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-input-item/delete', 'id' => $post->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         </td>
                     </tr>
                     <?php  $ii=$ii+1; ?>
@@ -112,11 +123,17 @@ $this->title = $model->component_name;
             </td>
             
             <td>
+<<<<<<< HEAD
+              <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-activity/update','id'=>$act->id],['class'=>'label label-primary'])?></span> 
+              <?php if(count($items)==0): ?>
+                <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-activity/delete', 'id' => $act->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+=======
 
               <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-activity/update','id'=>$act->id],['class'=>'label label-primary'])?></span> 
               <?php if(count($items)==0): ?>
                 <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-activity/delete', 'id' => $act->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
               <?php endif; ?>
             </td>
           </tr>

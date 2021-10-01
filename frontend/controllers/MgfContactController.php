@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfApplicant;
 use frontend\models\MgfChecklist;
 use Yii;
@@ -75,7 +78,10 @@ class MgfContactController extends Controller
      * @return mixed
      */
     public function actionCreate($id){
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         $model = new MgfContact();
         if ($model->load(Yii::$app->request->post())) {
             $applicant=MgfApplicant::findOne($id);
@@ -90,9 +96,13 @@ class MgfContactController extends Controller
                 Yii::$app->session->setFlash('error', 'NOT Saved');
             }
             
+<<<<<<< HEAD
+            return $this->redirect(['mgf-organisation/view', 'id' => $applicant->organisation_id]);
+=======
 
             return $this->redirect(['mgf-organisation/view', 'id' => $applicant->organisation_id]);
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         }
     }
 

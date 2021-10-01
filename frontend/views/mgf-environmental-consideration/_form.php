@@ -22,7 +22,11 @@ $proposal=MgfProposal::find()->where(['is_active'=>1,'organisation_id'=>$applica
 
     <?php $form = ActiveForm::begin(); ?>
 
+<<<<<<< HEAD
+    <?= $form->field($model, 'description')->textArea(['maxlength' => true]) ?>
+=======
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     <?= $form->field($model, 'proposal_id')->hiddenInput(['value'=>$proposal->id, 'maxlength' => true])->label(false) ?>
     

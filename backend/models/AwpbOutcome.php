@@ -138,4 +138,3 @@ class AwpbOutcome extends \yii\db\ActiveRecord
         return $list;
     }
 }
-

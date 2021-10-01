@@ -357,7 +357,11 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     <li>
                         <?php
                         $awpb_template = \backend\models\AwpbTemplate::findOne([
+<<<<<<< HEAD
+                                    'status' => \backend\models\AwpbTemplate::STATUS_ACTIVE,
+=======
                                     'status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED,
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         ]);
                         $fiscal_y = !empty($awpb_template->fiscal_year) ? $awpb_template->fiscal_year : "";
                         echo Html::a(
@@ -383,19 +387,30 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     </li>
                     <li>
                         <?php
+<<<<<<< HEAD
+=======
                          $awpb_template1 = \backend\models\AwpbTemplate::findOne([
                                     'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
                         ]);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                         echo Html::a(
                                 '<div  class="icheck-primary d-inline ml-2">
                             <i class="fa fa-file-excel fa-2x"></i>
                         </div>
                         <!-- todo text -->
+<<<<<<< HEAD
+                        <span class="text">' . $fiscal_y . ' Sage Pastel Budget File</span>
+                        <div class="tools">
+                            <i class="fas fa-download fa-2x"></i>
+                        </div>',
+                                ['reports/download-budget', 'id' => (!empty($awpb_template->id) ? $awpb_template->id : ""),
+=======
                         <span class="text">' . $awpb_template1->fiscal_year . ' Sage Pastel Budget File</span>
                         <div class="tools">
                             <i class="fas fa-download fa-2x"></i>
                         </div>',
                                 ['reports/download-budget', 'id' => (!empty($awpb_template1->id) ? $awpb_template1->id : ""),
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                                 ], [
                             'title' => 'Download Cat A farmer registration form',
                             'target' => '_blank',
@@ -1006,7 +1021,11 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             <?php
             $form = ActiveForm::begin([
                         'action' => 'faabs-attendance-sheet',
+<<<<<<< HEAD
+                             // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
+=======
                             // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                     ])
             ?>
             <div class="modal-body">
@@ -1042,7 +1061,11 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                 ]);
 
 
+<<<<<<< HEAD
+                //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
+=======
 //echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
                 echo $form->field($faabs_model, 'topic')->multiselect(\backend\models\MeFaabsTrainingTopics::getList(), ['selector' => 'radio']);
                 ?>

@@ -9,7 +9,10 @@ use yii\grid\GridView;
 
 $this->title = 'Assigned Proposals';
 ?>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
  <h3><?= Html::encode($this->title) ?></h3> 
 <div class="card card-success card-outline">
     <div class="card-body">

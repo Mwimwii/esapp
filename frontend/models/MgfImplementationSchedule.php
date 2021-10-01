@@ -3,6 +3,10 @@
 namespace frontend\models;
 
 use Yii;
+<<<<<<< HEAD
+use yii\data\ArrayDataProvider;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /**
  * This is the model class for table "mgf_implementation_schedule".
@@ -85,3 +89,40 @@ class MgfImplementationSchedule extends \yii\db\ActiveRecord
         ];
     }
 }
+<<<<<<< HEAD
+
+class GanttTest extends \yii\base\Model
+{
+  public function getDataProvider()
+  {
+      $testArray = [
+        [
+          'task' => 'Project planing',
+          'type' => 'primary',
+          'START_DATE' => '2020-10-19',
+          'END_DATE' => '2020-11-07'
+        ],
+        [
+          'task' => 'Production',
+          'type' => 'danger',
+          'START_DATE' => '2020-11-15',
+          'END_DATE' => '2021-03-29'
+        ],
+        [
+          'task' => 'Release',
+          'type' => 'success',
+          'START_DATE' => '2021-04-05',
+          'END_DATE' => '2021-04-06'
+        ],
+      ];
+     return new ArrayDataProvider([
+          'allModels' => $testArray,
+          'pagination' => [
+              'pageSize' => 0,
+          ],
+        ]
+      );
+  }
+}
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

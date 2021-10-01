@@ -28,7 +28,12 @@ return [
                 ],
             ]
         ],
+<<<<<<< HEAD
+
+        /*' cache' => [ 
+=======
         ' cache' => [
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'class' => 'yii\caching\MemCache',
             'servers' => [
                 [
@@ -38,12 +43,13 @@ return [
                 ],
             ],
             'useMemcached' => true,
-        ],
+        ], 
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-        ],
+        ],*/
+
     ],
     'modules' => [
         'dynagrid' => [
@@ -55,4 +61,8 @@ return [
         'redactor' => 'yii\redactor\RedactorModule',
     ],
 ];
+<<<<<<< HEAD
+ 
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

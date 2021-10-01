@@ -81,4 +81,13 @@ $this->title = "Project's Components";
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
+<<<<<<< HEAD
 </div>
+
+
+
+
+
+=======
+</div>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

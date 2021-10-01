@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfChecklist;
 use frontend\models\MgfApplicant;
 use Yii;
@@ -68,7 +71,10 @@ class MgfOrganisationalDetailController extends Controller
     public function actionCreate(){
         $model = new MgfOrganisationalDetails();
         $userid=Yii::$app->user->identity->id;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
         if ($model->load(Yii::$app->request->post())) {
             $model->organisation_id=$applicant->organisation_id;
@@ -91,7 +97,10 @@ class MgfOrganisationalDetailController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     public function actionUpdate($id){
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -102,7 +111,11 @@ class MgfOrganisationalDetailController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+<<<<<<< HEAD
+        return $this->render('update', [
+=======
         return $this->render('upd', [
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'model' => $model,
         ]);
     }

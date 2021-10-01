@@ -15,7 +15,11 @@ $lname=Yii::$app->user->identity->last_name;
 $organisation=MgfOrganisation::findOne($_GET['id']);
 $district=Districts::findOne($organisation->district_id);
 $province=Provinces::findOne($organisation->province_id);
+<<<<<<< HEAD
+$this->title = 'APPLICATION SCREENING FORM [WINDOWS 1 and 2]';
+=======
 $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 ?>
 <h3><?= Html::encode($this->title) ?></h3>
@@ -125,7 +129,10 @@ $this->title = 'APPLICATION SCREENING FORM [WINDOWS 2]';
       <td>
           <?php if($post->satisfactory == NULL) {?>
           <?php }else if($post->satisfactory == 'YES') {?>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             <i class="fa fa-check" style="color:green"></i>
           <?php }else{ ?>
             <i class="fa fa-times" style="color:red"></i>

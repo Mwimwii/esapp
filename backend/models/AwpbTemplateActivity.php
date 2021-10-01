@@ -108,7 +108,6 @@ class AwpbTemplateActivity extends \yii\db\ActiveRecord
             ],
         ];
     }
-
     /**
      * {@inheritdoc}
      */

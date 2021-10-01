@@ -3,7 +3,10 @@
 namespace frontend\controllers;
 
 use frontend\models\MgfActivity;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfApplicant;
 use frontend\models\MgfChecklist;
 use frontend\models\MgfComponent;
@@ -117,10 +120,16 @@ class MgfInputItemController extends Controller{
 
             if($activity->save()){
                 Yii::$app->session->setFlash('success', 'Saved Successfully');
+<<<<<<< HEAD
+                $userid=Yii::$app->user->identity->id;
+                $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+                #MgfChecklist::updateAll(['items_created'=>1], 'applicant_id='.$applicant->id);
+=======
 
                 $userid=Yii::$app->user->identity->id;
                 $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
                 MgfChecklist::updateAll(['items_created'=>1], 'applicant_id='.$applicant->id);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 return $this->redirect(['mgf-component/manage', 'id' =>$this->sum_up_figures($activity->componet_id)]);
             }else{
                 Yii::$app->session->setFlash('error', 'Action Fail');
@@ -175,10 +184,16 @@ class MgfInputItemController extends Controller{
             
             if($activity->save() && $activity->save()){
                 Yii::$app->session->setFlash('success', 'Saved Successfully');
+<<<<<<< HEAD
+                $userid=Yii::$app->user->identity->id;
+                $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+                #MgfChecklist::updateAll(['items_created'=>1], 'applicant_id='.$applicant->id);
+=======
 
                 $userid=Yii::$app->user->identity->id;
                 $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
                 MgfChecklist::updateAll(['items_created'=>1], 'applicant_id='.$applicant->id);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 return $this->redirect(['mgf-component/inputitem', 'id' =>$this->sum_up_figures($activity->componet_id)]);
             }else{
                 Yii::$app->session->setFlash('error', 'Action Fail');
@@ -229,6 +244,15 @@ class MgfInputItemController extends Controller{
         $proposal->totalcost=$sum_of_components;
         if($sum_of_components>0){
             $proposal->proposal_status="Prepared";
+<<<<<<< HEAD
+            $userid=Yii::$app->user->identity->id;
+            $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+            #MgfChecklist::updateAll(['items_created'=>1], 'applicant_id='.$applicant->id);
+        }else{
+            $userid=Yii::$app->user->identity->id;
+            $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+            #MgfChecklist::updateAll(['items_created'=>0], 'applicant_id='.$applicant->id);
+=======
 
             $userid=Yii::$app->user->identity->id;
             $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
@@ -237,6 +261,7 @@ class MgfInputItemController extends Controller{
             $userid=Yii::$app->user->identity->id;
             $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
             MgfChecklist::updateAll(['items_created'=>0], 'applicant_id='.$applicant->id);
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             $proposal->proposal_status="Created";
         }
         $proposal->save();

@@ -109,7 +109,10 @@ $usertype=Yii::$app->user->identity->type_of_user;
                      return $model->proposal->proposal_status == 'Updated';
                  },
             ]
+<<<<<<< HEAD
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ]
     ],
 ]); ?>

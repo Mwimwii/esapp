@@ -40,15 +40,25 @@ class MgfImplementationArrangementsCooperatingPartners extends \yii\db\ActiveRec
     public function rules()
     {
         return [
+<<<<<<< HEAD
+            [['main_activities', 'typee', 'proposal_id', 'created_by'], 'required'],
+            [['typee'], 'string'],
+            [['proposal_id', 'created_by', 'updated_by'], 'integer'],
+=======
             [['main_activities', 'typee', 'proposal_id', 'created_by', 'created_at'], 'required'],
             [['typee'], 'string'],
             [['proposal_id', 'created_by', 'created_at', 'updated_by'], 'integer'],
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             [['date_created'], 'safe'],
             [['main_activities'], 'string', 'max' => 100],
             [['respobility'], 'string', 'max' => 20],
             [['experience', 'comment'], 'string', 'max' => 50],
+<<<<<<< HEAD
+            
+=======
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['proposal_id'], 'exist', 'skipOnError' => true, 'targetClass' => MgfProposal::className(), 'targetAttribute' => ['proposal_id' => 'id']],
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
         ];
     }
 
@@ -60,10 +70,17 @@ class MgfImplementationArrangementsCooperatingPartners extends \yii\db\ActiveRec
         return [
             'id' => 'ID',
             'main_activities' => 'Main Activities',
+<<<<<<< HEAD
+            'respobility' => 'Resposibility',
+            'experience' => 'Experience',
+            'comment' => 'Comment',
+            'typee' => 'Type',
+=======
             'respobility' => 'Respobility',
             'experience' => 'Experience',
             'comment' => 'Comment',
             'typee' => 'Typee',
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'proposal_id' => 'Proposal ID',
             'date_created' => 'Date Created',
             'created_by' => 'Created By',

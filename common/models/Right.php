@@ -71,6 +71,9 @@ class Right extends \yii\db\ActiveRecord {
             'Manage AWPB templates' => "",
             'View AWPB templates' => "",
             'View AWPB activity lines' => "",
+
+            'Manage AWPB activity lines' => "",
+
             'Manage AWPB' => "Manage AWPB",
             'Manage PW AWPB' => "Manage PW AWPB",
             'Manage AWPB activity lines' => 'View AWPB activity lines',
@@ -164,7 +167,6 @@ class Right extends \yii\db\ActiveRecord {
             'Manage logframe programe targets' => "Manage logframe programe targets",
 
                 //php yii crons/seed-rights - Run this command in the esapp folder on the command prompt 
-
         ];
 
         $count = 0;
@@ -181,5 +183,6 @@ class Right extends \yii\db\ActiveRecord {
         }
         echo "Inserted $count rights into permissions table";
     }
+
 
 }

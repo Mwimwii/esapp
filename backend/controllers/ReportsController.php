@@ -1268,6 +1268,7 @@ class ReportsController extends Controller {
 
     /**
      * 
+     * Lists all MeFaabsGroups models.
      * @return mixed
      */
     public function actionFacilitationImporovedTechnologies() {
@@ -1993,7 +1994,11 @@ class ReportsController extends Controller {
     }
 
     public function actionDownloadPhysicalTrackingTable() {
+<<<<<<< HEAD
+        $searchModel = new \backend\models\AwbpActivitySearch();
+=======
         $searchModel = new \backend\models\AwpbBudgetSearch();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
         $province_id = Yii::$app->request->post('province_id', null);
         $district_id = Yii::$app->request->post('district_id', null);
@@ -2715,6 +2720,168 @@ $year="";
         header('Cache-Control: max-age=1');
 
 // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+
+    public function actionDownloadBudget($id) {
+
+// 	$user = User::findOne(['id' => Yii::$app->user->id]);
+//     $searchModel = new AwpbActivityLine();
+//     $query = $searchModel::find();
+//     $query->select(['SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
+//    // $query->where('Awpb_Template.fiscal_year= :field1', [':field1' =>$id]);
+//    // $query->groupBy('Awpb_Activity.gl_account_code');
+//    // $query->select(['Awpb_Template.fiscal_year as year','Awpb_Activity.gl_account_code as code','SUM(quarter_one_amount) as quarter_one_amount','SUM(quarter_two_amount) as quarter_two_amount','SUM(quarter_three_amount) as quarter_three_amount','SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']); 
+//     //$query->leftJoin('Awpb_Activity', 'Awpb_Activity.id = AwpbActivityLine.activity_id');
+//     //$query->where('Awpb_Template.fiscal_year= :field1', [':field1' =>$id]);
+//     //$query->groupBy('Awpb_Activity.gl_account_code');
+//     $query->asArray();
+//     $query->all();
+//     if (!empty(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch'])) {
+//         $faabs_ids = [];
+//         $budget_model = MeFaabsGroups::find()->where(['camp_id' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['camp_id']])
+//                 ->all();
+//         if (!empty($faabs_model)) {
+//             foreach ($faabs_model as $id) {
+//                 array_push($faabs_ids, $id['id']);
+//             }
+//         }
+
+        $budget_model = \backend\models\AwpbActivityLine::find()
+                ->select(['awpb_template.fiscal_year as year', 'awpb_activity.gl_account_code as code',
+                    'SUM(mo_1_amount) as m1',
+                    'SUM(mo_2_amount) as m2',
+                    'SUM(mo_3_amount) as m3',
+                    'SUM(mo_4_amount) as m4',
+                    'SUM(mo_5_amount) as m5',
+                    'SUM(mo_6_amount) as m6',
+                    'SUM(mo_7_amount) as m7',
+                    'SUM(mo_8_amount) as m8',
+                    'SUM(mo_9_amount) as m9',
+                    'SUM(mo_10_amount) as m10',
+                    'SUM(mo_11_amount) as m11',
+                    'SUM(mo_12_amount) as m12',
+                ])
+                ->leftJoin('awpb_activity', 'awpb_activity.id = awpb_activity_line.activity_id')
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_activity_line.awpb_template_id')
+                ->where(['awpb_activity_line.awpb_template_id' => $id])
+                // ->andWhere(['quarter' => Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['quarter']])
+                //  ->andWhere(['IN', 'faabs_group_id', $faabs_ids])
+                // ->andWhere(['youth_non_youth' => 'Youth'])
+                // ->andWhere(['YEAR(training_date)' => date("Y", strtotime(Yii::$app->request->queryParams['MeFaabsTrainingAttendanceSheetSearch']['year']))])
+                ->groupBy(['code'])
+                ->asArray()
+                ->all();
+
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getDefaultStyle()->applyFromArray(
+                [
+                    'border' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'],
+                        ],
+                    ]
+                ]
+        );
+
+        $spreadsheet->getProperties()->setCreator('esappmis')
+                ->setLastModifiedBy('esappmis')
+                ->setTitle('Office 2007 XLSX Facilitation of Improved Technologies/Best Practices Report')
+                ->setSubject('Office 2007 XLSX Facilitation of Improved Technologies/Best Practices Report')
+                ->setDescription('Facilitation of Improved Technologies/Best Practices report for Office 2007 XLSX, generated using PHP classes.')
+                ->setKeywords('office 2007 openxml php')
+                ->setCategory('Report');
+
+        if (!empty($budget_model)) {
+            $row = 0;
+            foreach ($budget_model as $_model) {
+                $year = $_model['year'];
+                $row1 = $row + 1;
+                $row2 = $row1 + 1;
+                $row3 = $row2 + 1;
+                $row4 = $row3 + 1;
+                $row5 = $row4 + 1;
+                $row6 = $row5 + 1;
+                $row7 = $row6 + 1;
+                $row8 = $row7 + 1;
+                $row9 = $row8 + 1;
+                $row10 = $row9 + 1;
+                $row11 = $row10 + 1;
+                $row12 = $row11 + 1;
+                //Legder Account, Budget Period Date, Budget
+                //       0700        2019-02-31      K2000
+                //
+                $spreadsheet->setActiveSheetIndex(0)
+                        // ->setCellValue('B1', $_model['quarter_one_amount'])
+                        // ->setCellValue('B2',$_model['mo_1'])
+                        // ->setCellValue('B3', $_model['quarter_three_amount'])
+                        // ->setCellValue('B4',$_model['quarter_four_amount'])
+                        ->setCellValue('A' . $row1, $_model['code'])
+                        ->setCellValue('B' . $row1, $_model['year'] . '-01-31')
+                        ->setCellValue('C' . $row1, $_model['m1'])
+                        ->setCellValue('A' . $row2, $_model['code'])
+                        ->setCellValue('B' . $row2, $_model['year'] . '-02-28')
+                        ->setCellValue('C' . $row2, $_model['m2'])
+                        ->setCellValue('A' . $row3, $_model['code'])
+                        ->setCellValue('B' . $row3, $_model['year'] . '-03-31')
+                        ->setCellValue('C' . $row3, $_model['m3'])
+                        ->setCellValue('A' . $row4, $_model['code'])
+                        ->setCellValue('B' . $row4, $_model['year'] . '-04-30')
+                        ->setCellValue('C' . $row4, $_model['m4'])
+                        ->setCellValue('A' . $row5, $_model['code'])
+                        ->setCellValue('B' . $row5, $_model['year'] . '-06-31')
+                        ->setCellValue('C' . $row5, $_model['m5'])
+                        ->setCellValue('A' . $row6, $_model['code'])
+                        ->setCellValue('B' . $row6, $_model['year'] . '-08-30')
+                        ->setCellValue('C' . $row6, $_model['m6'])
+                        ->setCellValue('A' . $row7, $_model['code'])
+                        ->setCellValue('B' . $row7, $_model['year'] . '-07-31')
+                        ->setCellValue('C' . $row7, $_model['m7'])
+                        ->setCellValue('A' . $row8, $_model['code'])
+                        ->setCellValue('B' . $row8, $_model['year'] . '-08-31')
+                        ->setCellValue('C' . $row8, $_model['m8'])
+                        ->setCellValue('A' . $row9, $_model['code'])
+                        ->setCellValue('B' . $row9, $_model['year'] . '-09-30')
+                        ->setCellValue('C' . $row9, $_model['m9'])
+                        ->setCellValue('A' . $row10, $_model['code'])
+                        ->setCellValue('B' . $row10, $_model['year'] . '-10-31')
+                        ->setCellValue('C' . $row10, $_model['m10'])
+                        ->setCellValue('A' . $row11, $_model['code'])
+                        ->setCellValue('B' . $row11, $_model['year'] . '-11-30')
+                        ->setCellValue('C' . $row11, $_model['m11'])
+                        ->setCellValue('A' . $row12, $_model['code'])
+                        ->setCellValue('B' . $row12, $_model['year'] . '-12-31')
+                        ->setCellValue('C' . $row12, $_model['m12']);
+
+                $row = $row + 12;
+                //$row10 = $row+1;$row11 = $row+1;$row12 = $row+1;
+            }
+        }
+
+
+        $spreadsheet->getActiveSheet()->setTitle('2020 Budget');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+
+        // Redirect output to a client's web browser (Xlsx)
+        $file = '_Budget_' . date("Ymdhis"); //$camp_model->name . '_Facilitation_improved_technologies_report' . date("Ymdhis");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $file . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1

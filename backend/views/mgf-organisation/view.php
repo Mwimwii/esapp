@@ -62,10 +62,13 @@ $usertype=Yii::$app->user->identity->type_of_user;
             <th scope="col">Mobile No.</th>
             <th scope="col">Position</th>
             <th scope="col">Date Created</th>
+<<<<<<< HEAD
+=======
 
             <th scope="col">
                 <?= Html::button('<i class="glyphicon glyphicon-plus"></i>New Contact', [ 'class' => 'btn btn-success btn-sm', 'onclick' => '$(\'#addContantact\').modal();']);?>
             </th>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
           </tr>
         </thead>
         <tbody>
@@ -79,11 +82,14 @@ $usertype=Yii::$app->user->identity->type_of_user;
             <td><?=$post->mobile; ?></td>
             <td><?=$post->position->position; ?></td>
             <td><?=$post->date_created; ?></td>
+<<<<<<< HEAD
+=======
 
             <td>
               <span><?=Html::a('<i class="glyphicon glyphicon-edit"></i>Edit',['mgf-contact/update','id'=>$post->id],['class'=>'label label-primary'])?></span> 
               <?= Html::a('<i class="glyphicon glyphicon-trash"></i>Delete', ['mgf-contact/delete', 'id' => $post->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
             </td>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
           </tr>
           <?php  $i=$i+1; ?>
           <?php endforeach; ?>

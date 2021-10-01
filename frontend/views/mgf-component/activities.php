@@ -35,11 +35,19 @@ $this->title = $model->component_name;
             <td><?=$act->subtotal; ?></td>
             <?php $items=MgfInputItem::find()->where(['activity_id'=>$act->id])->count();?>
             <td>
+<<<<<<< HEAD
+              <span><?=Html::a('<i class="fa fa-edit"></i>Edit',['mgf-activity/update','id'=>$act->id],['class'=>'btn btn-primary btn-sm'])?></span> 
+              <?php if($items==0): ?>
+                <?= Html::a('<i class="fa fa-trash"></i>Delete', ['mgf-activity/delete', 'id' => $act->id], ['class' => 'btn btn-danger btn-sm','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
+              <?php endif; ?>
+              <span><?=Html::a('<i class="fa fa-plus"></i>Add Input Item',['/mgf-input-item/create','id'=>$act->id],['class'=>'btn btn-success btn-sm'])?></span> 
+=======
               <span><?=Html::a('<i class="glyphicon glyphicon-edit"></i>Edit',['mgf-activity/update','id'=>$act->id],['class'=>'label label-primary'])?></span> 
               <?php if($items==0): ?>
                 <?= Html::a('<i class="glyphicon glyphicon-trash"></i>Delete', ['mgf-activity/delete', 'id' => $act->id], ['class' => 'label label-danger','data' => ['confirm' => 'Are you sure you want to delete this item?','method' => 'post',],]) ?>
               <?php endif; ?>
               <span><?=Html::a('<i class="glyphicon glyphicon-plus"></i>Add Input Item',['/mgf-input-item/create','id'=>$act->id],['class'=>'label label-success'])?></span> 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             </td>
           </tr>
           <?php  $ia=$ia+1; ?>

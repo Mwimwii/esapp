@@ -59,7 +59,7 @@ class MgfEligibilityApproval extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'application_id' => 'Application ID',
+            'application_id' => 'Application',
             'is_active' => 'Is Active',
             'scores' => 'Scores',
             'review_remark' => 'Review Remark',

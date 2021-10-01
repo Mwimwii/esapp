@@ -58,8 +58,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['fiscal_year', 'budget_theme', 'submission_deadline', 'review_deadline',  'incorpation_deadline_pco_moa_mfl'], 'required'],
 
@@ -87,8 +86,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'fiscal_year' => 'Fiscal Year',

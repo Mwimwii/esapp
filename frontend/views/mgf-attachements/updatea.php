@@ -4,7 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use frontend\models\MgfApplicant;
 use frontend\models\MgfApplication;
+<<<<<<< HEAD
+use backend\models\MgfAttachements;
+=======
 use frontend\models\MgfAttachements;
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MgfAttachements */

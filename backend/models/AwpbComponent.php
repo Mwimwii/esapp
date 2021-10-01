@@ -9,6 +9,7 @@ use common\models\Role;
 use backend\models\AwpbActivity;
 use backend\models\AwpbActivitySearch;
 use yii\db\ActiveRecord;
+
 /**
  * This is the model class for table "awpb_component".
  *
@@ -45,7 +46,8 @@ use yii\db\ActiveRecord;
  * @property AwpbOutcome[] $awpbOutcomes
  * @property AwpbTemplateActivity[] $awpbTemplateActivities
  */
-class AwpbComponent extends \yii\db\ActiveRecord {
+class AwpbComponent extends \yii\db\ActiveRecord
+{
 
     const TYPE_MAIN = 0;
     const TYPE_SUB = 1;
@@ -55,34 +57,36 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     /**
      * {@inheritdoc}
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return 'awpb_component';
     }
-    
+
 
     /**
      * {@inheritdoc}
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['code', 'name', 'description', 'type'], 'required'],
-            [['parent_component_id', 'type', 'access_level', 'access_level_district','access_level_province','access_level_programme','funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['parent_component_id', 'type', 'access_level', 'access_level_district', 'access_level_province', 'access_level_programme', 'funder_id', 'expense_category_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['outcome', 'output'], 'string'],
             [['code'], 'string', 'max' => 10],
             [['name', 'description', 'subcomponent'], 'string', 'max' => 255],
             [['gl_account_code'], 'string', 'max' => 4],
-             ['parent_component_id', 'required', 'when' => function($model) {
-                    return $model->subcomponent== 'Subcomponent';
-                }, 'message' => 'Parent component can not be blank!'],
-            [['code'], 'unique', 'when' => function($model) {
-                    return $model->isAttributeChanged('code');
-                }, 'message' => 'Component code already in use!'],
-            [['name'], 'unique', 'when' => function($model) {
-                    return $model->isAttributeChanged('name');
-                }, 'message' => 'Component name already in use!'],
-            [['description'], 'unique', 'when' => function($model) {
-                    return $model->isAttributeChanged('description');
-                }, 'message' => 'Component description already in use!'],
+            ['parent_component_id', 'required', 'when' => function ($model) {
+                return $model->subcomponent == 'Subcomponent';
+            }, 'message' => 'Parent component can not be blank!'],
+            [['code'], 'unique', 'when' => function ($model) {
+                return $model->isAttributeChanged('code');
+            }, 'message' => 'Component code already in use!'],
+            [['name'], 'unique', 'when' => function ($model) {
+                return $model->isAttributeChanged('name');
+            }, 'message' => 'Component name already in use!'],
+            [['description'], 'unique', 'when' => function ($model) {
+                return $model->isAttributeChanged('description');
+            }, 'message' => 'Component description already in use!'],
             // ['access_level', 'required', 'when' => function($model) {
             //         return $model->subcomponent == 'Component';
             //     }, 'message' => 'Access level can not be blank for a main component!'],
@@ -90,8 +94,9 @@ class AwpbComponent extends \yii\db\ActiveRecord {
             [['funder_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbFunder::className(), 'targetAttribute' => ['funder_id' => 'id']],
         ];
     }
-        
-    public function behaviors() {
+
+    public function behaviors()
+    {
         return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
@@ -105,7 +110,8 @@ class AwpbComponent extends \yii\db\ActiveRecord {
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'id' => 'ID',
             'code' => 'Component Code',
@@ -116,9 +122,9 @@ class AwpbComponent extends \yii\db\ActiveRecord {
             'output' => 'Output',
             'type' => 'Type',
             'access_level' => 'Access Level',
-            'access_level_district'=>'District',
-            'access_level_province'=>'Province',
-            'access_level_programme'=>'Programme',
+            'access_level_district' => 'District',
+            'access_level_province' => 'Province',
+            'access_level_programme' => 'Programme',
             'subcomponent' => 'Subcomponent',
             'funder_id' => 'Funder ID',
             'expense_category_id' => 'Expense Category ID',
@@ -135,7 +141,8 @@ class AwpbComponent extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbActivities() {
+    public function getAwpbActivities()
+    {
         return $this->hasMany(AwpbActivity::className(), ['component_id' => 'id']);
     }
 
@@ -144,7 +151,8 @@ class AwpbComponent extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getExpenseCategory() {
+    public function getExpenseCategory()
+    {
         return $this->hasOne(AwpbExpenseCategory::className(), ['id' => 'expense_category_id']);
     }
 
@@ -153,22 +161,26 @@ class AwpbComponent extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getFunder() {
+    public function getFunder()
+    {
         return $this->hasOne(AwpbFunder::className(), ['id' => 'funder_id']);
     }
 
- 
 
-    public static function findById($id) {
+
+    public static function findById($id)
+    {
         return static::findOne(['id' => $id]);
     }
 
-    public static function getComponentById($id) {
+    public static function getComponentById($id)
+    {
         $data = self::find()->where(['code' => $id])->one();
         return $data->code;
     }
 
-    public static function getName($id) {
+    public static function getName($id)
+    {
         $component = self::find()->where(['id' => $id])->one();
         return ucfirst(strtolower($component->name));
     }
@@ -179,7 +191,8 @@ class AwpbComponent extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbIndicators() {
+    public function getAwpbIndicators()
+    {
         return $this->hasMany(AwpbIndicator::className(), ['component_id' => 'id']);
     }
 
@@ -188,10 +201,12 @@ class AwpbComponent extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbOutcomes() {
+    public function getAwpbOutcomes()
+    {
         return $this->hasMany(AwpbOutcome::className(), ['component_id' => 'id']);
     }
-    public function getAwpbOutputs() {
+    public function getAwpbOutputs()
+    {
         return $this->hasMany(AwpbOutput::className(), ['component_id' => 'id']);
     }
 
@@ -200,12 +215,14 @@ class AwpbComponent extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAwpbTemplateActivities() {
+    public function getAwpbTemplateActivities()
+    {
         return $this->hasMany(AwpbTemplateActivity::className(), ['component_id' => 'id']);
     }
 
-    
-       public static function getAwpbComponentsList() {
+
+    public static function getAwpbComponentsList()
+    {
         //     $countActivities = AwpbActivity::find()->select('component_id');
         //     $subQuery = AwpbActivity::find()->select('id');
         //    // $components = self::find()->where(['type', 'id', $subQuery])->all();
@@ -215,9 +232,9 @@ class AwpbComponent extends \yii\db\ActiveRecord {
         //     ->where(['type'=>TYPE_MAIN ])
         //     $rc=0;
         $components = self::find()
-                ->select(["CONCAT(code,' ',name) as name", 'id'])
-                ->where(['type' => self::TYPE_MAIN])
-                ->orderBy(['name' => SORT_ASC])->all();
+            ->select(["CONCAT(code,' ',name) as name", 'id'])
+            ->where(['type' => self::TYPE_MAIN])
+            ->orderBy(['name' => SORT_ASC])->all();
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
 
@@ -237,57 +254,57 @@ class AwpbComponent extends \yii\db\ActiveRecord {
         // return  $awpbactivities;
     }
 
-    public static function getAwpbSubComponentsList() {
+    public static function getAwpbSubComponentsList()
+    {
 
         $components = self::find()
-        ->select(["CONCAT(code,' ',name) as name", 'id'])
-                        ->where(['type' => self::TYPE_SUB])
-                        ->orderBy(['name' => SORT_ASC])->all();
-        $list = ArrayHelper::map($components, 'id', 'name');
-        return $list;
-    }
-    
-         public static function getAwpbSubComponentsListProvincial() {
-
-        $components = self::find()
-        ->select(["CONCAT(code,' ',name) as name", 'id'])
-                        ->where(['type' => self::TYPE_SUB])
-                        ->andWhere(['access_level_province' => self::TYPE_SUB])
-                        ->orderBy(['name' => SORT_ASC])->all();
+            ->select(["CONCAT(code,' ',name) as name", 'id'])
+            ->where(['type' => self::TYPE_SUB])
+            ->orderBy(['name' => SORT_ASC])->all();
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
     }
 
-     public static function getAwpbSubComponentsListPW() {
+    public static function getAwpbSubComponentsListProvincial()
+    {
 
         $components = self::find()
-        ->select(["CONCAT(code,' ',name) as name", 'id'])
-                        ->where(['type' => self::TYPE_SUB])
-                        ->andWhere(['access_level_programme' => self::TYPE_SUB])
-                        ->orderBy(['name' => SORT_ASC])->all();
+            ->select(["CONCAT(code,' ',name) as name", 'id'])
+            ->where(['type' => self::TYPE_SUB])
+            ->andWhere(['access_level_province' => self::TYPE_SUB])
+            ->orderBy(['name' => SORT_ASC])->all();
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
     }
 
-    public static function getAwpbSubComponentsListDistrict() {
+    public static function getAwpbSubComponentsListPW()
+    {
 
         $components = self::find()
-        ->select(["CONCAT(code,' ',name) as name", 'id'])
-                        ->where(['type' => self::TYPE_SUB])
-                        ->andWhere(['access_level_district' => self::TYPE_SUB])
-                        ->orderBy(['name' => SORT_ASC])->all();
+            ->select(["CONCAT(code,' ',name) as name", 'id'])
+            ->where(['type' => self::TYPE_SUB])
+            ->andWhere(['access_level_programme' => self::TYPE_SUB])
+            ->orderBy(['name' => SORT_ASC])->all();
         $list = ArrayHelper::map($components, 'id', 'name');
         return $list;
     }
 
-    public static function getAwpbComponentCodes() {
+    public static function getAwpbSubComponentsListDistrict()
+    {
+
+        $components = self::find()
+            ->select(["CONCAT(code,' ',name) as name", 'id'])
+            ->where(['type' => self::TYPE_SUB])
+            ->andWhere(['access_level_district' => self::TYPE_SUB])
+            ->orderBy(['name' => SORT_ASC])->all();
+        $list = ArrayHelper::map($components, 'id', 'name');
+        return $list;
+    }
+
+    public static function getAwpbComponentCodes()
+    {
         $components = self::find()->orderBy(['code' => SORT_ASC])->all();
         $list = ArrayHelper::map($components, 'id', 'code');
         return $list;
     }
-
-
-  
-
 }
-

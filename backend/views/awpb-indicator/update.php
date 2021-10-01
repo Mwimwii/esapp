@@ -1,3 +1,26 @@
+<<<<<<< HEAD
+<?php
+
+use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $model backend\models\AwpbIndicator */
+
+$this->title = 'Update Awpb Indicator: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Awpb Indicators', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update';
+?>
+<div class="awpb-indicator-update">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <?= $this->render('_form', [
+        'model' => $model,
+    ]) ?>
+
+</div>
+=======
 <?php
 
 use yii\helpers\Html;
@@ -21,3 +44,4 @@ $this->params['breadcrumbs'][] = 'Update';
 
 </div></div>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

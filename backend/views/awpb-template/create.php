@@ -9,6 +9,19 @@ $this->title = 'Create AWPB Template';
 $this->params['breadcrumbs'][] = ['label' => 'AWPB Templates', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<<<<<<< HEAD
+<div class="card card-success card-outline">
+    <div class="card-body">
+<div class="awpb-template-create">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <?= $this->render('_form', [
+        'model' => $model,
+    ]) ?>
+
+</div>
+=======
 <div class="card card-success card-outline card-tabs">
     <div class="card-header p-0 pt-1 border-bottom-0">
         <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
@@ -47,4 +60,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 </div></div>

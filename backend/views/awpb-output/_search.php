@@ -17,17 +17,26 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
+<<<<<<< HEAD
+=======
     <?= $form->field($model, 'code') ?>
 
     <?= $form->field($model, 'component_id') ?>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     <?= $form->field($model, 'outcome_id') ?>
 
     <?= $form->field($model, 'name') ?>
 
+<<<<<<< HEAD
+    <?= $form->field($model, 'output_description') ?>
+
+    <?= $form->field($model, 'created_at') ?>
+=======
     <?php // echo $form->field($model, 'description') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
     <?php // echo $form->field($model, 'updated_at') ?>
 

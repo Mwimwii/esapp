@@ -1,7 +1,11 @@
 <?php
 
 namespace frontend\models;
+<<<<<<< HEAD
+use yii;
+=======
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\MgfImplementationArrangementsCooperatingPartners;
@@ -17,7 +21,11 @@ class MgfImplementationArrangementsCooperatingPartnersSearch extends MgfImplemen
     public function rules()
     {
         return [
+<<<<<<< HEAD
+            [['id', 'proposal_id', 'created_by', 'updated_by'], 'integer'],
+=======
             [['id', 'proposal_id', 'created_by', 'created_at', 'updated_by'], 'integer'],
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             [['main_activities', 'respobility', 'experience', 'comment', 'typee', 'date_created'], 'safe'],
         ];
     }
@@ -40,7 +48,16 @@ class MgfImplementationArrangementsCooperatingPartnersSearch extends MgfImplemen
      */
     public function search($params)
     {
+<<<<<<< HEAD
+        //$query = MgfImplementationArrangementsCooperatingPartners::find();
+        $userid=Yii::$app->user->identity->id;
+        $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+        $proposal=MgfProposal::findOne(['organisation_id'=>$applicant->organisation_id,'is_active'=>1]);
+        $query = MgfImplementationArrangementsCooperatingPartners::find()->where(['proposal_id'=>$proposal->id]);
+        //$query = MgfImplementationSchedule::find();
+=======
         $query = MgfImplementationArrangementsCooperatingPartners::find();
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 
         // add conditions that should always apply here
 
@@ -62,7 +79,10 @@ class MgfImplementationArrangementsCooperatingPartnersSearch extends MgfImplemen
             'proposal_id' => $this->proposal_id,
             'date_created' => $this->date_created,
             'created_by' => $this->created_by,
+<<<<<<< HEAD
+=======
             'created_at' => $this->created_at,
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             'updated_by' => $this->updated_by,
         ]);
 

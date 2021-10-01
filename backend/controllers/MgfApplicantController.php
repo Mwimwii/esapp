@@ -11,6 +11,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\Districts;
 use frontend\models\MgfOrganisation;
+use kartik\mpdf\Pdf;
+use backend\models\AuditTrail;
 
 /**
  * MgfApplicantController implements the CRUD actions for MgfApplicant model.

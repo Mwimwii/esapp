@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 <div id="accordion">
 <div class="card">
     <div class="card-header" id="headingOne">
@@ -39,6 +41,7 @@
   </div>
 </div>
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
   <div class="card">
     <div class="card-header" id="headingThree">
       <h5 class="mb-0">
@@ -73,4 +76,8 @@
         </table>
       </div>
     </div>
+<<<<<<< HEAD
   </div>
+=======
+  </div>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

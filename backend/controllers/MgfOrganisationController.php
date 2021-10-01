@@ -1,31 +1,31 @@
 <?php
 
-namespace frontend\controllers;
-
-use backend\models\Districts;
+namespace backend\controllers;
 use Yii;
-use frontend\models\MgfOrganisation;
-use frontend\models\MgfOrganisationSearch;
+use backend\models\MgfOrganisation;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-
-use frontend\models\MgfApplicant;
-use frontend\models\MgfApplication;
-use frontend\models\MgfAttachements;
-use frontend\models\MgfConceptNote;
-use frontend\models\MgfContact;
-use frontend\models\MgfScreening;
-use frontend\models\MgfApproval;
-use frontend\models\MgfProposal;
-use frontend\models\MgfApprovalStatus;
-use frontend\models\MgfBranch;
-use frontend\models\MgfChecklist;
+use backend\models\MgfApplicant;
+use backend\models\MgfApplication;
+use backend\models\MgfAttachements;
+use backend\models\MgfConceptNote;
+use backend\models\MgfContact;
+use backend\models\MgfScreening;
+use backend\models\MgfApproval;
+use backend\models\MgfApprovalStatus;
+use backend\models\MgfDistrictEligibility;
+use backend\models\MgfOrganisationSearch;
+use backend\models\MgfPcoEligibility;
+use backend\models\MgfProvinceEligibility;
 use frontend\models\MgfEligibility;
 use frontend\models\MgfEligibilityApproval;
+use yii\web\UploadedFile;
+use kartik\mpdf\Pdf;
+use backend\models\AuditTrail;
+use backend\models\MgfProposal;
 
-//include("findid.php");
 /**
  * MgfOrganisationController implements the CRUD actions for MgfOrganisation model.
  */
@@ -70,16 +70,12 @@ class MgfOrganisationController extends Controller{
 
     public function actionApplications($status){
         $searchModel = new MgfOrganisationSearch();
-        if($status==0){
-            $dataProvider = $searchModel->searchApplications(Yii::$app->request->queryParams);
-        }elseif($status==1){
-            $dataProvider = $searchModel->searchApplicationsAccepted(Yii::$app->request->queryParams);
+        if ($status==1) {
+            $dataProvider = $searchModel->searchApplicationsWindow1(Yii::$app->request->queryParams);
         }elseif($status==2){
-            $dataProvider = $searchModel->searchApplicationsCertified(Yii::$app->request->queryParams);
-        }elseif($status==3){
-            $dataProvider = $searchModel->searchApplicationsApproved(Yii::$app->request->queryParams);
+            $dataProvider = $searchModel->searchApplicationsWindow2(Yii::$app->request->queryParams);
         }else{
-            $dataProvider = $searchModel->searchApplicationsAll(Yii::$app->request->queryParams);
+            $dataProvider = $searchModel->searchApplications(Yii::$app->request->queryParams);
         }
         return $this->render('applications', [
             'searchModel' => $searchModel,
@@ -87,6 +83,95 @@ class MgfOrganisationController extends Controller{
             'status' => $status,
         ]);
     }
+    
+
+
+    public function actionApplications2($status){
+        $searchModel = new MgfOrganisationSearch();
+        if ($status==1) {
+            $dataProvider = $searchModel->searchApplicationsAccepted1(Yii::$app->request->queryParams);
+        }elseif($status==2){
+            $dataProvider = $searchModel->searchApplicationsAccepted2(Yii::$app->request->queryParams);
+        }else{
+            $dataProvider = $searchModel->searchApplicationsAccepted(Yii::$app->request->queryParams);
+        }
+        return $this->render('accepted', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'status' => $status,
+        ]);
+    }
+
+
+    public function actionApplications_2($status){
+        $searchModel = new MgfOrganisationSearch();
+        if ($status==1) {
+            $dataProvider = $searchModel->searchApplicationsRejected1(Yii::$app->request->queryParams);
+        }elseif($status==2){
+            $dataProvider = $searchModel->searchApplicationsRejected2(Yii::$app->request->queryParams);
+        }else{
+            $dataProvider = $searchModel->searchApplicationsRejected(Yii::$app->request->queryParams);
+        }
+        return $this->render('rejected', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'status' => $status,
+        ]);
+    }
+
+
+
+    public function actionApplications3($status){
+        $searchModel = new MgfOrganisationSearch();
+        if ($status==1) {
+            $dataProvider = $searchModel->searchApplicationsCertified1(Yii::$app->request->queryParams);
+        }elseif($status==2){
+            $dataProvider = $searchModel->searchApplicationsCertified2(Yii::$app->request->queryParams);
+        }else{
+            $dataProvider = $searchModel->searchApplicationsCertified(Yii::$app->request->queryParams);
+        }
+        return $this->render('certified', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'status' => $status,
+        ]);
+    }
+
+
+    public function actionApplications_3($status){
+        $searchModel = new MgfOrganisationSearch();
+        if ($status==1) {
+            $dataProvider = $searchModel->searchApplicationsUncertified1(Yii::$app->request->queryParams);
+        }elseif($status==2){
+            $dataProvider = $searchModel->searchApplicationsUncertified2(Yii::$app->request->queryParams);
+        }else{
+            $dataProvider = $searchModel->searchApplicationsUncertified(Yii::$app->request->queryParams);
+        }
+        return $this->render('rejected', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'status' => $status,
+        ]);
+    }
+
+    public function actionSentback($status){
+        $searchModel = new MgfOrganisationSearch();
+        if ($status==1) {
+            $dataProvider = $searchModel->searchSentBack1(Yii::$app->request->queryParams);
+        }elseif($status==2){
+            $dataProvider = $searchModel->searchSentBack2(Yii::$app->request->queryParams);
+        }else{
+            $dataProvider = $searchModel->searchSentBack(Yii::$app->request->queryParams);
+        }
+        return $this->render('rejected', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'status' => $status,
+        ]);
+    }
+
+   
+
 
     /**
      * Displays a single MgfOrganisation model.
@@ -94,7 +179,6 @@ class MgfOrganisationController extends Controller{
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-
     public function actionView($id){
         $userid=Yii::$app->user->identity->id;
         //$model = $this->findModel($id);
@@ -102,99 +186,102 @@ class MgfOrganisationController extends Controller{
         $concepts=MgfConceptNote::find()->where(['organisation_id'=>$id])->all();
         $screening=MgfScreening::find()->where(['organisation_id'=>$id])->all();   
         $contacts=MgfContact::find()->joinWith('position')->where(['organisation_id'=>$id])->all(); 
-        $branches=MgfBranch::find()->joinWith('district')->where(['organisation_id'=>$id])->all();
         $applicant=MgfApplicant::find()->where(['user_id'=>$userid])->one(); 
         //$id=getOrganisationID(); 
-        return $this->render('view', ['model' => $this->findModel($id),'documents'=>$documents,'criteria'=>$screening,'concepts'=>$concepts,'contacts'=>$contacts,'branches'=>$branches,'applicant'=>$applicant]);
+        return $this->render('view', ['model' => $this->findModel($id),'documents'=>$documents,'criteria'=>$screening,'concepts'=>$concepts,'contacts'=>$contacts,'applicant'=>$applicant]);
     }
 
     public function actionOpen($id){
         $model = $this->findModel($id);
-        $application=MgfApplication::find()->where(['organisation_id'=>$id])->where(['application_status'=>'Submitted','is_active'=>1])->orWhere(['application_status'=>'Under_Review','is_active'=>1])->one();
-        if ($application==null) {
-            throw new NotFoundHttpException();
-        }
+        $application=MgfApplication::findOne(['organisation_id'=>$id,'is_active'=>1]);
         $applicationid=$application->id;
-        $application->application_status='Under_Review';
-        $application->save();
-        $documents=MgfAttachements::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->one();
-        //$orgid=$documents->organisation_id;
-        $concept=MgfConceptNote::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->one();
-        $conceptid=$concept->id;
-        $screening=MgfScreening::find()->where(['organisation_id'=>$id,'conceptnote_id'=>$conceptid])->all();
-        $unmarked=MgfScreening::find()->where(['organisation_id'=>$id,'conceptnote_id'=>$conceptid,'satisfactory'=>null])->count();
-        $approval=MgfApproval::find()->where(['conceptnote_id'=>$conceptid,'application_id'=>$applicationid])->one();
-        //$id=getOrganisationID();
-        
-        $accepted=MgfApprovalStatus::find()->where(['approval_status'=>'Accepted'])->one();
-        $rejected=MgfApprovalStatus::find()->where(['approval_status'=>'Rejected'])->one();
+        $documents=MgfAttachements::find()->where(['application_id'=>$applicationid])->all();
+        $screening=MgfEligibility::find()->where(['application_id'=>$applicationid])->all();
+        $unmarked=MgfEligibility::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid,'satisfactory'=>null])->count();
+        $approval=MgfEligibilityApproval::findOne(['application_id'=>$applicationid]);        
+        $accepted=MgfApprovalStatus::findOne(['approval_status'=>'Accepted']);
         $application_status=$application->application_status;
         if (boolval($unmarked)==false) {
             if ($approval->scores>=$accepted->lowerlimit) {
                 $application_status="Accepted";
-            } elseif ($approval->scores<=$rejected->upperlimit) {
-                $application_status="Rejected";
             } else {
-                $application_status="On-Hold";
+                $application_status="Rejected";
             }
         }
-        //echo $applicationid;
         return $this->render('application', ['model' => $this->findModel($id),
-        'document'=>$documents,'criteria'=>$screening,'concept'=>$concept,'unmarked'=>$unmarked,
-        'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
+        'documents'=>$documents,'criteria'=>$screening,'unmarked'=>$unmarked,'approval'=>$approval,
+        'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
     }
 
 
-    public function actionScreen($id){
-        $model = $this->findModel($id);
-        $application=MgfApplication::find()->where(['organisation_id'=>$id])->where(['application_status'=>'Submitted','is_active'=>1])->orWhere(['application_status'=>'Under_Review','is_active'=>1])->one();
-        if ($application==null) {
-            throw new NotFoundHttpException();
-        }
-        $applicationid=$application->id;
-        $application->application_status='Under_Review';
-        $application->save();
-        $documents=MgfAttachements::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->one();
-        $screening=MgfEligibility::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->all();
-        $unmarked=MgfScreening::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid,'satisfactory'=>null])->count();
-        $approval=MgfEligibilityApproval::find()->where(['application_id'=>$applicationid])->one();
-        
-        
-        $accepted=MgfApprovalStatus::find()->where(['approval_status'=>'Accepted'])->one();
-        $rejected=MgfApprovalStatus::find()->where(['approval_status'=>'Rejected'])->one();
-        $application_status=$application->application_status;
-        if (boolval($unmarked)==false) {
-            if ($approval->scores>=$accepted->lowerlimit) {
-                $application_status="Accepted";
-            } elseif ($approval->scores<=$rejected->upperlimit) {
-                $application_status="Rejected";
-            } else {
-                $application_status="On-Hold";
+    public function actionAddcomment($applicationid,$comment,$score){
+        $userid=Yii::$app->user->identity->id;
+        MgfEligibilityApproval::updateAll(['review_remark'=>$comment,'review_submission'=>date('Y-m-d H:i:s'),'reviewed_by'=>$userid], 'application_id='.$applicationid);
+        $application=MgfApplication::findOne($applicationid);
+        $organisation=MgfOrganisation::findOne($application->organisation_id);
+        if ($score==100) {
+            MgfApplication::updateAll(['application_status'=>"Compliant"], 'id='.$applicationid);
+            if (MgfProposal::find()->where(['organisation_id'=>$organisation->id,'is_concept'=>1,'is_active'=>1])->exists()) {
+                $proposal=MgfProposal::findOne(['organisation_id'=>$organisation->id,'is_concept'=>1,'is_active'=>1]);
+                MgfProposal::updateAll(['proposal_status'=>"Submitted"], 'id='.$proposal->id);
+            }
+        } else {
+            MgfApplication::updateAll(['application_status'=>"Non-Compliant"], 'id='.$applicationid);
+            
+            if (MgfProposal::find()->where(['organisation_id'=>$organisation->id,'is_concept'=>1,'is_active'=>1])->exists()) {
+                $proposal=MgfProposal::findOne(['organisation_id'=>$organisation->id,'is_concept'=>1,'is_active'=>1]);
+                MgfProposal::updateAll(['proposal_status'=>"Not-Eligible"], 'id='.$proposal->id);
             }
         }
-        //echo $applicationid;
-        return $this->render('eligilibity', ['model' => $this->findModel($id),'document'=>$documents,'criteria'=>$screening,'unmarked'=>$unmarked,
-        'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>0]);
+            Yii::$app->session->setFlash('success', 'Saved successfully.');
+            return $this->redirect(['mgf-organisation/applications','status' => 0]);
     }
 
 
-    public function actionManage($id){
-        $model = $this->findModel($id);
-        $application=MgfApplication::find()->where(['organisation_id'=>$id])->where(['application_status'=>'Accepted','is_active'=>1])->one();
-        if ($application==null) {
-                throw new NotFoundHttpException();
+    public function actionAddcomment2($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfEligibilityApproval::updateAll(['certify_remark'=>$comment,'certify_submission'=>date('Y-m-d H:i:s'),'certified_by'=>$userid], 'application_id='.$applicationid);
+        $approval=MgfEligibilityApproval::findOne(['application_id'=>$applicationid]);
+        if($approval->scores==100){
+            MgfApplication::updateAll(['application_status'=>"Confirmed"], 'id='.$applicationid); 
+        }else{
+            MgfApplication::updateAll(['application_status'=>"Not-Confirmed"], 'id='.$applicationid); 
+
         }
-        $applicationid=$application->id;
-        $documents=MgfAttachements::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->one();
-        $concept=MgfConceptNote::find()->where(['organisation_id'=>$id,'application_id'=>$applicationid])->one();
-        $conceptid=$concept->id;
-        $screening=MgfScreening::find()->where(['organisation_id'=>$id,'conceptnote_id'=>$conceptid])->all();
-        $unmarked=MgfScreening::find()->where(['organisation_id'=>$id,'conceptnote_id'=>$conceptid,'satisfactory'=>null])->count();
-        $approval=MgfApproval::find()->where(['conceptnote_id'=>$conceptid,'application_id'=>$applicationid])->one();
-        //$id=getOrganisationID();
-        $application_status=$application->application_status;
-        return $this->render('application', ['model' => $this->findModel($id),
-        'document'=>$documents,'criteria'=>$screening,'concept'=>$concept,'unmarked'=>$unmarked,'approval'=>$approval,'application_status'=>$application_status,'applicationid'=>$applicationid,'status'=>1]);
+        
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['mgf-organisation/applications2','status' => 0]);
+    }
+
+
+    public function actionAddcomment22($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfEligibilityApproval::updateAll(['certify_remark'=>$comment,'certify_submission'=>date('Y-m-d H:i:s'),'certified_by'=>$userid], 'application_id='.$applicationid);
+        MgfApplication::updateAll(['application_status'=>"Sent-Back"], 'id='.$applicationid); 
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['mgf-organisation/applications_2','status' => 0]);
+    }
+
+
+    public function actionAddcomment3($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfEligibilityApproval::updateAll(['approval_remark'=>$comment,'approve_submittion'=>date('Y-m-d H:i:s'),'approved_by'=>$userid], 'application_id='.$applicationid);
+        $approval=MgfEligibilityApproval::findOne(['application_id'=>$applicationid]);
+        if($approval->scores==100){
+            MgfApplication::updateAll(['application_status'=>"Approved"], 'id='.$applicationid); 
+        }else{
+            MgfApplication::updateAll(['application_status'=>"Not-Approved"], 'id='.$applicationid); 
+        }
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['mgf-organisation/applications3','status' => 0]);
+    }
+
+    public function actionAddcomment33($applicationid,$comment){
+        $userid=Yii::$app->user->identity->id;
+        MgfEligibilityApproval::updateAll(['approval_remark'=>$comment,'approve_submittion'=>date('Y-m-d H:i:s'),'approved_by'=>$userid], 'application_id='.$applicationid);
+        MgfApplication::updateAll(['application_status'=>"Sent-Back"], 'id='.$applicationid); 
+        Yii::$app->session->setFlash('success', 'Saved successfully.');
+        return $this->redirect(['mgf-organisation/applications3','status' => 0]);
     }
 
 
@@ -216,71 +303,8 @@ class MgfOrganisationController extends Controller{
                                             'applicationid'=>$applicationid,'status'=>2]);
     }
 
-
-    /**
-     * Creates a new MgfOrganisation model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-
-    public function actionCreate(){
-        $model = new MgfOrganisation();
-        if ($model->load(Yii::$app->request->post())) {
-            $userid=Yii::$app->user->identity->id;
-            $applicant=MgfApplicant::findOne(["user_id"=>$userid]);
-            $model->applicant_id=$applicant->id;
-            $model->district_id=$applicant->district_id;
-            $model->province_id=$applicant->province_id;
-            $model->is_active=1;
-            if ($model->save()){
-                MgfChecklist::updateAll(['organisation_created'=>1],'applicant_id='.$applicant->id);
-                Yii::$app->session->setFlash('success', 'Saved successfully.');
-                return $this->redirect(['view', 'id' => $model->id]);
-            }else{
-                Yii::$app->session->setFlash('error', 'NOT Saved!');
-                return $this->render('create', ['model' => $model,]);
-            }
-        }
-        return $this->render('create', ['model' => $model,]);
-    }
-
-
-    public function actionCreatebranch($id){
-        $model = new MgfBranch();
-        if ($model->load(Yii::$app->request->post())) {
-            $model->organisation_id=$id;
-            $district=Districts::findOne($model->district_id);
-            $model->province_id=$district->province_id;
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Saved successfully.');
-            } else {
-                Yii::$app->session->setFlash('error', 'NOT Saved');
-            }
-            return $this->redirect(['mgf-organisation/view', 'id' => $id]);
-        }
-    }
-
-
-    public function actionUpdatebranch($id){
-        $model=MgfBranch::findOne($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Saved successfully.');
-            return $this->redirect(['view', 'id' => $model->organisation_id]);
-        }
-
-        return $this->render('branch', ['model' => $model,]);
-    }
-
-    public function actionDeletebranch($id){
-        $model=MgfBranch::findOne($id);
-        if($model->delete()){
-            Yii::$app->session->setFlash('success', 'Deleted successfully.');
-        }else{
-            Yii::$app->session->setFlash('error', 'NOT Deleted.');
-        }
-        return $this->redirect(['view', 'id' => $model->organisation_id]);
-    }
     
+
     /**
      * Updates an existing MgfOrganisation model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -288,17 +312,12 @@ class MgfOrganisationController extends Controller{
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-
     public function actionUpdate($id){
         //$id=getOrganisationID();
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            MgfChecklist::updateAll(['organisation_created'=>1],'applicant_id='.$model->applicant_id);
             Yii::$app->session->setFlash('success', 'Saved successfully.');
-            if($model->organisational_branches==0){
-                MgfBranch::deleteAll(['organisation_id'=>$id]);
-            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -308,19 +327,111 @@ class MgfOrganisationController extends Controller{
     }
 
 
-    /**
-     * Deletes an existing MgfOrganisation model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
 
-    public function actionDelete($id){
-        //$id=getOrganisationID();
-        $this->findModel($id)->delete();
-        return $this->redirect(['index']);
+    public function actionDistrictMinutes($id){
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->minutes=UploadedFile::getInstance($model,'minutes');
+            $image_mminutes=$model->minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->minutes->saveAs($path);
+            $model->minutes=$path;
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['applications', 'status' => 0]);
+        }
+
+        return $this->render('upload1', [
+            'model' => $model,
+        ]);
     }
+
+    public function actionProvinceMinutes($id){
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->minutes=UploadedFile::getInstance($model,'minutes');
+            $image_mminutes=$model->minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->minutes->saveAs($path);
+            $model->minutes=$path;
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['applications', 'status' => 0]);
+        }
+
+        return $this->render('upload2', [
+            'model' => $model,
+        ]);
+    }
+
+
+    public function actionPcoMinutes($id){
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->minutes=UploadedFile::getInstance($model,'minutes');
+            $image_mminutes=$model->minutes;
+            $path='uploads/documents/'.$model->id.'_Minutes'.rand(1,4000).'_'.$image_mminutes;
+            $model->minutes->saveAs($path);
+            $model->minutes=$path;
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+            }else{
+                Yii::$app->session->setFlash('error', 'File NOT Saved!');
+            }
+            return $this->redirect(['applications', 'status' => 0]);
+        }
+
+        return $this->render('upload3', [
+            'model' => $model,
+        ]);
+    }
+
+
+    public function actionDownloadAppendixOne($id) {
+        $model = $this->findModel($id);
+        $filename = "Appendix-1" . date("Ymdhis") . ".pdf";
+        $ath = new AuditTrail();
+        $ath->user = Yii::$app->user->id;
+        $ath->action = "Downloaded Appendix 1: Application for Participation in the E-SAPP-MGF";
+        $ath->ip_address = Yii::$app->request->getUserIP();
+        $ath->user_agent = Yii::$app->request->getUserAgent();
+        $ath->save();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $this->renderPartial('eligibility-appendix-1', []),
+            'options' => [
+                'text_input_as_HTML' => true,
+            // any mpdf options you wish to set
+            ],
+            'methods' => [
+                'SetTitle' => 'Appendix 1: Application for Participation',
+                'SetHeader' => ['MOA/ESAPP-MGF Appendix 1: Application for Participation ||' . date("r") . "/ESAPP online system"],
+                'SetFooter' => ['|Page {PAGENO}|'],
+                'SetAuthor' => 'ESAPP online system',
+            ]
+        ]);
+        $pdf->filename = $filename;
+        return $pdf->render();
+    }
+
+
+
 
     /**
      * Finds the MgfOrganisation model based on its primary key value.

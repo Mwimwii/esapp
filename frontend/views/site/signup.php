@@ -61,5 +61,10 @@ function login_code(){
     <p class="mb-1 text-sm">
             Already Have an Account? <?= Html::a('Login', ['site/login']) ?>
         </p>
+<<<<<<< HEAD
+=======
+</div>
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 </div>
 </div>
+

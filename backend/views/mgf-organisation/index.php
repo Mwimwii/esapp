@@ -39,6 +39,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'view' => function ($url, $model) {
                     if (User::userIsAllowedTo('View MGF Organisations')) {
                         return Html::a(
+<<<<<<< HEAD
+                                '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
+                                'title' => 'View',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                'class' => 'bt btn-lg'
+                            ]
+                        );
+                    }
+                },
+=======
                                         '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
                                     'title' => 'View',
                                     'data-toggle' => 'tooltip',
@@ -67,6 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 },
 
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             ]
         ]
         ],

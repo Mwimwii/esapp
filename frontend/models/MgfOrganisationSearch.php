@@ -1,10 +1,10 @@
 <?php
 
-namespace backend\models;
+namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\MgfOrganisation;
+use frontend\models\MgfOrganisation;
 
 /**
  * MgfOrganisationSearch represents the model behind the search form of `frontend\models\MgfOrganisation`.

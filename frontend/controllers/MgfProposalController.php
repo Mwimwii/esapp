@@ -3,6 +3,11 @@
 namespace frontend\controllers;
 
 use backend\models\MgfApplication;
+<<<<<<< HEAD
+use backend\models\MgfApproval;
+use backend\models\MgfOperation;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use backend\models\User;
 use common\models\Role;
 use Yii;
@@ -14,6 +19,10 @@ use frontend\models\MgfComponent;
 use frontend\models\MgfProposal;
 use frontend\models\MgfApplicant;
 use frontend\models\MgfChecklist;
+<<<<<<< HEAD
+use frontend\models\MgfConceptNote;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
 use frontend\models\MgfOffer;
 use frontend\models\MgfSelectionCategory;
 use frontend\models\MgfProposalEvaluation;
@@ -121,6 +130,20 @@ class MgfProposalController extends Controller
     }
 
 
+<<<<<<< HEAD
+    public function actionViewConcept($id){
+        $userid=Yii::$app->user->identity->id;
+        $components=MgfComponent::find()->where(['proposal_id'=>$id])->all();
+        $reviewers=MgfProjectEvaluation::find()->joinWith('reviewedby0')->where(['proposal_id'=>$id,'reviewedby'=>$userid])->andWhere(['NOT',['mgf_project_evaluation.status'=>0]])->all();
+        $count=sizeof($reviewers);
+        $categories=MgfSelectionCategory::find()->all();
+        return $this->render('viewconcept', ['model' => $this->findModel($id),'components'=>$components,'categories'=>$categories,'categories'=>$categories,'reviewers'=>$reviewers,'count'=>$count]);
+    }
+
+
+
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     public function actionReviewers(){
         $reviewers=MgfReviewer::find()->all();
         return $this->render('reviewers',['reviewers'=>$reviewers]);
@@ -157,6 +180,10 @@ class MgfProposalController extends Controller
             $model->district_id=$applicant->district_id;
             $model->mgf_no=$username;
             $model->is_active=1;
+<<<<<<< HEAD
+            $model->is_concept=0;
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             if($model->save()){
                 $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
                 MgfProposal::updateAll(['ending_date' => $end], 'id='.$model->id);
@@ -170,6 +197,39 @@ class MgfProposalController extends Controller
         } return $this->render('create', ['model' => $model,]);
     }
 
+<<<<<<< HEAD
+
+    public function actionCreateConcept(){
+        $model = new MgfProposal();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $userid=Yii::$app->user->identity->id;
+            $username=Yii::$app->user->identity->username;
+            $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+            MgfProposal::updateAll(['is_active' => 0], 'organisation_id='.$applicant->organisation_id);
+            $model->organisation_id=$applicant->organisation_id;
+            $model->applicant_type=$applicant->applicant_type;
+            $model->province_id=$applicant->province_id;
+            $model->district_id=$applicant->district_id;
+            $model->mgf_no=$username;
+            $model->is_concept=1;
+            $model->is_active=1;
+            if($model->save()){
+                $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
+                MgfProposal::updateAll(['ending_date' => $end], 'id='.$model->id);
+                MgfChecklist::updateAll(['concept_created'=>1], 'applicant_id='.$applicant->id); 
+
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }else{
+                Yii::$app->session->setFlash('error', 'NOT Saved');
+                return $this->render('create', ['model' => $model,]);
+            }
+        } return $this->render('create', ['model' => $model,]);
+    }
+
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     
     public function actionCreateReviewer(){
         $model = new MgfReviewer();
@@ -230,8 +290,14 @@ class MgfProposalController extends Controller
                 MgfProposal::updateAll(['is_active' => 0], 'id!='.$model->id);
                 $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
                 MgfProposal::updateAll(['ending_date' => $end], 'id='.$model->id);
+<<<<<<< HEAD
+                
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+
+=======
                 MgfChecklist::updateAll(['proposal_created'=>1], 'applicant_id='.$applicant->id);
                 Yii::$app->session->setFlash('success', 'Saved successfully.');
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
                 return $this->redirect(['view', 'id' => $model->id]);
             }else{
                 Yii::$app->session->setFlash('error', 'NOT Saved');
@@ -243,6 +309,36 @@ class MgfProposalController extends Controller
     }
 
 
+<<<<<<< HEAD
+    public function actionUpdateConcept($id){
+        $model = $this->findModel($id);
+        $applicant=MgfApplicant::findOne(['organisation_id'=>$model->organisation_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $applicant=MgfApplicant::find()->where(['organisation_id'=>$model->organisation_id])->one();
+            $model->applicant_type=$applicant->applicant_type;
+            $model->proposal_status="Updated";
+            $model->is_active=1;
+            $model->is_concept=1;
+            if($model->save()){
+                MgfProposal::updateAll(['is_active' => 0], 'id!='.$model->id);
+                $end=date("Y-m-d", strtotime("+".$model->project_length.' years', strtotime($model->starting_date)));
+                MgfProposal::updateAll(['ending_date' => $end], 'id='.$model->id);
+                
+                Yii::$app->session->setFlash('success', 'Saved successfully.');
+
+                return $this->redirect(['viewconcept', 'id' => $model->id]);
+            }else{
+                Yii::$app->session->setFlash('error', 'NOT Saved');
+                return $this->render('update', ['model' => $model,'applicant'=>$applicant]);
+            }
+            return $this->redirect(['/mgf-applicant/profile']);
+        }
+        return $this->render('update', ['model' => $model,'applicant'=>$applicant]);
+    }
+
+
+=======
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
     public function actionProjectDetails($id){
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post())) {
@@ -259,9 +355,69 @@ class MgfProposalController extends Controller
     }
 
 
+<<<<<<< HEAD
+    public function actionSubmitConcept($id){
+        $model = $this->findModel($id);
+        if ($model->proposal_status=="Prepared" || $model->proposal_status=="Cancelled") {
+            $model->proposal_status="Submitted";
+            $model->date_submitted=date('Y-m-d H:i:s');
+            if ($model->save()) {
+                $userid=Yii::$app->user->identity->id;
+                $applicant=MgfApplicant::findOne(['user_id'=>$userid]);
+                MgfChecklist::updateAll(['concept_submitted'=>1], 'applicant_id='.$applicant->id);
+
+                $application=MgfApplication::findOne(['organisation_id'=>$model->organisation_id,'is_active'=>1]);
+                $operation=MgfOperation::findOne(['operation_type'=>$model->project_operations]);
+                
+                if(MgfConceptNote::find()->where(['application_id'=>$application->id])->exists()){
+                    $concept = MgfConceptNote::findOne(['application_id'=>$application->id]);
+                    $concept->project_title=$model->project_title;
+                    $concept->application_id=$application->id;
+                    $concept->estimated_cost=$model->totalcost;
+                    $concept->starting_date=$model->starting_date;
+                    $concept->operation_id=$operation->id;
+                    $concept->implimentation_period=$model->project_length;
+                    $concept->organisation_id=$model->organisation_id;
+                    $concept->date_created=$model->date_created;
+                    $$concept->$model->date_submitted;
+                    $concept->save();
+                    
+                }else{
+                    $concept = new MgfConceptNote();
+                    $concept->project_title=$model->project_title;
+                    $concept->application_id=$application->id;
+                    $concept->estimated_cost=$model->totalcost;
+                    $concept->starting_date=$model->starting_date;
+                    $concept->operation_id=$operation->id;
+                    $concept->implimentation_period=$model->project_length;
+                    $concept->organisation_id=$model->organisation_id;
+                    $concept->date_created=$model->date_created;
+                    $concept->save();
+
+                    $approval=new MgfApproval();
+                    $approval->application_id=$application->id;;
+                    $approval->conceptnote_id=$concept->id;
+                    $approval->save();
+                }
+                Yii::$app->session->setFlash('success', 'Submiited successfully.');
+
+            } else {
+                Yii::$app->session->setFlash('error', 'Action Fail');
+            } 
+        }else{
+            Yii::$app->session->setFlash('error', 'This Concept Note be Submitted now');
+        }return $this->redirect(['/mgf-applicant/profile']);  
+    }
+
+
+    public function actionSubmit($id){
+        $model = $this->findModel($id);
+        if ($model->proposal_status=="Prepared" || $model->proposal_status=="Cancelled"|| $model->proposal_status=="Accepted") {
+=======
     public function actionSubmit($id){
         $model = $this->findModel($id);
         if ($model->proposal_status=="Prepared" || $model->proposal_status=="Cancelled") {
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d
             $model->proposal_status="Submitted";
             $model->date_submitted=date('Y-m-d H:i:s');
             if ($model->save()) {
@@ -432,4 +588,8 @@ class MgfProposalController extends Controller
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 87e1ba7543e0dfcf71922c993956787e66ff639d

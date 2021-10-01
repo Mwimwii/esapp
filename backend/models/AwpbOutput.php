@@ -166,5 +166,4 @@ class AwpbOutput extends \yii\db\ActiveRecord
         $list = ArrayHelper::map($data, 'id','name');
         return $list;
     }
-
 }
