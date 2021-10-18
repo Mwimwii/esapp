@@ -37,9 +37,7 @@ use backend\models\UnitOfMeasure;
               ['id' => 'output_id', 'custom' => true, 'required' => true,'disabled' => ($model->isNewRecord) ? 'disabled' : true] 
               )->label("Output");
 
-              echo $form->field($model, 'activity_id')->dropDownList(AwpbActivity:: getSubActivityList(),
-              ['id' => 'activit_id', 'custom' => true, 'required' => true,'disabled' => ($model->isNewRecord) ? 'disabled' : true] 
-              )->label("Activity");
+             
                 echo                
                 $form->field($model, 'unit_of_measure_id')->dropDownList(
                           \backend\models\AwpbUnitOfMeasure::getAwpbUnitOfMeasuresList(), ['id' => 'unit_of_measure_id', 'custom' => true, 'prompt' => 'Please select a unit of measure', 'required' => false]);          ;

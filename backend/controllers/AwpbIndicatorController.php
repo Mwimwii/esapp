@@ -121,8 +121,12 @@ class AwpbIndicatorController extends Controller
      * @return mixed
      */
     public function actionCreate()
-    {
-        $model = new AwpbIndicator();
+    {    if (User::userIsAllowedTo('Setup AWPB')) {
+     $model = new AwpbIndicator();
+     $model->outcome_id = Yii::$app->user->identity->id;
+$model->updated_by = Yii::$app->user->identity->id;
+       $model->created_by = Yii::$app->user->identity->id;
+       
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -130,7 +134,10 @@ class AwpbIndicatorController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-        ]);
+        ]);} else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**
@@ -141,7 +148,7 @@ class AwpbIndicatorController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
-    {
+    { if (User::userIsAllowedTo('Setup AWPB')) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -150,7 +157,10 @@ class AwpbIndicatorController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-        ]);
+        ]);} else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**
@@ -161,10 +171,13 @@ class AwpbIndicatorController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
-    {
+    { if (User::userIsAllowedTo('Setup AWPB')) {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index']);} else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**

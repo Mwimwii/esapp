@@ -22,7 +22,7 @@ use backend\models\AwpbTemplate;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbTemplate */
 
-$this->title = 'AWPB PW Activity : ' . $model->name;
+$this->title = 'AWPB Activity: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'AWPB', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->id;
 \yii\web\YiiAsset::register($this);
@@ -39,10 +39,10 @@ if (!empty($activity)) {
 }
 
 $tem = "";
-$template = \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
+$template_model = \backend\models\AWPBTemplate::findOne(['id' => $model->awpb_template_id]);
 
-if (!empty($template)) {
-    $tem = $template->fiscal_year;
+if (!empty($template_model)) {
+    $tem = $template_model->fiscal_year;
 }
 
 $dist = "";
@@ -58,12 +58,20 @@ if (!empty($province)) {
     $pro = $province->name;
 
 }
-
 $cam = "";
 $camp = \backend\models\Camps::findOne(['id' => $model->camp_id]);
 
 if (!empty($camp)) {
     $cam = $camp->name;
+}
+$time = new \DateTime('now');
+$today = $time->format('Y-m-d');
+
+ $awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$model->awpb_template_id, 'district_id'=>$user->district_id]);
+$status=100;
+if (!empty($awpb_district)) {
+  $status= $awpb_district->status;
+   
 }
 $cost_centre = "";
 $cc = \backend\models\AwpbCostCentre::findOne(['id' => $model->cost_centre_id]);
@@ -71,49 +79,43 @@ $cc = \backend\models\AwpbCostCentre::findOne(['id' => $model->cost_centre_id]);
 if (!empty($cc)) {
     $cost_centre = $cc->name;
 }
-$time = new \DateTime('now');
-$today = $time->format('Y-m-d');
-$template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-
-//$awpb_province  = \backend\models\AwpbProvince::findOne(['awpb_template_id'=>$model->awpb_template_id,'province_id'=>$model->province_id]);
-//              
-//if (!empty($awpb_province)) {
-//  $status= $awpb_province->status;
-//   
-//}
 ?>
-
 
 
 
 <div class="card card-success card-outline">
     <div class="card-body">
-        <h1><?= Html::encode($this->title) ?></h1>
+<div class="awpb-activity-line-create">
 
-        <p>
 
+    <h1><?= Html::encode($this->title) ?></h1>
 
 
 <?php
 
-//
-//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa','status'=>$status,'district_id' =>  $model->district_id,'province_id'=>$model->province_id,'awpb_template_id'=>$model->awpb_template_id,'output_id' => $model->output_id,'activity_id' => $model->activity_id], [
+
+//echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index','id'=>$model->awpb_template_id, 'status'=>0], [
 //    'title' => 'back',
 //    'data-toggle' => 'tooltip',
 //    'data-placement' => 'top',
 //]);
 //}
 
-
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-//if (\backend\models\User::userIsAllowedTo('Manage PW AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
 
- if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))){
- 
-   //  var_dump(strtotime($template_model->incorpation_deadline_pco_moa_mfl));
+
+    
+
+         
+           if (User::userIsAllowedTo('Manage AWPB')&& 
+                   strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && 
+                   ( $user->province_id == 0 || $user->province_id == '') 
+                   )
+                   {
+            
+            
         echo Html::a(
-                '<span class="fa fa-edit"></span>', ['updatepw', 'id' => $model->id,'status'=>$status], [
+                '<span class="fa fa-edit"></span>', ['updatepw', 'id' => $model->id], [
             'title' => 'Update AWPB',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
@@ -127,20 +129,24 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   if ($model->total_amount<= 0)
         {
         echo Html::a(
-                '<span class="fa fa-trash"></span>', ['delete',  'id' => $model->id,'id2'=>$model->awpb_template_id,'status'=>$status], [
-            'title' => 'Delete AWPB',
+                '<span class="fa fa-trash"></span>', ['deletepw',  'id' => $model->id], [
+            'title' => 'Delete AWPB Activity',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this AWPB?',
+                'confirm' => 'Are you sure you want to delete this AWPB activity?',
                 'method' => 'post',
+                 'params'=>['id' => $model->id],
             ],
             'style' => "padding:5px;",
             'class' => 'bt btn-lg'
                 ]
         );}
+           }
+          
+ else {
     
-}//}
+}
 ?>
         <div clas="row">
             <div class="col-lg-12">
@@ -152,21 +158,29 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     'columns' => [
                         [
                             'attribute' => 'province_id',
-                            'label' => 'Province Name',
+                            'label' => 'Province',
                             'displayOnly' => true,
-                            'labelColOptions' => ['style' => 'width:10%'],
+                            'labelColOptions' => ['style' => 'width:7%'],
                             'valueColOptions' => ['style' => 'width:15%'],
                             'value' => $pro,
                         ],
                         [
                             'attribute' => 'district_id',
-                            'label' => 'District Name',
+                            'label' => 'District',
                             'displayOnly' => true,
-                            'labelColOptions' => ['style' => 'width:10%'],
+                            'labelColOptions' => ['style' => 'width:7%'],
                             'valueColOptions' => ['style' => 'width:15%'],
                             'value' => $dist,
                         ],
                            [
+                            'attribute' => 'camp_id',
+                            'label' => 'Camp',
+                            'displayOnly' => true,
+                            'labelColOptions' => ['style' => 'width:6%'],
+                            'valueColOptions' => ['style' => 'width:10%'],
+                            'value' => $cam,
+                        ],
+                         [
                             'attribute' => 'cost_centre_id',
                             'label' => 'Cost Centre',
                             'displayOnly' => true,
@@ -178,8 +192,8 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                             'label' => 'Fiscal Year',
                             'format' => 'raw',
                             'value' => $tem,
-                            'labelColOptions' => ['style' => 'width:10%'],
-                            'valueColOptions' => ['style' => 'width:10%'],
+                            'labelColOptions' => ['style' => 'width:5%'],
+                            'valueColOptions' => ['style' => 'width:5%'],
                         ],
                     ],
                 ],
@@ -449,14 +463,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     
                          [
                     'columns' => [
-//                        [
-//                            'attribute' => 'unit_cost',
-//                            'label' => 'Unit Cost',
-//                            'displayOnly' => true,
-//                            'format' => ['decimal', 2],
-//                            'labelColOptions' => ['style' => 'width:10%'],
-//                            'valueColOptions' => ['style' => 'width:10%'],
-//                        ],
+
                         [
                             'attribute' => 'total_quantity',
                             'label' => 'Total Quantity',
@@ -510,12 +517,13 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 <?php
                 if (!empty($model->name)) {
                     
- if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))){
- 
-                echo Html::a('Add AWPB Input', ['awpb-input/create', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
+                     if (
+         User::userIsAllowedTo('Manage PW AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == '')
+       ){
+  
+                echo Html::a('Add AWPB Input', ['awpb-input/createpw', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
            
-                  echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                  echo "<br \>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
              
    }
                     $searchModel = new \backend\models\AwpbInputSearch();
@@ -525,58 +533,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     $dataProvider->query->andFilterWhere(['budget_id' =>$model->id]);
 
                     $gridColumns = [
-//                        [
-//                            'class' => 'kartik\grid\SerialColumn',
-//                            'contentOptions' => ['class' => 'kartik-sheet-style'],
-//                            'width' => '36px',
-//                            'pageSummary' => 'Total',
-//                            'pageSummaryOptions' => ['colspan' => 6],
-//                            'header' => '',
-//                            'headerOptions' => ['class' => 'kartik-sheet-style']
-//                        ],
-//                        [
-//                            'attribute' => 'activity_id',
-//                            'label' => 'Activity Code',
-//                            'vAlign' => 'middle',
-//                            'width' => '180px',
-//                            'value' => function ($model) {
-//                                $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id])->activity_code;
-//                                return Html::a($name, ['awpb-activity/view', 'id' => $model->activity_id], ['class' => 'awbp-activity']);
-//                            },
-//                            'filterType' => GridView::FILTER_SELECT2,
-//                            'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
-//                            'filterWidgetOptions' => [
-//                                'pluginOptions' => ['allowClear' => true],
-//                                'options' => ['multiple' => true]
-//                            ],
-//                            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-//                            'format' => 'raw'
-//                        ],
-//                        [
-//                            'attribute' => 'awpb_template_id',
-//                            'label' => 'Fiscal Year',
-//                            'vAlign' => 'middle',
-//                            'width' => '180px',
-//                            'value' => function ($model) {
-//                                $name = \backend\models\AwpbTemplate::findOne(['id' => $model->awpb_template_id])->fiscal_year;
-//                                return Html::a($name, ['awpb-template/view', 'id' => $model->awpb_template_id], ['class' => 'awbp-template']);
-//                            },
-//                            'filterType' => GridView::FILTER_SELECT2,
-//                            'filter' => \backend\models\AwpbActivity::getAwpbActivitiesList($access_level),
-//                            'filterWidgetOptions' => [
-//                                'pluginOptions' => ['allowClear' => true],
-//                                'options' => ['multiple' => true]
-//                            ],
-//                            'filterInputOptions' => ['placeholder' => 'Filter by activity'],
-//                            'format' => 'raw'
-//                        ],
-//                        [
-//                            'label' => 'Activity Name',
-//                            'value' => function ($model) {
-//                                $name = \backend\models\AwpbActivity::findOne(['id' => $model->activity_id])->name;
-//                                return $name;
-//                            }
-//                        ],
+
                         [
                             'class' => 'kartik\grid\EditableColumn',
                             'label' => 'Input Description',
@@ -682,45 +639,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                             'format' => ['decimal', 2],
                             'pageSummary' => true
                         ],
-//                        [
-//                            'class' => 'kartik\grid\FormulaColumn',
-//                            'attribute' => 'total_quantity',
-//                            'header' => 'Total Qty',
-//                            // 'refreshGrid' => true,
-//                            'filter' => false,
-//                            'vAlign' => 'middle',
-//                            'value' => function ($model, $key, $index, $widget) {
-//                                $p = compact('model', 'key', 'index');
-//                                return $widget->col(6, $p) + $widget->col(7, $p) + $widget->col(8, $p) + $widget->col(9, $p);
-//                            },
-//                            'headerOptions' => ['class' => 'kartik-sheet-style'],
-//                            'hAlign' => 'right',
-//                            'width' => '7%',
-//                            'format' => ['decimal', 2],
-//                          //  'mergeHeader' => true,
-//                            'pageSummary' => true,
-//                            'footer' => true
-//                        ],
-                             
-//                            [
-//                            'class' => 'kartik\grid\FormulaColumn',
-//                            'attribute' => 'total_amount',
-//                            'header' => 'Total Amt',
-//                            'vAlign' => 'middle',
-//                            'hAlign' => 'right',
-//                            'width' => '7%',
-//                            'filter' => false,
-//                            'value' => function ($model, $key, $index, $widget) {
-//                                $p = compact('model', 'key', 'index');
-//                                return $widget->col(10, $p) != 0 ? $widget->col(5, $p) * $widget->col(10, $p) : 0;
-//                            },
-//                            'format' => ['decimal', 2],
-//                            'headerOptions' => ['class' => 'kartik-sheet-style'],
-//                          //  'mergeHeader' => true,
-//                            'pageSummary' => true,
-//                            'pageSummaryFunc' => GridView::F_SUM,
-//                            'footer' => true
-//                        ],
+
                                 [
                                     
                                          'class' => 'kartik\grid\EditableColumn',
@@ -767,9 +686,9 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     'template' => '{view}{update}{delete}',
                     'buttons' => [
                         'view' => function ($url, $model) {
-                           // if ( User::userIsAllowedTo('View AWPB') ) {
+                            if ( User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Manage AWPB') ) {
                                 return Html::a(
-                                                '<span class="fa fa-eye"></span>', ['awpb-input/viewpw', 'id' => $model->id], [
+                                                '<span class="fa fa-eye"></span>', ['awpb-input/view', 'id' => $model->id], [
                                             'title' => 'View input',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
@@ -778,14 +697,14 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                                             'class' => 'bt btn-lg'
                                                 ]
                                 );
-                           // }
+                            }
                         },
                         'update' => function ($url, $model) use ($status, $user,$template_model,$today) {
- if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))){
- 
+                  
+                     if (User::userIsAllowedTo('Manage PW AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))
+                           {
                 return Html::a(
-                                                '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
+                                                '<span class="fas fa-edit"></span>', ['awpb-input/updatepw', 'id' => $model->id], [
                                             'title' => 'Update input',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
@@ -796,13 +715,15 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                                                 ]
                                 );
                             }
+                        
                         },
                         'delete' => function ($url, $model) use ($status,$user,$template_model,$today) {
- if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id ==0 || $user->province_id == ''))){
- 
+                                
+               if (User::userIsAllowedTo('Manage PW AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))
+                           {
+  
           return Html::a(
-                                                '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [
+                                                '<span class="fa fa-trash"></span>', ['awpb-input/deletepw', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [
                                             'title' => 'delete input',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
@@ -820,20 +741,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 ]
                     ];
 
-//                    if ($dataProvider->getCount() > 0) {
-//
-//                        // echo ' </p>';
-//                        echo ExportMenu::widget([
-//                            'dataProvider' => $dataProvider,
-//                            'columns' => $gridColumns,
-//                            'fontAwesome' => true,
-//                            'dropdownOptions' => [
-//                                'label' => 'Export All',
-//                                'class' => 'btn btn-default'
-//                            ],
-//                            'filename' => 'AWPB Input ' . date("YmdHis")
-//                        ]);
-//                    }
+
                     ?>
 
 
@@ -859,6 +767,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                                 } else {
                                     $content_user = "<p>No activities have been selected</p>";
                                 }
+         
                                 ?>
                             </div>
                            

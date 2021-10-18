@@ -99,9 +99,9 @@ if (!empty($awpb_district)) {
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
  if (
-         (User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
          (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))||
-            (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
+            (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
          
          ){
  
@@ -504,9 +504,9 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 <?php
                 if (!empty($model->name)) {
  if (
-         (User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
          (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))||
-            (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
+            (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
          
          ){
                 echo Html::a('Add AWPB Input', ['awpb-input/create', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
@@ -777,9 +777,9 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                            // }
                         },
                         'update' => function ($url, $model) use ($status, $user,$template_model,$today) {
- if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+ if ((User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
          (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id == 0 || $user->province_id == ''))||
-            (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
+            (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
          )
   
         {
@@ -798,10 +798,10 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                             }
                         },
                         'delete' => function ($url, $model) use ($status,$user,$template_model,$today) {
- if ((User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
+ if ((User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
          (User::userIsAllowedTo("Manage PW AWPB") && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ($user->province_id ==0 || $user->province_id == ''))
          ||
-         (User::userIsAllowedTo("Approve AWPB - Provincial") && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
+         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))
          ){
  
           return Html::a(

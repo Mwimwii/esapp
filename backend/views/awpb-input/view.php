@@ -100,7 +100,7 @@ $model_budget =new  \backend\models\AwpbBudget();
     <p>
     
             <?php
-       if (User::userIsAllowedTo('Approve AWPB - Provincial') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+       if (User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
 
       
 //echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['awpb-budget/viewp', 'id' => $model->budget_id,'status'=>$_model->status], [

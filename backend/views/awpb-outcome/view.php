@@ -60,7 +60,7 @@ if (!empty($component)) {
         'model' => $model,
         'attributes' => [
          
-            
+              'outcome_code',
             'name',
             'outcome_description',
                     ],

@@ -54,7 +54,7 @@ if (!empty($awpb_district)) {
    
           
   //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
-       if (User::userIsAllowedTo("Manage AWPB") || User::userIsAllowedTo("Approve AWPB - Provincial") || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+       if (User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
                                  
         
 

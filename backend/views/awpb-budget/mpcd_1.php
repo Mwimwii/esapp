@@ -81,7 +81,7 @@ if (!empty($awpb_province)) {
 //    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 
-if (User::userIsAllowedTo('Approve AWPB - Provincial') && $status == AwpbBudget::STATUS_SUBMITTED  && ($user->province_id > 0 || $user->province_id != '')) {
+if (User::userIsAllowedTo('Manage AWPB') && $status == AwpbBudget::STATUS_SUBMITTED  && ($user->province_id > 0 || $user->province_id != '')) {
     //  $status= \backend\models\AwpbBudget::STATUS_SUBMITTED;
     if (strtotime($template_model->consolidation_deadline) >= strtotime($today)) {
 
@@ -113,7 +113,7 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && $status == AwpbBudget:
     }
 }
 
-if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && (($user->province_id == 0 || $user->province_id == ''))) {
+if (User::userIsAllowedTo('Manage AWPB') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && (($user->province_id == 0 || $user->province_id == ''))) {
 
     echo Html::a(
             '<span class="fas fa-check"></span>', ['submit', 'id' => $awpb_template_id, 'id2' => $province_id, 'status' => \backend\models\AwpbBudget:: STATUS_APPROVED], [
@@ -133,7 +133,7 @@ if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\Aw
 }
 
 
-if (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id == 0 || $user->province_id == '')) {
+if (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id == 0 || $user->province_id == '')) {
 
     echo Html::a(
             '<span class="fas fa-check"></span>', ['submit', 'id' => $awpb_template_id, 'id2' => $province_id, 'status' => \backend\models\AwpbBudget:: STATUS_MINISTRY], [

@@ -347,7 +347,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                               $status= $awpb_province->status;
 
                             }
-                   if ((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
+                   if ((User::userIsAllowedTo('Manage AWPB') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
 
                               
                         return Html::a(
@@ -371,7 +371,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
                               $status= $awpb_province->status;
 
                             }
-                  if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
+                  if (((User::userIsAllowedTo('Manage AWPB') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED) || (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
 
                         $pro =  $awpb_province->id;
                         $province_id =$awpb_province->id;

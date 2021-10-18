@@ -369,7 +369,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 //                              $status= $awpb_province->status;
 //
 //                            }
-//                   if ((User::userIsAllowedTo('Approve AWPB - PCO') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
+//                   if ((User::userIsAllowedTo('Manage AWPB') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
 //
 //                              
 //                        return Html::a(
@@ -388,7 +388,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 //                },
                            'delete' => function ($url, $model) use ($user, $pro,$status) {
                          
-                    if ((User::userIsAllowedTo('Approve AWPB - PCO') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
+                    if ((User::userIsAllowedTo('Manage AWPB') && $model->status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_APPROVED )) {
                        
 
                          return Html::a(

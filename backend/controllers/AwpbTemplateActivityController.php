@@ -48,32 +48,23 @@ class AwpbTemplateActivityController extends Controller {
      * Lists all AwpbTemplateActivity models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex($id) {
+
+        
         $searchModel = new AwpbTemplateActivitySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['=','status',0]);
-
+         $dataProvider->query->andFilterWhere(['awpb_template_id' => $id,]);
+                   
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'id'=>$id,
+                    
+                    
         ]);
-        
-        
-        
-        
-//         $searchModel = new AwpbBudget();
-//            $model = new AwpbBudget();
-//            $query = $searchModel::find();
-//            $query->select(['component_id','awpb_template_id', 'output_id', 'cost_centre_id', 'activity_id', 'indicator_id', 'id', 'quarter_one_quantity', 'quarter_two_quantity', 'quarter_three_quantity', 'quarter_four_quantity', 'total_amount']);
-//            $query->where(['=', 'awpb_template_id', $id]);
-//            //$query->andWhere(['=', 'status',$status]);
-//            $query->andWhere(['<>', 'cost_centre_id', 0]);
-//            // $query->andWhere(['=', 'created_by', $user->id]);
-//            //  $query->groupBy('indicator_id');
-//            $query->all();
-//
-//            $dataProvider = new ActiveDataProvider([
-//                'query' => $query,
+      
+       
+             
     }
 
     /**
@@ -153,20 +144,14 @@ class AwpbTemplateActivityController extends Controller {
     public function actionUpdate($id) {
         $model = $this->findModel($id);
 
-//        
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-        if (User::userIsAllowedTo('Setup AWPB')) {
+
+      if (User::userIsAllowedTo('Setup AWPB')) {
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
             }
 
             if ($model->load(Yii::$app->request->post())) {
-
-
-
                 $total_percentage = 0.0;
                 $total_amt = 0.0;
                 $ifad_percentage = !empty($model->ifad) ? $model->ifad : 0;
@@ -274,7 +259,7 @@ class AwpbTemplateActivityController extends Controller {
                                 $model_general_ledger->updated_by = Yii::$app->user->identity->id;
                                 $model_general_ledger->created_by = Yii::$app->user->identity->id;
 
-                                Yii::$app->session->setFlash('error', 'Error occured while creating gl accounts.Error:' .
+                                Yii::$app->session->setFlash('error', 'Error occured while creating GL accounts.Error:' .
                                         $model_general_ledger->component_id . " " .
                                         $model_general_ledger->activity_id . " " .
                                         $model_general_ledger->awpb_template_id . " " .
@@ -329,8 +314,12 @@ class AwpbTemplateActivityController extends Controller {
                         $audit->ip_address = Yii::$app->request->getUserIP();
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
-                        Yii::$app->session->setFlash('success', 'Activity funding setting was successfully updated.' . $model->activity_id);
-                        return $this->redirect(['index']);
+                        Yii::$app->session->setFlash('success', 'Activity funding profile was updated successfully.');
+                        $model_template = \backend\models\AwpbTemplate::findOne(['id' => $model->awpb_template_id]);
+                        $model_template->status_funding = \backend\models\AwpbTemplate::STATUS_PUBLISHED;
+                        $model_template->save();
+                                
+                        return $this->redirect(['index', 'id'=>$model->awpb_template_id]);
                     } else {
                         $message = '';
                         foreach ($model->getErrors() as $error) {
@@ -379,5 +368,5 @@ class AwpbTemplateActivityController extends Controller {
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
+    
 }

@@ -59,15 +59,15 @@ class AwpbCommodityTypesController extends Controller {
                 $posted = current($_POST['AwpbCommodityTypes']);
                 $post = ['AwpbCommodityTypes' => $posted];
                 $old = $model->name;
-                $old_cat = $model->category_id;
+               // $old_cat = $model->category_id;
 
                 if ($model->load($post)) {
                     if ($old != $model->name || $old_cat != $model->category_id) {
                         $audit = new AuditTrail();
                         $audit->user = Yii::$app->user->id;
-                        if ($old_cat != $model->category_id) {
-                            $audit->action = "Updated commodity type category to::" . $model->category_id;
-                        }
+//                        if ($old_cat != $model->category_id) {
+//                            $audit->action = "Updated commodity type category to::" . $model->category_id;
+//                        }
                         if ($old != $model->name) {
                             $audit->action = "Updated commodity type name from $old to " . $model->name;
                         }

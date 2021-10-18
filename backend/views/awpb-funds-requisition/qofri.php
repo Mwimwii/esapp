@@ -261,7 +261,7 @@ $status=1;
                 $query = $searchModel::find();
                 $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
                     'district_id','component_id',
-                    'activity_id','budget_id', 
+                    'activity_id','budget_id','awpb_actual_input.id', 
                     'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
                     'SUM(awpb_actual_input.mo_1) as mo_1',
                     'SUM(awpb_actual_input.mo_2) as mo_2',  
@@ -273,13 +273,9 @@ $status=1;
                     'SUM(awpb_actual_input.quarter_one_amount) as quarter_one_amount']);
                 
                 $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
-               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
-                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
-                //$query->groupBy('camp_id');
-               // $query->groupBy('budget_id'); 
-
+            
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $id]);
+                   $query->groupBy('awpb_actual_input.id'); 
                
                 $query->all();     
                 $dataProvider = new ActiveDataProvider([
@@ -304,13 +300,9 @@ $status=1;
                     'SUM(awpb_actual_input.quarter_two_amount) as quarter_one_amount']);
                 
                 $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
-               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
-                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
-                //$query->groupBy('camp_id');
-               // $query->groupBy('budget_id'); 
-
+             
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $id]);
+                
                 $query->all();     
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,
@@ -334,7 +326,7 @@ $status=1;
                 
                 $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
                // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $id]);
                 //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
                 //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
                 //$query->groupBy('camp_id');
@@ -363,7 +355,7 @@ $status=1;
                 
                 $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
                // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.budget_id', $user->district_id]);
+                $query->andWhere(['=', 'awpb_actual_input.budget_id', $id]);
                 //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
                 //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
                 //$query->groupBy('camp_id');
@@ -378,28 +370,30 @@ $status=1;
                     
            
            } 
-            elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
-                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
-
-                
-             
-            } 
-            elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
-
-               
-            } 
-            elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
-
-               
-            }  else {
+//            elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
+//                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
+//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
+//
+//                
+//             
+//            } 
+//            elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
+//                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
+//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
+//
+//               
+//            } 
+//            elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
+//                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
+//                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
+//
+//               
+//            }  
+            
+            else {
                 $searchModel = new \backend\models\AwpbActualInputSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
                 $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'status', 10]);

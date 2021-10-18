@@ -287,7 +287,8 @@ class AwpbActivityController extends Controller
                     
                 $component = \backend\models\AWPBComponent::findOne([		
                     'id' => $model->component_id,]);
-
+$model->cumulative_planned = 0;
+                         $model->cumulative_actual = 0;
                 $model->created_by = Yii::$app->user->id;
                 $model->updated_by = Yii::$app->user->id;
 				//$model->name = $model->description;
@@ -321,6 +322,8 @@ class AwpbActivityController extends Controller
                             
                 if ($model->activity_type== "Main Activity")
                 {
+                    $model->cumulative_planned = 0;
+                         $model->cumulative_actual = 0;
                 //     $number_of_activities = $model::find()
                 //     ->where(["component_id" => $model->component_id])
                 //    // ->andWhere(["awpb_template_id" => $model->awpb_template_id])
@@ -445,14 +448,31 @@ class AwpbActivityController extends Controller
      */
     public function actionDelete($id)
     {
-        if (User::userIsAllowedTo('Setup AWPB')) 
-		{
-        $this->findModel($id)->delete();
+        if (User::userIsAllowedTo('Setup AWPB')) {
+           
+           try {
+                $model = $this->findModel($id);
+            $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
-    }
-    else 
-		{
+            
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = 'Deleted' . $model->name . ' activity';
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                Yii::$app->session->setFlash('success', "The actvity was successfully deleted.");
+            
+            
+              return $this->redirect(['index']);
+               } catch (\Exception $ex) {
+                          //  $transaction->rollBack();
+                            Yii::$app->session->setFlash('error', 'Error occured while deleting the AWPB activity.' . $ex->getMessage() . ' Please try again');
+                           
+                         return $this->redirect(['view','id'=>$id ]);
+                            
+               }
+        } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['site/home']);
         }

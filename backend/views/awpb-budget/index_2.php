@@ -317,10 +317,15 @@ $today = $time->format('Y-m-d');
             $searchModel = new \backend\models\AwpbBudget();
             $query = $searchModel::find();
             
-            $query->select(['awpb_template_id',  'component_id','activity_id','camp_id','id','SUM(quarter_one_amount) as quarter_one_amount',  'SUM(quarter_two_amount) as quarter_two_amount',  'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['awpb_template_id',  'component_id','activity_id','camp_id','id',
+                'SUM(quarter_one_amount) as quarter_one_amount',
+                'SUM(quarter_two_amount) as quarter_two_amount', 
+                'SUM(quarter_three_amount) as quarter_three_amount', 
+                'SUM(quarter_four_amount) as quarter_four_amount',
+                'SUM(total_amount) as total_amount']);
             //$query->join('LEFT JOIN', 'awpb_district', 'awpb_district.district_id = districk.id');
             $query->where(['awpb_template_id' =>  $template_model->id]);
-            $query->where(['district_id' => $user->district_id]);
+            $query->andWhere(['district_id' => $user->district_id]);
            // $query->andWhere(['>', 'district_id', 0]);
           //  $query->andWhere(['=', 'status', $status]);
             $query->groupBy('id'); 

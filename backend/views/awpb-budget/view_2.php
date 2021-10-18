@@ -98,7 +98,7 @@ if (!empty($awpb_district)) {
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
+if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Manage AWPB') ) {
 
 if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT){
  

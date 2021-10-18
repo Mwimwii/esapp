@@ -27,7 +27,7 @@ use backend\models\AwpbIndicator;
 	//  echo $form->field($model,'component_id')->dropDownList((AwpbComponent::getAwpbSubComponentsList()),
   //    [
   //      'prompt'=>'Select component','id'=>'comp_id']);
-   
+     echo $form->field($model, 'outcome_code')->textInput(['maxlength' => true]);
         echo $form->field($model, 'name')->textInput(['maxlength' => true]);
         echo $form->field($model, 'outcome_description')->textInput(['maxlength' => true]);
 ?>

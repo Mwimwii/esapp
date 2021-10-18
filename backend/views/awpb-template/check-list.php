@@ -17,10 +17,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card-body">
         <h4>Instructions</h4>
         <ol>
-            <li>Click the blue "<span style="color:#007bff;"><i class="fa fa-link"></i> Update section</span>" link alongside a section to update a particular section.</li>
+            <li>Click the blue "<span style="color:#007bff;"><i class="fa fa-link"></i> Update section </span>" link alongside a section to update a particular section.</li>
             <li>Completed sections can be edited by navigating to the forms in the same manner.</li>
-            <li>Completed sections will be marked with <span class="badge badge-success">COMPLETED</span> under the status column.</li>
-            <li>Once all the sections have been completed a green "<span class="badge badge-success">Publish</span>" button will appear at the bottom of the table. Click it to publish the AWPB template for Stakeholders to start budgeting.</li>
+            <li>Completed sections will be marked with <span class="badge badge-success"> COMPLETED </span> under the status column.</li>
+            <li>Once all the sections have been completed a green "<span class="badge badge-success"> Publish </span>" button will appear at the bottom of the table. Click it to publish the AWPB template for Stakeholders to start budgeting.</li>
             <li>To attach the <code> <?php $model->fiscal_year?> Budget Guideline </code>, click the 
                 <span class="badge badge-primary"><span class="fa fa-eye fa-2x"></span></span> 
                 icon below.
@@ -29,6 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card-header">
             <div class="card-title">
                 <?php
+                  echo Html::a(
+                '<span class="fa fa-arrow-left fa-2x"></span>', ['index' ], [
+            'title' => 'Checklist',
+            'data-toggle' => 'tooltip',
+            'data-placement' => 'top',
+            'data-pjax' => '0',
+            'style' => "padding:20px;",
+            'class' => 'bt btn-lg'
+                ]
+        );
                 echo Html::a(
                         '<span class="fa fa-eye fa-2x"></span>', ['view', 'id' => $model->id], [
                     'title' => 'View template',
@@ -163,7 +173,25 @@ $this->params['breadcrumbs'][] = $this->title;
                             </td>
                         </tr>
                        
-
+           <tr>
+                            <td><b>Funding Profile</b> (Set funding profile for each activity set above)&emsp;&emsp;
+                                <?php
+                                if (($model->status == AwpbTemplate::STATUS_DRAFT ||$model->status == AwpbTemplate::STATUS_PUBLISHED) && !empty($model->status_activities)) {
+                                    echo Html::a('<i class="fa fa-link"></i> Update section', ['/awpb-template-activity/index', 'id' => $model->id]);
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                if (!empty($model->status_funding)) {
+                                    echo '<span class="badge badge-success">COMPLETED</span>';
+                                } else {
+                                    echo '<span class="badge badge-danger">INCOMPLETE</span>';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                       
                     </tbody>
 
                 </table>

@@ -92,7 +92,7 @@ class AwpbComponentController extends Controller
       //  }
         public function actionCreate()
         {
-            if (User::userIsAllowedTo('Manage components')) 
+            if (User::userIsAllowedTo('Setup AWPB')) 
             {
                  $model = new AwpbComponent();
                  $sub_component="";
@@ -207,7 +207,7 @@ class AwpbComponentController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (User::userIsAllowedTo('Manage components')) 
+        if (User::userIsAllowedTo('Setup AWPB')) 
         {
          
             $model = $this->findModel($id);
@@ -302,11 +302,16 @@ class AwpbComponentController extends Controller
 
     public function actionDelete($id) {
         //For now we just set the user status to User::STATUS_DELETED
-        if (User::userIsAllowedTo('Manage components')) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
+            
+            
+                     $subcomponent = \backend\models\AwpbComponent::find()->where(['parent_component_id'=>$id])->all();
+                     if(empty($subcomponent)){
             $model = $this->findModel($id);
+            
             $this->findModel($id)->delete();
           
-            if ($model->save()) {
+            
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Delete component : "  . $model->code . " ".$model->name;
@@ -314,10 +319,14 @@ class AwpbComponentController extends Controller
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
                 Yii::$app->session->setFlash('success', "The component was successfully deleted.");
-            } else {
-                Yii::$app->session->setFlash('error', "The component could not be deleted. Please try again!");
-            }
+           
+               return $this->redirect(['index']);
+        
+                     
+                      } else {
+            Yii::$app->session->setFlash('error', 'You can not delete a component that has subcomponents.');
             return $this->redirect(['index']);
+        }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['site/home']);

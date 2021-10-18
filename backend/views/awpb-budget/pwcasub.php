@@ -65,11 +65,11 @@ if (!empty($template_model)){
             <div class="col-md-4">      
         <ul>  
             <?php
-            if (User::userIsAllowedTo("Approve AWPB - Ministry")  &&  ( $user->province_id == 0 || $user->province_id == '')){
+            if (User::userIsAllowedTo("Approve AWPB")  &&  ( $user->province_id == 0 || $user->province_id == '')){
    
          echo "<li>Budget Review Deadline:" .$template_model->submission_deadline_ifad. "</li>"; 
         }
-        elseif(User::userIsAllowedTo('Approve AWPB - PCO') && ( $user->province_id == 0 || $user->province_id == ''))
+        elseif(User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == ''))
         {
          echo "<li>Budget Submission Deadline:" . $template_model->incorpation_deadline_pco_moa_mfl . "</li>"; 
          }
@@ -87,7 +87,7 @@ if (!empty($template_model)){
         <?php
         
                 
-       if(User::userIsAllowedTo('Approve AWPB - PCO')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == '')) {
+       if(User::userIsAllowedTo('Manage PW AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == '')) {
             
                  echo "  <div class='row'>";
   
@@ -104,11 +104,7 @@ if (!empty($template_model)){
                     echo "</div>";
                      echo "</div>";
            }
-//           if (User::userIsAllowedTo("Approve AWPB - Provincial") &&  !empty($template_model)&& strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== '')){
-//         
-//                echo Html::a('Add an AWPB Activity', ['createcspco','template_id'=>$template_model->id], ['class' => 'btn btn-success btn-sm']);
-//                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-//           }
+
 ?>
          <p>
          
@@ -159,12 +155,12 @@ if (!empty($template_model)){
                         ;
                         
                          
-                       //      if (User::userIsAllowedTo('Approve AWPB - PCO') && ($user->province_id == 0 || $user->province_id == '')) {
+                       //      if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
 
                          return !empty($model->activity_id) && $model->activity_id > 0 ? $name->activity_code . ' ' . $name->name : "";
                  
 //                          }
-//                            if (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
+//                            if (User::userIsAllowedTo('Approve AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
 //
 //                        return !empty($model->activity_id) && $model->activity_id > 0 ? Html::a( $name->activity_code . ' ' . $name->name, ['pwcau', 'id' => $model->activity_id,'status' => $model->id ], ['class' => 'mpcd']) : "";
 //                 
@@ -342,7 +338,7 @@ if (!empty($template_model)){
             'mpc' => function ($url, $model) use ($user, $template_model, $status) {
                 if($status ==0){
                     return Html::a(
-                                    '<span class="fa fa-eye"></span>', ['viewpw', 'id' => $model->activity_id,'status' => $model->id ], [
+                                    '<span class="fa fa-eye"></span>', ['pwcasubcs', 'id' => $model->activity_id,'status' => $status ], [
                                 'title' => 'View AWPB Activity',
                                 'data-toggle' => 'tooltip',
                                 'data-placement' => 'top',
@@ -354,11 +350,20 @@ if (!empty($template_model)){
                     );
                 
             }},
-                    
-                        'mpcd' => function ($url, $model) use ($status) {
+                             'create' => function ($url, $model) use ($status,$template_model,$today,$user) {
+                     
+                            
+                            
+                     if ((User::userIsAllowedTo('Manage PW AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) &&
+                             ( $user->province_id == 0 || $user->province_id == ''))||
+           (User::userIsAllowedTo('Approve AWPB')&& strtotime($template_model-> submission_deadline_ifad) >= strtotime($today) && 
+                                     ( $user->province_id == 0 || $user->province_id == '')))
+           {
+                         
+                        
                      
                                 return Html::a(
-                                                '<span class="fa fa-comment"></span>', ['awpb-comment/create', 'id' => $model->activity_id, 'id2'=>0,'id3'=>0, 'status' =>0], [
+                                                '<span class="fa fa-comment"></span>', ['awpb-comment/create', 'id' => $model->activity_id, 'id2'=>$model->province_id,'id3'=>$model->district_id, 'status' =>1], [
                                             'title' => 'Comment',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
@@ -367,7 +372,7 @@ if (!empty($template_model)){
                                             'class' => 'bt btn-lg'
                                                 ]
                                 );
-                          
+                 }
                         },
                     
                     

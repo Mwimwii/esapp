@@ -46,6 +46,9 @@ class AwpbUnitOfMeasure extends \yii\db\ActiveRecord
             [['name', 'status'], 'required'],
             [['status', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 40],
+             [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Name already in use!'],
         ];
     }
         

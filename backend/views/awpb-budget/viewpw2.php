@@ -105,7 +105,7 @@ echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['indexpw','id'=>$
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-   if ((User::userIsAllowedTo("Manage AWPB") || User::userIsAllowedTo('Approve AWPB - PCO')) && ($user->province_id == 0 || $user->province_id == '')) {
+   if ((User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage AWPB')) && ($user->province_id == 0 || $user->province_id == '')) {
 
 if(strtotime($template_model->submission_deadline) >= strtotime($today) && $status == \backend\models\AwpbTemplate::STATUS_DRAFT){
  

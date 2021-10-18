@@ -21,66 +21,75 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel backend\models\CommodityPriceCollectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'AWPB';
+$template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
+if (!empty($template_model)){
+$this->title =$template_model->fiscal_year. ' AWPB Input Variation';
 //$province_id = backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->province_id;
 $this->params['breadcrumbs'][] = $this->title;
-
+}
 //$this->params['breadcrumbs'][] = \backend\models\Provinces::findOne($province_id)->name;
 //$this->params['breadcrumbs'][] = \backend\models\Districts::findOne([Yii::$app->getUser()->identity->district_id])->name;
 
 
 $user = User::findOne(['id' => Yii::$app->user->id]);
-$role = \common\models\Role::findOne(['id' => $user->role])->role;
+//$role = \common\models\Role::findOne(['id' => $user->role])->role;
 $access_level =1;
 $time = new \DateTime('now');
 $today = $time->format('Y-m-d');
-$awpb_template =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-
-//$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id'=> $id,'district_id'=>$user->district_id]);
-//$_awpb_district = new \backend\models\AwpbDistrict();
-//$awpb_district =  \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>$id, 'district_id'=>$user->district_id]);
-  $awpb_template_user = \backend\models\AwpbTemplateUsers::findOne(['awpb_template_id' => $awpb_template->id, 'user_id' => $user->id]);
-$status=100;
 
  
  //$awpb_district->status=0;
+
+$form = ActiveForm::begin(); 
+$model = new backend\models\AwpbBudget_1();
 ?>
+
 <div class="card card-success card-outline">
     <div class="card-body" style="overflow: auto;">
-   <p>
-           
-            <?php
-   
-          
-  //  if (User::userIsAllowedTo('Manage AWPB')&& $user->district_id>0 ||$user->district_id!='') {
-     
 
-                                 
+        <h3><?= Html::encode($this->title) ?> : Q<?= $template_model->quarter ?> </h3>
+        <h5>Instructions</h5>
+        <div class="row" style="">
+            <div class="col-lg-6">
+                
+                  <?=
+        $form->field($model, 'cost_centre_id', [
+            'addon' => [
+                'append' => [
+                    'content' => Html::submitButton('Filter', ['name' => 'costCentre', 'value' => 'true', 'class' => 'btn btn-success btn-sm']),
+                    'asButton' => true
+                ]
+            ]
+        ])->dropDownList(
+                    \backend\models\AwpbCostCentre::getAwpbCostCentreList(), ['prompt' => 'Please select a cost centre', 'required' => true]
+            );
         
-
-                       
-//$awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id'=>$user->district_id]);
-//$awpb_province = \backend\models\AwpbProvince::findOne(['awpb_template_id' => $id, 'province_id'=>$user->province_id]);
-//$budgeted_input = \backend\models\AwpbInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
-//$budget = \backend\models\AwpbActualInput::find()->where(['budget_id'=>$id4])->sum('total_amount');
+        ?>
+            </div>
+            
+    <div class="col-lg-6">
+        <ol>
+          <li>Select the cost centre you wish to request funds for and click <span class="badge badge-success">Filter</span> button to view the budget for cost centre.
+            </li>
            
-       
-  if(   $awpb_template_user->status_budget== \backend\models\AwpbBudget::STATUS_MINISTRY  ) 
-  {
-            ?>
+            <li>Click the 
+                <span class="badge badge-primary"><span class="fa fa-eye fa-1x"></span></span> 
+                icon to vary the inputs
+            </li>
 
-        </p>
-
-
-
+        </ol>
+    </div>
+           </div>
+        <?php ActiveForm::end();?>
         <?php
+       if (!empty($cost_centre_id)){  
       $gridColumns = [
 [
     'class'=>'kartik\grid\SerialColumn',
     'contentOptions'=>['class'=>'kartik-sheet-style'],
     'width'=>'36px',
     'pageSummary'=>'Total',
-    'pageSummaryOptions' => ['colspan' => 5],
+    'pageSummaryOptions' => ['colspan' => 4],
     'header'=>'',
     'headerOptions'=>['class'=>'kartik-sheet-style']
 ],
@@ -133,8 +142,8 @@ $status=100;
 ],
             [
     'class' => 'kartik\grid\EditableColumn',
-    'attribute' => 'budget_id',
-     'header' => 'Activity Name', 
+    'attribute' => 'id',
+     'header' => 'Activity', 
     'pageSummary' => 'Total',
     'vAlign' => 'middle',
     'width' => '450px',
@@ -145,7 +154,28 @@ $status=100;
       },
 
 ],
+      
 
+         [
+             'attribute' => 'cost_centre_id',
+             'label' => 'Cost Cntre', 
+             'vAlign' => 'middle',
+           //  'width' => '180px',
+
+             'value' => function ($model) {
+           return !empty($model->cost_centre_id) && $model->cost_centre_id > 0 ? \backend\models\AwpbCostCentre::findOne($model->cost_centre_id)->name : "";
+            
+                     },
+           
+              'filterType' => GridView::FILTER_SELECT2,
+              'filter' =>  \backend\models\AwpbActivity::getAwpbActivitiesList($access_level), 
+//              'filterWidgetOptions' => [
+//                  'pluginOptions' => ['allowClear' => true],
+//                  'options' => ['multiple' => true]
+//              ],
+              'filterInputOptions' => ['placeholder' => 'Filter by activity'],
+              'format' => 'raw'
+        ],
 //[
 //    'class' => 'kartik\grid\EditableColumn',
 //    'attribute' => 'district_id',
@@ -266,11 +296,11 @@ $status=100;
                          'header' => 'Action', 
                     'template' => '{view}',
                     'buttons' => [
-                        'view' => function ($url, $model) use ($status){
-                            if (  User::userIsAllowedTo('View AWPB')) {
+                        'view' => function ($url, $model) {
+                            if (  User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo("Request Funds")) {
                                 return Html::a(
-                                                '<span class="fa fa-eye"></span>', ['view_1', 'id' =>$model->budget_id], [
-                                            'title' => 'View AWPB',
+                                                '<span class="fa fa-eye"></span>', ['viewactualinput', 'id' =>$model->id], [
+                                            'title' => 'View AWPB Input',
                                             'data-toggle' => 'tooltip',
                                             'data-placement' => 'top',
                                             'data-pjax' => '0',
@@ -315,16 +345,21 @@ $status=100;
           <?php
            
         //  $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
-            $searchModel = new \backend\models\AwpbInput();
+            $searchModel = new \backend\models\AwpbBudget_1();
             $query = $searchModel::find();
             
-            $query->select(['awpb_template_id',  'component_id','activity_id','budget_id','SUM(quarter_one_amount) as quarter_one_amount',  'SUM(quarter_two_amount) as quarter_two_amount',  'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount','SUM(total_amount) as total_amount']);
+            $query->select(['awpb_template_id',  'component_id','activity_id','cost_centre_id','id',
+                'SUM(quarter_one_amount) as quarter_one_amount',
+                'SUM(quarter_two_amount) as quarter_two_amount', 
+                'SUM(quarter_three_amount) as quarter_three_amount', 
+                'SUM(quarter_four_amount) as quarter_four_amount',
+                'SUM(total_amount) as total_amount']);
             //$query->join('LEFT JOIN', 'awpb_district', 'awpb_district.district_id = districk.id');
-            $query->where(['awpb_template_id' => $id]);
-            $query->where(['created_by' => $user->id]);
+            $query->where(['awpb_template_id' =>  $template_model->id]);
+            $query->andWhere(['cost_centre_id' => $cost_centre_id]);
            // $query->andWhere(['>', 'district_id', 0]);
           //  $query->andWhere(['=', 'status', $status]);
-            $query->groupBy('budget_id'); 
+            $query->groupBy('id'); 
             $query->all();
 
             $dataProvider = new ActiveDataProvider([
@@ -363,16 +398,20 @@ if ($dataProvider->getCount() > 0) {
                 //     'type' => GridView::TYPE_PRIMARY
                 // ],
         ]);
-  }
-   else
-            {
-               
-            Yii::$app->session->setFlash('error', 'No budget to request funds from.');
-           
-            }
-
-
- ?>
+}
+//   else
+//            {
+//               
+//            Yii::$app->session->setFlash('error', 'No budget to request funds from.');
+//           
+//            }
+//
+// } else {
+//            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+// return $this->redirect(['site/home']);
+//
+//            }
+// ?>
 
 <div class="row">
 		<div class="col-md-12">

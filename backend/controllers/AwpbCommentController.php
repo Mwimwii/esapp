@@ -102,19 +102,21 @@ class AwpbCommentController extends Controller {
                     $audit->user_agent = Yii::$app->request->getUserAgent();
                     $audit->save();
                     Yii::$app->session->setFlash('success', 'Comment :' . $model->description. ' was successfully added.');
+                    if($status==1)
+                {
+                    return $this->redirect(['awpb-budget/mpcd', 'status' => $status, 'id' => $id3, 'id2' =>$id2]);
+                    
+                }
+                elseif ($status==2){
+                
+            return $this->redirect(['awpb-budget/pwcasub', 'status' => $status, 'id' => $activity_model->parent_activity_id, 'id2' =>$id2]);
+                    //return $this->redirect(['awpb-budget/mpcd', 'status' => $status, 'id' => $id3, 'id2' =>$id2]);
+                }
                 } else {
                     Yii::$app->session->setFlash('error', 'Error occured while adding comment ' . $model->decription);
                 }
-                if($user->province_id == 0 || $user->province_id == '')
-                {
-                    return $this->redirect(['awpb-budget/pwcasub', 'status' => $status, 'id' => $activity_model->parent_activity_id, 'id2' =>$id2]);
-                }
-                elseif ($user->province_id > 0 || $user->province_id !== ''){
                 
-            
-                    return $this->redirect(['awpb-budget/mpcd', 'status' => $status, 'id' => $id3, 'id2' =>$id2]);
-                }
-                //return $this->redirect(['pwcasub', 'id' => $model->activity_id,'status' => $status]);
+                
             }
             return $this->render('create', [
                         'model' => $model,
@@ -169,24 +171,9 @@ class AwpbCommentController extends Controller {
 
         $user = User::findOne(['id' => Yii::$app->user->id]);
 
-//        if (User::userIsAllowedTo("Submit District AWPB") || User::userIsAllowedTo('Approve AWPB - Provincial') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
-//            $right = "";
-//            $returnpage = "";
-//            $activitylines = "";
-//            $subject = "";
-//            $province = "";
-//            $awpb_template = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-//            $model = new AwpbBudget();
-//            $searchModel = new AwpbBudgetSearch();
-//            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//            $user = User::findOne(['id' => Yii::$app->user->id]);
-//            $pro = \backend\models\Provinces::findOne($id);
-//            $status1 = 0;
-//            if (!empty($pro)) {
-//                $province = $pro->name;
-//            }
+
         $awpb_template = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-        if (User::userIsAllowedTo('Approve AWPB - Provincial') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+        if (User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
             $returnpage = "";
             $model = new \backend\models\AwpbComment();
 
@@ -207,7 +194,7 @@ class AwpbCommentController extends Controller {
                     if (!empty($pro)) {
                         $province = $pro->name;
                     }
-                    if (User::userIsAllowedTo("Approve AWPB - Provincial") && ($user->province_id > 0 || $user->province_id !== '')) {
+                    if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id > 0 || $user->province_id !== '')) {
                         // $dataProvider->query->andFilterWhere(['awpb_template_id' => $awpb_template->id, 'district_id' => $id, 'status' => AwpbBudget::STATUS_SUBMITTED,]);
                         // $activitylines = AwpbBudget::find()->where(['district_id' => $id])->andWhere(['awpb_template_id' => $awpb_template->id])->andWhere(['status' => AwpbBudget::STATUS_SUBMITTED])->all();
                         $returnpage = 'mpc';
@@ -232,11 +219,11 @@ class AwpbCommentController extends Controller {
                         $awpb_province->save();
                         //  Yii::$app->session->setFlash('error', 'Error occured while adding declining the AWPB'.$awpb_district->district_id. ' '.$awpb_district->awpb_template_id);
                         $status = AwpbBudget::STATUS_DRAFT;
-                    } elseif (User::userIsAllowedTo('Approve AWPB - PCO') && ( $user->province_id == 0 || $user->province_id == '')) {
+                    } elseif (User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == '')) {
                         //   $dataProvider->query->andFilterWhere(['awpb_template_id' => $awpb_template->id, 'province_id' => $id, 'status' => AwpbBudget::STATUS_REVIEWED,]);
                         //  $activitylines = AwpbBudget::find()->where(['province_id' => $id])->andWhere(['awpb_template_id' => $awpb_template->id])->andWhere(['status' => AwpbBudget::STATUS_REVIEWED])->all();
                         $returnpage = "mp";
-                        $right = "Approve AWPB - Provincial";
+                        $right = 'Manage AWPB';
                         $dear = "Dear Provincial Officer";
                         $bodymsg = "Your ";
                         $bodymsg1 = " has been declined.";
@@ -247,11 +234,11 @@ class AwpbCommentController extends Controller {
                         $awpb_province->status = AwpbBudget::STATUS_SUBMITTED;
                         $awpb_province->save();
                         $status = AwpbBudget::STATUS_SUBMITTED;
-                    } elseif (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
+                    } elseif (User::userIsAllowedTo('Approve AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
                         // $dataProvider->query->andFilterWhere(['awpb_template_id' => $awpb_template->id, 'province_id' => $id, 'status' => AwpbBudget::STATUS_APPROVED,]);
                         // $activitylines = AwpbBudget::find()->where(['province_id' => $id])->andWhere(['awpb_template_id' => $awpb_template->id])->andWhere(['status' => AwpbBudget::STATUS_APPROVED])->all();
                         $returnpage = "mp";
-                        $right = "Approve AWPB - PCO";
+                        $right = 'Manage AWPB';
                         $dear = "Dear PCO";
                         $bodymsg = "Your ";
                         $bodymsg1 = " has been declined.";
@@ -286,7 +273,7 @@ class AwpbCommentController extends Controller {
 
                             $_user_model = "";
                         }
-                        if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED )) && ($user->province_id == 0 || $user->province_id == '')) {
+                        if (((User::userIsAllowedTo('Manage AWPB') && $status == \backend\models\AwpbBudget::STATUS_SUBMITTED) || (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED )) && ($user->province_id == 0 || $user->province_id == '')) {
 
                             $_user_model = User::find()
                                     ->where(['role' => $_role->role])
@@ -359,7 +346,7 @@ class AwpbCommentController extends Controller {
         $user = User::findOne(['id' => Yii::$app->user->id]);
         $email_status = 0;
         $awpb_template = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
-        if (User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+        if (User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
             $returnpage = "";
             $model = new \backend\models\AwpbComment();
 
@@ -374,7 +361,7 @@ class AwpbCommentController extends Controller {
                 $model->updated_by = Yii::$app->user->identity->id;
                 //var_dump($id .' '.$user->province_id);
 
-                if (User::userIsAllowedTo('Approve AWPB - PCO') && ( $user->province_id == 0 || $user->province_id == '')) {
+                if (User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == '')) {
                     //   $dataProvider->query->andFilterWhere(['awpb_template_id' => $awpb_template->id, 'province_id' => $id, 'status' => AwpbBudget::STATUS_REVIEWED,]);
                     //  $activitylines = AwpbBudget::find()->where(['province_id' => $id])->andWhere(['awpb_template_id' => $awpb_template->id])->andWhere(['status' => AwpbBudget::STATUS_REVIEWED])->all();
                     $returnpage = "pwc";
@@ -389,11 +376,11 @@ class AwpbCommentController extends Controller {
                     $awpb_template_user->save();
                     $email_status == 1;
                     
-                } elseif (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
+                } elseif (User::userIsAllowedTo('Approve AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
                     // $dataProvider->query->andFilterWhere(['awpb_template_id' => $awpb_template->id, 'province_id' => $id, 'status' => AwpbBudget::STATUS_APPROVED,]);
                     // $activitylines = AwpbBudget::find()->where(['province_id' => $id])->andWhere(['awpb_template_id' => $awpb_template->id])->andWhere(['status' => AwpbBudget::STATUS_APPROVED])->all();
                     $returnpage = "pwc";
-                    $right = "Approve AWPB - PCO";
+                    $right = 'Manage AWPB';
                     $dear = "Dear PCO";
                     $bodymsg = "Your ";
                     $bodymsg1 = " has been declined.";
@@ -444,7 +431,7 @@ class AwpbCommentController extends Controller {
 
                             $_user_model = "";
                         }
-                        if ((User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) && ($user->province_id == 0 || $user->province_id == '')) {
+                        if ((User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) && ($user->province_id == 0 || $user->province_id == '')) {
 
                             $_user_model = User::find()
                                     ->where(['role' => $_role->role])

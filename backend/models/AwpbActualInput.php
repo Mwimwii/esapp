@@ -156,7 +156,7 @@ class AwpbActualInput extends \yii\db\ActiveRecord
             'indicator_id' => 'Programme Indicator',
              'budget_id' => 'Budget',
             'name' => 'Name',
-
+'unit_of_measure_id'=>"Unit of Measure",
             'quarter'=>"",
             'unit_cost' => 'Unit Cost',
             'mo_1' => 'Jan Qty',
@@ -171,7 +171,6 @@ class AwpbActualInput extends \yii\db\ActiveRecord
             'mo_10' => 'Oct Qty',
             'mo_11' => 'Nov Qty',
             'mo_12' => 'Dec Qty',
-
             'quarter_one_quantity' => 'Q1 Qty',
             'quarter_two_quantity' => 'Q2 Qty',
             'quarter_three_quantity' => 'Q3 Qty',

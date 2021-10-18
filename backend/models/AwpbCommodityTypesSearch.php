@@ -9,7 +9,7 @@ use backend\models\CommodityTypes;
 /**
  * CommodityTypesSearch represents the model behind the search form of `backend\models\CommodityTypes`.
  */
-class AwpbCommodityTypesSearch extends CommodityTypes
+class AwpbCommodityTypesSearch extends AwpbCommodityTypes
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class AwpbCommodityTypesSearch extends CommodityTypes
      */
     public function search($params)
     {
-        $query = CommodityTypes::find();
+        $query = AwpbCommodityTypes::find();
 
         // add conditions that should always apply here
 

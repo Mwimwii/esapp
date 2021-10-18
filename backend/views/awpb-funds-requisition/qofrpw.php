@@ -48,7 +48,7 @@ $user = User::findOne(['id' => Yii::$app->user->id]);
 //$access_level=1;
 $status = 1;
 $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-$district_model = \backend\models\AwpbDistrict::findOne(['district_id' => $user->district_id,'awpb_template_id'=>$template_model->id]);
+
 $model = new backend\models\AwpbFundsRequisition();
 $form = ActiveForm::begin(); 
 ?>
@@ -87,10 +87,7 @@ $form = ActiveForm::begin();
             <li>Click <span class="badge badge-success">Submit Request</span> button below to 
                 request for funding.
             </li>
-            <li>Click the 
-                <span class="badge badge-primary"><span class="fa fa-eye fa-1x"></span></span> 
-                icon to the activity budget and vary the inputs
-            </li>
+           
 
         </ol>
     </div>
@@ -98,41 +95,42 @@ $form = ActiveForm::begin();
 <?php ActiveForm::end();
 
  if (!empty($cost_centre_id)){
+$district_model = \backend\models\AwpbDistrict::findOne(['cost_centre_id' => $cost_centre_id,'awpb_template_id'=>$template_model->id]);
 
-
-if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user->province_id = '')) {
+if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
     $status = 0;
     if (!empty($district_model)){
         
           if (
                   ($template_model->quarter==1 && $district_model->status_q_1 ==0 )||
                   ($template_model->quarter== 2 &&$district_model->status_q_2 ==0 )||
-                  ($template_model->quarter== 3 &&$district_model->status_q_32 ==0 )||
+                  ($template_model->quarter== 3 &&$district_model->status_q_3 ==0 )||
                   ($template_model->quarter== 4 &&$district_model->status_q_4 ==0 )
                   )
             {
               
         
-        
-    echo Html::a(
+               echo Html::a(
             '<span class="btn btn-success float-right">Submit Funds Request</span>', ['awpb-funds-requisition/frd'], [
         'title' => 'Submit Funds Request',
         'data-toggle' => 'tooltip',
         'data-placement' => 'top',
         // 'target' => '_blank',
         'data-pjax' => '0',
-         'style' => "padding:5px;",
+        // 'style' => "padding:5px;",
         'class' => 'bt btn-lg',
                'data'=>[
 
         'method' => 'post',
 
        
-             'params'=>['id' => $user->district_id],
+             'params'=>['id' => $cost_centre_id],
        // 'params'=>['MyParam1'=>'100', 'MyParam2'=>true],
 
             ]]
     );
+              
+   
     }
  else {
           echo Html::a('<span class="btn btn-small btn-info"> <h6> Quarter '.$template_model->quarter.' funds have already been requested.</h6></span>',"",  [
@@ -193,12 +191,7 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
-//[
-//    'class' => 'kartik\grid\RadioColumn',
-//    'width' => '36px',
-//    'headerOptions' => ['class' => 'kartik-sheet-style'],
-//],
-            [
+         [
                 'class' => 'kartik\grid\ExpandRowColumn',
                 'width' => '50px',
                 'value' => function ($model, $key, $index, $column) {
@@ -207,7 +200,7 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user
                 // uncomment below and comment detail if you need to render via ajax
                 // 'detailUrl' => Url::to(['/site/book-details']),
                 'detail' => function ($model, $key, $index, $column) {
-                    return Yii::$app->controller->renderPartial('qofri', ['id' => $model->budget_id]);
+                    return Yii::$app->controller->renderPartial('qofri_1', ['id' => $model->budget_id]);
                 },
                 //  'headerOptions' => ['class' => 'kartik-sheet-style'] ,
                 'expandOneOnly' => true
@@ -377,8 +370,9 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user
       
 
         if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
-              $searchModel = new AwpbActualInput();
-            if ($template_model->quarter == 1) {
+             
+        if ($template_model->quarter == 1) {
+                 $searchModel = new AwpbActualInput();
                 $query = $searchModel::find();
 //                $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id',
 //                    'awpb_budget.district_id as district_id', 'awpb_budget.component_id as component_id',
@@ -401,8 +395,8 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user
 //                    'query' => $query,
 //                ]);
                 
-                $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
-                    'district_id','component_id',
+                $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 'id',
+                    'component_id',
                     'activity_id','budget_id', 
                     'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
                     'SUM(awpb_actual_input.mo_1) as mo_1',
@@ -414,165 +408,19 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user
                     'SUM(awpb_actual_input.mo_3_amount) as mo_3_amount',
                     'SUM(awpb_actual_input.quarter_one_amount) as quarter_one_amount']);
                 
-                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
-               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.cost_centre_id', $cost_centre_id]);
-                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
-                //$query->groupBy('camp_id');
-               // $query->groupBy('budget_id'); 
-
+//                
+       $query->where(['awpb_template_id' =>  $template_model->id]);
+            $query->andWhere(['cost_centre_id' => $cost_centre_id]);
+           // $query->andWhere(['>', 'district_id', 0]);
+          //  $query->andWhere(['=', 'status', $status]);
+            $query->groupBy('budget_id'); 
+            $query->all();
                
                 $query->all();     
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,
                 ]);
-                
-            } elseif ($template_model->quarter == 2) {
-                $query = $searchModel::find();
-           $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
-                    'district_id','component_id',
-                    'activity_id','budget_id', 
-                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
-                    'SUM(awpb_actual_input.mo_4) as mo_1',
-                    'SUM(awpb_actual_input.mo_5) as mo_2',  
-                    'SUM(awpb_actual_input.mo_6) as mo_3',
-                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
-                    'SUM(awpb_actual_input.mo_4_amount) as mo_1_amount',
-                    'SUM(awpb_actual_input.mo_5_amount) as mo_2_amount',  
-                    'SUM(awpb_actual_input.mo_6_amount) as mo_3_amount',
-                    'SUM(awpb_actual_input.quarter_two_amount) as quarter_one_amount']);
-                
-                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
-               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.cost_centre_id', $cost_centre_id]);
-                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
-                //$query->groupBy('camp_id');
-               // $query->groupBy('budget_id'); 
-
-               
-                $query->all();     
-                $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                ]);
-            } elseif ($template_model->quarter == 3) {
-                $query = $searchModel::find();
-                        $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
-                    'district_id','component_id',
-                    'activity_id','budget_id', 
-                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
-                    'SUM(awpb_actual_input.mo_7) as mo_1',
-                    'SUM(awpb_actual_input.mo_8) as mo_2',  
-                    'SUM(awpb_actual_input.mo_9) as mo_3',
-                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
-                    'SUM(awpb_actual_input.mo_7_amount) as mo_1_amount',
-                    'SUM(awpb_actual_input.mo_8_amount) as mo_2_amount',  
-                    'SUM(awpb_actual_input.mo_9_amount) as mo_3_amount',
-                    'SUM(awpb_actual_input.quarter_three_amount) as quarter_one_amount']);
-                
-                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
-               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.cost_centre_id', $cost_centre_id]);
-                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
-                //$query->groupBy('camp_id');
-               // $query->groupBy('budget_id'); 
-
-               
-                $query->all();     
-                $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                ]);
-            } elseif ($template_model->quarter == 4) {
-                $query = $searchModel::find();
-                $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 'awpb_budget.district_id as district_id', 'awpb_budget.component_id as component_id', 'awpb_budget.activity_id as activity_id', 'awpb_budget.camp_id as camp_id', 'budget_id', 'SUM(awpb_actual_input.mo_10_amount) as mo_1_amount', 'SUM(awpb_actual_input.mo_11_amount) as mo_2_amount', 'SUM(awpb_actual_input.mo_12_amount) as mo_3_amount', 'SUM(awpb_actual_input.quarter_four_amount) as quarter_one_amount']);
-                     $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
-                    'district_id','component_id',
-                    'activity_id','budget_id', 
-                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
-                    'SUM(awpb_actual_input.mo_10) as mo_1',
-                    'SUM(awpb_actual_input.mo_11) as mo_2',  
-                    'SUM(awpb_actual_input.mo_12) as mo_3',
-                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
-                    'SUM(awpb_actual_input.mo_10_amount) as mo_1_amount',
-                    'SUM(awpb_actual_input.mo_11_amount) as mo_2_amount',  
-                    'SUM(awpb_actual_input.mo_12_amount) as mo_3_amount',
-                    'SUM(awpb_actual_input.quarter_two_amount) as quarter_one_amount']);
-                
-                $query->where(['=', 'awpb_actual_input.awpb_template_id', $template_model->id]);
-               // $query->join('LEFT JOIN', 'awpb_budget', 'awpb_budget.id = awpb_actual_input.budget_id');
-                $query->andWhere(['=', 'awpb_actual_input.cost_centre_id', $cost_centre_id]);
-                //  $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                //  $query->andWhere(['=','status', AwpbActualInput::STATUS_NOT_REQUESTED]);
-                //$query->groupBy('camp_id');
-               // $query->groupBy('budget_id'); 
-
-               
-                $query->all();     
-                $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                ]);
-            }
-        } elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_7_amount) as mo_1_amount', 'SUM(mo_8_amount) as mo_2_amount', 'SUM(mo_9_amount) as mo_3_amount', 'SUM(quarter_three_amount) as quarter_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-            $query->andWhere(['=', 'district_id', $id2]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
-            $query->groupBy('budget_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-        } elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-            $query->andWhere(['=', 'district_id', $id2]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
-            $query->groupBy('budget_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-        } elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-            $query->andWhere(['=', 'district_id', $id2]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
-            $query->groupBy('budget_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-        } else {
-            $query = $searchModel::find();
-            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-            $query->where(['=', 'awpb_template_id', $template_model->id]);
-            $query->andWhere(['=', 'district_id', $id2]);
-            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=', 'status', 10]);
-            $query->groupBy('budget_id');
-            $query->all();
-
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-        }
-
-
-
-
-
-        if ($dataProvider->getCount() > 0) {
+                  if ($dataProvider->getCount() > 0) {
 
             // echo ' </p>';
             echo ExportMenu::widget([
@@ -604,6 +452,375 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user
                 //     'type' => GridView::TYPE_PRIMARY
                 // ],
         ]);
+            } elseif ($template_model->quarter == 2) {
+                 $searchModel = new AwpbActualInput();
+                $query = $searchModel::find();
+           $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_4) as mo_1',
+                    'SUM(awpb_actual_input.mo_5) as mo_2',  
+                    'SUM(awpb_actual_input.mo_6) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_4_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_5_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_6_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_two_amount) as quarter_one_amount']);
+                
+                 $query->where(['awpb_template_id' =>  $template_model->id]);
+            $query->andWhere(['cost_centre_id' => $cost_centre_id]);
+           // $query->andWhere(['>', 'district_id', 0]);
+          //  $query->andWhere(['=', 'status', $status]);
+            $query->groupBy('budget_id'); 
+            $query->all();
+                    
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                  if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
+            } elseif ($template_model->quarter == 3) {
+                $searchModel = new AwpbActualInput();
+                $query = $searchModel::find();
+                        $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_7) as mo_1',
+                    'SUM(awpb_actual_input.mo_8) as mo_2',  
+                    'SUM(awpb_actual_input.mo_9) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_7_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_8_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_9_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_three_amount) as quarter_one_amount']);
+                
+                $query->where(['awpb_template_id' =>  $template_model->id]);
+            $query->andWhere(['cost_centre_id' => $cost_centre_id]);
+           // $query->andWhere(['>', 'district_id', 0]);
+          //  $query->andWhere(['=', 'status', $status]);
+            $query->groupBy('budget_id'); 
+            $query->all();
+                  
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                  if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
+            } elseif ($template_model->quarter == 4) {
+                 $searchModel = new AwpbActualInput();
+                $query = $searchModel::find();
+                $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 'awpb_budget.district_id as district_id', 'awpb_budget.component_id as component_id', 'awpb_budget.activity_id as activity_id', 'awpb_budget.camp_id as camp_id', 'budget_id', 'SUM(awpb_actual_input.mo_10_amount) as mo_1_amount', 'SUM(awpb_actual_input.mo_11_amount) as mo_2_amount', 'SUM(awpb_actual_input.mo_12_amount) as mo_3_amount', 'SUM(awpb_actual_input.quarter_four_amount) as quarter_one_amount']);
+                     $query->select(['awpb_actual_input.awpb_template_id as awpb_template_id', 
+                    'district_id','component_id',
+                    'activity_id','budget_id', 
+                    'awpb_actual_input.unit_cost','name', 'unit_of_measure_id',
+                    'SUM(awpb_actual_input.mo_10) as mo_1',
+                    'SUM(awpb_actual_input.mo_11) as mo_2',  
+                    'SUM(awpb_actual_input.mo_12) as mo_3',
+                    'SUM(awpb_actual_input.quarter_one_quantity) as quarter_one_quantity',
+                    'SUM(awpb_actual_input.mo_10_amount) as mo_1_amount',
+                    'SUM(awpb_actual_input.mo_11_amount) as mo_2_amount',  
+                    'SUM(awpb_actual_input.mo_12_amount) as mo_3_amount',
+                    'SUM(awpb_actual_input.quarter_two_amount) as quarter_one_amount']);
+                $query->where(['awpb_template_id' =>  $template_model->id]);
+            $query->andWhere(['cost_centre_id' => $cost_centre_id]);
+           // $query->andWhere(['>', 'district_id', 0]);
+          //  $query->andWhere(['=', 'status', $status]);
+            $query->groupBy('budget_id'); 
+            $query->all();
+                   
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+            
+            
+              if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+            ]);}
+        } elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
+             $searchModel = new AwpbActualInput();
+            $query = $searchModel::find();
+            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_7_amount) as mo_1_amount', 'SUM(mo_8_amount) as mo_2_amount', 'SUM(mo_9_amount) as mo_3_amount', 'SUM(quarter_three_amount) as quarter_amount']);
+            $query->where(['=', 'awpb_template_id', $template_model->id]);
+            $query->andWhere(['=', 'district_id', $id2]);
+            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
+            $query->groupBy('budget_id');
+            $query->all();
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+              if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
+        } elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
+             $searchModel = new AwpbActualInput();
+            $query = $searchModel::find();
+            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
+            $query->where(['=', 'awpb_template_id', $template_model->id]);
+            $query->andWhere(['=', 'district_id', $id2]);
+            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
+            $query->groupBy('budget_id');
+            $query->all();
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+              if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
+        } elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
+             $searchModel = new AwpbActualInput();
+            $query = $searchModel::find();
+            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
+            $query->where(['=', 'awpb_template_id', $template_model->id]);
+            $query->andWhere(['=', 'district_id', $id2]);
+            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+            $query->andWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
+            $query->groupBy('budget_id');
+            $query->all();
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+            
+              if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
+        } else {
+            $searchModel = new AwpbActualInput();
+            $query = $searchModel::find();
+            $query->select(['awpb_template_id', 'district_id', 'component_id', 'activity_id', 'camp_id', 'cost_centre_id', 'budget_id', 'SUM(mo_1_amount) as mo_1_amount', 'SUM(mo_2_amount) as mo_2_amount', 'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
+            $query->where(['=', 'awpb_template_id', $template_model->id]);
+            $query->andWhere(['=', 'district_id', $id2]);
+            $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+            $query->andWhere(['=', 'status', 10]);
+            $query->groupBy('budget_id');
+            $query->all();
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+            
+              if ($dataProvider->getCount() > 0) {
+
+            // echo ' </p>';
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'fontAwesome' => true,
+                'dropdownOptions' => [
+                    'label' => 'Export All',
+                    'class' => 'btn btn-default'
+                ],
+                'filename' => 'AWPB' . date("YmdHis")
+            ]);
+        }
+
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'pjax' => true,
+            //'bordered' => true,
+            // 'striped' => false,
+            // 'condensed' => false,
+            'responsive' => true,
+            //  'hover' => true,
+            // 'floatHeader' => true,
+            // 'floatHeaderOptions' => ['top' => $scrollingTop],
+            'showPageSummary' => true,
+                // 'panel' => [
+                //     'type' => GridView::TYPE_PRIMARY
+                // ],
+        ]);
+        }
+
+
+
+
+
+      
 
 // } else {
 //            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');

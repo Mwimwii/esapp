@@ -299,11 +299,11 @@ $gridColumns = [
                 $query->where(['=','awpb_template_id', $template_model->id]);
                 $query->andWhere(['=', 'district_id',$id2]);
                // $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
+              //  $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
              //$query->groupBy(['budget_id','quarter_number']); 
-               //$query->groupBy('budget_id'); 
+               $query->groupBy('budget_id'); 
                  $query->groupBy('quarter_number'); 
-                  $query->addGroupBy('quarter_number');
+                 // $query->addGroupBy('quarter_number');
                 $query->all();     
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,
@@ -317,11 +317,11 @@ $gridColumns = [
                 $query->where(['=','awpb_template_id', $template_model->id]);
                 $query->andWhere(['=', 'district_id',$id2]);
                 //$query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
+              //  $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
                //$query->groupBy(['budget_id','quarter_number']); 
-               //$query->groupBy('budget_id'); 
+               $query->groupBy('budget_id'); 
                  $query->groupBy('quarter_number'); 
-                  $query->addGroupBy('quarter_number');
+               //   $query->addGroupBy('quarter_number');
                 $query->all();
 
                 $dataProvider = new ActiveDataProvider([
@@ -334,10 +334,10 @@ $gridColumns = [
             $query->where(['=','awpb_template_id', $template_model->id]);
             $query->andWhere(['=', 'district_id',$id2]);
            // $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-            $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
+            //$query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
          $query->groupBy('quarter_number'); 
-              // $query->groupBy('budget_id'); 
-                  $query->addGroupBy('quarter_number');
+               $query->groupBy('budget_id'); 
+              //    $query->addGroupBy('quarter_number');
             $query->all();
             
              $dataProvider = new ActiveDataProvider([
@@ -346,29 +346,29 @@ $gridColumns = [
 
                 
             } 
-            elseif (User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id == 0 || $user->province_id == '')) 
-            {
-                $query = $searchModel::find();
-                $query->select(['awpb_template_id', 'quarter_number', 'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
-                $query->where(['=','awpb_template_id', $template_model->id]);
-                $query->andWhere(['=', 'district_id',$id2]);
-                //$query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
-              //$query->groupBy(['budget_id','quarter_number']); 
-               //$query->groupBy('budget_id'); 
-                 $query->groupBy('quarter_number'); 
-                  $query->addGroupBy('quarter_number');
-                $query->all();
-
-                 $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                ]);
-                
-            }          
+//            elseif (User::userIsAllowedTo('View Funds Utilisation') && ($user->province_id == 0 || $user->province_id == '')) 
+//            {
+//                $query = $searchModel::find();
+//                $query->select(['wpb_template_id', 'quarter_number', 'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
+//                $query->where(['=','awpb_template_id', $template_model->id]);
+//                $query->andWhere(['=', 'district_id',$id2]);
+//                //$query->andWhere(['=', 'quarter_number', $template_model->quarter]);
+//              //  $query->andWhere(['=','status', AwpbActualInput::STATUS_DISBURSED]);
+//              //$query->groupBy(['budget_id','quarter_number']); 
+//               //$query->groupBy('budget_id'); 
+//                 $query->groupBy('quarter_number'); 
+//               //   $query->addGroupBy('quarter_number');
+//                $query->all();
+//
+//                 $dataProvider = new ActiveDataProvider([
+//                    'query' => $query,
+//                ]);
+//                
+//            }          
   else
             {
                 $query = $searchModel::find();
-                $query->select(['awpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
+                $query->select(['lawpb_template_id',  'district_id','component_id','activity_id','budget_id','SUM(mo_1_amount) as mo_1_amount',  'SUM(mo_2_amount) as mo_2_amount',  'SUM(mo_3_amount) as mo_3_amount', 'SUM(quarter_amount) as quarter_amount']);
                 $query->where(['=','awpb_template_id', $template_model->id]);
                 $query->andWhere(['=', 'district_id',$id2]);
                 $query->andWhere(['=', 'quarter_number', $template_model->quarter]);

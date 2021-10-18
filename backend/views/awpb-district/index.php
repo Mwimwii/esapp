@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\AwpbDistrictSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Awpb Districts';
+$this->title = 'AWPB Districts';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="awpb-district-index">

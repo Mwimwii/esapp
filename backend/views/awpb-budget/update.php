@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-
+use backend\models\User;
 /* @var $this yii\web\View */
 /* @var $model backend\models\AwpbBudget */
 
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = 'Update';
         'status'=>$status
     ]) ;
     }
- else {
+ else if ($user->district_id ==0 ||$user->district_id ==''){
           echo $this->render('_form_2', [
         'model' => $model,
          'template_id'=>$model->awpb_template_id,

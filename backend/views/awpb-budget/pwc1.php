@@ -46,7 +46,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
 
         <?php
         
-         if (((User::userIsAllowedTo('Approve AWPB - PCO') && $status1 == \backend\models\AwpbBudget::STATUS_DRAFT) || (User::userIsAllowedTo('Approve AWPB - Ministry') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
+         if (((User::userIsAllowedTo('Manage AWPB') && $status1 == \backend\models\AwpbBudget::STATUS_DRAFT) || (User::userIsAllowedTo('Approve AWPB') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) {
   
          echo Html::a(
                                         '<span class="btn btn-success float-right">Approve PW AWPB</span>',['awpb-budget/submitpw','id'=>0], [ 
@@ -65,7 +65,7 @@ $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\back
          
          
          }
-         if (((User::userIsAllowedTo('Approve AWPB - Ministry') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) 
+         if (((User::userIsAllowedTo('Approve AWPB') && $status1 == \backend\models\AwpbBudget::STATUS_APPROVED ))&& ($user->province_id == 0 || $user->province_id == '')) 
          {
 
                 
@@ -128,11 +128,11 @@ echo Html::a(
                         $component = \backend\models\AwpbComponent::findOne(['id' => $model->component_id]);
 
                        // return !empty($component) ? $component->code .' '.$component->name : "";
-                          if (User::userIsAllowedTo('Approve AWPB - PCO') && ($user->province_id == 0 || $user->province_id == '')) {
+                          if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
 
                         return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwcu', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
                           }
-                            if (User::userIsAllowedTo('Approve AWPB - Ministry') && ($user->province_id == 0 || $user->province_id == '')) {
+                            if (User::userIsAllowedTo('Approve AWPB') && ($user->province_id == 0 || $user->province_id == '')) {
 
                         return !empty($component) ? Html::a($component->code .' '.$component->name, ['pwca', 'id' => $model->component_id ], ['class' => 'mpcd']) : "";
                           }

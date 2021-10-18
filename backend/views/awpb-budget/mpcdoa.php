@@ -74,7 +74,7 @@ echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>',['mpcdo','status'=>
     'data-placement' => 'top',
 ]);
           
-if (User::userIsAllowedTo('Approve AWPB - Provincial') && ($user->province_id>0 ||$user->province_id!='')) {
+if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id>0 ||$user->province_id!='')) {
          
         if(strtotime($template_model->consolidation_deadline) >= strtotime($today)&& $status == \backend\models\AwpbBudget::STATUS_SUBMITTED){
    
@@ -99,7 +99,7 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && ($user->province_id>0 
 }
     
 
- if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && ($user->province_id==0 ||$user->province_id=='')) {
+ if (User::userIsAllowedTo('Manage AWPB') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && ($user->province_id==0 ||$user->province_id=='')) {
                 echo Html::a(
                         '<span class="fas fa-check"></span>',['submit','id'=>$awpb_template_id,'id2'=>$province_id,'status'=> \backend\models\AwpbBudget:: STATUS_APPROVED], [ 
                     'title' => 'Approve Provincial AWPB',
@@ -119,7 +119,7 @@ if (User::userIsAllowedTo('Approve AWPB - Provincial') && ($user->province_id>0 
       
 }
 
-if (User::userIsAllowedTo('Approve AWPB - Ministry') && (($user->province_id==0 ||$user->province_id==''))) {
+if (User::userIsAllowedTo('Approve AWPB') && (($user->province_id==0 ||$user->province_id==''))) {
           echo Html::a(
                         '<span class="fas fa-check"></span>',['submit','id'=>$awpb_template_id,'id2'=>$province_id,'status'=> \backend\models\AwpbBudget:: STATUS_MINISTRY], [ 
                     'title' => 'Approve Provincial AWPB',
@@ -483,7 +483,7 @@ if (User::userIsAllowedTo('Approve AWPB - Ministry') && (($user->province_id==0 
                  $params = array_merge(["{$controller->id}/{$controller->action->id}"], $arrayParams);
                  
                  Yii::$app->urlManager->createUrl($params);
-if (User::userIsAllowedTo('Approve AWPB - Provincial') &&   $status == \backend\models\AwpbBudget::STATUS_SUBMITTED && (($user->province_id!=0 ||$user->province_id!=''))) {
+if (User::userIsAllowedTo('Manage AWPB') &&   $status == \backend\models\AwpbBudget::STATUS_SUBMITTED && (($user->province_id!=0 ||$user->province_id!=''))) {
      
             $form = ActiveForm::begin(['action' => Yii::$app->urlManager->createUrl(['awpb-budget/decline','status' => $status]),]);
                

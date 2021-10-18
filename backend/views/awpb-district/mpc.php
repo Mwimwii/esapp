@@ -53,7 +53,7 @@ if (!empty($awpb_province)) {
 //$searchModel = "";
 //$dataProvider="";
 
-            if (User::userIsAllowedTo('Approve AWPB - Provincial') && ($user->province_id > 0 || $user->province_id != '')) {
+            if (User::userIsAllowedTo('Manage AWPB') && ($user->province_id > 0 || $user->province_id != '')) {
                 //  $status= \backend\models\AwpbBudget::STATUS_SUBMITTED;
  if(strtotime($template_model->consolidation_deadline) >= strtotime($today)&& $status == \backend\models\AwpbBudget::STATUS_SUBMITTED){
  
@@ -71,7 +71,7 @@ if (!empty($awpb_province)) {
                 
  }
             }
-            if (User::userIsAllowedTo('Approve AWPB - PCO') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && (($user->province_id == 0 || $user->province_id == ''))) {
+            if (User::userIsAllowedTo('Manage AWPB') && $status == \backend\models\AwpbBudget::STATUS_REVIEWED && (($user->province_id == 0 || $user->province_id == ''))) {
                 //   $status= \backend\models\AwpbBudget::STATUS_REVIEWED;
     echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mp', 'id' => $id, 'status'=>$status], [
     'title' => 'back',
@@ -97,7 +97,7 @@ if (!empty($awpb_province)) {
             }
 
 
-            if (User::userIsAllowedTo('Approve AWPB - Ministry') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id == 0 || $user->province_id == '')) {
+            if (User::userIsAllowedTo('Approve AWPB') && $status == \backend\models\AwpbBudget::STATUS_APPROVED && ($user->province_id == 0 || $user->province_id == '')) {
 
                 echo Html::a(
                         '<span class="fas fa-check"></span>', ['submit', 'id' => $id, 'id2' => $province_id, 'status' => \backend\models\AwpbBudget:: STATUS_MINISTRY], [

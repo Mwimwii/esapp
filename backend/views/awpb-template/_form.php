@@ -72,15 +72,15 @@ use backend\models\AwpbTemplate;
 //                'todayHighlight' => TRUE
 //            ]
 //        ]);
-//        echo $form->field($model, "review_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
-//            'options' => ['placeholder' => 'Enter review deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
-//            'pluginOptions' => [
-//                'autoclose' => true,
-//                'format' => 'yyyy-mm-dd',
-//                'startView' => 'year',
-//                'todayHighlight' => TRUE
-//            ]
-//        ]);
+        echo $form->field($model, "review_deadline", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+            'options' => ['placeholder' => 'Enter review deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format' => 'yyyy-mm-dd',
+                'startView' => 'year',
+                'todayHighlight' => TRUE
+            ]
+        ]);
         echo  $form->field($model, "incorpation_deadline_pco_moa_mfl", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
             'options' => ['placeholder' => 'Enter deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
             'pluginOptions' => [
@@ -90,7 +90,16 @@ use backend\models\AwpbTemplate;
                 'todayHighlight' => TRUE
             ]
         ]);
-        echo $form->field($model, 'comment')->textarea(['rows' => 3]);
+                echo    $form->field($model, "submission_deadline_ifad", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
+            'options' => ['placeholder' => 'Enter submission deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format' => 'yyyy-mm-dd',
+                'startView' => 'year',
+                'todayHighlight' => TRUE
+            ]
+        ]);
+       
 //        echo  $form->field($model, "preparation_deadline_second_draft", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
 //            'options' => ['placeholder' => 'Enter second draft preparation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
 //            'pluginOptions' => [
@@ -113,7 +122,10 @@ use backend\models\AwpbTemplate;
         ?>
         </div>
         <div class="col-md-6">
+            
         <?php
+        
+         echo $form->field($model, 'comment')->textarea(['rows' => 18]);
 //              echo  $form->field($model, "finalisation_deadline_pco", ['enableAjaxValidation' => true])->widget(DatePicker::classname(), [
 //                'options' => ['placeholder' => 'Enter finalisation deadline i.e. YYYY-MM-DD', 'maxlength' => true,],
 //                'pluginOptions' => [
@@ -170,7 +182,7 @@ use backend\models\AwpbTemplate;
 //                'todayHighlight' => TRUE
 //            ]
 //        ]);
-        
+//        
 
   // echo $form->field($model, 'comment')->textarea(['rows' => 3]);
     

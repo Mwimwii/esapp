@@ -37,7 +37,7 @@ class AwpbOutcome extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['outcome_code', 'name', 'outcome_description', 'created_at', 'updated_at'], 'required'],
+            [['outcome_code', 'name', 'outcome_description'], 'required'],
             [['component_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['outcome_code'], 'string', 'max' => 10],
             [['name'], 'string', 'max' => 40],

@@ -50,7 +50,7 @@ class AwpbDistrict extends \yii\db\ActiveRecord
     {
         return [
             [['awpb_template_id', 'name', 'status'], 'required'],
-            [['awpb_template_id', 'district_id', 'cost_centre_id', 'province_id', 'status','funds_request', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['awpb_template_id', 'district_id', 'cost_centre_id', 'province_id', 'status', 'status_q_1','status_q_1','status_q_3','status_q_4','funds_request', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount','quarter_one_actual', 'quarter_two_actual', 'quarter_three_actual', 'quarter_four_actual'], 'number'],       
             [['name'], 'string', 'max' => 255],
             [['awpb_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => AwpbTemplate::className(), 'targetAttribute' => ['awpb_template_id' => 'id']],
@@ -86,7 +86,7 @@ class AwpbDistrict extends \yii\db\ActiveRecord
             'name' => 'Name',
             'status' => 'Status',
             'funds_request'=>'Funds Request Status',
-             'quarter_one_amount' => 'Q1 Amount',
+            'quarter_one_amount' => 'Q1 Amount',
             'quarter_two_amount' => 'Q2 Amount',
             'quarter_three_amount' => 'Q3 Amount',
             'quarter_four_amount' => 'Q4 Amount',
@@ -173,7 +173,7 @@ class AwpbDistrict extends \yii\db\ActiveRecord
  public static function getAwpbDistrictList($id) {
      $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
         $data = self::find()->where(['=', 'awpb_district.province_id', $id])->andWhere(['=', 'awpb_template_id',$template_model->id])->orderBy(['name' => SORT_ASC])->all();
-        $list = ArrayHelper::map($data, 'id', 'name');
+        $list = ArrayHelper::map($data, 'district_id', 'name');
         return $list;
     }
   

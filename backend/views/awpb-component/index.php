@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <p>
             <?php
-            if (\backend\models\User::userIsAllowedTo('Manage components')) {
+            if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
                
                      echo Html::a('<i class="fa fa-plus"></i> Add component', ['create'], ['class' => 'btn btn-success btn-sm']);
                 
@@ -124,68 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                        
                                            }
                 ],
-                
-
-                // [
-                //     'attribute' => 'description',
-                //     'label' => ' Description',
-                //     'format' => 'raw',
-                //     'filterType' => GridView::FILTER_SELECT2,
-                //     'filterWidgetOptions' => [
-                //         'pluginOptions' => ['allowClear' => true],
-                //     ],
-                //     'filter' => \backend\models\AwpbComponent::getAwpbComponentsList(),
-                //     'filterInputOptions' => ['prompt' => 'Filter by description', 'class' => 'form-control', 'id' => null],
-                //     "value" => function ($model) {
-                //         $name = "";
-                //         $comp_model = \backend\models\AwpbComponent::findOne(["id" => $model->id]);
-                //         if (!empty($comp_model)) {
-                //             $name = $comp_model->description;
-                //         }
-                //         return $name;
-                //     }
-                // ],
-
-                //        [
-                //     'attribute' => 'expense_category_id',
-                //     'label' => 'Expense Category',
-                //     'format' => 'raw',
-                //     'filterType' => GridView::FILTER_SELECT2,
-                //     'filterWidgetOptions' => [
-                //         'pluginOptions' => ['allowClear' => true],
-                //     ],
-                //     'filter' => \backend\models\AwpbExpenseCategory::getAwpbExpenseCategoryList(),
-                //     'filterInputOptions' => ['prompt' => 'Filter by funder', 'class' => 'form-control', 'id' => null],
-                //     "value" => function ($model) {
-                //         $name = "";
-                //         $expense_category = \backend\models\AwpbExpenseCategory::findOne(['id' => $model->expense_category_id]);
-                              
-                //         if (!empty($expense_category)) {
-                //            $name =  $expense_category->name;
-                //        }
-                      
-                //         return $name;
-                //     }
-                // ],
-                // [
-                //     'attribute' => 'funder_id',
-                //     'label' => ' Funder',
-                //     'format' => 'raw',
-                //     'filterType' => GridView::FILTER_SELECT2,
-                //     'filterWidgetOptions' => [
-                //         'pluginOptions' => ['allowClear' => true],
-                //     ],
-                //     'filter' => \backend\models\AwpbFunder::getAwpbFunderList(),
-                //     'filterInputOptions' => ['prompt' => 'Filter by funder', 'class' => 'form-control', 'id' => null],
-                //     "value" => function ($model) {
-                //         $name = "";
-                //         $funder = \backend\models\AwpbFunder::findOne(['id' => $model->funder_id]);
-                //         if (!empty($funder)) {
-                //             $name = $funder->name;
-                //         }
-                //         return $name;
-                //     }
-                // ],
+         
                 [
                     'attribute' =>  'gl_account_code', 
                     'vAlign' => 'top',
@@ -205,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'template' => '{view}{update}{delete}',
                     'buttons' => [
                         'view' => function ($url, $model) {
-                            if (User::userIsAllowedTo('View components') ) {
+                            if (User::userIsAllowedTo('View AWPB') ) {
                                 return Html::a(
                                                 '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
                                             'title' => 'View component',
@@ -219,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         },
                         'update' => function ($url, $model) {
-                            if (User::userIsAllowedTo('Manage components') ) {
+                            if (User::userIsAllowedTo('Setup AWPB') ) {
                                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['update', 'id' => $model->id], [
                                             'title' => 'Update component',
@@ -234,7 +173,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         },
                         'delete' => function ($url, $model) {
-                            if (User::userIsAllowedTo('Manage components') ) {
+                            if (User::userIsAllowedTo('Setup AWPB') ) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                             'title' => 'delete component',

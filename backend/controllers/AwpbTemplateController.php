@@ -22,6 +22,7 @@ use \yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\mpdf\Pdf;
 use backend\models\AwpbTemplateComponent;
+
 /**
  * AwpbTemplateController implements the CRUD actions for AwpbTemplate model.
  */
@@ -34,10 +35,10 @@ class AwpbTemplateController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users', 'read', 'rollover'],
+                'only' => ['index', 'create', 'update', 'delete', 'view','cq', 'check-list', 'activities', 'users', 'read', 'rollover'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'check-list', 'activities', 'users', 'read', 'rollover'],
+                        'actions' => ['index', 'create', 'update', 'delete','cq', 'view', 'check-list', 'activities', 'users', 'read', 'rollover'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -58,11 +59,11 @@ class AwpbTemplateController extends Controller {
      */
     public function actionIndex() {
 
-        if (User::userIsAllowedTo('View AWPB templates') || User::userIsAllowedTo('Manage AWPB templates')) {
+        if (User::userIsAllowedTo('View AWPB') || User::userIsAllowedTo('Setup AWPB')) {
 
             $searchModel = new AwpbTemplateSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            $dataProvider->sort->defaultOrder = ['status' => SORT_ASC,'fiscal_year'=>SORT_DESC];
+            $dataProvider->sort->defaultOrder = ['status' => SORT_ASC, 'fiscal_year' => SORT_DESC];
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
@@ -92,7 +93,7 @@ class AwpbTemplateController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        if (User::userIsAllowedTo('View AWPB templates')) {
+        if (User::userIsAllowedTo('View AWPB')) {
             return $this->render('view', [
                         'model' => $this->findModel($id),
             ]);
@@ -132,9 +133,7 @@ class AwpbTemplateController extends Controller {
                 //var_dump(Yii::$app->request->post());
                 //$model->activities=explode(',',$_POST['AwpbTemplate']['activities']);
                 $model->activities = $_POST['AwpbTemplate']['activities'];
-                //var_dump($act);
-                // var_dump($model->activities);
-                //   var_dump($model->budget_theme);
+        
                 if (!empty($model->activities)) {
                     $model->updated_by = Yii::$app->user->id;
                     $model->status_activities = AwpbTemplate::STATUS_PUBLISHED;
@@ -146,7 +145,7 @@ class AwpbTemplateController extends Controller {
                             $_model = \backend\models\AwpbActivity::findOne($activity);
                             $component_model = \backend\models\AwpbComponent::findOne($_model);
                             $awpbTemplateActivity->component_id = $_model->component_id;
-                           // $awpbTemplateActivity->output_id = $_model->output_id;
+                            // $awpbTemplateActivity->output_id = $_model->output_id;
                             $awpbTemplateActivity->activity_code = $_model->activity_code;
                             //$awpbTemplateActivity->name = $_model->activity_code.' '.$_model->name;
                             $awpbTemplateActivity->name = $_model->name;
@@ -154,13 +153,16 @@ class AwpbTemplateController extends Controller {
                             $awpbTemplateActivity->id = NULL; //primary key(auto increment id) id
                             $awpbTemplateActivity->isNewRecord = true;
                             $awpbTemplateActivity->activity_id = $activity;
+                            $awpbTemplateActivity->ifad = 50;
+                            $awpbTemplateActivity->ifad_grant = 30;
+                            $awpbTemplateActivity->grz = 20;
+                            $awpbTemplateActivity->status = 1;
                             $awpbTemplateActivity->access_level_district = $component_model->access_level_district;
                             $awpbTemplateActivity->access_level_province = $component_model->access_level_province;
                             $awpbTemplateActivity->access_level_programme = $component_model->access_level_programme;
                             //$rightAllocation->created_by = Yii::$app->user->id;
-                           if( $awpbTemplateActivity->save())
-                           {
-                            
+                            if ($awpbTemplateActivity->save()) {
+                                
                             } else {
                                 $message = "";
                                 foreach ($awpbTemplateActivity->getErrors() as $error) {
@@ -179,9 +181,9 @@ class AwpbTemplateController extends Controller {
                         //     $session = Yii::$app->session;
                         //     $session->set('rights', $rights);
                         // }
-                        
-                        
-                          $awpbTemplateComponent = new AwpbTemplateComponent();
+
+
+                        $awpbTemplateComponent = new AwpbTemplateComponent();
                         //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
                         $_awpbTemplateComponents = \backend\models\AwpbTemplateActivity::find()->select('component_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
                         // var_dump($_awpbTemplateProvinces );
@@ -194,16 +196,16 @@ class AwpbTemplateController extends Controller {
                                 if (empty($comp->id)) {
                                     $awpbTemplateComponent->awpb_template_id = $id;
                                     $awpbTemplateComponent->component_id = $component->component_id;
-                                     $awpbTemplateComponent->id = NULL; //primary key(auto increment id) id
-                                     $awpbTemplateComponent->isNewRecord = true;
-                                     $awpbTemplateComponent->updated_by = Yii::$app->user->id;
+                                    $awpbTemplateComponent->id = NULL; //primary key(auto increment id) id
+                                    $awpbTemplateComponent->isNewRecord = true;
+                                    $awpbTemplateComponent->updated_by = Yii::$app->user->id;
                                     $awpbTemplateComponent->created_by = Yii::$app->user->id;
-                                     $awpbTemplateComponent->status = AwpbTemplate::STATUS_DRAFT;
-                                     $awpbTemplateComponent->save();
+                                    $awpbTemplateComponent->status = AwpbTemplate::STATUS_DRAFT;
+                                    $awpbTemplateComponent->save();
                                 }
                             }
                         }
-                        
+
 
                         $audit = new AuditTrail();
                         $audit->user = Yii::$app->user->id;
@@ -213,16 +215,15 @@ class AwpbTemplateController extends Controller {
                         $audit->save();
                         Yii::$app->session->setFlash('success', $model->fiscal_year . ' was successfully updated.');
                         return $this->redirect(['view', 'id' => $model->id]);
-                        } else {
-                                $message = "";
-                                foreach ($model->getErrors() as $error) {
-                                    $message .= $error[0];
-                                }
+                    } else {
+                        $message = "";
+                        foreach ($model->getErrors() as $error) {
+                            $message .= $error[0];
+                        }
 
-                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
-                                //  return $this->redirect(['home/home']);
-                            }
-                    
+                        Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                        //  return $this->redirect(['home/home']);
+                    }
                 } else {
                     Yii::$app->session->setFlash('error', 'You need to select at least one activity!');
                     return $this->render('activities', [
@@ -329,7 +330,7 @@ class AwpbTemplateController extends Controller {
     }
 
     public function actionTemplateDistricts($id) {
-        $test="";
+        $test = "";
         if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
             if (Yii::$app->request->isAjax) {
@@ -361,7 +362,7 @@ class AwpbTemplateController extends Controller {
                         foreach ($model->districts as $district) {
                             //check if the right was already assigned to this role
                             $district_model = \backend\models\Districts::findOne($district);
-                            $dist = \backend\models\AwpbDistrict::findOne(['district_id' => $district,'awpb_template_id'=>$id]);
+                            $dist = \backend\models\AwpbDistrict::findOne(['district_id' => $district, 'awpb_template_id' => $id]);
                             if (empty($dist->id)) {
                                 // var_dump($_model);
                                 $awpbTemplateDistrict->awpb_template_id = $id;
@@ -377,53 +378,7 @@ class AwpbTemplateController extends Controller {
                             }
                         }
 
-//                       // $awpbTemplateProvince = new AwpbProvince();
-//                        //$awpbTemplateProvince::deleteAll(['awpb_template_id' => $id]);
-//                        $_awpbTemplateProvinces = \backend\models\AwpbDistrict::find()->select('province_id')->distinct()->where(['=', 'awpb_template_id', $id])->all();
-//                        // var_dump($_awpbTemplateProvinces );
-//                        //$_awpbTemplateProvinces = \backend\models\AwpbDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
-//                        //  $_awpbTemplateProvinces = $awpbTemplateDistrict::find(['awpb_template_id' => $id])->select('province_id')->distinct();
-//                        if (!empty($_awpbTemplateProvinces)) {
-//                            foreach ($_awpbTemplateProvinces as $province) {
-//                                $awpbTemplateProvince = new AwpbProvince();
-//                                 $prov = \backend\models\AwpbProvince::findOne(['province_id' => $province->province_id,'awpb_template_id'=>$id]);
-//                                //check if the right was already assigned to this role
-//                               // $prov = \backend\models\AwpbProvince::findOne(['province_id' => $provinceprovince_id,'awpb_template_id'=>$id]);
-//                                if (empty($prov->id)) {
-//                                    //$provi = \backend\models\Provinces::findOne(['id' => $province->province_id]);
-//                                     $provi = \backend\models\Provinces::findOne($province->province_id);
-//                                    $awpbTemplateProvince->awpb_template_id = $id;
-//                                    $awpbTemplateProvince->province_id = $province->province_id;
-//                                 // $awpbTemplateProvince->name =  $provi->id;
-//                                    $awpbTemplateProvince->id = NULL; //primary key(auto increment id) id
-//                                    $awpbTemplateProvince->isNewRecord = true;
-//                                    $awpbTemplateProvince->updated_by = Yii::$app->user->id;
-//                                    $awpbTemplateProvince->created_by = Yii::$app->user->id;
-//                                    $awpbTemplateProvince->status = AwpbTemplate::STATUS_DRAFT;
-//                                    if($awpbTemplateProvince->save())
-//                                    {
-//                                        Yii::$app->session->setFlash('error', 'Error occured while uploading'.$province->province_id);
-//                                    }
-//                                    else {
-//                    $message = '';
-//                    foreach ($awpbTemplateProvince->getErrors() as $error) {
-//                        $message .= $error[0];
-//                    }
-//                    Yii::$app->session->setFlash('error', 'Error occured while saving.Error:' . $message);
-//                    var_dump($province);
-//                }
-//                                    
-//                                }
-//                                 
-//                            }
-//                        }
-                        //check if current user has the role that has just been edited so that we update the permissions instead of user logging out
-                        // if (Yii::$app->getUser()->identity->role == $model->id) {
-                        //     $rightsArray = \common\models\RightAllocation::getRights(Yii::$app->getUser()->identity->role);
-                        //     $rights = implode(",", $rightsArray);
-                        //     $session = Yii::$app->session;
-                        //     $session->set('rights', $rights);
-                        // }
+
 
                         $audit = new AuditTrail();
                         $audit->user = Yii::$app->user->id;
@@ -525,61 +480,7 @@ class AwpbTemplateController extends Controller {
         }
     }
 
-    /*
-      public function actionView($id) {
-      $model=$this->findModel($id);
-
-      if ($model->load(Yii::$app->request->post())&& $model->save(true,['budget_theme','comment','status','updated_by']))
-      {
-      $model->guideline_file = UploadedFile::getInstance($model, 'guideline_file');
-
-      if(isset($model->guideline_file->extension))
-      {
-      $file_name = $model->fiscal_year. '-AWPB-Guidelines.' .$model->guideline_file->extension;
-      $file_path = 'uploads/'.$file_name;
-      $model->guideline_file->saveAs($file_path);
-      $model->guideline_file = $file_name;
-
-      if ($model->save(true,['budget_theme','comment','guideline_file','status','updated_by']))
-      {
-      //$model->updated_by = Yii::$app->user->id;
-      //if($model->save('budget_theme','comment','status','updated_by')) {
-      // Yii::$app->session->setFlash('kv-detail-success', 'Saved record successfully');
-      Yii::$app->session->setFlash('success', $model->fiscal_year . ' AWPB template was updated successfully.');
-
-      // Multiple alerts can be set like below
-      //Yii::$app->session->setFlash('kv-detail-warning', 'A last warning for completing all data.');
-      /// Yii::$app->session->setFlash('kv-detail-info', '<b>Note:</b> You can proceed by clicking <a href="#">this link</a>.');
-      return $this->redirect(['view', 'id'=>$model->id]);
-      }
-      }
-      else
-      {
-      if ($model->save(true,['budget_theme','comment','status','updated_by']))
-      {
-      Yii::$app->session->setFlash('success', $model->fiscal_year . ' AWPB template was updated successfully.');
-      return $this->redirect(['view', 'id'=>$model->id]);
-      }
-      }
-
-
-      } else {
-      return $this->render('view', ['model'=>$model]);
-      }
-      //}
-      }
-
-     */
-
-// public function actionRead($id) {
-//     $model = $this->findModel($id);
-//     // This will need to be the path relative to the root of your app.
-//     // Might need to change '@app' for another alias
-//     $file_path = 'uploads/awpb/'.$model->guideline_file;
-//  //   $completePath = Yii::getAlias('$filePath.'/'.$model->guideline_file);
-//   //  $completePath = Yii::getAlias('@app'.$filePath.'/'.$model->guideline_file);
-//     return Yii::$app->response->sendFile( $file_path, $model->guideline_file,['inline'=>true]);
-// }
+    
 
     public function actionRead($id) {
         $model = $this->findModel($id);
@@ -600,7 +501,7 @@ class AwpbTemplateController extends Controller {
 
     public function actionActivity($id) {
         $model = $this->findModel($id);
-        if (User::userIsAllowedTo('Manage AWPB activities')) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
             if (!Yii::$app->session->getIsActive()) {
                 Yii::$app->session->open();
             }
@@ -637,34 +538,25 @@ class AwpbTemplateController extends Controller {
                     $model->guideline_file = $file_name;
                     //$up_file = 1;
                 }
-                $model->status=AwpbTemplate::STATUS_DRAFT;
-                
-                $model->preparation_deadline_first_draft=$model->submission_deadline;
+                $model->status = AwpbTemplate::STATUS_DRAFT;
+
+                $model->preparation_deadline_first_draft = $model->submission_deadline;
 
                 $model->consolidation_deadline = $model->incorpation_deadline_pco_moa_mfl;
-                $model->review_deadline = $model->submission_deadline;
+        
                 $model->preparation_deadline_second_draft = $model->incorpation_deadline_pco_moa_mfl;
                 $model->review_deadline_pco = $model->incorpation_deadline_pco_moa_mfl;
                 $model->finalisation_deadline_pco = $model->incorpation_deadline_pco_moa_mfl;
                 $model->submission_deadline_moa_mfl = $model->incorpation_deadline_pco_moa_mfl;
                 $model->approval_deadline_jpsc = $model->incorpation_deadline_pco_moa_mfl;
 
-                $model->submission_deadline_ifad = $model->incorpation_deadline_pco_moa_mfl;
                 $model->comment_deadline_ifad = $model->incorpation_deadline_pco_moa_mfl;
                 $model->distribution_deadline = $model->incorpation_deadline_pco_moa_mfl;
-                        
+
                 $model->created_by = Yii::$app->user->id;
                 $model->updated_by = Yii::$app->user->id;
 
-                //$model->component_code  = $comp_model->component_code . '.' .$model->component_code;
-                /* if ($model->parent_component_id!='')
-                  {	$comp_model = $this->findModel($model->parent_component_id);
-                  $model->component_code  = $comp_model->component_code .'.'.$model->component_code;
-                  } */
-
-                // $templates = AwpbTemplate::find()->where(['fiscal_year'<>$model->fiscal_year])->andWhere(['status'<>AwpbTemplate::STATUS_OLD])->all();
-
-
+    
                 if ($model->validate()) {
 
 
@@ -710,12 +602,7 @@ class AwpbTemplateController extends Controller {
                     }
                 }
             }
-//             else {
-//                Yii::$app->session->setFlash(' error', 'Attached the ' . $model->fiscal_year . ' AWPB budget guidelines.');
-//                return $this->render('create', [
-//                            'model' => $model,
-//                ]);
-//            }
+
             return $this->render('create', [
                         'model' => $model,
             ]);
@@ -750,7 +637,7 @@ class AwpbTemplateController extends Controller {
         $audit_msg = "";
         $filePath = '/web/uploads/awpb';
         $completePath = Yii::getAlias('@backend' . $filePath . '/' . $model->guideline_file);
-       // $completePath = Yii::getAlias($filePath . '/');
+        // $completePath = Yii::getAlias($filePath . '/');
         $file_name = "";
         //$story_model = Storyofchange::findOne($id1);
 
@@ -817,9 +704,9 @@ class AwpbTemplateController extends Controller {
     }
 
     public function actionUpdate($id) {
-         if (User::userIsAllowedTo('Setup AWPB') ) {
+        if (User::userIsAllowedTo('Setup AWPB')) {
             $model = $this->findModel($id);
-                      
+
             if (Yii::$app->request->isAjax) {
                 $model->load(Yii::$app->request->post());
                 return Json::encode(\yii\widgets\ActiveForm::validate($model));
@@ -1034,11 +921,13 @@ class AwpbTemplateController extends Controller {
 
     public function actionDelete($id) {
         //For now we just set the user status to User::STATUS_DELETED
-        if (User::userIsAllowedTo('Manage AWPB templates')) {
-            $model = $this->findModel($id);
+        if (User::userIsAllowedTo('Setup AWPB')) {
+           
+           try {
+                $model = $this->findModel($id);
             $this->findModel($id)->delete();
 
-            if ($model->save()) {
+            
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = 'Delete' . $model->fiscal_year . ' AWPB Template';
@@ -1046,10 +935,16 @@ class AwpbTemplateController extends Controller {
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
                 Yii::$app->session->setFlash('success', "The template was successfully deleted.");
-            } else {
-                Yii::$app->session->setFlash('error', "The template could not be deleted. Please try again!");
-            }
-            return $this->redirect(['index']);
+            
+            
+              return $this->redirect(['index']);
+               } catch (\Exception $ex) {
+                          //  $transaction->rollBack();
+                            Yii::$app->session->setFlash('error', 'Error occured while deleting the AWPB Template.' . $ex->getMessage() . ' Please try again');
+                           
+                         return $this->redirect(['view','id'=>$id ]);
+                            
+               }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['site/home']);
@@ -1062,9 +957,9 @@ class AwpbTemplateController extends Controller {
         //  $model = $this->findModel($id);
         $old_quarter = $model->quarter;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            
+
             Yii::$app->session->setFlash('success', 'Quarter changed from Q' . $old_quarter . ' to Q' . $model->quarter . ' successfully.');
-             return $this->redirect(['site/home']);
+            return $this->redirect(['site/home']);
         }
 
         return $this->render('cq', [
@@ -1078,13 +973,13 @@ class AwpbTemplateController extends Controller {
             $_model = AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
 
             if (!empty($_model)) {
-$request = Yii::$app->request;
-if ($request->isPost) { 
-               
+                $request = Yii::$app->request;
+                if ($request->isPost) {
+
                     $model->status = AwpbTemplate::STATUS_OLD_BUDGET;
                     $model->updated_by = Yii::$app->user->identity->id;
                     $model->save();
-                    
+
                     $_model->status = AwpbTemplate::STATUS_CURRENT_BUDGET;
                     $_model->quarter = AwpbTemplate::STATUS_PUBLISHED;
                     $_model->updated_by = Yii::$app->user->identity->id;
@@ -1098,69 +993,272 @@ if ($request->isPost) {
                         $audit->ip_address = Yii::$app->request->getUserIP();
                         $audit->user_agent = Yii::$app->request->getUserAgent();
                         $audit->save();
-                        Yii::$app->session->setFlash('success', "Rollover was completed successfully.");
-                        return $this->redirect('index');
-                       
-                            } else {
-                                $message = "";
-                                foreach ($_model->getErrors() as $error) {
-                                    $message .= $error[0];
-                                }
 
-                                Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
-                                   return $this->redirect('index');
+                        $model_inputs = \backend\models\AwpbInput::find()->where(['awpb_template_id' => $_model->id])->all();
+                        if (!empty($model_inputs)) {
+                            foreach ($model_inputs as $model_input) {
+
+                                $model_actual_input = new \backend\models\AwpbActualInput();
+                                $model_actual_input->input_id = $model_input->id;
+                                $model_actual_input->mo_1 = $model_input->mo_1;
+                                $model_actual_input->mo_2 = $model_input->mo_2;
+                                $model_actual_input->mo_3 = $model_input->mo_3;
+                                $model_actual_input->mo_4 = $model_input->mo_4;
+                                $model_actual_input->mo_5 = $model_input->mo_5;
+                                $model_actual_input->mo_6 = $model_input->mo_6;
+                                $model_actual_input->mo_7 = $model_input->mo_7;
+                                $model_actual_input->mo_8 = $model_input->mo_8;
+                                $model_actual_input->mo_9 = $model_input->mo_9;
+                                $model_actual_input->mo_10 = $model_input->mo_10;
+                                $model_actual_input->mo_11 = $model_input->mo_11;
+                                $model_actual_input->mo_12 = $model_input->mo_12;
+                                $model_actual_input->quarter_one_quantity = $model_input->quarter_one_quantity;
+                                $model_actual_input->quarter_two_quantity = $model_input->quarter_two_quantity;
+                                $model_actual_input->quarter_three_quantity = $model_input->quarter_three_quantity;
+                                $model_actual_input->quarter_four_quantity = $model_input->quarter_four_quantity;
+                                $model_actual_input->total_quantity = $model_input->total_quantity;
+
+                                $model_actual_input->mo_1_amount = $model_input->mo_1_amount;
+                                $model_actual_input->mo_2_amount = $model_input->mo_2_amount;
+                                $model_actual_input->mo_3_amount = $model_input->mo_3_amount;
+                                $model_actual_input->mo_4_amount = $model_input->mo_4_amount;
+                                $model_actual_input->mo_5_amount = $model_input->mo_5_amount;
+                                $model_actual_input->mo_6_amount = $model_input->mo_6_amount;
+                                $model_actual_input->mo_7_amount = $model_input->mo_7_amount;
+                                $model_actual_input->mo_8_amount = $model_input->mo_8_amount;
+                                $model_actual_input->mo_9_amount = $model_input->mo_9_amount;
+                                $model_actual_input->mo_10_amount = $model_input->mo_10_amount;
+                                $model_actual_input->mo_11_amount = $model_input->mo_11_amount;
+                                $model_actual_input->mo_12_amount = $model_input->mo_12_amount;
+                                $model_actual_input->quarter_one_amount = $model_input->quarter_one_amount;
+                                $model_actual_input->quarter_two_amount = $model_input->quarter_two_amount;
+                                $model_actual_input->quarter_three_amount = $model_input->quarter_three_amount;
+                                $model_actual_input->quarter_four_amount = $model_input->quarter_four_amount;
+                                $model_actual_input->total_amount = $model_input->total_amount;
+
+                                $model_actual_input->updated_by = Yii::$app->user->identity->id;
+                                $model_actual_input->cost_centre_id = $model_input->cost_centre_id;
+                                $model_actual_input->camp_id = $model_input->camp_id;
+                                $model_actual_input->district_id = $model_input->district_id;
+                                $model_actual_input->province_id = $model_input->province_id;
+                                $model_actual_input->component_id = $model_input->component_id;
+
+                                $model_actual_input->output_id =$model_input->output_id;
+                                $model_actual_input->activity_id = $model_input->activity_id;
+                                $model_actual_input->awpb_template_id = $model_input->awpb_template_id;
+                                $model_actual_input->indicator_id = $model_input->indicator_id;
+                                $model_actual_input->budget_id = $model_input->budget_id;
+                                $model_actual_input->name = $model_input->name;
+                                $model_actual_input->unit_cost = $model_input->unit_cost;
+                                $model_actual_input->unit_of_measure_id= $model_input->unit_of_measure_id;
+                                $model_actual_input->status = $model_input->status;
+                                $model_actual_input->save();
                             }
-                           
+                        }
+
+
+                        $template_id = $_model->id;
+
+                        $model_template_activities = \backend\models\AwpbTemplateActivity::find()->where(['awpb_template_id' => $template_id])->all();
+                        if (!empty($model_template_activities)) {
+                            foreach ($model_template_activities as $model_template_activity) {
+
+                                $total_percentage = 0.0;
+                                $total_amt = 0.0;
+                                $ifad_percentage = !empty($model_template_activity->ifad) ? $model_template_activity->ifad : 0;
+                                $ifad_grant_percentage = !empty($model_template_activity->ifad_grant) ? $model_template_activity->ifad_grant : 0;
+                                $grz_percentage = !empty($model_template_activity->grz) ? $model_template_activity->grz : 0;
+                                $beneficiaries_percentage = !empty($model_template_activity->beneficiaries) ? $model_template_activity->beneficiaries : 0;
+                                $private_sector_percentage = !empty($model_template_activity->private_sector) ? $model_template_activity->private_sector : 0;
+                                $iapri_percentage = !empty($model_template_activity->iapri) ? $model_template_activity->iapri : 0;
+                                $parm_percentage = !empty($model_template_activity->parm) ? $model_template_activity->parm : 0;
+
+                                $total_percentage = $ifad_percentage + $ifad_grant_percentage + $grz_percentage + $beneficiaries_percentage + $private_sector_percentage + $iapri_percentage + $parm_percentage;
+                                if ($total_percentage == 100) {
+                                    $model_template_activity->mo_1_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_1_amount');
+                                    $model_template_activity->mo_2_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_2_amount');
+                                    $model_template_activity->mo_3_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_3_amount');
+                                    $model_template_activity->mo_4_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_4_amount');
+                                    $model_template_activity->mo_5_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_5_amount');
+                                    $model_template_activity->mo_6_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_6_amount');
+                                    $model_template_activity->mo_7_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_7_amount');
+                                    $model_template_activity->mo_8_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_8_amount');
+                                    $model_template_activity->mo_9_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_9_amount');
+                                    $model_template_activity->mo_10_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_10_amount');
+                                    $model_template_activity->mo_11_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_11_amount');
+                                    $model_template_activity->mo_12_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('mo_12_amount');
+                                    $model_template_activity->quarter_one_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('quarter_one_amount ');
+                                    $model_template_activity->quarter_two_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('quarter_two_amount ');
+                                    $model_template_activity->quarter_three_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('quarter_three_amount ');
+                                    $model_template_activity->quarter_four_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('quarter_four_amount ');
+                                    $model_template_activity->budget_amount = \backend\models\AwpbInput::find()->where(['activity_id' => $model_template_activity->activity_id])->andWhere(['awpb_template_id' => $model_template_activity->awpb_template_id])->sum('total_amount');
+                                    $model_template_activity->ifad_amount = ($ifad_percentage * $model_template_activity->budget_amount) / 100;
+                                    $model_template_activity->ifad_grant_amount = ($ifad_grant_percentage * $model_template_activity->budget_amount) / 100;
+                                    $model_template_activity->grz_amount = ($grz_percentage * $model_template_activity->budget_amount) / 100;
+                                    $model_template_activity->beneficiaries_amount = ($beneficiaries_percentage * $model_template_activity->budget_amount) / 100;
+                                    $model_template_activity->private_sector_amount = ($private_sector_percentage * $model_template_activity->budget_amount) / 100;
+                                    $model_template_activity->iapri_amount = ($iapri_percentage * $model_template_activity->budget_amount) / 100;
+                                    $model_template_activity->parm_amount = ($parm_percentage * $model_template_activity->budget_amount) / 100;
+                                    if ($model_template_activity->save()) {
+                                        $model_activity = \backend\models\AwpbActivity::findOne(['id' => $model_template_activity->activity_id]);
+                                        //$model_template = \backend\models\AwpbTemplate::findModel(['id' => $model_template_activity->awpb_template_id]);
+                                        $model_expense_category = \backend\models\AwpbExpenseCategory::findOne(['id' => $model_activity->expense_category_id]);
+                                        $model_component = \backend\models\AwpbComponent::findOne(['id' => $model_activity->component_id]);
+                                        $model_funder = \backend\models\AwpbFunder::find()->all();
+                                        //var_dump($model_activity->name);
+                                        $percent = 0.0;
+                                        $gl_account = "";
+                                        if ($model_template_activity->budget_amount > 0) {
+                                            foreach ($model_funder as $funder) {
+
+                                                if ($funder->name == "IFAD") {
+                                                    $percent = $ifad_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                }
+                                                if ($funder->name == "IFAD Grant") {
+                                                    $percent = $ifad_grant_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                }
+                                                if ($funder->name == "GRZ") {
+                                                    $percent = $grz_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                }
+                                                if ($funder->name == "Private Sector") {
+                                                    $percent = $private_sector_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                }
+                                                if ($funder->name == "Beneficiaries") {
+                                                    $percent = $beneficiaries_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                }
+                                                if ($funder->name == "IAPRI") {
+                                                    $percent = $iapri_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                } if ($funder->name == "PARM") {
+                                                    $percent = $parm_percentage;
+                                                    $gl_account = $model_activity->gl_account_code . "/" . $model_component->gl_account_code . "/" . $model_expense_category->code . "/0" . $funder->code;
+                                                }
+                                                $_model_general_ledger = \backend\models\AwpbGeneralLedger::find()
+                                                                // ->where(['activity_id' => $model_template_activity->activity_id])
+                                                                ->where(['awpb_template_id' => $model_template_activity->awpb_template_id])
+                                                                //->andWhere(['funder_id' => $model_template_activity->funder_id])
+                                                                ->andWhere(['general_ledger_account' => $gl_account])->one();
+                                                if (empty($_model_general_ledger)) {
+                                                    $model_general_ledger = new \backend\models\AwpbGeneralLedger();
+                                                    $model_general_ledger->general_ledger_account = $gl_account;
+                                                    $model_general_ledger->activity_id = $model_template_activity->activity_id;
+                                                    $model_general_ledger->component_id = $model_activity->component_id;
+                                                    $model_general_ledger->awpb_template_id = $model_template_activity->awpb_template_id;
+                                                    $model_general_ledger->funder_id = $funder->id;
+                                                    $model_general_ledger->expense_category_id = $model_activity->expense_category_id;
+                                                    $model_general_ledger->mo_1_amount = ($model_template_activity->mo_1_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_2_amount = ($model_template_activity->mo_2_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_3_amount = ($model_template_activity->mo_3_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_4_amount = ($model_template_activity->mo_4_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_5_amount = ($model_template_activity->mo_5_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_6_amount = ($model_template_activity->mo_6_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_7_amount = ($model_template_activity->mo_7_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_8_amount = ($model_template_activity->mo_8_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_9_amount = ($model_template_activity->mo_9_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_10_amount = ($model_template_activity->mo_10_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_11_amount = ($model_template_activity->mo_11_amount * $percent) / 100;
+                                                    $model_general_ledger->mo_12_amount = ($model_template_activity->mo_12_amount * $percent) / 100;
+                                                    $model_general_ledger->quarter_one_amount = ($model_template_activity->quarter_one_amount * $percent) / 100;
+                                                    $model_general_ledger->quarter_two_amount = ($model_template_activity->quarter_two_amount * $percent) / 100;
+                                                    $model_general_ledger->quarter_three_amount = ( $model_template_activity->quarter_three_amount * $percent) / 100;
+                                                    $model_general_ledger->quarter_four_amount = ($model_template_activity->quarter_four_amount * $percent) / 100;
+                                                    $model_general_ledger->updated_by = Yii::$app->user->identity->id;
+                                                    $model_general_ledger->created_by = Yii::$app->user->identity->id;
+
+                                                    Yii::$app->session->setFlash('error', 'Error occured while creating GL accounts.Error:' .
+                                                            $model_general_ledger->component_id . " " .
+                                                            $model_general_ledger->activity_id . " " .
+                                                            $model_general_ledger->awpb_template_id . " " .
+                                                            $model_general_ledger->funder_id . " " .
+                                                            $model_general_ledger->general_ledger_account . " " .
+                                                            $model_general_ledger->expense_category_id . " " .
+                                                            $percent . " " .
+                                                            $model_template_activity->mo_1_amount);
+
+                                                    $model_general_ledger->save();
+
+                                                } else {
+
+                                                    $_model_general_ledger->mo_1_amount = ($model_template_activity->mo_1_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_2_amount = ($model_template_activity->mo_2_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_3_amount = ($model_template_activity->mo_3_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_4_amount = ($model_template_activity->mo_4_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_5_amount = ($model_template_activity->mo_5_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_6_amount = ($model_template_activity->mo_6_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_7_amount = ($model_template_activity->mo_7_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_8_amount = ($model_template_activity->mo_8_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_9_amount = ($model_template_activity->mo_9_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_10_amount = ($model_template_activity->mo_10_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_11_amount = ($model_template_activity->mo_11_amount * $percent) / 100;
+                                                    $_model_general_ledger->mo_12_amount = ($model_template_activity->mo_12_amount * $percent) / 100;
+                                                    $_model_general_ledger->quarter_one_amount = ($model_template_activity->quarter_one_amount * $percent) / 100;
+                                                    $_model_general_ledger->quarter_two_amount = ($model_template_activity->quarter_two_amount * $percent) / 100;
+                                                    $_model_general_ledger->quarter_three_amount = ( $model_template_activity->quarter_three_amount * $percent) / 100;
+                                                    $_model_general_ledger->quarter_four_amount = ($model_template_activity->quarter_four_amount * $percent) / 100;
+                                                    $_model_general_ledger->updated_by = Yii::$app->user->identity->id;
+                                                    $_model_general_ledger->created_by = Yii::$app->user->identity->id;
+                                                    $_model_general_ledger->save();
+                                                }
+                                            }
+                                        }
+                                        $audit = new AuditTrail();
+
+                                        $audit->user = Yii::$app->user->id;
+                                        $audit->action = "Activity no. " . $model_template_activity->activity_id . " funding profile set";
+                                        $audit->ip_address = Yii::$app->request->getUserIP();
+                                        $audit->user_agent = Yii::$app->request->getUserAgent();
+                                        $audit->save();
+                                        //   Yii::$app->session->setFlash('success', 'Activity funding setting was successfully updated.');
+                                    } else {
+                                        $message = '';
+                                        foreach ($model_template_activity->getErrors() as $error) {
+                                            $message .= $error[0];
+                                        }
+                                        Yii::$app->session->setFlash('error', 'Error occured while setting the finding profie.Error:' . $message);
+                                    }
+                                } else {
+
+                                    Yii::$app->session->setFlash('error', 'The total percentage must be 100%. Please enter the required percentage');
+                                }
+                            }
+                        } else {
+                            Yii::$app->session->setFlash('error', 'Funding profile not found. Kindly contact the systems administrator.');
+                        }
+
                        
+                    Yii::$app->session->setFlash('success', "Rollover was completed successfully.");
+                    return $this->redirect('index');
+                } else {
+                    $message = "";
+                    foreach ($_model->getErrors() as $error) {
+                        $message .= $error[0];
+                    }
+
+                    Yii::$app->session->setFlash('error', 'Error occured while updating the AWPB template:' . $message);
+                    return $this->redirect('index');
                 }
-                              return $this->render('rollover', [
-                            'model' => $model,
-                            '_model' => $_model,
-                ]);
-            } else {
-                Yii::$app->session->setFlash('error', 'No AWPB template has been published for you to perform this process. Kindly publish an AWPB template');
-                return $this->redirect('index');
             }
+            return $this->render('rollover', [
+                        'model' => $model,
+                        '_model' => $_model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'No AWPB template has been published for you to perform this process. Kindly publish an AWPB template');
+            return $this->redirect('index');
+        }
         } else {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
     }
 
-    /* 	public function actionDelete() {
-      $post = Yii::$app->request->post();
-      if (Yii::$app->request->isAjax && isset($post['custom_param'])) {
-      $id = $post['id'];
-      if ($this->findModel($id)->delete()) {
-      echo Json::encode([
-      'success' => true,
-      'messages' => [
-      'kv-detail-info' => 'The AWPB template# ' . $id . ' was successfully deleted. <a href="' .
-      Url::to(['/awpb-template/view']) . '" class="btn btn-sm btn-info">' .
-      '<i class="glyphicon glyphicon-hand-right"></i>  Click here</a> to proceed.'
-      ]
-      ]);
-      } else {
-      echo Json::encode([
-      'success' => false,
-      'messages' => [
-      'kv-detail-error' => 'Cannot delete the template # ' . $id . '.'
-      ]
-      ]);
-      }
-      return;
-      }
-      throw new InvalidCallException("You are not allowed to do this operation. Contact the administrator.");
-      }
-     */
-
-    /**
-     * Finds the AwpbTemplate model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return AwpbTemplate the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+   
+     
     protected function findModel($id) {
         if (($model = AwpbTemplate::findOne($id)) !== null) {
             return $model;

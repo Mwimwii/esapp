@@ -279,38 +279,39 @@ $status=1;
             $budget = \backend\models\AwpbBudget::findOne(['id' => $id]);
           
             if (User::userIsAllowedTo('Request Funds') && ( $user->district_id != 0 || $user->district_id != '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_NOT_REQUESTED]);
+                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id]);//->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter]);
                   
                     
            
            } 
             elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id != 0 || $user->province_id != '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_DISTRICT]);
+                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id]);//->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter]);
 
                 
              
             } 
             elseif (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
+                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id]);
+                       // ->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter]);
 
                
             } 
             elseif (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', AwpbActualInput::STATUS_SPECIALIST]);
+                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id]);//->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter]);
 
                
             }  else {
-                $searchModel = new \backend\models\AwpbActualInputSearch();
+                $searchModel = new \backend\models\AwpbFundsRequisitionSearch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id])->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', 10]);
+                $dataProvider->query->andFilterWhere(['=', 'budget_id', $id]);//->andFilterWhere(['=', 'district_id', $budget->district_id])->andFilterWhere(['=', 'quarter_number', $template_model->quarter])->andFilterWhere(['=', 'status', 10]);
                
             }
 

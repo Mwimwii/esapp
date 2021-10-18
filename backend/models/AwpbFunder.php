@@ -45,6 +45,13 @@ class AwpbFunder extends \yii\db\ActiveRecord
             [['code'], 'string', 'max' => 6],
             [['name'], 'string', 'max' => 40],
             [['description'], 'string', 'max' => 255],
+                 [['code'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('code');
+                }, 'message' => 'Code already in use!'],
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Name already in use!'],
+                        
         ];
     }
 

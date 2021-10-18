@@ -61,28 +61,17 @@ class AwpbDistrictController extends Controller {
             $funds_requisition = AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
 
             $awpb_template = \backend\models\AwpbTemplate::findOne(['id' => $id]);
-            //$dataProvider->query->andFilterWhere(['awpb_template_id' => $id,'district_id'=>$user->district_id]);
-//            $rows = (new \yii\db\Query())
-//            ->select(['id', 'email'])
-//            ->from('user')
-//            ->all();
-//            $query = (new \yii\db\Query())->from('billing');
-//            $sum = $query->sum('amount');
-//            echo $sum;
-//            
+         
             $query = (new \yii\db\Query());
-            //$query->select(['SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount', 'SUM(total_amount) as total_amount']);
-            //$query->select(['quarter_one_amount', 'quarter_two_amount', 'quarter_three_amount', 'quarter_four_amount', 'total_amount']);
+            
             $query->from('awpb_input');
             $query->where(['awpb_template_id' => $id]);
             $query->andWhere(['district_id' => $id2]);
 
-            //$query->groupBy('district_id');
-            // $query->all();
             if ($id3 == 1) {
 
                 $ms = "Quarter One";
-// Quarter 1
+
                 if (($user->district_id != 0 || $user->district_id != "") && User::userIsAllowedTo("Request Funds")) {
                     $funds_requisition->status_q_1 = \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED;
                     $quarter_amount = !empty($query->sum('quarter_one_amount')) ? $query->sum('quarter_one_amount') : 0;
@@ -278,15 +267,7 @@ class AwpbDistrictController extends Controller {
                    $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_OPEN;
             }
             if ($model->save()) {
-                $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $user->district_id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_NOT_REQUESTED])->all();
-                if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_DISTRICT;
-                        $model_actual_input->save();
-                    }
+               
                     $district = \backend\models\Districts::findOne(['id' => $user->district_id])->name;
                     $role_model = \common\models\RightAllocation::find()->where(['right' => "Review Funds Request"])->all();
 
@@ -320,7 +301,7 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     }
-                }
+                
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
@@ -330,6 +311,7 @@ class AwpbDistrictController extends Controller {
                 Yii::$app->session->setFlash('success', " Funds request has been submitted.");
                 //return $this->redirect(['awpb-input/' . $page, 'id' => $id, 'id2' => $id2,]);
                 return $this->redirect(['home/home']);
+                
             } else {
                 $message = '';
                 foreach ($model->getErrors() as $error) {
@@ -338,20 +320,106 @@ class AwpbDistrictController extends Controller {
                 }
             }
         } 
+        
+         else if  (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
+            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>  $template_model ->id, 'cost_centre_id' => $id]);
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = $template_model->quarter;
+                if ($template_model->quarter==1)
+            {
+                $model->status_q_1 = \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN;
+            }
+             if ($template_model->quarter==2)
+            {
+                   $model->status_q_2 = \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN;
+            }
+             if ($template_model->quarter==3)
+            {
+                   $model->status_q_3 =\backend\models\AwpbDistrict::STATUS_QUARTER_OPEN;
+            }
+             if ($template_model->quarter==4)
+            {
+                   $model->status_q_4 = \backend\models\AwpbDistrict::STATUS_QUARTER_OPEN;
+            }
+            if ($model->save()) {
+               
+                    $district = \backend\models\AwpbCostCentre::findOne(['id' => $id])->name;
+                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
+
+                    if (!empty($role_model)) {
+
+                        foreach ($role_model as $_role) {
+                            //We now get all users with the fetched role
+                            //  $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/login']);
+
+                            $_user_model = "";
+
+                            $_user_model = User::find()
+                                    ->where(['role' => $_role->role])
+                                  //  ->andWhere(['province_id' => $user->province_id])
+                                    ->all();
+
+                            if (!empty($_user_model)) {
+                                //We send the emails
+                                $subject = $template_model->fiscal_year . " Q" . $template_model->quarter . " Funds Request for " . $district;
+                                foreach ($_user_model as $_model) {
+
+
+                                    $msg = "";
+                                    $msg .= "<p>Dear " . $_model->first_name . " " . $_model->last_name . ",<br/><br/>";
+                                    $msg .= "The funds requisition for " . $template_model->fiscal_year . " Annual Work Plan and Budget quarter " . $template_model->quarter . " has been submitted for your review and approval. <br/><br/>";
+
+                                    $msg .= "Yours sincerely,<br/><br/></p>";
+                                    $msg .= '<p>' . $user->title . ' ' . $user->first_name . ' ' . $user->last_name . '</p>';
+                                    \backend\models\Storyofchange::sendEmail($msg, $subject, $user->email);
+                                }
+                            }
+                        }
+                    }
+                
+                $audit = new AuditTrail();
+                $audit->user = Yii::$app->user->id;
+                $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
+                $audit->ip_address = Yii::$app->request->getUserIP();
+                $audit->user_agent = Yii::$app->request->getUserAgent();
+                $audit->save();
+                Yii::$app->session->setFlash('success', " Funds request has been submitted.");
+           
+                 return $this->redirect(['awpb-funds-requisition/qofrpw', 'id'=>0,'id2'=>0,'status'=>0]);
+                
+            } else {
+                $message = '';
+                foreach ($model->getErrors() as $error) {
+                    $message .= $error[0];
+                    Yii::$app->session->setFlash('error', "Error occured : " . $message);
+                }
+            }
+        } 
+      
+
+      
         elseif (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id != '')) {
              $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+            
             $model->updated_by = Yii::$app->user->identity->id;
-            //$model->status = $template_model->quarter;
-            if ($model->save()) {
-                $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_DISTRICT])->all();
-                       if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_PROVINCIAL;
-                        $model_actual_input->save();
-                    }
+            $model->status = $template_model->quarter;
+            if ($template_model->quarter==1)
+            {
+                $model->status_q_1 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+             if ($template_model->quarter==2)
+            {
+                   $model->status_q_2 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+             if ($template_model->quarter==3)
+            {
+                   $model->status_q_3 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+             if ($template_model->quarter==4)
+            {
+                   $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+                   if ($model->save()) {
                     $district = \backend\models\Districts::findOne(['id' => $id2])->name;
                     $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
 
@@ -385,7 +453,7 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     }
-                }
+                
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
@@ -404,21 +472,37 @@ class AwpbDistrictController extends Controller {
             }
         }
         elseif  (User::userIsAllowedTo('Approve Funds Requisition') && ( $user->province_id == 0 || $user->province_id == '')) {
-            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+            $model = \backend\models\AwpbDistrict::findOne(['id' => $id]);
+            
+              if ($model->district_id >0){
+             $spending_centre = !empty($model->district_id) && $model->district_id > 0 ? \backend\models\Districts::findOne($model->district_id)->name : "";
+            }
+            else if ($model->cost_centre_id >0){
+                 
+                  $spending_centre = !empty($model->cost_centre_id) && $model->cost_centre_id > 0 ? \backend\models\AwpbCostCentre::findOne($model->cost_centre_id)->name : "";
+            }
+           
             $model->updated_by = Yii::$app->user->identity->id;
-            //$model->status = $template_model->quarter;
-            if ($model->save()) {
-              $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_PROVINCIAL])->all();
-                      if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_SPECIALIST;
-                        $model_actual_input->save();
-                    }
-                    $district = \backend\models\Districts::findOne(['id' => $id2])->name;
-                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
+            $model->status = $template_model->quarter;
+            if ($template_model->quarter==1)
+            {
+                $model->status_q_1 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+             if ($template_model->quarter==2)
+            {
+                   $model->status_q_2 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+             if ($template_model->quarter==3)
+            {
+                   $model->status_q_3 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+             if ($template_model->quarter==4)
+            {
+                   $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_APPROVED;
+            }
+                        if ($model->save()) {
+                            //$district = \backend\models\Districts::findOne(['id' => $id2])->name;
+                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Request Funds"])->all();
 
                     if (!empty($role_model)) {
 
@@ -428,10 +512,24 @@ class AwpbDistrictController extends Controller {
 
                             $_user_model = "";
 
+                               if ($model->province_id>0){
                             $_user_model = User::find()
                                     ->where(['role' => $_role->role])
                                     ->andWhere(['province_id' => $user->province_id])
                                     ->all();
+                        }
+                        else if ($model->cost_centre_id > 0){
+                        
+                            $_user_model = User::find()
+                                    ->where(['role' => $_role->role])
+                                   // ->andWhere(['province_id' => $user->province_id])
+                                    ->all();
+                        }
+                        
+                        else
+                        {
+                            
+                        }
 
                             if (!empty($_user_model)) {
                                 //We send the emails
@@ -441,7 +539,7 @@ class AwpbDistrictController extends Controller {
 
                                     $msg = "";
                                     $msg .= "<p>Dear " . $_model->first_name . " " . $_model->last_name . ",<br/><br/>";
-                                    $msg .= "The funds requisition for " . $template_model->fiscal_year . " Annual Work Plan and Budget quarter " . $template_model->quarter . " has been submitted for your review and approval. <br/><br/>";
+                                    $msg .= "The funds requisition for " . $template_model->fiscal_year . " Annual Work Plan and Budget quarter " . $template_model->quarter . " has been reviewed and approved. <br/><br/>";
 
                                     $msg .= "Yours sincerely,<br/><br/></p>";
                                     $msg .= '<p>' . $user->title . ' ' . $user->first_name . ' ' . $user->last_name . '</p>';
@@ -450,16 +548,16 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     }
-                }
+                
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
+                $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been approved.";
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
-                Yii::$app->session->setFlash('success', " Funds request has been submitted.");
+                Yii::$app->session->setFlash('success', " Funds request has been approved.");
                 //return $this->redirect(['awpb-input/' . $page, 'id' => $id, 'id2' => $id2,]);
-                return $this->redirect(['home/home']);
+                 return $this->redirect(['awpb-funds-requisition/qofrd', 'id'=>0,'id2'=>0]);
             } else {
                 $message = '';
                 foreach ($model->getErrors() as $error) {
@@ -469,40 +567,59 @@ class AwpbDistrictController extends Controller {
             }
         }
         elseif (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
-         
-                 $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_SPECIALIST])->all();
-                      if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_DISBURSED;
-                        $model_actual_input->save();
-                      }
-                      
-                      }
-                 
-                      $disbursed_funds = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id',$template_model->id ])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_DISBURSED])->sum('quarter_amount');
-                     
-                         $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
-            $model->updated_by = Yii::$app->user->identity->id;
-            //$model->status = $template_model->quarter;
+             $spending_centre="";
+            $model = \backend\models\AwpbDistrict::findOne(['id' => $id]);
+            if ($model->district_id >0){
+            $disbursed_funds = \backend\models\AwpbFundsRequisition::find()->where([ 'district_id'=>$model->district_id])
+                    ->andWhere(['=', 'awpb_template_id',$template_model->id ])
+                    ->andWhere(['=', 'quarter_number', $template_model->quarter])
+                    ->sum('quarter_amount');
+            //$spending_centre = \backend\models\Districts::findOne(['id' => $model->district_id])->name;
+             $spending_centre = !empty($model->district_id) && $model->district_id > 0 ? \backend\models\Districts::findOne($model->district_id)->name : "";
+            }
+            else if ($model->cost_centre_id >0){
+                  $disbursed_funds = \backend\models\AwpbFundsRequisition::find()->where([ 'cost_centre_id'=> $model->cost_centre_id])
+                    ->andWhere(['=', 'awpb_template_id',$template_model->id ])
+                    ->andWhere(['=', 'quarter_number', $template_model->quarter])
+                    ->sum('quarter_amount');
+                  
+                  $spending_centre = !empty($model->cost_centre_id) && $model->cost_centre_id > 0 ? \backend\models\AwpbCostCentre::findOne($model->cost_centre_id)->name : "";
+            }
+                
            
-                    if ($template_model->quarter == 1) {
-                        $model->quarter_one_amount= $disbursed_funds;
-                    }
-                       if ($template_model->quarter == 2) {
-                        $model->quarter_two_amount= $disbursed_funds;
-                    }
-                       if ($template_model->quarter == 3) {
-                        $model->quarter_three_amount= $disbursed_funds;
-                    }
-                       if ($template_model->quarter == 4) {
-                        $model->quarter_four_amount= $disbursed_funds;
-                    }
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = $template_model->quarter;
+            if ($template_model->quarter==1)
+            {
+                $model->status_q_1 = AwpbDistrict::STATUS_QUARTER_DISBURSED;
+                $model->quarter_one_amount= $disbursed_funds;
+            }
+             else if ($template_model->quarter==2)
+            {
+                   $model->status_q_2 = AwpbDistrict::STATUS_QUARTER_DISBURSED;
+                   $model->quarter_two_amount= $disbursed_funds;
+            }
+             else if ($template_model->quarter==3)
+            {
+                   $model->status_q_3 = AwpbDistrict::STATUS_QUARTER_DISBURSED;
+                    $model->quarter_three_amount= $disbursed_funds;
+            }
+             else if ($template_model->quarter==4)
+            {
+                   $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_DISBURSED;
+                   $model->quarter_four_amount= $disbursed_funds;
+            }
+            else
+            {
+                
+            }
+            
+           
+          
+                 
                     if($model->save()){
-                           $district = \backend\models\Districts::findOne(['id' => $id2])->name;
-                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
+                           
+                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Request Funds"])->all();
 
                     if (!empty($role_model)) {
 
@@ -512,20 +629,33 @@ class AwpbDistrictController extends Controller {
 
                             $_user_model = "";
 
+                            if ($model->province_id>0){
                             $_user_model = User::find()
                                     ->where(['role' => $_role->role])
                                     ->andWhere(['province_id' => $user->province_id])
                                     ->all();
-
+                        }
+                        else if ($model->cost_centre_id > 0){
+                        
+                            $_user_model = User::find()
+                                    ->where(['role' => $_role->role])
+                                   // ->andWhere(['province_id' => $user->province_id])
+                                    ->all();
+                        }
+                        
+                        else
+                        {
+                            
+                        }
                             if (!empty($_user_model)) {
                                 //We send the emails
-                                $subject = $template_model->fiscal_year . " Q" . $template_model->quarter . " Funds Request for " . $district;
+                                $subject = $template_model->fiscal_year . " Q" . $template_model->quarter . " Funds Request for " . $spending_centre;
                                 foreach ($_user_model as $_model) {
 
 
                                     $msg = "";
                                     $msg .= "<p>Dear " . $_model->first_name . " " . $_model->last_name . ",<br/><br/>";
-                                    $msg .= "The funds requisition for " . $template_model->fiscal_year . " Annual Work Plan and Budget quarter " . $template_model->quarter . " has been submitted for your review and approval. <br/><br/>";
+                                    $msg .= "The " . $template_model->fiscal_year . " Annual Work Plan and Budget quarter " . $template_model->quarter . " funds have been disbursed. <br/><br/>";
 
                                     $msg .= "Yours sincerely,<br/><br/></p>";
                                     $msg .= '<p>' . $user->title . ' ' . $user->first_name . ' ' . $user->last_name . '</p>';
@@ -534,16 +664,16 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     
-                    
+                    }
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
+                $audit->action = "The " . $template_model->fiscal_year . " Q" . $template_model->quarter . " funds have been disurbed.";
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
-                Yii::$app->session->setFlash('success', " Funds request has been submitted.");
+                Yii::$app->session->setFlash('success', " Funds disbursed.");
                 //return $this->redirect(['awpb-input/' . $page, 'id' => $id, 'id2' => $id2,]);
-                    return $this->redirect(['home/home']);
+                    return $this->redirect(['awpb-funds-requisition/qofrd', 'id'=>0,'id2'=>0]);
                     
                                 
             } else {
@@ -552,7 +682,7 @@ class AwpbDistrictController extends Controller {
                     $message .= $error[0];
                     Yii::$app->session->setFlash('error', "Error occured : " . $message);
                 }
-                    }}
+                    }
         }
         else 
         {
@@ -564,8 +694,8 @@ class AwpbDistrictController extends Controller {
     public function actionDecline($id, $id2) {
         $user = User::findOne(['id' => Yii::$app->user->id]);
         $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
-        if (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id != '')) {
-            
+        if (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id !=0))
+        {
             $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
             $model->updated_by = Yii::$app->user->identity->id;
             $model->status = $template_model->quarter;
@@ -586,16 +716,11 @@ class AwpbDistrictController extends Controller {
                    $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_CLOSED;
             }
             if ($model->save()) {
-                $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id',$id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_DISTRICT])->all();
-               
-                if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_NOT_REQUESTED;
-                        $model_actual_input->save();
-                    }
+                 $funds_requesition = new \backend\models\AwpbFundsRequisition();
+                       
+             $funds_requesition::deleteAll(['district_id'=>$id2,'awpb_template_id'=>$template_model->id,'quarter_number'=> $template_model->quarter]);
+                
+              
                     $district = \backend\models\Districts::findOne(['id' => $id2])->name;
                     $role_model = \common\models\RightAllocation::find()->where(['right' => "Request Funds"])->all();
 
@@ -629,7 +754,7 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     }
-                }
+                
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been declined.";
@@ -648,23 +773,35 @@ class AwpbDistrictController extends Controller {
             }
         } 
         elseif (User::userIsAllowedTo('Approve Funds Requisition') && ( $user->province_id == 0 || $user->province_id == '')) {
-             $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+             
+            
+            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
             $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = $template_model->quarter;
+            if ($template_model->quarter==1)
+            {
+                $model->status_q_1 = AwpbDistrict::STATUS_QUARTER_CLOSED;
+            }
+            if ($template_model->quarter==2)
+            {
+                   $model->status_q_2 = AwpbDistrict::STATUS_QUARTER_CLOSED;
+            }
+            if ($template_model->quarter==3)
+            {
+                   $model->status_q_3 = AwpbDistrict::STATUS_QUARTER_CLOSED;
+            }
+            if ($template_model->quarter==4)
+            {
+                   $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_CLOSED;
+            }
             //$model->status = $template_model->quarter;
             if ($model->save()) {
-                $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_PROVINCIAL])->all();
-
-                if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_DISTRICT;
-                        $model_actual_input->save();
-                    }
+                $funds_requesition = new \backend\models\AwpbFundsRequisition();
+                       
+             $funds_requesition::deleteAll(['district_id'=>$id2,'awpb_template_id'=>$template_model->id,'quarter_number'=> $template_model->quarter]);
+                
                     $district = \backend\models\Districts::findOne(['id' => $id2])->name;
-                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Review Funds Request"])->all();
-
+                   $role_model = \common\models\RightAllocation::find()->where(['right' => "Request Funds"])->all();
                     if (!empty($role_model)) {
 
                         foreach ($role_model as $_role) {
@@ -675,7 +812,7 @@ class AwpbDistrictController extends Controller {
 
                             $_user_model = User::find()
                                     ->where(['role' => $_role->role])
-                                    ->andWhere(['province_id' => $user->province_id])
+                                    ->andWhere(['district_id' => $id2])
                                     ->all();
 
                             if (!empty($_user_model)) {
@@ -695,16 +832,17 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     }
-                }
+                
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been submitted.";
+                $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been declined.";
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
-                Yii::$app->session->setFlash('success', " Funds request has been submitted.");
+                Yii::$app->session->setFlash('success', " Funds request has been declined.");
+                 return $this->redirect(['awpb-funds-requisition/qofrd', 'id'=>0,'id2'=>0]);
                 //return $this->redirect(['awpb-input/' . $page, 'id' => $id, 'id2' => $id2,]);
-                return $this->redirect(['home/home']);
+                //return $this->redirect(['home/home']);
             } else {
                 $message = '';
                 foreach ($model->getErrors() as $error) {
@@ -717,17 +855,40 @@ class AwpbDistrictController extends Controller {
             $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
             $model->updated_by = Yii::$app->user->identity->id;
             //$model->status = $template_model->quarter;
+           
+            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = $template_model->quarter;
+            
+     
+            if ($template_model->quarter==1)
+            {
+                $model->status_q_1 = AwpbDistrict::STATUS_QUARTER_REQUESTED ;
+            }
+            if ($template_model->quarter==2)
+            {
+                   $model->status_q_2 = AwpbDistrict::STATUS_QUARTER_REQUESTED ;
+            }
+            if ($template_model->quarter==3)
+            {
+                   $model->status_q_3 = AwpbDistrict::STATUS_QUARTER_REQUESTED ;
+            }
+            if ($template_model->quarter==4)
+            {
+                   $model->status_q_4 = AwpbDistrict::STATUS_QUARTER_REQUESTED ;
+            }
+            
             if ($model->save()) {
                 $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_SPECIALIST])->all();
 
-                if (!empty($actual_inputs)) {
-                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-                    foreach ($actual_inputs as $actual_input) {
-
-                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_PROVINCIAL;
-                        $model_actual_input->save();
-                    }
+//                if (!empty($actual_inputs)) {
+//                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
+//                    foreach ($actual_inputs as $actual_input) {
+//
+//                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
+//                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_PROVINCIAL;
+//                        $model_actual_input->save();
+//                    }
                     $district = \backend\models\Districts::findOne(['id' => $id2])->name;
                     $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
 
@@ -761,7 +922,7 @@ class AwpbDistrictController extends Controller {
                             }
                         }
                     }
-                }
+               // }
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
                 $audit->action = "Funds requisition for " . $template_model->fiscal_year . " Q" . $template_model->quarter . " has been declined.";
@@ -769,8 +930,8 @@ class AwpbDistrictController extends Controller {
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
                 Yii::$app->session->setFlash('success', " Funds request has been declined.");
-                //return $this->redirect(['awpb-input/' . $page, 'id' => $id, 'id2' => $id2,]);
-                return $this->redirect(['home/home']);
+                return $this->redirect(['awpb-funds-requisition/qofrd', 'id'=>0,'id2'=>0]);
+                
             } else {
                 $message = '';
                 foreach ($model->getErrors() as $error) {

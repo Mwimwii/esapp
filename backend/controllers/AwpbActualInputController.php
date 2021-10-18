@@ -68,6 +68,7 @@ class AwpbActualInputController extends Controller {
      * Lists all AwpbInput models.
      * @return mixed
      */
+    
     public function actionIndex($id) {
 
         $user = User::findOne(['id' => Yii::$app->user->id]);
@@ -97,10 +98,6 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->district_id == 0 || $user
 
         $quarter = "";
 
-//                 if (Yii::$app->request->isAjax) {
-//                    $model->load(Yii::$app->request->post());
-//                    return Json::encode(\yii\widgets\ActiveForm::validate($model));
-//                }
 
         if (Yii::$app->request->post('addQuarter') == 'true') {
             // var_dump(Yii::$app->request->post()['User']['user_type']);
@@ -235,7 +232,7 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->district_id == 0 || $user
 
       
         
-        if (User::userIsAllowedTo('Manage AWPB') ||User::userIsAllowedTo('Manage PW AWPB') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+        if (User::userIsAllowedTo('Manage AWPB') ||User::userIsAllowedTo('Manage PW AWPB') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
 
 
             if (Yii::$app->request->isAjax) {
@@ -390,7 +387,7 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->district_id == 0 || $user
 
         $awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $model->awpb_template_id, 'district_id' => $user->district_id]);
         //  if ($_model->status ==0 && User::userIsAllowedTo('Manage AWPB')) {
-        if (User::userIsAllowedTo('Request Funds') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+        if (User::userIsAllowedTo('Request Funds') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
 
 
             if (Yii::$app->request->isAjax) {
@@ -594,7 +591,7 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->district_id == 0 || $user
 
         $awpb_district = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $model->awpb_template_id, 'district_id' => $user->district_id]);
         //  if ($_model->status ==0 && User::userIsAllowedTo('Manage AWPB')) {
-        if (User::userIsAllowedTo('Request Funds') || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+        if (User::userIsAllowedTo('Request Funds') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
 
 
             if (Yii::$app->request->isAjax) {
@@ -724,6 +721,7 @@ if (User::userIsAllowedTo('Request Funds') && ( $user->district_id == 0 || $user
                         $model->district_id = $_model->district_id;
                         $model->province_id = $_model->province_id;
                         $model->component_id = $_model->component_id;
+                        
                         // $model->output_id =  $_model->output_id;
 
                         if ($model->validate()) {

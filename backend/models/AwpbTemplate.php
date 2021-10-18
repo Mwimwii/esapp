@@ -61,9 +61,9 @@ class AwpbTemplate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['fiscal_year', 'budget_theme', 'submission_deadline', 'review_deadline',  'incorpation_deadline_pco_moa_mfl'], 'required'],
+            [['fiscal_year', 'budget_theme', 'submission_deadline', 'review_deadline', 'submission_deadline_ifad', 'incorpation_deadline_pco_moa_mfl'], 'required'],
 
-            [['fiscal_year', 'status','quarter', 'status_activities', 'status_users', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['fiscal_year', 'status','quarter', 'status_activities', 'status_users','status_funding', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
 
             [['budget_theme', 'comment'], 'string'],
             [['preparation_deadline_first_draft', 'submission_deadline', 'consolidation_deadline', 'review_deadline', 'preparation_deadline_second_draft', 'review_deadline_pco', 'finalisation_deadline_pco', 'submission_deadline_moa_mfl', 'approval_deadline_jpsc', 'incorpation_deadline_pco_moa_mfl', 'submission_deadline_ifad','comment_deadline_ifad','distribution_deadline'], 'safe'],
@@ -71,7 +71,6 @@ class AwpbTemplate extends \yii\db\ActiveRecord
             [['fiscal_year'], 'unique'],
         ];
     }
-
 	public function behaviors() {
         return [
             'timestamp' => [
@@ -101,6 +100,7 @@ class AwpbTemplate extends \yii\db\ActiveRecord
 
             'status_activities' => 'Status Activities',
             'status_users' => 'Status Users',
+            'status_funding'=>'Status Funding',
             'preparation_deadline_first_draft' => 'Deadline for preparing the AWPB by participating institution',
             'submission_deadline' => 'Deadline for submitting the AWPB proposals to PCO',
             'consolidation_deadline' => 'Deadline for consolidating AWPB',

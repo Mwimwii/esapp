@@ -34,31 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'filterModel' => $searchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                //'id',
-                // [
-                //     'class' => EditableColumn::className(),
-                //     'attribute' => 'category_id',
-                //     //'readonly' => false,
-                //     'refreshGrid' => true,
-                //     'filterType' => GridView::FILTER_SELECT2,
-                //     'filterWidgetOptions' => [
-                //         'pluginOptions' => ['allowClear' => true],
-                //     ],
-                //     'filter' => \backend\models\CommodityCategories::getList(),
-                //     'filterInputOptions' => ['prompt' => 'Filter by commodity category', 'class' => 'form-control', 'id' => null],
-                //     'editableOptions' => [
-                //         'asPopover' => true,
-                //         'type' => 'success',
-                //         'size' => PopoverX::SIZE_MEDIUM,
-                //         'options' => ['class' => 'form-control', 'prompt' => 'Select commodity category', 'custom' => true,],
-                //         'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                //         'data' => \backend\models\CommodityCategories::getList(),
-                //     ],
-                //     'value' => function ($model) {
-                //         $name = backend\models\CommodityCategories::findOne($model->category_id)->name;
-                //         return $name;
-                //     },
-                // ],
+          
                 [
                     'class' => EditableColumn::className(),
                     'enableSorting' => true,
@@ -94,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'template' => '{delete}',
                     'buttons' => [
                         'delete' => function ($url, $model) {
-                            if (User::userIsAllowedTo('Remove commodity config')) {
+                            if (User::userIsAllowedTo('Setup AWPB')) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                             'title' => 'Remove type',

@@ -94,13 +94,6 @@ if (!empty($output)) {
                 'label' => 'Output',
                 'value' => $outi
             ],
-            [
-          
-                'attribute'=>'activity_id',
-                'format' => 'raw',
-                'label' => 'Activity',
-                'value' => $act
-            ],
          
             'name',
             'description',

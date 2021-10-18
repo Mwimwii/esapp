@@ -8,6 +8,7 @@ use backend\models\AwpbOutputSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * AwpbOuputController implements the CRUD actions for AwpbOutput model.
@@ -17,9 +18,19 @@ class AwpbOuputController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+      public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'delete', 'view'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'update', 'delete','view'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -28,6 +39,7 @@ class AwpbOuputController extends Controller
             ],
         ];
     }
+
 
     /**
      * Lists all AwpbOutput models.
@@ -63,16 +75,21 @@ class AwpbOuputController extends Controller
      * @return mixed
      */
     public function actionCreate()
-    {
+    { if (User::userIsAllowedTo('Setup AWPB')) {
         $model = new AwpbOutput();
-
+$model->updated_by = Yii::$app->user->identity->id;
+       $model->created_by = Yii::$app->user->identity->id;
+       
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
-        ]);
+        ]);} else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**
@@ -83,7 +100,7 @@ class AwpbOuputController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
-    {
+    { if (User::userIsAllowedTo('Setup AWPB')) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -92,7 +109,10 @@ class AwpbOuputController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-        ]);
+        ]);} else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**
@@ -104,9 +124,14 @@ class AwpbOuputController extends Controller
      */
     public function actionDelete($id)
     {
+        
+     if (User::userIsAllowedTo('Setup AWPB')) {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index']);} else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['site/home']);
+        }
     }
 
     /**

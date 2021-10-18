@@ -50,9 +50,9 @@ $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \back
 <h3><?= Html::encode($this->title) ?></h3>
         <p>
         <?php
-        if ((User::userIsAllowedTo("Manage PW AWPB") || User::userIsAllowedTo('Approve AWPB - PCO') ) && ($user->province_id == 0 || $user->province_id == '')) {
+        if ((User::userIsAllowedTo("Manage PW AWPB") || User::userIsAllowedTo('Manage AWPB') ) && ($user->province_id == 0 || $user->province_id == '')) {
 
-//        if (User::userIsAllowedTo("Manage AWPB") || User::userIsAllowedTo("Approve AWPB - Provincial") || User::userIsAllowedTo('Approve AWPB - PCO') || User::userIsAllowedTo('Approve AWPB - Ministry')) {
+//        if (User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Approve AWPB')) {
 
 
             if (!empty($template_model)) {

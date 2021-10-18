@@ -34,7 +34,10 @@ class AwpbCostCentre extends \yii\db\ActiveRecord {
             [['name'], 'required'],
             [['created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            ['name', 'unique', 'message' => 'Cost centre name exist already!'],
+           
+            [['name'], 'unique', 'when' => function($model) {
+                    return $model->isAttributeChanged('name');
+                }, 'message' => 'Name already in use!'],
         ];
     }
 

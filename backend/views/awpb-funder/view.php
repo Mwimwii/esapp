@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
     
             <?php
-            if (\backend\models\User::userIsAllowedTo('Manage AWPB Funders')) {
+            if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
                 echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
                     'title' => 'Update component',
                     'data-toggle' => 'tooltip',

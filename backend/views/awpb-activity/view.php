@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
     
     <?php
-    if (\backend\models\User::userIsAllowedTo('Manage AWPB')) {
+    if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
         echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->id], [
             'title' => 'back',
             'data-toggle' => 'tooltip',
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       
         echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
-            'title' => 'Update component',
+            'title' => 'Update activity',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
         ]);
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
         
             echo Html::a(
                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
-            'title' => 'delete component',
+            'title' => 'delete activity',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
             'data' => [

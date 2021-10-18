@@ -10,7 +10,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Awpb Template Activities', 'url' =
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="awpb-template-activity-update">
+<div class="card card-success card-outline">
+    <div class="card-body">
+<div class="awpb-activity-line-create">
+
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -18,4 +21,4 @@ $this->params['breadcrumbs'][] = 'Update';
         'model' => $model,
     ]) ?>
 
-</div>
+</div></div></div>

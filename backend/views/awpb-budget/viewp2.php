@@ -81,7 +81,7 @@ echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['mpcdoa','status'
 //}
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') ) {
+if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Manage AWPB') ) {
 
 
     if ($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED) {
@@ -671,7 +671,7 @@ if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo
                             }
                         },
                         'update' => function ($url, $model) {
-                             if  (($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED)  && (User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') )) {
+                             if  (($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED)  && (User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Manage AWPB') )) {
                             return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
                                             'title' => 'Update input',
@@ -686,7 +686,7 @@ if (\backend\models\User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo
                             }
                         },
                         'delete' => function ($url, $model) {
-                            if  (($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED)  && (User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Approve AWPB - PCO') )) {
+                            if  (($model->status ==\backend\models\AwpbBudget::STATUS_DRAFT ||$model->status ==\backend\models\AwpbBudget::STATUS_APPROVED)  && (User::userIsAllowedTo('Manage AWPB')|| User::userIsAllowedTo('Manage AWPB') )) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['awpb-input/delete', 'id' => $model->id], [
                                             'title' => 'delete component',
