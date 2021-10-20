@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <p>
          <?php
-            if (\backend\models\User::userIsAllowedTo('Manage AWPB activities')) {
+            if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
                echo Html::a('<i class="fa fa-plus"></i> Add AWPB Activity', ['create'], ['class' => 'btn btn-success btn-sm']);
             }
             ?>
@@ -249,7 +249,7 @@ $this->params['breadcrumbs'][] = $this->title;
 'template' => '{view}{update}{delete}',
 'buttons' => [
     'view' => function ($url, $model) {
-        if (User::userIsAllowedTo('View AWPB activities') ) {
+        if (User::userIsAllowedTo('View AWPB') ) {
             return Html::a(
                             '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
                         'title' => 'View component',
@@ -263,7 +263,7 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     },
     'update' => function ($url, $model) {
-        if (User::userIsAllowedTo('Manage AWPB activities') ) {
+        if (User::userIsAllowedTo('Setup AWPB') ) {
             return Html::a(
                             '<span class="fas fa-edit"></span>',['update', 'id' => $model->id], [ 
                         'title' => 'Update component',
@@ -278,7 +278,7 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     },
     'delete' => function ($url, $model) {
-        if (User::userIsAllowedTo('Manage AWPB activities') ) {
+        if (User::userIsAllowedTo('Setup AWPB') ) {
             return Html::a(
                             '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                         'title' => 'delete component',

@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </ol>
                <p>
             <?php
-            if (\backend\models\User::userIsAllowedTo('Manage AWPB templates')) {
+            if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
                echo Html::a('<i class="fa fa-plus"></i> Add AWPB Template', ['create'], ['class' => 'btn btn-success btn-xs']);
             }
             ?>

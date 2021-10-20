@@ -221,8 +221,8 @@ class AwpbComponentController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                
-               
-                if ($model->save(true,['name','outcome', 'output','access_level','access_level_district','access_level_prvince','access_level_programme','gl_account_code','updated_by'])&& $model->validate()) {
+               $model->updated_by = Yii::$app->user->id;
+                if ($model->save(true,['name','outcome', 'output','access_level','access_level_district','access_level_province','access_level_programme','gl_account_code','updated_by'])&& $model->validate()) {
                     
                     $subcomponents = AwpbComponent::find()->where(['=','parent_component_id',$model->id])->all();
          

@@ -107,7 +107,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     
 
          
-           if (User::userIsAllowedTo('Manage AWPB')&& 
+           if (User::userIsAllowedTo('Manage PW AWPB')&& 
                    strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && 
                    ( $user->province_id == 0 || $user->province_id == '') 
                    )

@@ -139,6 +139,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             'data' => [
                 'confirm' => 'Are you sure you want to delete this AWPB?',
                 'method' => 'post',
+                'params'=>['id' => $model->id],
             ],
             'style' => "padding:5px;",
             'class' => 'bt btn-lg'
@@ -169,8 +170,9 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this AWPB?',
+                'confirm' => 'Are you sure you want to delete this AWPB activity?',
                 'method' => 'post',
+                'params'=>['id' => $model->id],
             ],
             'style' => "padding:5px;",
             'class' => 'bt btn-lg'
@@ -202,8 +204,9 @@ elseif (\backend\models\User::userIsAllowedTo('Manage AWPB')&&strtotime($templat
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this AWPB?',
+                'confirm' => 'Are you sure you want to delete this AWPB activity?',
                 'method' => 'post',
+                'params'=>['id' => $model->id],
             ],
             'style' => "padding:5px;",
             'class' => 'bt btn-lg'

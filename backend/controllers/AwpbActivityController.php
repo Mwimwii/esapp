@@ -246,7 +246,7 @@ class AwpbActivityController extends Controller
 
     public function actionView($id)
     {
-        if (User::userIsAllowedTo('View AWPB')) {
+        if (User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Setup AWPB')) {
      
         return $this->render('view', [
             'model' => $this->findModel($id),

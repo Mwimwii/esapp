@@ -120,7 +120,7 @@ class AwpbCostCentreController extends Controller {
                     $audit->save();
                     Yii::$app->session->setFlash('success', 'Cost centre ' . $model->name . ' was successfully added.');
                 } else {
-                    Yii::$app->session->setFlash('error', 'Error occured while adding Province ' . $model->name);
+                    Yii::$app->session->setFlash('error', 'Error occured while adding  cost centre ' . $model->name);
                 }
                 return $this->redirect(['index']);
             }

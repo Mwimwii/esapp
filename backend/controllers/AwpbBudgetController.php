@@ -3332,7 +3332,7 @@ $today = $time->format('Y-m-d');
                 $query->leftJoin('awpb_province', 'awpb_province.province_id = province.id');
 
                 $query->where(['awpb_budget.awpb_template_id' => $template_id]);
-                $query->andWhere(['awpb_province.awpb_template_id' => $template_id]);
+               // $query->andWhere(['awpb_province.awpb_template_id' => $template_id]);
 
                 // $query->andWhere(['>=', 'awpb_province.status', AwpbBudget::STATUS_REVIEWED]);
                 $query->groupBy('awpb_budget.province_id');
@@ -3441,25 +3441,7 @@ $today = $time->format('Y-m-d');
             
         }
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-
-                $searchModel = new AwpbBudget();
+      $searchModel = new AwpbBudget();
                 $query = $searchModel::find();
                 $query->select(['awpb_budget.awpb_template_id', 'awpb_component.parent_component_id as component_id', 'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount', 'SUM(total_amount) as total_amount']);
                 //  $query->leftJoin('awpb_template_users', 'awpb_template_users.user_id = awpb_budget.created_by');
@@ -3471,6 +3453,7 @@ $today = $time->format('Y-m-d');
                 // $query->groupBy('awpb_budget.component_id');
                 $query->groupBy('awpb_component.parent_component_id');
                 $query->all();
+
 
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,

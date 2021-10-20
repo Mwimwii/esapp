@@ -93,7 +93,7 @@ class AwpbTemplateController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        if (User::userIsAllowedTo('View AWPB')) {
+        if (User::userIsAllowedTo('View AWPB')||User::userIsAllowedTo('Setup AWPB')) {
             return $this->render('view', [
                         'model' => $this->findModel($id),
             ]);
@@ -358,7 +358,7 @@ class AwpbTemplateController extends Controller {
                     $model->status_district = AwpbTemplate::STATUS_PUBLISHED;
                     if ($model->save()) {
                         $awpbTemplateDistrict = new AwpbDistrict();
-                        // $awpbTemplateDistrict::deleteAll(['awpb_template_id' => $id]);
+                        $awpbTemplateDistrict::deleteAll(['awpb_template_id' => $id]);
                         foreach ($model->districts as $district) {
                             //check if the right was already assigned to this role
                             $district_model = \backend\models\Districts::findOne($district);
@@ -528,6 +528,9 @@ class AwpbTemplateController extends Controller {
             }
 
             if ($model->load(Yii::$app->request->post())) {
+                
+                $template_model =  \backend\models\AwpbTemplate::find()->where(['status' =>\backend\models\AwpbTemplate::STATUS_DRAFT])->one();
+                if (empty($template_model)){
 
                 $model->guideline_file = UploadedFile::getInstance($model, 'guideline_file');
                 if (isset($model->guideline_file->extension)) {
@@ -598,10 +601,17 @@ class AwpbTemplateController extends Controller {
 
                         return $this->redirect(['check-list', 'id' => $model->id]);
                     } else {
-                        Yii::$app->session->setFlash(' error', 'Error occured while adding ' . $model->fiscal_year . ' AWPB template.');
+                        Yii::$app->session->setFlash('error', 'Error occured while adding ' . $model->fiscal_year . ' AWPB template.');
                     }
                 }
+                    
+             } else {
+                        Yii::$app->session->setFlash('error', 'You can only have one unpublished template at a time. Kindly publish or edit ' . $template_model->fiscal_year . ' AWPB template.');
+                  
+                        }
+                
             }
+        
 
             return $this->render('create', [
                         'model' => $model,

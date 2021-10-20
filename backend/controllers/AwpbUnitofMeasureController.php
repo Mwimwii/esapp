@@ -8,18 +8,31 @@ use backend\models\AwpbUnitOfMeasureSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use backend\models\AuditTrail;
+use backend\models\User;
 
 /**
  * AwpbUnitofMeasureController implements the CRUD actions for AwpbUnitOfMeasure model.
  */
-class AwpbUnitofMeasureController extends Controller
+class AwpbUnitOfMeasureController extends Controller
 {
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'delete', 'view'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'update', 'delete','view'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -64,15 +77,39 @@ class AwpbUnitofMeasureController extends Controller
      */
     public function actionCreate()
     {
-        $model = new AwpbUnitOfMeasure();
+             
+        if (User::userIsAllowedTo('Setup AWPB')) {
+             $model = new AwpbUnitOfMeasure();
+            if (Yii::$app->request->isAjax) {
+                $model->load(Yii::$app->request->post());
+                return Json::encode(\yii\widgets\ActiveForm::validate($model));
+            }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load(Yii::$app->request->post())) {
+
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->updated_by = Yii::$app->user->identity->id;
+                if ($model->save()) {
+                    $audit = new AuditTrail();
+                    $audit->user = Yii::$app->user->id;
+                    $audit->action = "Added unit of measure " . $model->name;
+                    $audit->ip_address = Yii::$app->request->getUserIP();
+                    $audit->user_agent = Yii::$app->request->getUserAgent();
+                    $audit->save();
+                    Yii::$app->session->setFlash('success', 'Unit of Measure ' . $model->name . ' was successfully added.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error occured while adding unit of measure ' . $model->name);
+                }
+                return $this->redirect(['index']);
+            }
+            
+             return $this->render('create', [
+                        'model' => $model,
+            ]);
+        } else {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**

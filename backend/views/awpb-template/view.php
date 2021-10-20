@@ -68,7 +68,7 @@ if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
  if ($model->status == AwpbTemplate::STATUS_DRAFT ){
         echo Html::a(
                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
-            'title' => 'delete component',
+            'title' => 'delete template',
             'data-toggle' => 'tooltip',
             'data-placement' => 'top',
             'data' => [

@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
     
             <?php
-            if (\backend\models\User::userIsAllowedTo('Manage components')) {
+            if (\backend\models\User::userIsAllowedTo('Setup AWPB')) {
                 echo Html::a('<span class="fas fa-arrow-left fa-2x"></span>', ['index', 'id' => $model->id], [
                     'title' => 'back',
                     'data-toggle' => 'tooltip',

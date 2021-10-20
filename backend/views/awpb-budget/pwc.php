@@ -69,7 +69,7 @@ $status = 100;
                     if (User::userIsAllowedTo("Approve AWPB") && ( $user->province_id == 0 || $user->province_id == '')) {
 
                         echo "<li>Budget Review Deadline:" . $template_model->submission_deadline_ifad . "</li>";
-                    } elseif (User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == '')) {
+                    } elseif (User::userIsAllowedTo('Manage PW AWPB') && ( $user->province_id == 0 || $user->province_id == '')) {
                         echo "<li>Budget Submission Deadline:" . $template_model->incorpation_deadline_pco_moa_mfl . "</li>";
                     } else {
                         echo "";
@@ -85,7 +85,7 @@ $status = 100;
 
 
 <?php
-if (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == '')) {
+if (User::userIsAllowedTo('Manage PW AWPB') && strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == '')) {
 
     echo "  <div class='row'>";
 
@@ -524,6 +524,23 @@ if (!empty($template_model)) {
                             <div class="tab-pane fade" id="component" role="tabpanel" aria-labelledby="component-tab">
                                 <?php
                                 if (!empty($template_model)) {
+                                    
+                                       $searchModel = new \backend\models\AwpbBudget();
+                                    $query = $searchModel::find();
+                                    $query->select(['awpb_budget.awpb_template_id', 'awpb_component.parent_component_id as component_id', 'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount', 'SUM(total_amount) as total_amount']);
+                                    //  $query->leftJoin('awpb_template_users', 'awpb_template_users.user_id = awpb_budget.created_by');
+                                    $query->leftJoin('awpb_component', 'awpb_component.id = awpb_budget.component_id');
+                                    //$query->leftJoin('awpb_template_component', 'awpb_template_component.component_id = awpb_component.id');
+                                    $query->where(['awpb_budget.awpb_template_id' => $template_model->id]);
+                                    // $query->andWhere(['awpb_template_component.awpb_template_id' => $awpb_template->id]);
+                                    //  $query->andWhere(['awpb_component.type' => 0]);   
+                                    $query->groupBy('awpb_component.parent_component_id');
+                                    // $query->groupBy('awpb_component.parent_component_id');
+                                    $query->all();
+
+                                    $dataProvider = new ActiveDataProvider([
+                                        'query' => $query,
+                                    ]);
                                     $gridColumns = [
                                         [
                                             'class' => 'kartik\grid\SerialColumn',

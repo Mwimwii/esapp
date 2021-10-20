@@ -112,7 +112,7 @@ if (!empty($awpb_province)) {
 //          
 
 
-         if(User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today)&& ( $user->province_id == 0 || $user->province_id == '')) {
+         if((User::userIsAllowedTo('Manage AWPB') || User::userIsAllowedTo('Manage PW AWPB'))&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today)&& ( $user->province_id == 0 || $user->province_id == '')) {
             
                  echo "  <div class='row'>";
   
@@ -122,14 +122,14 @@ if (!empty($awpb_province)) {
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                    echo "</div>";
                       echo "<div class='col-md-2'>";
-                 echo Html::a('Add an Programm-wide AWPB Activity', ['createcspco','template_id'=>$template_model->id], ['class' => 'btn btn-success btn-sm']);
+                 echo Html::a('Add a Programm-wide AWPB Activity', ['createpw','template_id'=>$template_model->id], ['class' => 'btn btn-success btn-sm']);
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                    echo "</div>";
                     echo "<div class='col-md-3'>";
                     echo "</div>";
                      echo "</div>";
            }
-           if (User::userIsAllowedTo('Manage AWPB') &&  !empty($template_model)&& strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== '')&&($user->district_id == 0 || $user->district_id == '')){
+           else if (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== '')&&($user->district_id == 0 || $user->district_id == '')){
          
                echo "  <div class='row'>";
   
