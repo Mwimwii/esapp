@@ -504,9 +504,9 @@ $actual_input_amount = round(\backend\models\AwpbActualInput::find()->where(['bu
 
                    
                     
-                     if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
-         (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))){
+                     if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') )||
+         (User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo('Manage AWPB') && ($user->province_id > 0 || $user->province_id !== ''))){
   
                          if (round($actual_amount,2) < round($budget_amount,2) && round($balance_actual_input,2) > 0){
                             // $balance = $model->total_amount - $model->total_actual_amount;
@@ -722,9 +722,9 @@ $actual_input_amount = round(\backend\models\AwpbActualInput::find()->where(['bu
                             }}
                         },
                         'update' => function ($url, $model) use ($status, $user,$template_model,$today,$actual_amount,$budget_amount) {
- if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
-         (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))){
+ if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')  )||
+         (User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == ''))||
+         (User::userIsAllowedTo('Manage AWPB') && ($user->province_id > 0 || $user->province_id !== '') &&($user->district_id == 0 || $user->district_id == ''))){
    if ($actual_amount < $budget_amount){
                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-actual-input/update', 'id' => $model->id], [
@@ -740,9 +740,9 @@ $actual_input_amount = round(\backend\models\AwpbActualInput::find()->where(['bu
                             }
                         },
                         'delete' => function ($url, $model) use ($status,$user,$template_model,$today,$actual_amount,$budget_amount) {
-                          if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
-         (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== ''))){
+                          if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '')  )||
+         (User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == ''))||
+          (User::userIsAllowedTo('Manage AWPB') && ($user->province_id > 0 || $user->province_id !== '') &&($user->district_id == 0 || $user->district_id == ''))){
     if ($actual_amount < $budget_amount){
           return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['awpb-actual-input/delete', 'id' => $model->id,'id2'=>$model->budget_id,'status'=>$status], [

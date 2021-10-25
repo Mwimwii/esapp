@@ -255,9 +255,26 @@ $form = ActiveForm::begin();
                 ['class' => 'yii\grid\ActionColumn',
                     'options' => ['style' => 'width:7%;'],
                     'header' => 'Action',
-                    'template' => '{submit}{decline}',
+                    'template' => '{view}{submit}{decline}',
                     'buttons' => [
-                        'submit' => function ($url, $model) use ($user, $template_model) {
+                        
+                         'view' =>function ($url, $model) use ($user, $template_model, $cost_centre_id) {
+        if (User::userIsAllowedTo('View AWPB') ) {
+            return Html::a(
+                            '<span class="fa fa-eye"></span>', ['awpb-funds-requisition/quarterly-operations-funds-requisition', 'id' => $model->district_id,'id3'=>$cost_centre_id], [
+                        'title' => 'Quarterly Operations Funds Requisition Form',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'data-pjax' => '0',
+                        'style' => "padding:5px;",
+                        'class' => 'bt btn-lg'
+                            ]
+            );
+        }
+    },
+                        
+                        
+                        'submit' => function ($url, $model) use ($user, $template_model, $cost_centre_id) {
                             $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $model->awpb_template_id, 'district_id' => $model->district_id]);
                             if (!empty($district_model)) {
                                 if (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
@@ -277,8 +294,17 @@ $form = ActiveForm::begin();
                                                     'class' => 'bt btn-lg'
                                                         ]
                                         );
-                                    } else {
+                                    } else  if ($district_model->status_q_1 > \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED ||
+                                            $district_model->status_q_2 > \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED ||
+                                            $district_model->status_q_3 >\backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED ||
+                                            $district_model->status_q_4 > \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED) {
                                         return "Request Approved";
+                                    }
+                                    else  if ($district_model->status_q_1 < \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED ||
+                                            $district_model->status_q_2 < \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED ||
+                                            $district_model->status_q_3 <\backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED ||
+                                            $district_model->status_q_4 < \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED) {
+                                        return "Not requested";
                                     }
                                 } else if (User::userIsAllowedTo('Disburse Funds') && ($user->province_id == 0 || $user->province_id == '')) {
 //                        
@@ -298,14 +324,25 @@ $form = ActiveForm::begin();
                                                     'class' => 'bt btn-lg'
                                                         ]
                                         );
-                                    } else {
+                                    } else if ($district_model->status_q_1 > \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED ||
+                                            $district_model->status_q_2 > \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED ||
+                                            $district_model->status_q_3 > \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED ||
+                                            $district_model->status_q_4 > \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED) {
 
                                         return "Funds Disbursed";
+                                    
+                                     } else if ($district_model->status_q_1 < \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED ||
+                                            $district_model->status_q_2 < \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED ||
+                                            $district_model->status_q_3 < \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED ||
+                                            $district_model->status_q_4 < \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED) {
+
+                                        return "Not approved";
                                     }
+                                    
                                 }
                             }
                         },
-                        'decline' => function ($url, $model) use ($user, $template_model) {
+                        'decline' => function ($url, $model) use ($user, $template_model,$cost_centre_id) {
                             $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $model->awpb_template_id, 'district_id' => $model->district_id]);
                             if (!empty($district_model)) {
                                 if (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
@@ -316,7 +353,7 @@ $form = ActiveForm::begin();
                                             $district_model->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED) {
 
                                         return Html::a(
-                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' => $district_model->id, 'id2' => $model->district_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
+                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' => $district_model->id, 'id2' => $model->district_id, 'id3'=>$cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
                                                     'title' => 'Decline Funds Request',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -335,7 +372,7 @@ $form = ActiveForm::begin();
                                             $district_model->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED) {
 
                                         return Html::a(
-                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' => $district_model->id, 'id2' => $model->district_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
+                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' => $district_model->id, 'id2' => $model->district_id,  'id3'=>$cost_centre_id,'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
                                                     'title' => 'Decline Funds Disburment',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -511,9 +548,24 @@ $form = ActiveForm::begin();
                 ['class' => 'yii\grid\ActionColumn',
                     'options' => ['style' => 'width:7%;'],
                     'header' => 'Action',
-                    'template' => '{submit}{decline}',
+                    'template' => '{view}{submit}{decline}',
                     'buttons' => [
-                        'submit' => function ($url, $model) use ($user, $template_model) {
+                                                 'view' =>function ($url, $model) use ($user, $template_model, $cost_centre_id) {
+        if (User::userIsAllowedTo('View AWPB') ) {
+            return Html::a(
+                            '<span class="fa fa-eye"></span>', ['awpb-funds-requisition/quarterly-operations-funds-requisition', 'id' => $model->cost_centre_id,'id3'=>$cost_centre_id], [
+                        'title' => 'Quarterly Operations Funds Requisition Form',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'data-pjax' => '0',
+                        'style' => "padding:5px;",
+                        'class' => 'bt btn-lg'
+                            ]
+            );
+        }
+    },
+        
+                        'submit' => function ($url, $model) use ($user, $template_model,$cost_centre_id) {
                             $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $model->awpb_template_id, 'cost_centre_id' => $model->cost_centre_id]);
                             if (!empty($district_model)) {
                                 if (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
@@ -525,7 +577,7 @@ $form = ActiveForm::begin();
 
 
                                         return Html::a(
-                                                        '<span class="fa fa-check"></span>', ['awpb-district/submit', 'id' => $district_model->id, 'id2' => $model->cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
+                                                        '<span class="fa fa-check"></span>', ['awpb-district/submit', 'id' => $district_model->id, 'id2' => $model->cost_centre_id, 'id3'=>$cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
                                                     'title' => 'Approve Funds Disurbsement',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -546,7 +598,7 @@ $form = ActiveForm::begin();
                                             $district_model->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED) {
 
                                         return Html::a(
-                                                        '<span class="fa fa-check"></span>', ['awpb-district/submit', 'id' => $district_model->id, 'id2' => $model->cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
+                                                        '<span class="fa fa-check"></span>', ['awpb-district/submit', 'id' => $district_model->id, 'id2' => $model->cost_centre_id,'id3'=>$cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
                                                     'title' => 'Disburse Funds',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -563,7 +615,7 @@ $form = ActiveForm::begin();
                                 }
                             }
                         },
-                        'decline' => function ($url, $model) use ($user, $template_model) {
+                        'decline' => function ($url, $model) use ($user, $template_model, $cost_centre_id) {
                             $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $model->awpb_template_id, 'cost_centre_id' => $model->cost_centre_id]);
                             if (!empty($district_model)) {
                                 if (User::userIsAllowedTo('Approve Funds Requisition') && ($user->province_id == 0 || $user->province_id == '')) {
@@ -574,7 +626,7 @@ $form = ActiveForm::begin();
                                             $district_model->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED) {
 
                                         return Html::a(
-                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' =>  $district_model->id, 'id2' => $model->cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
+                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' =>  $district_model->id, 'id2' => $model->cost_centre_id,'id3'=>$cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
                                                     'title' => 'Decline Funds Request',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',
@@ -593,7 +645,7 @@ $form = ActiveForm::begin();
                                             $district_model->status_q_4 == \backend\models\AwpbDistrict::STATUS_QUARTER_APPROVED) {
 
                                         return Html::a(
-                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' => $district_model->id, 'id2' => $model->cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
+                                                        '<span class="fa fa-ban"></span>', ['awpb-district/decline', 'id' => $district_model->id, 'id2' => $model->cost_centre_id,'id3'=>$cost_centre_id, 'status' => \backend\models\AwpbDistrict::STATUS_QUARTER_REQUESTED], [
                                                     'title' => 'Decline Funds Disburment',
                                                     'data-toggle' => 'tooltip',
                                                     'data-placement' => 'top',

@@ -439,10 +439,10 @@ class AwpbBudgetController extends Controller {
                     $model->name = $indicator->name;
 
                     $model->total_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $id])->sum('total_amount');
-                    $model->quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_one_amount ');
-                    $model->quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_two_amount ');
-                    $model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_three_amount ');
-                    $model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_four_amount ');
+                    $model->quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_one_amount');
+                    $model->quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_two_amount');
+                    $model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_three_amount');
+                    $model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_four_amount');
 
 //                             $model->total_amount = !empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$id])->sum('total_amount'))?   $model->total_amount:0;
 //                           $model->quarter_one_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('quarter_one_amount '))? $model->quarter_one_amount :0;
@@ -601,10 +601,10 @@ class AwpbBudgetController extends Controller {
                     $model->name = $indicator->name;
 
                     $model->total_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $id])->sum('total_amount');
-                    $model->quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_one_amount ');
-                    $model->quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_two_amount ');
-                    $model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_three_amount ');
-                    $model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_four_amount ');
+                    $model->quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_one_amount');
+                    $model->quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_two_amount');
+                    $model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_three_amount');
+                    $model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_four_amount');
 
 //                        $model->quarter_four_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('quarter_four_amount '))? $model->quarter_four_amount :0;
                     $number_of_non_women_headed_households = !empty($model->number_of_non_women_headed_households) ? $model->number_of_non_women_headed_households : 0;
@@ -768,10 +768,10 @@ if (!empty($activity)) {
                     $model->name =      $activity_name;
 
                     $model->total_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $id])->sum('total_amount');
-                    $model->quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_one_amount ');
-                    $model->quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_two_amount ');
-                    $model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_three_amount ');
-                    $model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_four_amount ');
+                    $model->quarter_one_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_one_amount');
+                    $model->quarter_two_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_two_amount');
+                    $model->quarter_three_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_three_amount');
+                    $model->quarter_four_amount = \backend\models\AwpbInput::find()->where(['budget_id' => $model->id])->sum('quarter_four_amount');
 
 //                             $model->total_amount = !empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$id])->sum('total_amount'))?   $model->total_amount:0;
 //                           $model->quarter_one_amount  =!empty(\backend\models\AwpbInput::find()->where(['budget_id'=>$model->id])->sum('quarter_one_amount '))? $model->quarter_one_amount :0;
@@ -3326,13 +3326,14 @@ $today = $time->format('Y-m-d');
                 $searchModel = new AwpbBudget();
                 $query = $searchModel::find();
 
-                $query->select(['awpb_budget.awpb_template_id', 'awpb_budget.province_id', 'awpb_province.status', 'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount', 'SUM(total_amount) as total_amount']);
+                $query->select(['awpb_budget.awpb_template_id', 'awpb_budget.province_id',  'SUM(quarter_one_amount) as quarter_one_amount', 'SUM(quarter_two_amount) as quarter_two_amount', 'SUM(quarter_three_amount) as quarter_three_amount', 'SUM(quarter_four_amount) as quarter_four_amount', 'SUM(total_amount) as total_amount']);
 
-                $query->leftJoin('province', 'province.id = awpb_budget.province_id');
-                $query->leftJoin('awpb_province', 'awpb_province.province_id = province.id');
+               $query->leftJoin('province', 'province.id = awpb_budget.province_id');
+              //  $query->leftJoin('awpb_province', 'awpb_province.province_id = awpb_budget.province_id');
 
                 $query->where(['awpb_budget.awpb_template_id' => $template_id]);
-               // $query->andWhere(['awpb_province.awpb_template_id' => $template_id]);
+               $query->andWhere(['not',['awpb_budget.province_id' => null]]);
+              
 
                 // $query->andWhere(['>=', 'awpb_province.status', AwpbBudget::STATUS_REVIEWED]);
                 $query->groupBy('awpb_budget.province_id');

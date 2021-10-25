@@ -9,20 +9,16 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use yii\helpers\Json;
+
 use backend\models\AuditTrail;
 use backend\models\User;
-use yii\base\Model;
-use yii\caching\DbDependency;
-use backend\models\AwpbUnitOfMeasure;
-use yii\data\ActiveDataProvider;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 use backend\models\Storyofchange;
-use backend\models\AwpbTemplate;
-use backend\models\AwpbActivity;
-use backend\models\AwpbActualInput;
-use backend\models\AwpbActualInputSearch;
+
+
+
+
+
 
 /**
  * AwpbDistrictController implements the CRUD actions for AwpbDistrict model.
@@ -533,7 +529,7 @@ class AwpbDistrictController extends Controller {
 
                             if (!empty($_user_model)) {
                                 //We send the emails
-                                $subject = $template_model->fiscal_year . " Q" . $template_model->quarter . " Funds Request for " . $district;
+                                $subject = $template_model->fiscal_year . " Q" . $template_model->quarter . " Funds Request for ";
                                 foreach ($_user_model as $_model) {
 
 
@@ -691,12 +687,18 @@ class AwpbDistrictController extends Controller {
         }
     }
 
-    public function actionDecline($id, $id2) {
+    public function actionDecline($id, $id2,$id3) {
         $user = User::findOne(['id' => Yii::$app->user->id]);
         $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
         if (User::userIsAllowedTo('Review Funds Request') && ( $user->province_id > 0 || $user->province_id !=0))
         {
-            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+            if ($id3==1){
+            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
+            }else  if ($id3==2)
+            {
+                  $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>  $template_model->id, 'cost_centre_id' => $id2]);
+            }
+            
             $model->updated_by = Yii::$app->user->identity->id;
             $model->status = $template_model->quarter;
             if ($template_model->quarter==1)
@@ -773,11 +775,15 @@ class AwpbDistrictController extends Controller {
             }
         } 
         elseif (User::userIsAllowedTo('Approve Funds Requisition') && ( $user->province_id == 0 || $user->province_id == '')) {
-             
+             $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
+          if ($id3==1){
+            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
+            }else  if ($id3==2)
+            {
+                  $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'cost_centre_id' => $id2]);
+            }
             
-            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
-            $model->updated_by = Yii::$app->user->identity->id;
-            $model->status = $template_model->quarter;
+         //   $model->status = $template_model->quarter;
             if ($template_model->quarter==1)
             {
                 $model->status_q_1 = AwpbDistrict::STATUS_QUARTER_CLOSED;
@@ -797,10 +803,22 @@ class AwpbDistrictController extends Controller {
             //$model->status = $template_model->quarter;
             if ($model->save()) {
                 $funds_requesition = new \backend\models\AwpbFundsRequisition();
-                       
-             $funds_requesition::deleteAll(['district_id'=>$id2,'awpb_template_id'=>$template_model->id,'quarter_number'=> $template_model->quarter]);
                 
                     $district = \backend\models\Districts::findOne(['id' => $id2])->name;
+                    
+                     $district="";
+                    
+                    if ($id3==1){
+             $district = \backend\models\Districts::findOne(['id' => $id2])->name;
+                $funds_requesition::deleteAll(['district_id'=>$id2,'awpb_template_id'=>$template_model->id,'quarter_number'=> $template_model->quarter]);
+            }else  if ($id3==2)
+            {
+                  $district = \backend\models\AwpbCostCentre::findOne(['id' => $id2])->name;
+                     $funds_requesition::deleteAll(['cost_centre_id'=>$id2,'awpb_template_id'=>$template_model->id,'quarter_number'=> $template_model->quarter]);
+            }
+                    
+                    
+                    
                    $role_model = \common\models\RightAllocation::find()->where(['right' => "Request Funds"])->all();
                     if (!empty($role_model)) {
 
@@ -852,11 +870,18 @@ class AwpbDistrictController extends Controller {
             }
         } 
         elseif (User::userIsAllowedTo('Disburse Funds') && ( $user->province_id == 0 || $user->province_id == '')) {
-            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+          // $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
+            if ($id3==1){
+            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $id2]);
+            }else  if ($id3==2)
+            {
+                  $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'cost_centre_id' => $id2]);
+            }
+            
             $model->updated_by = Yii::$app->user->identity->id;
             //$model->status = $template_model->quarter;
            
-            $model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $id, 'district_id' => $id2]);
+            
             $model->updated_by = Yii::$app->user->identity->id;
             $model->status = $template_model->quarter;
             
@@ -879,17 +904,15 @@ class AwpbDistrictController extends Controller {
             }
             
             if ($model->save()) {
-                $actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'district_id', $id2])->andWhere(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'quarter_number', $template_model->quarter])->andWhere(['=', 'status', \backend\models\AwpbActualInput::STATUS_SPECIALIST])->all();
-
-//                if (!empty($actual_inputs)) {
-//                    //  $subject = $template_model->fiscal_year . " AWPB Template Published";
-//                    foreach ($actual_inputs as $actual_input) {
-//
-//                        $model_actual_input = \backend\models\AwpbActualInput::findOne(['id' => $actual_input->id]);
-//                        $model_actual_input->status = \backend\models\AwpbActualInput::STATUS_PROVINCIAL;
-//                        $model_actual_input->save();
-//                    }
+ $district="";
                     $district = \backend\models\Districts::findOne(['id' => $id2])->name;
+                    if ($id3==1){
+             $district = \backend\models\Districts::findOne(['id' => $id2])->name;
+            }else  if ($id3==2)
+            {
+                  $district = \backend\models\AwpbCostCentre::findOne(['id' => $id2])->name;
+            }
+                    
                     $role_model = \common\models\RightAllocation::find()->where(['right' => "Approve Funds Requisition"])->all();
 
                     if (!empty($role_model)) {

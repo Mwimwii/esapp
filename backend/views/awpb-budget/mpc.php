@@ -79,7 +79,7 @@ if (!empty($awpb_province)) {
                    ($user->district_id==0 ||$user->district_id== '') 
                    )
                    {
-         echo "<li>Budget Review Deadline:" .$template_model->submission_deadline. "</li>"; 
+         echo "<li>Budget Review Deadline:" .$template_model->review_deadline. "</li>"; 
         }
       elseif(User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == ''))
         {
@@ -129,7 +129,7 @@ if (!empty($awpb_province)) {
                     echo "</div>";
                      echo "</div>";
            }
-           else if (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id !== '')&&($user->district_id == 0 || $user->district_id == '')){
+           else if (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 || $user->province_id != '')&&($user->district_id == 0 || $user->district_id == '')){
          
                echo "  <div class='row'>";
   

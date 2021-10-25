@@ -145,7 +145,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
            }
            elseif (User::userIsAllowedTo('Manage AWPB') &&  
                    !empty($template_model)&&
-                   strtotime($template_model->submission_deadline) >= strtotime($today) && 
+                   strtotime($template_model->review_deadline) >= strtotime($today) && 
                    ($user->province_id > 0 || $user->province_id != '')&&
                    ($user->district_id==0 ||$user->district_id== '') 
                    )
@@ -560,8 +560,8 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     
                      if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
          (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 
-                 || $user->province_id !== '') &&($user->district_id == 0 || $user->district_id == ''))){
+         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 
+                 || $user->province_id != '') &&($user->district_id == 0 || $user->district_id == ''))){
   
                 echo Html::a('Add AWPB Input', ['awpb-input/create', 'id'=>$model->id], ['class' => 'float-right btn btn-success btn-sm btn-space']);
            
@@ -745,7 +745,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   
                      if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
          (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 
+         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 
                  || $user->province_id !== '') &&($user->district_id == 0 || $user->district_id == ''))){
                 return Html::a(
                                                 '<span class="fas fa-edit"></span>', ['awpb-input/update', 'id' => $model->id], [
@@ -764,7 +764,7 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                                 
                      if ((User::userIsAllowedTo('Manage AWPB') && ($user->district_id > 0 || $user->district_id != '') && strtotime($template_model->submission_deadline) >= strtotime($today) )||
          (User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
-         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 
+         (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 
                  || $user->province_id !== '') &&($user->district_id == 0 || $user->district_id == ''))){
   
           return Html::a(

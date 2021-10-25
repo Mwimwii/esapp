@@ -108,7 +108,7 @@ if (!empty($awpb_province)) {
                    ($user->district_id==0 ||$user->district_id== '') 
                    ){
    
-         echo "<li>Budget Review Deadline:" .$template_model->submission_deadline. "</li>"; 
+         echo "<li>Budget Review Deadline:" .$template_model->review_deadline. "</li>"; 
         }
       elseif(User::userIsAllowedTo('Manage AWPB') && ( $user->province_id == 0 || $user->province_id == ''))
         {
@@ -160,7 +160,7 @@ if(User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation
            }
                 if (User::userIsAllowedTo('Manage AWPB') &&  
                    !empty($template_model)&&
-                   strtotime($template_model->submission_deadline) >= strtotime($today) && 
+                   strtotime($template_model->review_deadline) >= strtotime($today) && 
                    ($user->province_id > 0 || $user->province_id != '')&&
                    ($user->district_id==0 ||$user->district_id== '') 
                    ){
@@ -453,7 +453,7 @@ if(User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation
                      if ((User::userIsAllowedTo('Manage AWPB')&& strtotime($template_model->incorpation_deadline_pco_moa_mfl) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
            (User::userIsAllowedTo('Approve AWPB')&& strtotime($template_model-> submission_deadline_ifad) >= strtotime($today) && ( $user->province_id == 0 || $user->province_id == ''))||
        
-                             (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->submission_deadline) >= strtotime($today) && ($user->province_id > 0 
+                             (User::userIsAllowedTo('Manage AWPB') && strtotime($template_model->review_deadline) >= strtotime($today) && ($user->province_id > 0 
                  || $user->province_id !== '') &&($user->district_id == 0 || $user->district_id == ''))){
                          
                         

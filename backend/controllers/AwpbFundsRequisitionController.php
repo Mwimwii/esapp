@@ -64,6 +64,23 @@ class AwpbFundsRequisitionController extends Controller {
                     'dataProvider' => $dataProvider,
         ]);
     }
+    public function actionQuarterlyOperationsFundsRequisition($id,$id3) {
+        
+                return $this->render('quarterly-operations-funds-requisition', [
+                           // 'searchModel' => $searchModel,
+                            //'dataProvider' => $dataProvider,
+                            'id' => $id,
+                            'id3' => $id3,
+                           // 'quarter' => $quarter,
+                           // 'cost_centre_id' => $cost_centre_id
+                ]);
+        
+    
+           
+                
+                
+       // return $this->render('quarterly-operations-funds-requisition');
+    }
 
     /**
      * Displays a single AwpbFundsRequisition model.
@@ -105,16 +122,19 @@ class AwpbFundsRequisitionController extends Controller {
                 if (!empty($template_model)) {
                      $district_model="";
                      $awpb_actual_inputs="";
+                      $awpb_budgets="";
                         if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != '')){
                             $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $user->district_id]);
                             $awpb_actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'district_id', $user->district_id])->all();
                             $returnpage="qofr";
+                            $awpb_budgets = \backend\models\AwpbBudget::find()->where(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'district_id', $user->district_id])->all();
                         }
                         else if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user->province_id == ''))
                         {
                               $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>  $template_model->id, 'cost_centre_id' => $id]); 
                               $awpb_actual_inputs = \backend\models\AwpbActualInput::find()->where(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'cost_centre_id', $id])->all();
                               $returnpage="qofrpw";
+                              $awpb_budgets = \backend\models\AwpbBudget_1::find()->where(['=', 'awpb_template_id', $template_model->id])->andWhere(['=', 'cost_centre_id', $id])->all();
                         }
                         else
                         {}
@@ -123,7 +143,7 @@ class AwpbFundsRequisitionController extends Controller {
                     
                    
                     if (!empty($awpb_actual_inputs)) {
-                        //$model_actual_input = new AwpbFundsRequisition();
+                       // $model_actual_input = new AwpbFundsRequisition();
                         foreach ($awpb_actual_inputs as $model) {
 
                             $model_actual_input = new AwpbFundsRequisition();
@@ -182,8 +202,8 @@ class AwpbFundsRequisitionController extends Controller {
                             $model_actual_input->status = AwpbFundsRequisition::STATUS_PROVINCIAL;
                             $model_actual_input->updated_by = Yii::$app->user->identity->id;
                             $model_actual_input->created_by = Yii::$app->user->identity->id;
-                            //$model_actual_input->district_id = $model->district_id;
-                           // $model_actual_input->province_id = $model->province_id;
+                            $model_actual_input->district_id = $model->district_id;
+                           $model_actual_input->province_id = $model->province_id;
                               $model_actual_input->cost_centre_id = $model->cost_centre_id;
                             $model_actual_input->awpb_template_id = $model->awpb_template_id;
                             $model_actual_input->activity_id = $model->activity_id;
@@ -203,17 +223,8 @@ class AwpbFundsRequisitionController extends Controller {
                                 //  return $this->redirect(['home/home']);
                             }
                         }
-
-//                        $district_model="";
-//                        if (User::userIsAllowedTo('Request Funds') && ( $user->district_id > 0 || $user->district_id != '')){
-//                        $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' => $template_model->id, 'district_id' => $user->district_id]);
-//                        }
-//                        else if (User::userIsAllowedTo('Request Funds') && ( $user->province_id == 0 || $user->province_id == ''))
-//                        {
-//                              $district_model = \backend\models\AwpbDistrict::findOne(['awpb_template_id' =>  $template_model->id, 'cost_centre_id' => $id]); 
-//                        }
-//                        else
-//                        {}
+                             
+ 
                         if (!empty($district_model)) {
                             $district_model->updated_by = Yii::$app->user->identity->id;
                             $district_model->status = $template_model->quarter;
@@ -240,6 +251,19 @@ class AwpbFundsRequisitionController extends Controller {
                                 $audit->user_agent = Yii::$app->request->getUserAgent();
                                 $audit->save();
                                 Yii::$app->session->setFlash('success', 'Funds request was submitted successfully.');
+//                                
+//                                 if (!empty($awpb_budgets)) {
+//                        
+//                        foreach ($awpb_budgets as $budget) { 
+//                            
+//                       
+//                          $budget_model = \backend\models\AwpbBudget::findOne(['id' => $budget->id]); 
+//     $budget_model->total_actual_amount = \backend\models\AwpbFundsRequisition::find()->where(['budget_id' => $budget->id])->sum('quarter_amount');
+//    
+//                             $budget_model->save(); }}
+//                              else{
+//                                   Yii::$app->session->setFlash('error', 'Funds 555request was submitted successfully.');
+//                              }
                                 return $this->redirect(['awpb-funds-requisition/'.  $returnpage,
                                             // 'searchModel' => $searchModel,
                                             // 'dataProvider' => $dataProvider,
@@ -450,7 +474,7 @@ class AwpbFundsRequisitionController extends Controller {
                 // $query->andWhere(['=', 'district_id', $id2]);
                 $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
                 //$query->andWhere(['=', 'status', AwpbActualInput::STATUS_PROVINCIAL]);
-                 $query->andWhere(['<>', 'district_id', 0]);
+                 $query->andWhere(['>', 'district_id', 0]);
                 $query->groupBy('awpb_funds_requisition.district_id');
                 $query->all();
 
@@ -477,7 +501,7 @@ class AwpbFundsRequisitionController extends Controller {
 
                 // $query->andWhere(['=', 'district_id', $id2]);
                 $query->andWhere(['=', 'quarter_number', $template_model->quarter]);
-                $query->andWhere(['<>', 'cost_centre_id', 0]);
+                $query->andWhere(['>', 'cost_centre_id', 0]);
                 $query->groupBy('awpb_funds_requisition.cost_centre_id');
                 $query->all();
 

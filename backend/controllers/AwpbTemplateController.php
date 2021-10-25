@@ -978,7 +978,7 @@ class AwpbTemplateController extends Controller {
     }
 
     public function actionRollover() {
-        if (User::userIsAllowedTo('Setup AWPB')) {
+        if (User::userIsAllowedTo("Setup AWPB")) {
             $model = AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();
             $_model = AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
 
@@ -1179,18 +1179,7 @@ class AwpbTemplateController extends Controller {
                                                     $model_general_ledger->quarter_four_amount = ($model_template_activity->quarter_four_amount * $percent) / 100;
                                                     $model_general_ledger->updated_by = Yii::$app->user->identity->id;
                                                     $model_general_ledger->created_by = Yii::$app->user->identity->id;
-
-                                                    Yii::$app->session->setFlash('error', 'Error occured while creating GL accounts.Error:' .
-                                                            $model_general_ledger->component_id . " " .
-                                                            $model_general_ledger->activity_id . " " .
-                                                            $model_general_ledger->awpb_template_id . " " .
-                                                            $model_general_ledger->funder_id . " " .
-                                                            $model_general_ledger->general_ledger_account . " " .
-                                                            $model_general_ledger->expense_category_id . " " .
-                                                            $percent . " " .
-                                                            $model_template_activity->mo_1_amount);
-
-                                                    $model_general_ledger->save();
+                                                     $model_general_ledger->save();
 
                                                 } else {
 
