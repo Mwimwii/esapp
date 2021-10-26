@@ -354,10 +354,10 @@ $session = Yii::$app->session;
                                                 )
                                         ) {
 
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>View AWPB</p>', ['awpb-budget/awpb'], ["class" => "nav-link active"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>View AWPB Activities</p>', ['awpb-budget/awpb'], ["class" => "nav-link active"]);
                                         } else {
 
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>View AWPB</p>', ['awpb-budget/awpb'], ["class" => "nav-link"]);
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>View AWPB Activities</p>', ['awpb-budget/awpb'], ["class" => "nav-link"]);
                                         }
                                         echo '</li>';
                                     }
