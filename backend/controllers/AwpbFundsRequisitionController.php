@@ -448,7 +448,7 @@ class AwpbFundsRequisitionController extends Controller {
         ]);
     }
 
-    public function actionQofrd($id, $id2) {
+    public function actionQofrd() {
 
         $user = User::findOne(['id' => Yii::$app->user->id]);
         $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET])->one();

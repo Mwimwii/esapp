@@ -341,6 +341,27 @@ $session = Yii::$app->session;
                                     }
 
 
+  if (User::userIsAllowedTo("View PW AWPB") ) {
+                                        echo '   <li class="nav-item">';
+                                        
+
+                                        if (
+                                                Yii::$app->controller->id == "awpb-budget" &&
+                                                (
+
+                                                Yii::$app->controller->action->id == "awpb"
+
+                                                )
+                                        ) {
+
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>View AWPB</p>', ['awpb-budget/awpb'], ["class" => "nav-link active"]);
+                                        } else {
+
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>View AWPB</p>', ['awpb-budget/awpb'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
+
 
                                     if (User::userIsAllowedTo("Request Funds") || User::userIsAllowedTo("Approve Funds Requisition")) {
 

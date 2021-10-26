@@ -66,6 +66,34 @@ class AwpbBudgetController extends Controller {
             ],
         ];
     }
+    
+    public function actionAwpb() {
+         if (User::userIsAllowedTo("View PW AWPB")) {
+        $awpb_template_id =0;
+         if (Yii::$app->request->post('awpb_template') == 'true') {
+            // var_dump(Yii::$app->request->post()['User']['user_type']);
+            $awpb_template_id = Yii::$app->request->post()['AwpbBudget']['awpb_template_id'];
+        }
+                return $this->render('awpb', [
+                           // 'searchModel' => $searchModel,
+                            //'dataProvider' => $dataProvider,
+//                            'id' => 1,
+//                            'id3' => 1,
+                   'awpb_template_id'=> $awpb_template_id
+                           // 'quarter' => $quarter,
+                           // 'cost_centre_id' => $cost_centre_id
+                ]);
+        
+    } else 
+           {
+            Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
+            return $this->redirect(['home/home']);
+        }
+           
+                
+                
+       // return $this->render('quarterly-operations-funds-requisition');
+    }
 
     public function actionIndex($id, $status) {
         $template_model = \backend\models\AwpbTemplate::find()->where(['status' => \backend\models\AwpbTemplate::STATUS_PUBLISHED])->one();
@@ -276,12 +304,6 @@ class AwpbBudgetController extends Controller {
     }
 
     
-        public function actionAwpb() {
-        return $this->render('awpb', [
-                    //'model' => $this->findModel($id),
-                    'status' => 0
-        ]);
-    }
     public function actionViewp($id, $status) {
         return $this->render('viewp', [
                     'model' => $this->findModel($id),

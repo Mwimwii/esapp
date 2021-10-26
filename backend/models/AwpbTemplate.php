@@ -168,4 +168,11 @@ class AwpbTemplate extends \yii\db\ActiveRecord
         $list = ArrayHelper::map($data, 'id', 'fiscal_year');
         return $list;
     }
+     public static function getAwpbTemplateList() {
+        $data = self::find()->orderBy(['fiscal_year' => SORT_DESC])
+        //->where(['status'=>self::STATUS_PUBLISHED])
+        ->all();
+        $list = ArrayHelper::map($data, 'id', 'fiscal_year');
+        return $list;
+    }
 }
