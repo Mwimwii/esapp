@@ -41,7 +41,7 @@ class AwpbBudgetController extends Controller {
                     'delete', 'view', 'view_1', 'viewo', 'viewpw', 'viewpw_1', 'viewp', 'viewpwpco', 'viewactualinput', 'mp', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcd', 'mpcdo', 'mpcdoa', 'mpcop', 'mpcod', 'mpcoa',
                     'index', 'index_2', 'index_2pw', 'index_3', 'indexpw', 'create', 'createcspco', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
                     'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepw', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'submitpw', 'submit',
-                    'mpwpcoa', 'pwc', 'pwca', 'pwcau', 'pwcu'
+                    'mpwpcoa', 'pwc', 'pwca', 'pwcau', 'pwcu','awpb'
                 ],
                 'rules' => [
                     [
@@ -49,7 +49,7 @@ class AwpbBudgetController extends Controller {
                             'delete', 'view', 'view_1', 'viewo', 'viewpw', 'viewp', 'viewpwpco', 'viewactualinput', 'mp', 'mpc', 'mpca', 'mpcd', 'mpco', 'mpcd', 'mpcdo', 'mpcdoa', 'mpcop', 'mpcod', 'mpcoa',
                             'index', 'index_2', 'index_2pw', 'index_3', 'indexpw', 'create', 'createcspco', 'createpw', 'update', 'updatepw', 'mpcma', 'mpcoa', 'mpca', 'mpcmd', 'mpcod', 'mpcmp', 'mpcmp',
                             'mpcop', 'mpcd', 'mpwm', 'mpcm', 'mpwpco', 'mpco', 'mpc', 'decline', 'declinepw', 'declinepwm', 'declinem', 'declinep', 'declinepwpco', 'submitpw', 'submit',
-                            'mpwpcoa', 'pwc', 'pwca', 'pwcau', 'pwcu'
+                            'mpwpcoa', 'pwc', 'pwca', 'pwcau', 'pwcu','awpb'
                         ],
                         //'story/create/<id:\d+>/<usr:\d+>' => 'story/create',
                         //'awpb-activity-line/mpca/<id:\d+>/<distr:\d+>',

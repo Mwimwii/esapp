@@ -28,12 +28,15 @@ class AwpbFundsRequisitionController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'delete', 'view', 'index', 'create', 'update', 'qofr', 'qofrd','frd', 'qofri', 'qofrpw', 'qofu', 'qofud', 'qofui', 'qofupw', 'funds_request_district', 'funds_request_pco'
+                    'delete', 'view', 'index', 'create', 'update', 'qofr', 'qofrd','frd', 'qofri', 'qofrpw',
+                    'qofu', 'qofud', 'qofui', 'qofupw', 'funds_request_district', 'funds_request_pco','quarterly-operations-funds-requisition'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'delete', 'view', 'index', 'create', 'update', 'qofr', 'qofrd','frd', 'qofri', 'qofrpw', 'qofu', 'qofud', 'qofui', 'qofupw', 'funds_request_district', 'funds_request_pco'
+                            'delete', 'view', 'index', 'create', 'update', 'qofr',
+                            'qofrd','frd', 'qofri', 'qofrpw', 'qofu', 'qofud', 'qofui', 
+                            'qofupw', 'funds_request_district', 'funds_request_pco','quarterly-operations-funds-requisition'
                         ],
                         //'story/create/<id:\d+>/<usr:\d+>' => 'story/create',
                         //'awpb-activity-line/mpca/<id:\d+>/<distr:\d+>',
