@@ -101,7 +101,7 @@ class Camps extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getDistrict() {
-        return $this->hasOne(District::className(), ['id' => 'district_id']);
+        return $this->hasOne(Districts::className(), ['id' => 'district_id']);
     }
 
     /**

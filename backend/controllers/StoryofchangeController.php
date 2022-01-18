@@ -70,16 +70,16 @@ class StoryofchangeController extends Controller {
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             
-            if (!empty(Yii::$app->user->role) && app\models\Role::findOne(Yii::$app->user->role)->name == "lecturer") {
-                $dataProvider->query->andFilterWhere(['lecturer' => Yii::$app->user->id]);
-            }
-            if (!empty(Yii::$app->user->role) && app\models\Role::findOne(Yii::$app->user->role)->name == "lecturer") {
-                $dataProvider->query->andFilterWhere(['created_by' => Yii::$app->user->id]);
-            }
-
-            if (!empty(Yii::$app->user->role) && app\models\Role::findOne(Yii::$app->user->role)->name == "student") {
-                $dataProvider->query->andFilterWhere(['student_id' => Yii::$app->user->id]);
-            }
+//            if (!empty(Yii::$app->user->role) && app\models\Role::findOne(Yii::$app->user->role)->name == "lecturer") {
+//                $dataProvider->query->andFilterWhere(['lecturer' => Yii::$app->user->id]);
+//            }
+//            if (!empty(Yii::$app->user->role) && app\models\Role::findOne(Yii::$app->user->role)->name == "lecturer") {
+//                $dataProvider->query->andFilterWhere(['created_by' => Yii::$app->user->id]);
+//            }
+//
+//            if (!empty(Yii::$app->user->role) && app\models\Role::findOne(Yii::$app->user->role)->name == "student") {
+//                $dataProvider->query->andFilterWhere(['student_id' => Yii::$app->user->id]);
+//            }
             
             $dataProvider->query->andFilterWhere(['created_by' => Yii::$app->user->id]);
             $dataProvider->pagination = ['pageSize' => 15];

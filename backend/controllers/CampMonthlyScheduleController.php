@@ -13,6 +13,7 @@ use yii\helpers\Json;
 use backend\models\AuditTrail;
 use backend\models\User;
 use yii\helpers\Html;
+use kartik\mpdf\Pdf;
 
 /**
  * CampPlannedWorkEffortController implements the CRUD actions for MeCampSubprojectRecordsPlannedWorkEffort model.
@@ -218,9 +219,9 @@ class CampMonthlyScheduleController extends Controller {
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->work_effort_id = $work_effort_id;
                 $model->zone = "Zone";
-                $model->beneficiary_target_women = $awpb_budget->number_of_females;
-                $model->beneficiary_target_youth = $awpb_budget->number_of_young_people;
-                $model->beneficiary_target_women_headed = $awpb_budget->number_of_women_headed_households;
+                $model->beneficiary_target_women = !empty($awpb_budget->number_of_females) ? $awpb_budget->number_of_females : 0;
+                $model->beneficiary_target_youth = !empty($awpb_budget->number_of_young_people) ? $awpb_budget->number_of_young_people : 0;
+                $model->beneficiary_target_women_headed = !empty($awpb_budget->number_of_women_headed_households) ? $awpb_budget->number_of_women_headed_households : 0;
 
                 $model->beneficiary_target_total = $model->beneficiary_target_women +
                         $model->beneficiary_target_youth + $model->beneficiary_target_women_headed;
@@ -261,9 +262,9 @@ class CampMonthlyScheduleController extends Controller {
                 //Yii::warning('-----', var_export(Yii::$app->request->post, true));
                 $awpb_budget = \backend\models\AwpbBudget::findOne(["activity_id" => $model->activity_id]);
                 $model->updated_by = Yii::$app->user->identity->id;
-                $model->beneficiary_target_women = $awpb_budget->number_of_females;
-                $model->beneficiary_target_youth = $awpb_budget->number_of_young_people;
-                $model->beneficiary_target_women_headed = $awpb_budget->number_of_women_headed_households;
+                $model->beneficiary_target_women = !empty($awpb_budget->number_of_females) ? $awpb_budget->number_of_females : 0;
+                $model->beneficiary_target_youth = !empty($awpb_budget->number_of_young_people) ? $awpb_budget->number_of_young_people : 0;
+                $model->beneficiary_target_women_headed = !empty($awpb_budget->number_of_women_headed_households) ? $awpb_budget->number_of_women_headed_households : 0;
 
                 $model->beneficiary_target_total = $model->beneficiary_target_women +
                         $model->beneficiary_target_youth + $model->beneficiary_target_women_headed;
@@ -408,7 +409,6 @@ class CampMonthlyScheduleController extends Controller {
         $old_number_of_females_actual = $model->beneficiary_target_achieved_women;
         $old_number_of_young_people_actual = $model->beneficiary_target_achieved_youth;
         $old_number_of_women_headed_households_actual = $model->beneficiary_target_achieved_women_headed;
-
 
         if ($model->load(Yii::$app->request->post())) {
             //Yii::warning('-----', var_export(Yii::$app->request->post, true));
@@ -597,6 +597,96 @@ class CampMonthlyScheduleController extends Controller {
             Yii::$app->session->setFlash('error', 'You are not authorised to perform that action.');
             return $this->redirect(['home/home']);
         }
+    }
+
+    public function actionDownloadTimeSheet($id) {
+        $model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($id);
+        $user = User::findOne($model->created_by);
+        $filename = $user->first_name . $user->last_name . $user->id . "_timesheet" . date("Ymdhis") . ".pdf";
+        $author = User::findOne(['id' => Yii::$app->user->id])->getFullName();
+        $ath = new AuditTrail();
+        $ath->user = Yii::$app->user->id;
+        $ath->action = "Downloaded Activity Time Sheet for Camp Officer:" . $user->id . " - " . $user->first_name . " " . $user->last_name;
+        $ath->ip_address = Yii::$app->request->getUserIP();
+        $ath->user_agent = Yii::$app->request->getUserAgent();
+        $ath->save();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $this->renderPartial('time-sheet',
+                    [
+                        'model' => $model,
+                        'user' => $user,
+                    ]),
+            'options' => [
+                'text_input_as_HTML' => true,
+                'page-break-inside' => false
+            // any mpdf options you wish to set
+            ],
+            'methods' => [
+                'SetTitle' => 'Camp Activity Time Sheet',
+                //'SetSubject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
+                'SetHeader' => ['MOA/ESAPP Camp Activity Time Sheet||' . date("r") . "/ESAPP online system"],
+                'SetAuthor' => $author . ' || ESAPP online system',
+                'SetSubject' => 'Time Sheet',
+                'SetFooter' => ['Generated By: ' . $author . ' Generated On: ' . date("r") . '|| Page {PAGENO}'],
+                'SetCreator' => $author,
+                'SetKeywords' => 'Monthly Activity,Camp, Time Sheet',
+            ]
+        ]);
+        $pdf->filename = $filename;
+        return $pdf->render();
+    }
+
+    public function actionDownloadSchedule($id) {
+        $model = MeCampSubprojectRecordsPlannedWorkEffort::findOne($id);
+        $user = User::findOne($model->created_by);
+        $filename = $user->first_name . $user->last_name . $user->id . "_campactivitySchedule" . date("his") . ".pdf";
+        $author = User::findOne(['id' => Yii::$app->user->id])->getFullName();
+        $ath = new AuditTrail();
+        $ath->user = Yii::$app->user->id;
+        $ath->action = "Downloaded Activity Schedule for Camp Officer:" . $user->id . " - " . $user->first_name . " " . $user->last_name;
+        $ath->ip_address = Yii::$app->request->getUserIP();
+        $ath->user_agent = Yii::$app->request->getUserAgent();
+        $ath->save();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $this->renderPartial('camp-schedule',
+                    [
+                        'model' => $model,
+                        'user' => $user,
+                    ]),
+            'options' => [
+                'text_input_as_HTML' => true,
+                'page-break-inside' => false
+            // any mpdf options you wish to set
+            ],
+            'methods' => [
+                'SetTitle' => 'Camp Activity Schedule',
+                //'SetSubject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
+                'SetHeader' => ['MOA/ESAPP Camp Activity Schedule||' . date("r") . "/ESAPP online system"],
+                'SetAuthor' => $author . ' || ESAPP online system',
+                'SetSubject' => 'Time Sheet',
+                'SetFooter' => ['Generated By: ' . $author . ' Generated On: ' . date("r") . '|| Page {PAGENO}'],
+                'SetCreator' => $author,
+                'SetKeywords' => 'Monthly Activity,Camp Activity, Schedule',
+            ]
+        ]);
+        $pdf->filename = $filename;
+        return $pdf->render();
     }
 
     /**

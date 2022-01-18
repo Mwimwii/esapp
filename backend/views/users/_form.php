@@ -7,18 +7,20 @@ use kartik\form\ActiveForm;
 use kartik\depdrop\DepDrop;
 use yii\helpers\Url;
 use common\models\Role;
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\User */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 
 
-<?php $form = ActiveForm::begin(); ?>
+<?php $form1 = ActiveForm::begin(); ?>
 <div class="row" style="">
     <div class="col-lg-4">
         <?=
-        $form->field($model, 'user_type', [
+        $form1->field($model, 'user_type', [
             'addon' => [
                 'append' => [
                     'content' => Html::submitButton('Filter', ['name' => 'addUser', 'value' => 'true', 'class' => 'btn btn-success btn-sm']),
@@ -27,10 +29,10 @@ use common\models\Role;
             ]
         ])->dropDownList(
                 [
-            'Camp user' => 'Camp user',
-            'District user' => 'District user',
-            'Provincial user' => 'Provincial user',
-            'Other user' => 'Other user',
+                    'Camp user' => 'Camp user',
+                    'District user' => 'District user',
+                    'Provincial user' => 'Provincial user',
+                    'Other user' => 'Other user',
                 ], [
             'custom' => true,
             'prompt' => 'Filter system user type to add',
@@ -62,7 +64,7 @@ use common\models\Role;
 <?php
 $form = ActiveForm::begin(['type' => ActiveForm::TYPE_VERTICAL, 'formConfig' => ['labelSpan' => 3, 'deviceSize' => ActiveForm::SIZE_SMALL]]);
 
-echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->label(false);
+echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])->label(false);
 ?>
 <hr class="dotted short">
 <div class="row">
@@ -77,12 +79,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
 
@@ -100,7 +102,6 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
     <div class="col-md-6">';
         echo $form->field($model, 'nrc', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'placeholder' => 'NRC i.e. 100000/10/1']);
 
-
         echo "<label class='label' for='phone'>Phone</label>";
         echo $form->field($model, 'phone')->widget(PhoneInput::className(), [
             'jsOptions' => [
@@ -113,6 +114,14 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
         echo $form->field($model, 'role')->dropDownList(
                 yii\helpers\ArrayHelper::map(Role::find()->asArray()->all(), 'id', 'role'), ['custom' => true, 'maxlength' => true, 'style' => '', 'prompt' => 'Please select role', 'required' => true]
         )->label("Role");
+
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
+        );
+
         echo '</div>
         <div class="form-group col-lg-12">';
         echo Html::submitButton('Save', ['class' => 'btn btn-success btn-sm']);
@@ -128,12 +137,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
 
@@ -195,6 +204,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
                 'params' => ['selected_id3'],
             ]
         ]);
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
+        );
 
         echo '</div>
         <div class="form-group col-lg-12">';
@@ -213,12 +228,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
         echo $form->field($model, 'nrc', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'placeholder' => 'NRC i.e. 100000/10/1']);
@@ -268,7 +283,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
                 'params' => ['selected_id'],
             ]
         ]);
-
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
+        );
 
         echo '</div>
         <div class="form-group col-lg-12">';
@@ -285,12 +305,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
 
@@ -326,6 +346,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value'=> $user_type])->
                 $form->field($model, 'province_id')
                 ->dropDownList(
                         \backend\models\Provinces::getProvinceList(), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select a province', 'required' => true]
+        );
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
         );
         echo '</div>
         <div class="form-group col-lg-12">';

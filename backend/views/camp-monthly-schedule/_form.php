@@ -8,7 +8,6 @@ use kartik\number\NumberControl;
 /* @var $model backend\models\MeCampSubprojectRecordsPlannedWorkEffort */
 /* @var $form yii\widgets\ActiveForm */
 $max_days = date('t');
-
 ?>
 
 <div class="me-camp-subproject-records-planned-work-effort-form">
@@ -66,6 +65,14 @@ $max_days = date('t');
                 ],
             ]);
             ?>
+            <?=
+                    $form->field($model, "designation", [])
+                    ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                            ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                            // 'value' => date("F")
+                            ]
+            );
+            ?>
             <div class="justify-content-between">
                 <?= Html::submitButton('Save work effort', ['class' => 'btn btn-success btn-xs']) ?>
 
@@ -74,15 +81,21 @@ $max_days = date('t');
         <div class="col-lg-7">
             <h5>Instructions</h5>
             <ol>
-                <li>Fields marked with <i style="color: red;">*</i> are required</span>
+                <li>Fields marked with <i class="is-required"></i> are required</span>
                 </li>
                 <!--<li>If you do not see a camp in the dropdown it means you have already added a record for this month</span>
                 </li>-->
-                <li>The Total days for <?php echo date("F"); ?> is <?php echo date("t"); ?>
+                <li>
+                    The Total days for <?php echo date("F"); ?> is <?php echo date("t"); ?>
                 </li>
-                <li>The sum of (Days office + Days field + Days non-esapp activities) cannot exceed the total days in a month 
+                <li>
+                    The sum of (Days office + Days field + Days non-esapp activities) cannot exceed the total days in a month 
                 </li>
-                <li>You will only be able to add planned activities after adding the work effort
+                <li>
+                    You will only be able to add planned activities after adding the work effort
+                </li>
+                <li>
+                    You are required to pick the Designation/Salary Scale of the person who will be perfoming the Activities
                 </li>
             </ol>
         </div>

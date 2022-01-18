@@ -56,7 +56,6 @@
         "kartik-v/yii2-widget-timepicker": "dev-master",
         "kartik-v/yii2-builder": "dev-master",
         "phpoffice/phpspreadsheet": "^1.9",
-
         "phpoffice/phpword": "^0.17.0",
         "ivankff/yii2-modal-ajax": "@dev",
         "bizley/migration": "^4.1",

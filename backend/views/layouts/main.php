@@ -999,7 +999,7 @@ $session = Yii::$app->session;
                                 ?>
                                 <i class="nav-icon fas fa-user-tag"></i>
                                 <p>
-                                    Beneficially Management
+                                    Beneficiary Management
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                                 </a>
@@ -1141,8 +1141,7 @@ $session = Yii::$app->session;
                             ) {
                                 if (
                                         Yii::$app->controller->id == "logframe-outreach-gender" ||
-                                        Yii::$app->controller->id == "logframe-outreach-young" ||
-                                        Yii::$app->controller->id == "storyofchange"
+                                        Yii::$app->controller->id == "logframe-outreach-young"
                                 ) {
                                     echo '<li class="nav-item has-treeview menu-open">'
                                     . ' <a href="#" class="nav-link active">';

@@ -7,7 +7,6 @@ use yii\data\ActiveDataProvider;
 use backend\models\User;
 use kartik\form\ActiveForm;
 use yii\grid\ActionColumn;
-use kartik\touchspin\TouchSpin;
 use ivankff\yii2ModalAjax\ModalAjax;
 
 $read_only = true;
@@ -42,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="card-tools">
 
                         <?php
-                        if ($model->month == date('n')) {
+                        if ($model->month == date('n')&& User::userIsAllowedTo('Plan camp monthly activities')) {
                             $read_only = false;
                             echo Html::a(
                                     '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id], [
@@ -55,7 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]
                             );
                         }
-                        if (User::userIsAllowedTo('Remove planned camp monthly activities') && $model->month == date('n')) {
+                        if ((User::userIsAllowedTo('Remove planned camp monthly activities')||
+                                    User::userIsAllowedTo('Plan camp monthly activities')) && $model->month == date('n')) {
                             echo Html::a(
                                     '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                 'title' => 'Remove monthly activity records',
@@ -71,6 +71,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]
                             );
                         }
+
+                        echo Html::a(
+                                ' <i class="fas fa-print "></i>',
+                                ['download-schedule', "id" => $model->id], [
+                            'title' => 'Print ' . DateTime::createFromFormat('!m', $model->month)->format('F') . " Activity Schedule",
+                            'target' => '_blank',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'data-pjax' => '0',
+                            'style' => "padding:5px;",
+                            'class' => 'bt btn-lg'
+                                ]
+                        );
+
                         //This is a hack, just to use pjax for the delete confirm button
                         $query = \backend\models\User::find()->where(['id' => '-2']);
                         $dataProvider = new \yii\data\ActiveDataProvider([
@@ -121,6 +135,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute' => 'days_other_non_esapp_activities',
                             'filter' => false,
                         ],
+                        [
+                            'attribute' => 'designation',
+                            'label' => 'Officer Designation',
+                            'filter' => false,
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return !empty($model->rate) ? $model->rate->designation : "Not Set";
+                            }
+                        ],
                     // 'created_at',
                     // 'updated_at',
                     //  'created_by',
@@ -137,7 +160,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h5>Instructions</h5>
                 <ol>
                     <?php
-                    
                     if (!empty(\backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::getActivityListByDistrictId1(Yii::$app->user->identity->district_id, $model->year, $model->id, $model->month))) {
                         echo '<li>Click the button <span class="badge badge-success">Add Planned ' . DateTime::createFromFormat('!m', $model->month)->format('F') . ' activity</span> to add a planned activity for the month
                               </li>';
@@ -218,7 +240,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             //'readonly' => false,
                             'options' => ['style' => 'width:200px;'],
                             "value" => function ($model) {
-                                $_model = backend\models\AwpbActivityLine::findOne($model->activity_id);
+                                $_model = $model->activity;
                                 return !empty($_model) ? $_model->name : "";
                             }
                         ],
@@ -295,7 +317,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ]);
                                     }
                                 },
-                                'addactual' => function ($url, $_model) use($model) {
+                                'addactual' => function ($url, $_model) use ($model) {
                                     if (User::userIsAllowedTo('Plan camp monthly activities') &&
                                             empty(\backend\models\MeCampSubprojectRecordsMonthlyPlannedActivitiesActual::findOne(['planned_activity_id' => $_model->id]))) {
                                         return ModalAjax::widget([
@@ -315,7 +337,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ]);
                                     }
                                 },
-                                'delete' => function ($url, $_model) use($model) {
+                                'delete' => function ($url, $_model) use ($model) {
                                     if (User::userIsAllowedTo('Remove planned camp monthly activities') && $model->month == date('n')) {
                                         return Html::a('<span class="fa fa-trash"></span>', ['delete-activity', 'id' => $_model->id, 'id1' => $model->id], [
                                                     'title' => 'Delete record',
@@ -408,7 +430,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'options' => ['style' => 'width:200px;'],
                             "value" => function ($model) {
                                 $Model = backend\models\MeCampSubprojectRecordsMonthlyPlannedActivities::findOne($model->planned_activity_id);
-                                $_model = backend\models\AwpbActivityLine::findOne($Model->activity_id);
+                                $_model = backend\models\AwpbActivity::findOne($Model->activity_id);
                                 return !empty($_model) ? $_model->name : "";
                             }
                         ],
@@ -523,7 +545,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ]);
                                     }
                                 },
-                                'delete' => function ($url, $_model) use($model) {
+                                'delete' => function ($url, $_model) use ($model) {
                                     if (User::userIsAllowedTo('Remove planned camp monthly activities') && $model->month == date('n')) {
                                         return Html::a('<span class="fa fa-trash"></span>', ['delete-achieved-activity-target', 'id' => $_model->id, 'id1' => $model->id], [
                                                     'title' => 'Delete achieved target',
@@ -543,6 +565,89 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]);
                 ?>
+            </div>
+            <div class="col-lg-12">
+                <?php
+                if (!empty($_dataProvider_actual_targets) && $_dataProvider_actual_targets->getCount() > 0) {
+                    $totalHoursField = 0;
+                    $totalHoursOffice = 0;
+                    $totalHours = 0;
+                    foreach ($_dataProvider_actual_targets->getModels() as $mo) {
+                        $totalHoursField += $mo['hours_worked_field'];
+                        $totalHoursOffice += $mo['hours_worked_office'];
+                    }
+                    $totalHours += $totalHoursField;
+                    $totalHours += $totalHoursOffice;
+                    ?>
+                    <p>
+                    <h5>Instructions</h5>
+                    <ol>
+                        <li>
+                            Below <code><?= DateTime::createFromFormat('!m', $model->month)->format('F') ?></code> Time Sheet Calculations are based on the Submitted Activity Actuals
+                        </li>
+                    </ol>
+                    <hr class="dotted">
+                    </p>
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Submitted Activity Actuals <code><?= DateTime::createFromFormat('!m', $model->month)->format('F') ?></code> Time Sheet
+                        </h3>
+                        <div class="card-tools">
+                            <?php
+                            echo Html::a(
+                                    ' <i class="fas fa-print"></i> Print ' . DateTime::createFromFormat('!m', $model->month)->format('F') . ' Time Sheet',
+                                    ['download-time-sheet', "id" => $model->id], [
+                                'title' => 'Print Time Sheet',
+                                'target' => '_blank',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-pjax' => '0',
+                                'style' => "padding:5px;",
+                                'class' => "btn btn-primary btn-sm",
+                                    ]
+                            );
+                            ?>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table table-sm">
+                        <tr>
+                            <th colspan="1"></th> 
+                            <th colspan="1" class="text-center text-black-50">Designation/Title</th> 
+                            <th colspan="1" class="text-center text-black-50">Total Hours Worked</th> 
+                            <th  colspan="1" class="text-center text-black-50">Rate ZMW/Hour</th> 
+                            <th  colspan="1" class="text-center text-black-50">Contribution(ZMW)</th> 
+                        </tr>
+                        <tr>
+                            <td>Work Effort/Designation or Title of Officer</td>
+                            <td ><?php echo!empty($model->rate) ? $model->rate->designation : "Not Set" ?></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                        </tr>
+                        <tr>
+                            <td>Number of hours spent in the Field on E-SAPP activities</td>
+                            <td >-</td>
+                            <td ><?= $totalHoursField ?></td>
+                            <td ><?php echo!empty($model->rate) ? $model->rate->rate : 0 ?></td>
+                            <td ><?php echo!empty($model->rate) ? $model->rate->rate * $totalHoursField : 0 ?></td>
+                        </tr>
+                        <tr>
+                            <td>Number of hours spent in the office on E-SAPP activities</td>
+                            <td >-</td>
+                            <td ><?= $totalHoursOffice ?></td>
+                            <td ><?php echo!empty($model->rate) ? $model->rate->rate : 0 ?></td>
+                            <td ><?php echo!empty($model->rate) ? $model->rate->rate * $totalHoursOffice : 0 ?></td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold text-right">Total</td>
+                            <td class="text-bold">-</td>
+                            <td class="text-bold"><?= $totalHours ?></td>
+                            <td class="text-bold"><?php echo!empty($model->rate) ? $model->rate->rate : 0 ?></td>
+                            <td class="text-bold"><?php echo!empty($model->rate) ? $model->rate->rate * $totalHours : 0 ?></td>
+
+                        </tr>
+                    </table>
+                <?php } ?>
             </div>
         </div>
     </div>

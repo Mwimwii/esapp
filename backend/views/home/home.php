@@ -383,7 +383,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
                     </li>
                     <li>
                         <?php
-                         $awpb_template1 = \backend\models\AwpbTemplate::findOne([
+                        $awpb_template1 = \backend\models\AwpbTemplate::findOne([
                                     'status' => \backend\models\AwpbTemplate::STATUS_CURRENT_BUDGET,
                         ]);
                         echo Html::a(
@@ -1006,7 +1006,7 @@ if (User::userIsAllowedTo("View commodity prices") || User::userIsAllowedTo('Col
             <?php
             $form = ActiveForm::begin([
                         'action' => 'faabs-attendance-sheet',
-                             // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
+                            // 'options' => ['data-pjax'=>0,"rel" => "noopener",'target' => '_blank',]
                     ])
             ?>
             <div class="modal-body">

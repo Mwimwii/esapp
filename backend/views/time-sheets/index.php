@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => false,
                     'format' => 'raw',
                     'value' => function($model) {
-                        return !empty($model->rate_id) ? \backend\models\HourlyRates::findOne($model->rate_id)->rate : 0;
+                        return !empty($model->rate) ? $model->rate->rate : 0;
                     }
                 ],
                 [

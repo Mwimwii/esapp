@@ -39,16 +39,17 @@ class MeCampSubprojectRecordsPlannedWorkEffort extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['camp_id', 'year', 'month', 'days_in_month', 'days_office', 'days_field'], 'required'],
+            [['camp_id', 'year', 'month', 'days_in_month', 'days_office', 'days_field', 'designation'], 'required'],
             [['camp_id', 'year', 'days_in_month', 'days_field', 'days_office', 'days_total', 'days_other_non_esapp_activities', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['month'], 'string', 'max' => 15],
-            ['camp_id', 'unique', 'when' => function($model) {
+            ['camp_id', 'unique', 'when' => function ($model) {
                     return $model->isAttributeChanged('camp_id') && !empty(self::findOne(['camp_id' => $model->camp_id, "year" => date('Y'), "month" => date('n')])) ? TRUE : FALSE;
                 }, 'message' => 'You have already added work effort for this month for this camp!'],
             ['days_office', 'checkTotalDays'],
             ['days_field', 'checkTotalDays1'],
             ['days_other_non_esapp_activities', 'checkTotalDays2'],
             [['camp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Camps::className(), 'targetAttribute' => ['camp_id' => 'id']],
+            [['designation'], 'exist', 'skipOnError' => true, 'targetClass' => HourlyRates::className(), 'targetAttribute' => ['designation' => 'id']],
         ];
     }
 
@@ -80,6 +81,7 @@ class MeCampSubprojectRecordsPlannedWorkEffort extends \yii\db\ActiveRecord {
             'days_field' => 'Days Field',
             'days_office' => 'Days Office',
             'days_total' => 'Days Total',
+            'designation' => 'Designation',
             'days_other_non_esapp_activities' => 'Days non-esapp activities',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -131,6 +133,15 @@ class MeCampSubprojectRecordsPlannedWorkEffort extends \yii\db\ActiveRecord {
      */
     public function getCamp() {
         return $this->hasOne(Camps::className(), ['id' => 'camp_id']);
+    }
+
+    /**
+     * Gets query for [[Rate]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRate() {
+        return $this->hasOne(HourlyRates::className(), ['id' => 'designation']);
     }
 
 }

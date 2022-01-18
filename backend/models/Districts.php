@@ -99,7 +99,7 @@ class Districts extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getProvince() {
-        return $this->hasOne(Province::className(), ['id' => 'province_id']);
+        return $this->hasOne(Provinces::className(), ['id' => 'province_id']);
     }
 
     /**

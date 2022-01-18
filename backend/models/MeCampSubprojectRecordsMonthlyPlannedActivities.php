@@ -45,7 +45,7 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
      */
     public function rules() {
         return [
-            [['work_effort_id', 'activity_id', 'faabs_id', 'beneficiary_target_women', 'beneficiary_target_youth', 'beneficiary_target_women_headed'], 'required'],
+            [['work_effort_id', 'activity_id', 'faabs_id'], 'required'],
             [['activity_id', 'faabs_id', 'beneficiary_target_total', 'created_by', 'updated_by', 'beneficiary_target_women', 'beneficiary_target_youth', 'beneficiary_target_women_headed'], 'integer'],
             [['zone'], 'string', 'max' => 45],
             [['activity_target'], 'string', 'max' => 255],
@@ -155,18 +155,19 @@ class MeCampSubprojectRecordsMonthlyPlannedActivities extends \yii\db\ActiveReco
         }
 
         //var_dump($activity_ids);
-        $list = AwpbActivityLine::find()
+        $list = AwpbBudget::find()
                 //->select(["awpb_activity_line.activity_id"])
-                ->leftJoin('awpb_template', 'awpb_template.id = awpb_activity_line.awpb_template_id')
-                ->where(['awpb_activity_line.district_id' => $id])
+                ->leftJoin('awpb_template', 'awpb_template.id = awpb_budget.awpb_template_id')
+                ->where(['awpb_budget.district_id' => $id])
                 ->andWhere(['awpb_template.fiscal_year' => $year])
-                ->andWhere(['NOT IN', 'awpb_activity_line.id', $activity_ids])
-                ->andWhere(['>=', "awpb_activity_line." . $columnName, 1])
-                ->orderBy(['awpb_activity_line.id' => SORT_ASC])
+                ->andWhere(['NOT IN', 'awpb_budget.activity_id', $activity_ids])
+                ->andWhere(['>=', "awpb_budget." . $columnName, 1])
+                ->orderBy(['awpb_budget.id' => SORT_ASC])
                 ->all();
-        $response = ArrayHelper::map($list, 'id', 'name');
+        $response = ArrayHelper::map($list, 'activity_id', 'name');
         return $response;
     }
+    
 
     public static function getMonthColumnName($month) {
         $columnName = "";

@@ -131,7 +131,7 @@ class TimeSheetsDistrictStaff extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getRate() {
-        return $this->hasOne(ConfHourlyRates::className(), ['id' => 'rate_id']);
+        return $this->hasOne(HourlyRates::className(), ['id' => 'rate_id']);
     }
 
 }

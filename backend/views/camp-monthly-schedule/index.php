@@ -27,24 +27,30 @@ $months = [
 ?>
 <div class="card card-success card-outline">
     <div class="card-body">
-        <h5>Instructions</h5>
-        <ol>
-            <?php
-            if (!empty(\backend\models\Camps::getListByDistrictId2(Yii::$app->user->identity->district_id))) {
-                echo '<li>You can add the camp monthly schedule by clicking the button <span class="badge badge-success">Add Camp ' . date('F') . ' schedule</span>
-                      </li>
-                       <li>After adding a monthly camp work effort record, the system will allow you to add planned activities and submit actual achieved details for the month
-                        </li>
-                        <li>You will only be able to plan activities for the current month. The other months you can only view
-                        </li>';
-            } else {
-                 echo '<li>You have already added work effort schedules for the month of <code>' . date('F') . '</code> for all the Camps in your district. You can only update and/or add planned activities
-                       </li>';
-            }
-            ?>
 
-           
-        </ol>
+        <?php
+        if (!empty(\backend\models\Camps::getListByDistrictId2(Yii::$app->user->identity->district_id))) {
+            echo '<h5>Instructions</h5>
+        <ol>'
+            . '<li>You can add the camp monthly schedule by clicking the button <span class="badge badge-success">Add Camp ' . date('F') . ' schedule</span>
+                </li>
+                 <li>After adding a monthly camp work effort record, the system will allow you to add planned activities and submit actual achieved details for the month
+                  </li>
+                  <li>You will only be able to plan activities for the current month. The other months you can only view
+                  </li></ol>';
+        } else {
+            if (User::userIsAllowedTo('Plan camp monthly activities')) {
+                echo '<h5>Instructions</h5>
+                        <ol>
+                        <li>You have already added work effort schedules for the month of <code>' . date('F') . '</code> for all the Camps in your district. You can only update and/or add planned activities
+                        </li>
+                        </ol>';
+            }
+        }
+        ?>
+
+
+       
         <?php //echo $this->render('_search', ['model' => $model]); ?>
         <hr class="dotted">
         <p>
@@ -133,18 +139,18 @@ $months = [
                     'buttons' => [
                         'view' => function ($url, $model) {
                             return Html::a(
-                                            '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id, 'camp_id' => $model->camp_id], [
-                                        'title' => 'View planned activities',
-                                        'data-toggle' => 'tooltip',
-                                        'data-placement' => 'top',
-                                        'data-pjax' => '0',
-                                        'style' => "padding:10px;",
-                                        'class' => 'bt btn-lg'
-                                            ]
+                                    '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id, 'camp_id' => $model->camp_id], [
+                                'title' => 'View planned activities',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-pjax' => '0',
+                                'style' => "padding:10px;",
+                                'class' => 'bt btn-lg'
+                                    ]
                             );
                         },
                         'update' => function ($url, $model) {
-                            if ($model->month == date('n')) {
+                            if ($model->month == date('n') && User::userIsAllowedTo('Plan camp monthly activities')) {
                                 return Html::a(
                                                 '<span class="fa fa-edit"></span>', ['update', 'id' => $model->id], [
                                             'title' => 'Edit schedule',
@@ -158,7 +164,8 @@ $months = [
                             }
                         },
                         'delete' => function ($url, $model) {
-                            if (User::userIsAllowedTo('Remove planned camp monthly activities') && $model->month == date('n')) {
+                            if ((User::userIsAllowedTo('Remove planned camp monthly activities') ||
+                                    User::userIsAllowedTo('Plan camp monthly activities')) && $model->month == date('n')) {
                                 return Html::a(
                                                 '<span class="fa fa-trash"></span>', ['delete', 'id' => $model->id], [
                                             'title' => 'Remove monthly camp schedule',

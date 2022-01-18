@@ -57,10 +57,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
             [['title', 'sex', 'nrc', 'type_of_user'], 'string'],
             [['phone'], PhoneInputValidator::className()],
             ['email', 'email', 'message' => "The email isn't correct!"],
-            ['email', 'unique', 'when' => function($model) {
+            ['email', 'unique', 'when' => function ($model) {
                     return $model->isAttributeChanged('email');
                 }, 'message' => 'Email already in use!'],
             [['role'], 'exist', 'skipOnError' => true, 'targetClass' => Role::className(), 'targetAttribute' => ['role' => 'id']],
+            [['designation'], 'exist', 'skipOnError' => true, 'targetClass' => HourlyRates::className(), 'targetAttribute' => ['designation' => 'id']],
         ];
     }
 
@@ -84,6 +85,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
             'district_id' => "District",
             'province_id' => "Province",
             'type_of_user' => "User type",
+            'designation' => 'Designation',
             'password' => 'Password',
             'auth_key' => 'Auth Key',
             'password_reset_token' => 'Password Reset Token',
@@ -116,6 +118,15 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
      */
     public function getRole0() {
         return $this->hasOne(Role::className(), ['id' => 'role']);
+    }
+
+    /**
+     * Gets query for [[Rate]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRate() {
+        return $this->hasOne(HourlyRates::className(), ['id' => 'designation']);
     }
 
     /**
@@ -365,66 +376,63 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface {
 
         $query = static::find()
                 ->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
-                ->where(['status' => self::STATUS_ACTIVE])            
+                ->where(['status' => self::STATUS_ACTIVE])
                 ->orderBy(['last_name' => SORT_ASC])
                 ->asArray()
                 ->all();
         return ArrayHelper::map($query, 'id', 'name');
-    
 
-
-    //    $users = self::find()
-    //     //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
-    //     ->select(["CONCAT(first_name,' ',last_name) as name", 'id'])
-    //     ->where(['status' => self::STATUS_ACTIVE])
-    //         //->asArray()
-    //     ->orderBy(['name' => SORT_ASC])
-    //         ->all();
-    //     return $users;
+        //    $users = self::find()
+        //     //->select(["CONCAT(CONCAT(CONCAT(title,'',first_name),' ',other_name),' ',last_name) as name", 'id'])
+        //     ->select(["CONCAT(first_name,' ',last_name) as name", 'id'])
+        //     ->where(['status' => self::STATUS_ACTIVE])
+        //         //->asArray()
+        //     ->orderBy(['name' => SORT_ASC])
+        //         ->all();
+        //     return $users;
     }
 
-   
     /**
      * Function for seeding default system user
      * NOTE:: USER should be removed after an admin user is created
      */
     public static function seedUser() {
         //We check if seed has run already
-       // if (empty(Role::findOne(["role" => "Admin"]))) {
-            //First we create a role
-            $role = new Role();
-            $role->role = "Admin";
-            $role->active = 1;
-            $role->rights = "NA";
-            if ($role->save()) {
+        // if (empty(Role::findOne(["role" => "Admin"]))) {
+        //First we create a role
+        $role = new Role();
+        $role->role = "Admin";
+        $role->active = 1;
+        $role->rights = "NA";
+        if ($role->save()) {
 
-                //Then we assign the ultimate permissions to the role,
-                //The rest is history
-                $rights = [
-                    "Manage Users", "Manage Roles","View Roles","View Users"
-                ];
+            //Then we assign the ultimate permissions to the role,
+            //The rest is history
+            $rights = [
+                "Manage Users", "Manage Roles", "View Roles", "View Users"
+            ];
 
-                $count = 0;
-                foreach ($rights as $right) {
-                    $right_to_role = new \common\models\RightAllocation();
-                    $right_to_role->role = $role->id;
-                    $right_to_role->right = $right;
-                    $right_to_role->save();
-                    $count++;
-                }
-
-                //We try to create the user
-                echo self::createTempAdminUser($role->id, $count);
-            } else {
-                $message = "";
-                foreach ($role->getErrors() as $error) {
-                    $message .= $error[0];
-                }
-                echo "Error occured while running user seeder. Error:" . $message;
+            $count = 0;
+            foreach ($rights as $right) {
+                $right_to_role = new \common\models\RightAllocation();
+                $right_to_role->role = $role->id;
+                $right_to_role->right = $right;
+                $right_to_role->save();
+                $count++;
             }
-       /* } else {
-            echo "User seed has already been run!";
-	}*/
+
+            //We try to create the user
+            echo self::createTempAdminUser($role->id, $count);
+        } else {
+            $message = "";
+            foreach ($role->getErrors() as $error) {
+                $message .= $error[0];
+            }
+            echo "Error occured while running user seeder. Error:" . $message;
+        }
+        /* } else {
+          echo "User seed has already been run!";
+          } */
     }
 
     public static function createTempAdminUser($id, $count) {

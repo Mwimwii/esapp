@@ -32,10 +32,10 @@ $form = ActiveForm::begin(['action' => 'update?id=' . $model->id, 'type' => Acti
                   ] */
         ])->dropDownList(
                 [
-            'Camp user' => 'Camp user',
-            'District user' => 'District user',
-            'Provincial user' => 'Provincial user',
-            'Other user' => 'Other user',
+                    'Camp user' => 'Camp user',
+                    'District user' => 'District user',
+                    'Provincial user' => 'Provincial user',
+                    'Other user' => 'Other user',
                 ], [
             'custom' => true,
             'prompt' => 'Filter system user type to add',
@@ -75,12 +75,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
 
@@ -98,7 +98,6 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
     <div class="col-md-6">';
         echo $form->field($model, 'nrc', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'placeholder' => 'NRC i.e. 100000/10/1']);
 
-
         echo "<label class='label' for='phone'>Phone</label>";
         echo $form->field($model, 'phone')->widget(PhoneInput::className(), [
             'jsOptions' => [
@@ -111,7 +110,14 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
         echo $form->field($model, 'role')->dropDownList(
                 yii\helpers\ArrayHelper::map(Role::find()->asArray()->all(), 'id', 'role'), ['custom' => true, 'maxlength' => true, 'style' => '', 'prompt' => 'Please select role', 'required' => true]
         )->label("Role");
+         echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
+        );
         echo '</div>';
+       
     }
 //For Camp user types
     if ($user_type === "Camp user") {
@@ -123,12 +129,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
 
@@ -190,6 +196,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
                 'params' => ['selected_id3'],
             ]
         ]);
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
+        );
 
         echo '</div>';
     }
@@ -205,12 +217,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
         echo $form->field($model, 'nrc', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'placeholder' => 'NRC i.e. 100000/10/1']);
@@ -261,7 +273,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
             ]
         ]);
 
-
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
+        );
         echo '</div>';
     }
 //For Provincial user types
@@ -274,12 +291,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
 
         echo $form->field($model, 'title')->dropDownList(
                 [
-            'Mr.' => 'Mr',
-            'Mrs.' => 'Mrs',
-            'Miss.' => 'Miss',
-            'Ms.' => 'Ms',
-            'Dr.' => 'Dr',
-            'Prof.' => 'Prof'
+                    'Mr.' => 'Mr',
+                    'Mrs.' => 'Mrs',
+                    'Miss.' => 'Miss',
+                    'Ms.' => 'Ms',
+                    'Dr.' => 'Dr',
+                    'Prof.' => 'Prof'
                 ], ['prompt' => 'Select title', 'custom' => true, 'required' => false]
         );
 
@@ -315,6 +332,12 @@ echo $form->field($model, 'type_of_user')->hiddenInput(['value' => $user_type])-
                 $form->field($model, 'province_id')
                 ->dropDownList(
                         \backend\models\Provinces::getProvinceList(), ['id' => 'prov_id', 'custom' => true, 'prompt' => 'Please select a province', 'required' => true]
+        );
+        echo $form->field($model, "designation", [])
+                ->dropDownList(\backend\models\HourlyRates::getDesignations(),
+                        ['custom' => true, 'prompt' => 'Select Designation-Salary scale', 'required' => true,
+                        // 'value' => date("F")
+                        ]
         );
         echo '</div>';
     }

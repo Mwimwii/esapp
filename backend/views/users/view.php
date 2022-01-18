@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <p>
             <?php
-            if (\backend\models\User::userIsAllowedTo('Manage Users')) {
+            if (\backend\models\User::userIsAllowedTo('Manage Users') && $model->status == User::STATUS_ACTIVE) {
                 echo Html::a('<span class="fas fa-edit fa-2x"></span>', ['update', 'id' => $model->id], [
                     'title' => 'Update user',
                     'data-toggle' => 'tooltip',
@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw',
                     'label' => 'Province',
                     'value' => function ($model) {
-                        return !empty($model->province_id) && $model->province_id > 0 ? backend\models\Provinces::findOne($model->province_id)->name: "";
+                        return !empty($model->province_id) && $model->province_id > 0 ? backend\models\Provinces::findOne($model->province_id)->name : "";
                     },
                     'visible' => !empty($model->province_id) && $model->province_id > 0 ? TRUE : FALSE,
                 ],
@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw',
                     'label' => 'District',
                     'value' => function ($model) {
-                        return !empty($model->district_id) && $model->district_id > 0 ? backend\models\Districts::findOne($model->district_id)->name: "";
+                        return !empty($model->district_id) && $model->district_id > 0 ? backend\models\Districts::findOne($model->district_id)->name : "";
                     },
                     'visible' => !empty($model->district_id) && $model->district_id > 0 ? TRUE : FALSE,
                 ],
@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw',
                     'label' => 'Camp',
                     'value' => function ($model) {
-                        return !empty($model->camp_id) && $model->camp_id > 0 ?backend\models\Camps::findOne($model->camp_id)->name: "";
+                        return !empty($model->camp_id) && $model->camp_id > 0 ? backend\models\Camps::findOne($model->camp_id)->name : "";
                     },
                     'visible' => !empty($model->camp_id) && $model->camp_id > 0 ? TRUE : FALSE,
                 ],
@@ -92,8 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw',
                     'label' => 'Role',
                     'value' => function ($model) {
-                        $respone = "";
-                        return common\models\Role::getRoleById($model->role);
+                        return !empty($model->role) ? $model->role0->role : "";
                     },
                 ],
                 [
@@ -120,43 +119,54 @@ $this->params['breadcrumbs'][] = $this->title;
                 //  'verification_token',
                 [
                     'attribute' => 'status',
-                     'value' => function($model) {
+                     'value' => function ($model) {
                         $str = "";
                         if ($model->status == \backend\models\User::STATUS_ACTIVE) {
                             $str = "<span class='badge badge-success'> "
                                     . " Active</span><br>";
-                        }
-                        if ($model->status == \backend\models\User::STATUS_INACTIVE) {
+                        } elseif ($model->status == \backend\models\User::STATUS_INACTIVE) {
                             $str = "<span class='badge badge-danger'> "
                                     . "Blocked</span><br>";
+                        } else {
+                            $str = "<span class='badge badge-warning'> "
+                                    . "MGF Status</span><br>";
                         }
                         return $str;
                     },
                     'format' => 'raw',
                 ],
                 [
+                    'attribute' => 'designation',
+                    'label' => 'Designation',
+                    'filter' => false,
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        return !empty($model->rate) ? $model->rate->designation : "Not set";
+                    }
+                ],
+                [
                     'label' => 'Created by',
-                    'value' => function($model) {
+                    'value' => function ($model) {
                         $user = \backend\models\User::findOne(['id' => $model->created_by]);
                         return !empty($user) ? $user->first_name . " " . $user->other_name . " " . $user->last_name . "-" . $user->email : "";
                     }
                 ],
                 [
                     'label' => 'Updated by',
-                    'value' => function($model) {
+                    'value' => function ($model) {
                         $user = \backend\models\User::findOne(['id' => $model->updated_by]);
                         return !empty($user) ? $user->first_name . " " . $user->other_name . " " . $user->last_name . "-" . $user->email : "";
                     }
                 ],
                 [
                     'label' => 'Updated at',
-                    'value' => function($model) {
+                    'value' => function ($model) {
                         return date('d-F-Y H:i:s', $model->updated_at);
                     }
                 ],
                 [
                     'label' => 'Created at',
-                    'value' => function($model) {
+                    'value' => function ($model) {
                         return date('d-F-Y H:i:s', $model->created_at);
                     }
                 ],

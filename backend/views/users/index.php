@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <p>
             <?php
             if (\backend\models\User::userIsAllowedTo('Manage Users')) {
-               echo Html::a('<i class="fa fa-plus"></i> Add User', ['create'], ['class' => 'btn btn-success btn-sm']);
+                echo Html::a('<i class="fa fa-plus"></i> Add User', ['create'], ['class' => 'btn btn-success btn-sm']);
             }
             ?>
         </p>
@@ -44,8 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => common\models\Role::getRoles(),
                     'filterInputOptions' => ['prompt' => 'Filter by role', 'class' => 'form-control', 'id' => null],
                     'value' => function ($model) {
-                        $respone = "";
-                        return common\models\Role::getRoleById($model->role);
+                        return !empty($model->role) ? $model->role0->role : "";
                     },
                 ],
                 [
@@ -72,7 +71,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'other_name',
                 //'sex',
                 'email',
-               
                 //'institution_id',
                 //'username',
                 //'password_hash',
@@ -81,6 +79,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'verification_token',
                 [
                     'class' => EditableColumn::className(),
+                    'readonly' => function ($model) {
+                        if ($model->status == \backend\models\User::STATUS_ACTIVE || $model->status == \backend\models\User::STATUS_INACTIVE) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
                     'attribute' => 'status',
                     'filter' => false,
                     'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
@@ -91,22 +96,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filterInputOptions' => ['prompt' => 'Filter by Status', 'class' => 'form-control', 'id' => null],
                     'class' => EditableColumn::className(),
                     'enableSorting' => true,
-                    'format'=>'raw',
+                    'format' => 'raw',
                     'editableOptions' => [
                         'asPopover' => false,
                         'options' => ['class' => 'form-control', 'prompt' => 'Select Status...'],
                         'inputType' => Editable::INPUT_DROPDOWN_LIST,
                         'data' => [\backend\models\User::STATUS_ACTIVE => 'Active', User::STATUS_INACTIVE => 'Blocked'],
                     ],
-                    'value' => function($model) {
+                    'value' => function ($model) {
                         $str = "";
                         if ($model->status == \backend\models\User::STATUS_ACTIVE) {
                             $str = "<span class='badge badge-success'> "
                                     . " Active</span><br>";
-                        }
-                        if ($model->status == \backend\models\User::STATUS_INACTIVE) {
+                        } elseif ($model->status == \backend\models\User::STATUS_INACTIVE) {
                             $str = "<span class='badge badge-danger'> "
                                     . "Blocked</span><br>";
+                        } else {
+                            $str = "<span class='badge badge-warning'> "
+                                    . "MGF Status</span><br>";
                         }
                         return $str;
                     },
@@ -121,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'template' => '{view}{update}{delete}',
                     'buttons' => [
                         'view' => function ($url, $model) {
-                            if (User::userIsAllowedTo('View Users') && $model->status == User::STATUS_ACTIVE) {
+                            if (User::userIsAllowedTo('View Users')) {
                                 return Html::a(
                                                 '<span class="fa fa-eye"></span>', ['view', 'id' => $model->id], [
                                             'title' => 'View user',
@@ -162,7 +169,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ],
                                             'style' => "padding:5px;",
                                             'class' => 'bt btn-lg'
-                                        ]
+                                                ]
                                 );
                             }
                         },
