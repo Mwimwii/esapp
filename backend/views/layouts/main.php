@@ -344,7 +344,6 @@ $session = Yii::$app->session;
                                     if (User::userIsAllowedTo("View PW AWPB")) {
                                         echo '   <li class="nav-item">';
 
-
                                         if (
                                                 Yii::$app->controller->id == "awpb-budget" &&
                                                 (
@@ -843,7 +842,7 @@ $session = Yii::$app->session;
                             <?php } ?>
 
                             <!-------------------------------LKM ENDS------------------------------------->
-                              <!-------------------------------M&E DATA STARTS------------------------------>
+                            <!-------------------------------M&E DATA STARTS------------------------------>
                             <?php
                             if (User::userIsAllowedTo("Submit back to office report") ||
                                     User::userIsAllowedTo("View back to office report") ||
@@ -1108,7 +1107,7 @@ $session = Yii::$app->session;
                                       }
                                       echo '</li>';
                                       } */
-                                  
+
                                     /* if (User::userIsAllowedTo("Plan quarterly work schedules") ||
                                       User::userIsAllowedTo("Approve quarterly work schedules - provincial") ||
                                       User::userIsAllowedTo("Approve quarterly work schedules - hq") ||
@@ -1137,10 +1136,31 @@ $session = Yii::$app->session;
                             <?php
                             if (
                                     User::userIsAllowedTo("Submit logframe data") ||
+                                    User::userIsAllowedTo("Manage logframe programe targets") ||
                                     User::userIsAllowedTo("View logframe data")
                             ) {
                                 if (
                                         Yii::$app->controller->id == "logframe-outreach-gender" ||
+                                        Yii::$app->controller->id == "logframe-targets" ||
+                                        Yii::$app->controller->id == "logframe-head-type" ||
+                                        Yii::$app->controller->id == "logframe-household-members" ||
+                                        Yii::$app->controller->id == "logframe-house-assets" ||
+                                        Yii::$app->controller->id == "logframe-improved-diet" ||
+                                        Yii::$app->controller->id == "logframe-food-secure-houses" ||
+                                        Yii::$app->controller->id == "logframe-profitable-project-support" ||
+                                        Yii::$app->controller->id == "logframe-proposed-laws-policies" ||
+                                        Yii::$app->controller->id == "logframe-agribusiness-studies" ||
+                                        Yii::$app->controller->id == "logframe-policies-products-completed" ||
+                                        Yii::$app->controller->id == "logframe-people-trained-climate" ||
+                                        Yii::$app->controller->id == "logframe-improved-access-markets" ||
+                                        Yii::$app->controller->id == "logframe-gross-value-farm-sales" ||
+                                        Yii::$app->controller->id == "logframe-producers-formal-partnerships" ||
+                                        Yii::$app->controller->id == "logframe-mgf-supported-agribusiness" ||
+                                        Yii::$app->controller->id == "logframe-services-msme-financed" ||
+                                        Yii::$app->controller->id == "logframe-production-market-infras" ||
+                                        Yii::$app->controller->id == "logframe-investments-prosmallholder-mgf" ||
+                                        Yii::$app->controller->id == "logframe-services-fourp-mgf" ||
+                                        Yii::$app->controller->id == "logframe-facilities-constructed-rehabilitated" ||
                                         Yii::$app->controller->id == "logframe-outreach-young"
                                 ) {
                                     echo '<li class="nav-item has-treeview menu-open">'
@@ -1159,6 +1179,16 @@ $session = Yii::$app->session;
                                 <ul class="nav nav-treeview">
 
                                     <?php
+                                    if (User::userIsAllowedTo("Manage logframe programe targets")) {
+                                        echo '   <li class="nav-item">';
+                                        if (Yii::$app->controller->id == "logframe-targets" &&
+                                                (Yii::$app->controller->action->id == "index")) {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Logframe targets</p>', ['/logframe-targets/index'], ["class" => "nav-link active"]);
+                                        } else {
+                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Logframe targets</p>', ['/logframe-targets/index'], ["class" => "nav-link"]);
+                                        }
+                                        echo '</li>';
+                                    }
                                     echo '   <li class="nav-item">';
                                     if (
                                             Yii::$app->controller->id == "logframe-outreach-gender" &&
@@ -1184,6 +1214,253 @@ $session = Yii::$app->session;
                                         echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outreach Persons young</p>', ['/logframe-outreach-young/index'], ["class" => "nav-link active"]);
                                     } else {
                                         echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outreach Persons young</p>', ['/logframe-outreach-young/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-head-type" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outreach House Heads</p>', ['/logframe-head-type/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outreach House Heads</p>', ['/logframe-head-type/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-household-members" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outreach House Members</p>', ['/logframe-household-members/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outreach House Members</p>', ['/logframe-household-members/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-house-assets" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Goals House Assets</p>', ['/logframe-house-assets/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Goals House Assets</p>', ['/logframe-house-assets/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-food-secure-houses" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Goals Food Secure</p>', ['/logframe-food-secure-houses/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Goals Food Secure</p>', ['/logframe-food-secure-houses/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-improved-diet" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Goals Improved Diet</p>', ['/logframe-improved-diet/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Project Goals Improved Diet</p>', ['/logframe-improved-diet/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-profitable-project-support" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Dev Objectives Profibale Projects</p>', ['/logframe-profitable-project-supportt/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Dev Objectives Profitable Projects</p>', ['/logframe-profitable-project-support/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-proposed-laws-policies" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outcome Proposed Laws/Policies</p>', ['/logframe-proposed-laws-policies/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outcome Proposed Laws/Policies</p>', ['/logframe-proposed-laws-policies/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-agribusiness-studies" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Agribusiness Studies</p>', ['/logframe-agribusiness-studies/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Agribusiness Studies</p>', ['/logframe-agribusiness-studies/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-policies-products-completed" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Policies Products</p>', ['/logframe-policies-products-completed/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Policies Products</p>', ['/logframe-policies-products-completed/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-people-trained-climate" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Climate Training</p>', ['/logframe-people-trained-climate/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Climate Training</p>', ['/logframe-people-trained-climate/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-producers-formal-partnerships" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outcome Business Arrangements</p>', ['/logframe-producers-formal-partnerships/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outcome Business Arrangements</p>', ['/logframe-producers-formal-partnerships/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-improved-access-markets" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outcome Improved Market Access</p>', ['/logframe-improved-access-markets/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Outcome Improved Market Access</p>', ['/logframe-improved-access-markets/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-gross-value-farm-sales" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Farm Sales Annual Gross</p>', ['/logframe-gross-value-farm-sales/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Output Farm Sales Annual Gross</p>', ['/logframe-gross-value-farm-sales/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-mgf-supported-agribusiness" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Investment MGF Supported</p>', ['/logframe-mgf-supported-agribusiness/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Investment MGF Supported</p>', ['/logframe-mgf-supported-agribusiness/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-services-msme-financed" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Services MGF Financed</p>', ['/logframe-services-msme-financed/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Services MGF Financed</p>', ['/logframe-services-msme-financed/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-production-market-infras" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Production/Marketing Infra</p>', ['/logframe-production-market-infras/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Production/Marketing Infra</p>', ['/logframe-production-market-infras/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-investments-prosmallholder-mgf" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Prosmallholder Investments</p>', ['/logframe-investments-prosmallholder-mgf/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Prosmallholder Investments</p>', ['/logframe-investments-prosmallholder-mgf/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-services-fourp-mgf" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>4P Financed Services</p>', ['/logframe-services-fourp-mgf/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>4P Financed Services</p>', ['/logframe-services-fourp-mgf/index'], ["class" => "nav-link"]);
+                                    }
+                                    echo '</li>';
+                                    echo '<li class="nav-item">';
+                                    if (
+                                            Yii::$app->controller->id == "logframe-facilities-constructed-rehabilitated" &&
+                                            (Yii::$app->controller->action->id == "index" ||
+                                            Yii::$app->controller->action->id == "view" ||
+                                            Yii::$app->controller->action->id == "create" ||
+                                            Yii::$app->controller->action->id == "update")
+                                    ) {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Markets/Storages Constructed</p>', ['/logframe-facilities-constructed-rehabilitated/index'], ["class" => "nav-link active"]);
+                                    } else {
+                                        echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Markets/Storages Constructed</p>', ['/logframe-facilities-constructed-rehabilitated/index'], ["class" => "nav-link"]);
                                     }
                                     echo '</li>';
                                     ?>
@@ -1257,7 +1534,6 @@ $session = Yii::$app->session;
                                     User::userIsAllowedTo("Manage markets") ||
                                     User::userIsAllowedTo("Manage commodity configs") ||
                                     User::userIsAllowedTo("View staff hourly rates") ||
-                                    User::userIsAllowedTo("Manage logframe programe targets") ||
                                     User::userIsAllowedTo("Manage camps") ||
                                     User::userIsAllowedTo("Setup AWPB")) {
                                 if (Yii::$app->controller->id == "provinces" ||
@@ -1286,16 +1562,6 @@ $session = Yii::$app->session;
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <?php
-                                    if (User::userIsAllowedTo("Manage logframe programe targets")) {
-                                        echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "logframe-targets" &&
-                                                (Yii::$app->controller->action->id == "index")) {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Logframe targets</p>', ['/logframe-targets/index'], ["class" => "nav-link active"]);
-                                        } else {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Logframe targets</p>', ['/logframe-targets/index'], ["class" => "nav-link"]);
-                                        }
-                                        echo '</li>';
-                                    }
                                     if (User::userIsAllowedTo("Manage provinces")) {
                                         echo '   <li class="nav-item">';
                                         if (Yii::$app->controller->id == "provinces" &&
@@ -1534,25 +1800,25 @@ $session = Yii::$app->session;
 
                                 </ul>
                                 </li>
-                            <?php } ?>
+<?php } ?>
                             <!-------------------------------CONFIGS ENDS----------------------------->
                             <!-------------------------------REPORTS STARTS--------------------------->
-                            <?php
-                            if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report") ||
-                                    User::userIsAllowedTo("View physical tracking table report") ||
-                                    User::userIsAllowedTo("View project outreach reports") ||
-                                    User::userIsAllowedTo("View training attendance cumulative report")
+<?php
+if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report") ||
+        User::userIsAllowedTo("View physical tracking table report") ||
+        User::userIsAllowedTo("View project outreach reports") ||
+        User::userIsAllowedTo("View training attendance cumulative report")
 // User::userIsAllowedTo("Manage markets") ||
 // User::userIsAllowedTo("Manage commodity configs") 
-                            ) {
-                                if (Yii::$app->controller->id == "reports") {
-                                    echo '<li class="nav-item has-treeview menu-open">'
-                                    . ' <a href="#" class="nav-link active">';
-                                } else {
-                                    echo '<li class="nav-item has-treeview">'
-                                    . '<a href="#" class="nav-link">';
-                                }
-                                ?>
+) {
+    if (Yii::$app->controller->id == "reports") {
+        echo '<li class="nav-item has-treeview menu-open">'
+        . ' <a href="#" class="nav-link active">';
+    } else {
+        echo '<li class="nav-item has-treeview">'
+        . '<a href="#" class="nav-link">';
+    }
+    ?>
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>
                                     Reports
@@ -1560,18 +1826,18 @@ $session = Yii::$app->session;
                                 </p>
                                 </a>
                                 <ul class="nav nav-treeview">
-                                    <?php
-                                    if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report")) {
-                                        echo '   <li class="nav-item">';
-                                        if (Yii::$app->controller->id == "reports" &&
-                                                (Yii::$app->controller->action->id == "facilitation-imporoved-technologies")) {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link active"]);
-                                        } else {
-                                            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link"]);
-                                        }
-                                        echo '</li>';
-                                    }
-                                    ?>
+    <?php
+    if (User::userIsAllowedTo("View facilitation of improved technologies/best practices report")) {
+        echo '   <li class="nav-item">';
+        if (Yii::$app->controller->id == "reports" &&
+                (Yii::$app->controller->action->id == "facilitation-imporoved-technologies")) {
+            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link active"]);
+        } else {
+            echo Html::a('<i class="far fa-circle nav-icon"></i> <p>Training imporoved technologies</p>', ['/reports/facilitation-imporoved-technologies'], ["class" => "nav-link"]);
+        }
+        echo '</li>';
+    }
+    ?>
                                     <?php
                                     if (User::userIsAllowedTo("View training attendance cumulative report")) {
                                         echo '   <li class="nav-item">';
@@ -1619,21 +1885,21 @@ $session = Yii::$app->session;
 
                                 </ul>
                                 </li>
-                            <?php } ?>
+<?php } ?>
                             <!-------------------------------REPORTS ENDS----------------------------->
                             <!-------------------------------AUDIT TRAIL STARTS----------------------->
                             <li class="nav-item">
-                                <?php
-                                if (User::userIsAllowedTo("View audit trail logs")) {
-                                    if (Yii::$app->controller->id == "audit-trail") {
-                                        echo Html::a('<i class="fas fa-history nav-icon"></i> '
-                                                . '<p>Audit logs</p>', ['audit-trail/index'], ["class" => "nav-link active"]);
-                                    } else {
-                                        echo Html::a('<i class="fas fa-history nav-icon"></i> '
-                                                . '<p>Audit logs</p>', ['audit-trail/index'], ["class" => "nav-link"]);
-                                    }
-                                }
-                                ?>
+<?php
+if (User::userIsAllowedTo("View audit trail logs")) {
+    if (Yii::$app->controller->id == "audit-trail") {
+        echo Html::a('<i class="fas fa-history nav-icon"></i> '
+                . '<p>Audit logs</p>', ['audit-trail/index'], ["class" => "nav-link active"]);
+    } else {
+        echo Html::a('<i class="fas fa-history nav-icon"></i> '
+                . '<p>Audit logs</p>', ['audit-trail/index'], ["class" => "nav-link"]);
+    }
+}
+?>
                             </li>
                             <!-------------------------------AUDIT TRAIL ENDS------------------------->
                         </ul>
@@ -1654,15 +1920,15 @@ $session = Yii::$app->session;
                             </div><!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <?=
-                                    Breadcrumbs::widget([
-                                        'homeLink' => [
-                                            'label' => 'Home',
-                                            'url' => Yii::$app->getHomeUrl() . 'home/home'
-                                        ],
-                                        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                                    ])
-                                    ?>
+<?=
+Breadcrumbs::widget([
+    'homeLink' => [
+        'label' => 'Home',
+        'url' => Yii::$app->getHomeUrl() . 'home/home'
+    ],
+    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+])
+?>
                                 </ol>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
@@ -1673,7 +1939,7 @@ $session = Yii::$app->session;
                 <!-- Main content -->
                 <section class="content">
                     <div class="container-fluid">
-                        <?= $content ?>
+<?= $content ?>
                         <!-- /.row -->
                     </div>
                     <!--/. container-fluid -->
@@ -1696,12 +1962,12 @@ $session = Yii::$app->session;
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-danger btn-xs" data-dismiss="modal"><span class="text-xs">Cancel</span></button>
-                            <?=
-                            Html::a('<span class="text-xs">Logout</span>', ['site/logout'], [
-                                'data' => ['method' => 'POST'], 'id' => 'logout',
-                                'class' => 'btn btn-success btn-xs'
-                            ])
-                            ?>
+<?=
+Html::a('<span class="text-xs">Logout</span>', ['site/logout'], [
+    'data' => ['method' => 'POST'], 'id' => 'logout',
+    'class' => 'btn btn-success btn-xs'
+])
+?>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -1710,14 +1976,14 @@ $session = Yii::$app->session;
             </div>
         </div>
 
-        <?php $this->endBody() ?>
+<?php $this->endBody() ?>
         <script>
             var myArrSuccess = [<?php
-        $flashMessage = Yii::$app->session->getFlash('success');
-        if ($flashMessage) {
-            echo '"' . $flashMessage . '",';
-        }
-        ?>];
+$flashMessage = Yii::$app->session->getFlash('success');
+if ($flashMessage) {
+    echo '"' . $flashMessage . '",';
+}
+?>];
             for (var i = 0; i < myArrSuccess.length; i++) {
                 $.notify(myArrSuccess[i], {
                     type: 'success',
@@ -1732,11 +1998,11 @@ $session = Yii::$app->session;
                 });
             }
             var myArrError = [<?php
-        $flashMessage = Yii::$app->session->getFlash('error');
-        if ($flashMessage) {
-            echo '"' . $flashMessage . '",';
-        }
-        ?>];
+$flashMessage = Yii::$app->session->getFlash('error');
+if ($flashMessage) {
+    echo '"' . $flashMessage . '",';
+}
+?>];
             for (var j = 0; j < myArrError.length; j++) {
                 $.notify(myArrError[j], {
                     type: 'danger',

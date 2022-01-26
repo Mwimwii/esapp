@@ -30,14 +30,14 @@ $daysTotal = $model->days_office + $model->days_field;
 ?>
 
 <div class="container ">
-    <div class="row">
-        <div class="text-left">
-            <?= Html::img('@web/img/coa.png', ['style' => 'width:100px; height: 100px']); ?>
-        </div>
-        <div style="margin-top: -100px;" class="text-right">
-            <?= Html::img('@web/img/ifad.png', ['style' => 'width:100px; height: 100px']); ?>
-        </div>
+<div class="row">
+    <div class="text-left">
+        <?= Html::img('@web/img/coa.png', ['style' => 'width:100px; height: 100px']); ?>
     </div>
+    <div style="margin-top: -100px;" class="text-right">
+        <?= Html::img('@web/img/ifad.png', ['style' => 'width:100px; height: 100px']); ?>
+    </div>
+</div>
     <div class="text-center" style="margin-top: 20px;margin-bottom: 60px;margin-top: -100px;font-weight: bold;">
         <p>
             Ministry of Agriculture<br>

@@ -92,4 +92,27 @@ class LogframeTargetsController extends Controller {
         }
     }
 
+    public function actionCreate() {
+        $model = new LogframeProgrammeTargets();
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_by = Yii::$app->user->identity->id;
+            if ($model->save()) {
+                
+            } else {
+                $message = '';
+                foreach ($model->getErrors() as $error) {
+                    $message .= $error[0];
+                }
+                Yii::$app->session->setFlash('error', 'Error occured while adding outreach record.Error::' . $message);
+            }
+        }
+
+        return $this->render('create', [
+                    'model' => $model,
+        ]);
+    }
+
 }

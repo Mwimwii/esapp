@@ -298,8 +298,8 @@ if (!empty($not_young_programme_targets_model)) {
                             ExportMenu::FORMAT_PDF => false,
                             ExportMenu::FORMAT_CSV => false,
                         ],
-                        'target' => ExportMenu::TARGET_BLANK,
-                        'pjaxContainerId' => 'kv-pjax-container',
+                       // 'target' => ExportMenu::TARGET_BLANK,
+                       // 'pjaxContainerId' => 'kv-pjax-container',
                         'exportContainer' => [
                             'class' => 'btn-group mr-2'
                         ],

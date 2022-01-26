@@ -120,7 +120,6 @@ class StoryofchangeController extends Controller {
                     $dataProvider->query->andFilterWhere(['IN', 'created_by', $_user_ids]);
                 }
             } else {
-
                 //We pull stories for all provinces/Districts/Camps which have been submitted for
                 // review or have been accepted
 

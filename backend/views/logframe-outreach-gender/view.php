@@ -22,13 +22,13 @@ $females_programme_targets_model = \backend\models\LogframeProgrammeTargets::fin
 $males_programme_targets_model = \backend\models\LogframeProgrammeTargets::findOne(['record_type' => "Males - Number", 'indicator' => "Persons receiving services promoted or supported by the project"]);
 if (!empty($females_programme_targets_model)) {
     $Baseline_females = $females_programme_targets_model->baseline;
-    $mid_target_males = $females_programme_targets_model->mid_term;
-    $end_target_males = $females_programme_targets_model->end_target;
+    $mid_target_females = $females_programme_targets_model->mid_term;
+    $end_target_females = $females_programme_targets_model->end_target;
 }
 if (!empty($males_programme_targets_model)) {
     $Baseline_males = $males_programme_targets_model->baseline;
-    $mid_target_females = $males_programme_targets_model->mid_term;
-    $end_target_females = $males_programme_targets_model->end_target;
+    $mid_target_males = $males_programme_targets_model->mid_term;
+    $end_target_males = $males_programme_targets_model->end_target;
 }
 ?>
 <div class="card card-success card-outline">

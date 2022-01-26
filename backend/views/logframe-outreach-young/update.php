@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Update record';
 $this->params['breadcrumbs'][] = ['label' => 'Logframe/Outreach persons young/not young records', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' =>"View record:".  $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="card card-success card-outline">

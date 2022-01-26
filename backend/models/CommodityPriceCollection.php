@@ -141,7 +141,7 @@ class CommodityPriceCollection extends \yii\db\ActiveRecord {
     public static function getYearsList() {
         $currentYear = date('Y');
         $yearFrom = 2000;
-        $yearsRange = range($yearFrom, $currentYear);
+        $yearsRange = range($currentYear,$yearFrom);
         return array_combine($yearsRange, $yearsRange);
     }
 

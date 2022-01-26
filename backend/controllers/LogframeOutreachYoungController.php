@@ -206,7 +206,7 @@ class LogframeOutreachYoungController extends Controller {
             if ($model->delete()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Logframe data: Outreach persons young/not young with record id:" . $id;
+                $audit->action = "Deleted Logframe data: Outreach persons young/not young with record id:" . $id;
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();

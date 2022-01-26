@@ -68,10 +68,10 @@ class LogframeOutreachPersonsGender extends \yii\db\ActiveRecord {
             'gender' => 'Gender',
             'cumulative' => 'Cum',
             'cumulative_percentage' => '% Cum',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'created_by' => 'Created By',
-            'updated_by' => 'Updated By',
+            'created_at' => 'Created at',
+            'updated_at' => 'Updated at',
+            'created_by' => 'Created by',
+            'updated_by' => 'Updated by',
         ];
     }
 

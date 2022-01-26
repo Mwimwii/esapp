@@ -25,10 +25,10 @@ class LogframeOutreachGenderController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'camp', 'district', 'update', 'view'],
+                'only' => ['index', 'create', 'delete',  'update', 'view'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'camp', 'district', 'update', 'view'],
+                        'actions' => ['index', 'create', 'delete', 'update', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -206,7 +206,7 @@ class LogframeOutreachGenderController extends Controller {
             if ($model->delete()) {
                 $audit = new AuditTrail();
                 $audit->user = Yii::$app->user->id;
-                $audit->action = "Logframe data: Outreach persons gender with record id:" . $id;
+                $audit->action = "Deleted Logframe data: Outreach persons gender with record id:" . $id;
                 $audit->ip_address = Yii::$app->request->getUserIP();
                 $audit->user_agent = Yii::$app->request->getUserAgent();
                 $audit->save();
