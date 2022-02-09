@@ -28,19 +28,19 @@ return [
                 'httpOnly' => true,
             ],
         ],
-        'session' => [
-            'class' => 'yii\redis\Session',
-            'timeout' => 1800,
-            'redis' => [
-                'hostname' => 'localhost',
-                'port' => 6379,
-                'database' => 0,
-            ],
-            'name' => 'essap-backend',
-            'cookieParams' => [
-                'lifetime' => 1 * 24 * 60 * 60,
-            ],
-        ],
+        // 'session' => [
+        //     'class' => 'yii\redis\Session',
+        //     'timeout' => 1800,
+        //     'redis' => [
+        //         'hostname' => 'localhost',
+        //         'port' => 6379,
+        //         'database' => 0,
+        //     ],
+        //     'name' => 'essap-backend',
+        //     'cookieParams' => [
+        //         'lifetime' => 1 * 24 * 60 * 60,
+        //     ],
+        // ],
        /* 'cache' => [
             'class' => 'yii\caching\MemCache',
             'servers' => [
