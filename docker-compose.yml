@@ -13,6 +13,7 @@ services:
       - mysql
     links:
       - mysql:mysql
+    container_name: api
   backend:
     build: backend
     ports:
@@ -26,6 +27,7 @@ services:
       - mysql
     links:
       - mysql:mysql
+    container_name: backend
   mysql:
     image: mysql:8
     command: mysqld --default-authentication-plugin=mysql_native_password
@@ -38,3 +40,16 @@ services:
     volumes:
       - ./mysql-data/data:/var/lib/mysql
       - ./mysql-data/import:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    container_name: mysql
+  # php:
+  #   image: php
+  #   volumes:
+  #     - ./:./app
+  #   depends_on:
+  #     - mysql
+  #     - api
+  #     - backend
+  #   links:
+  #     - mysql:mysql
