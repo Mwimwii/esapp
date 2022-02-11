@@ -3,7 +3,7 @@ services:
   api:
     build: api
     ports:
-      - 3000:80
+      - 4000:80
     volumes:
       # Re-use local composer cache via host-volume
       - ~/.composer-docker/cache:/root/.composer/cache:delegated

@@ -6,6 +6,7 @@
 # phpstorm project files
 .idea
 .data
+/mysql-data/data/
 # netbeans project files
 nbproject
 
@@ -22,7 +23,6 @@ Thumbs.db
 
 # composer itself is not needed
 composer.phar
-
 # Mac DS_Store Files
 .DS_Store
 
